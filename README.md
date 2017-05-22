@@ -1,7 +1,8 @@
 cognicity_msf-server
 ====================
-
 Data server for CogniCity MSF, built with NodeJS to provide JSON APIs to Postgres objects.
+
+[![Build Status](https://travis-ci.org/usergroupcoop/cognicity_msf-server.svg?branch=master)](https://travis-ci.org/usergroupcoop/cognicity_msf-server)
 
 ### Dependencies
 - see package.json, or run
