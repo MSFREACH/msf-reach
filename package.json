@@ -38,10 +38,14 @@
     "compression": "^1.6.2",
     "cors": "^2.8.1",
     "dbgeo": "^1.0.1",
+    "dotenv": "^4.0.0",
     "express": "^4.15.2",
     "express-jwt": "^5.1.0",
     "joi": "^10.2.2",
-    "response-time": "^2.3.2"
+    "morgan": "^1.8.1",
+    "pg-promise": "^5.7.1",
+    "response-time": "^2.3.2",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
