@@ -4,11 +4,11 @@ export default {
   APP_NAME: process.env.APP_NAME || 'cognicity_msf-server',
   API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
   API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
-  API_REPORTS_LIMIT: process.env.API_REPORTS_LIMIT,
+  //API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || 'https://data.msf.acrossthecloud.net',
-  AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
+  AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID || '123',
   AUTH0_ISSUER: process.env.AUTH0_ISSUER || 'https://msf.au.auth0.com',
-  AUTH0_SECRET: process.env.AUTH0_SECRET,
+  AUTH0_SECRET: process.env.AUTH0_SECRET || '123',
   BODY_LIMIT: process.env.BODY_LIMIT || '100kb',
   CACHE: process.env.CACHE === 'true' || false,
   CACHE_DURATION_CARDS: process.env.CACHE_DURATION_CARDS || '1 minute',
@@ -22,8 +22,8 @@ export default {
   PGSSL: process.env.PGSSL === 'true' || false,
   PGTIMEOUT: process.env.PGTIMEOUT || 10000,
   PGUSER: process.env.PGUSER || 'postgres',
-  FORMAT_DEFAULT: process.env.FORMAT_DEFAULT || 'json',
-  FORMATS: (process.env.FORMATS || 'json').split(','),
+//  FORMAT_DEFAULT: process.env.FORMAT_DEFAULT || 'json',
+//  FORMATS: (process.env.FORMATS || 'json').split(','),
   GEO_FORMAT_DEFAULT: process.env.GEO_FORMAT_DEFAULT || 'topojson',
   GEO_FORMATS: (process.env.GEO_FORMATS || 'geojson,topojson').split(','),
   GEO_PRECISION: process.env.GEO_PRECISION || 10,
@@ -43,5 +43,5 @@ export default {
   TABLE_GRASP_REPORTS: process.env.TABLE_GRASP_REPORTS || 'grasp.reports',
   TABLE_REM_STATUS: process.env.TABLE_REM_STATUS || 'cognicity.rem_status',
   TABLE_REM_STATUS_LOG: process.env.TABLE_REM_STATUS_LOG || 'cognicity.rem_status_log',
-  TABLE_REPORTS: process.env.TABLE_REPORTS || 'cognicity.all_reports',
+  TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events'
 }

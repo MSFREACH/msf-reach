@@ -10,7 +10,7 @@ import validate from 'celebrate';
 import { version } from '../../package.json';
 
 // Import our routes
-//import cards from './routes/cards';
+import events from './routes/events';
 //import reports from './routes/reports';
 
 export default ({ config, db, logger }) => {
@@ -22,7 +22,7 @@ export default ({ config, db, logger }) => {
 	});
 
 	// Mount the various endpoints
-	//api.use('/areas', cards({ config, db, logger }));// TODO: local_areas
+	api.use('/events', events({ config, db, logger }));
 	//api.use('/cards', cards({ config, db, logger }));
 	//api.use('/reports', reports({ config, db, logger }));
 
