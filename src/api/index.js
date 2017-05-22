@@ -10,8 +10,8 @@ import validate from 'celebrate';
 import { version } from '../../package.json';
 
 // Import our routes
-import cards from './routes/cards';
-import reports from './routes/reports';
+//import cards from './routes/cards';
+//import reports from './routes/reports';
 
 export default ({ config, db, logger }) => {
 	let api = Router();
@@ -23,8 +23,8 @@ export default ({ config, db, logger }) => {
 
 	// Mount the various endpoints
 	//api.use('/areas', cards({ config, db, logger }));// TODO: local_areas
-	api.use('/cards', cards({ config, db, logger }));
-	api.use('/reports', reports({ config, db, logger }));
+	//api.use('/cards', cards({ config, db, logger }));
+	//api.use('/reports', reports({ config, db, logger }));
 
 	// Handle validation errors (wording of messages can be overridden using err.isJoi)
 	api.use(validate.errors());
