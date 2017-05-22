@@ -3,9 +3,7 @@ import Promise from 'bluebird';
 export default (config, db, logger) => ({
 
 	/**
-	 * Return all reports within a defined time period, and optionally city
-	 * @param {integer} timeperiod Length of time period in seconds
-	 * @param {string} city Optional, instance region code (e.g. 'jbd')
+	 * Return all events
 	 */
 	all: () => new Promise((resolve, reject) => {
 
@@ -22,7 +20,10 @@ export default (config, db, logger) => ({
 	}),
 
 
-	// Return specific report by id
+  /**
+   * Return event specified by ID
+   * @param {integer} id ID of event
+   */
 	byId: (id) => new Promise((resolve, reject) => {
 
 		// Setup query

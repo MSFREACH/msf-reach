@@ -4,11 +4,11 @@ export default {
   APP_NAME: process.env.APP_NAME || 'cognicity_msf-server',
   API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
   API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
-  //API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
+// API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || 'https://data.msf.acrossthecloud.net',
-  AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID || '123',
+  AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
   AUTH0_ISSUER: process.env.AUTH0_ISSUER || 'https://msf.au.auth0.com',
-  AUTH0_SECRET: process.env.AUTH0_SECRET || '123',
+  AUTH0_SECRET: process.env.AUTH0_SECRET,
   BODY_LIMIT: process.env.BODY_LIMIT || '100kb',
   CACHE: process.env.CACHE === 'true' || false,
   CACHE_DURATION_CARDS: process.env.CACHE_DURATION_CARDS || '1 minute',
@@ -41,7 +41,6 @@ export default {
   TABLE_GRASP_CARDS: process.env.TABLE_GRASP_CARDS || 'grasp.cards',
   TABLE_GRASP_LOG: process.env.TABLE_GRASP_LOG || 'grasp.log',
   TABLE_GRASP_REPORTS: process.env.TABLE_GRASP_REPORTS || 'grasp.reports',
-  TABLE_REM_STATUS: process.env.TABLE_REM_STATUS || 'cognicity.rem_status',
-  TABLE_REM_STATUS_LOG: process.env.TABLE_REM_STATUS_LOG || 'cognicity.rem_status_log',
+  TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events'
   TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events'
 }
