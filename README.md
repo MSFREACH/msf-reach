@@ -24,7 +24,10 @@ $ npm run
 - TopoJSON
 
 ### API Endpoints
-|Request Type|Endpoint|Action|
-|------------|--------|------|
-|GET|/events/|Returns list of events|
-|GET|/events/:id/|Returns event as specified by id|
+|Request Type|Endpoint|Action|Access|
+|------------|--------|------|------|
+|GET|/events/|Returns list of events|Private|
+|GET|/events/:id/|Returns event as specified by id|Private|
+|POST|/events/:id/|Create an event|Private|
+|GET|/events/:id/reports/|Returns list of reports for specified event|Private|
+|POST|/events/:id/reports/:hash/|Add a report|Public|
