@@ -42,5 +42,4 @@ export default {
   TABLE_GRASP_LOG: process.env.TABLE_GRASP_LOG || 'grasp.log',
   TABLE_GRASP_REPORTS: process.env.TABLE_GRASP_REPORTS || 'grasp.reports',
   TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events'
-  TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events'
 }

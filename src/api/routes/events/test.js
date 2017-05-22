@@ -7,25 +7,19 @@ import { init } from '../../..';
 // Setup an array of tests to run
 const tests = [
   {
-    url: '/reports',
+    url: '/events',
     exp: {
       status: 200
     }
   },
   {
-    url: '/reports?city=jbd',
+    url: '/events?geoformat=geojson',
     exp: {
       status: 200
     }
   },
   {
-    url: '/reports?city=xxx',
-    exp: {
-      status: 400
-    }
-  },
-  {
-    url: '/reports/1',
+    url: '/reports/9999',
     exp: {
       status: 404
     }
