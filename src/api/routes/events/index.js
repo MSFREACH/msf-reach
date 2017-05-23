@@ -45,5 +45,28 @@ export default ({ config, db, logger }) => {
 			})
 	);
 
+	// Create a new event record in the database
+
+	api.post('/',
+		validate({
+			body: Joi.object().keys({
+				status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+				type: Joi.string().valid(config.API_EVENT_TYPES).required(),
+				created: Joi.date().iso().required(),
+				metadata: Joi.object(),
+				location: Joi.object().required().keys({
+					lat: Joi.number().min(-90).max(90).required(),
+					lng: Joi.number().min(-180).max(180).required()
+				})
+			})
+		}),
+		(req, res, next) => events(config, db, logger).addEvent(req.body)
+			.then((data) => res.json(data))
+			.catch((err) => {
+				logger.error(err);
+				next(err);
+			})
+	);
+
 	return api;
 };
