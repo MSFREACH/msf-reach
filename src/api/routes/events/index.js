@@ -61,7 +61,7 @@ export default ({ config, db, logger }) => {
 			})
 		}),
 		(req, res, next) => events(config, db, logger).addEvent(req.body)
-			.then((data) => res.json(data))
+		.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
 				logger.error(err);
 				next(err);

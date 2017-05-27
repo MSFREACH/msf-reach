@@ -52,7 +52,7 @@ export default (config, db, logger) => ({
 		let query = `INSERT INTO ${config.TABLE_EVENTS}
 			(status, type, created, metadata, the_geom)
 			VALUES ($1, $2, $3, $4, ST_SetSRID(ST_Point($5,$6),4326))
-			RETURNING id, uuid`;
+			RETURNING id, uuid, the_geom`;
 
 			// Setup values
 		let values = [ body.status, body.type, body.created, body.metadata, body.location.lng, body.location.lat ]
@@ -60,7 +60,7 @@ export default (config, db, logger) => ({
 		// Execute
 		logger.debug(query, values);
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ event_id: data.id, created: true, uuid: data.uuid }))
+			.then((data) => resolve({ id: data.id, status: body.status, type:body.type, created: body.created, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
 	})
 
