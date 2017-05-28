@@ -17,10 +17,11 @@ export default ({ config, db, logger }) => {
 	api.get('/', cacheResponse('1 minute'),
     validate({
       query: {
-        geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
+        geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
+				status: Joi.any().valid(config.EVENT_STATUS_TYPES)
       }
     }),
-		(req, res, next) => events(config, db, logger).all()
+		(req, res, next) => events(config, db, logger).all(req.query.status)
 			.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
 				logger.error(err);
@@ -60,7 +61,7 @@ export default ({ config, db, logger }) => {
 				})
 			})
 		}),
-		(req, res, next) => events(config, db, logger).addEvent(req.body)
+		(req, res, next) => events(config, db, logger).addEvent()
 		.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
 				logger.error(err);

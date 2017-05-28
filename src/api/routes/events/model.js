@@ -4,17 +4,19 @@ export default (config, db, logger) => ({
 
 	/**
 	 * Return all events
+	 * TODO - filter by status {active|inactive}
 	 */
-	all: () => new Promise((resolve, reject) => {
-
+	all: (status) => new Promise((resolve, reject) => {
 		// Setup query
 		let query = `SELECT id, status, type, created, metadata, uuid, the_geom
 			FROM ${config.TABLE_EVENTS}
+			WHERE ($1 is null or status = $1)
 			ORDER BY created DESC`;
 
+		let values = [ status ];
+
 		// Execute
-		logger.debug(query);
-		db.any(query).timeout(config.PGTIMEOUT)
+		db.any(query, values).timeout(config.PGTIMEOUT)
 			.then((data) => resolve(data))
 			.catch((err) => reject(err));
 	}),
@@ -62,6 +64,12 @@ export default (config, db, logger) => ({
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
 			.then((data) => resolve({ id: data.id, status: body.status, type:body.type, created: body.created, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
-	})
+	}),
+
+	/**
+	 *
+	 *
+	 */
+	// update event -- status. require UUID.
 
 });

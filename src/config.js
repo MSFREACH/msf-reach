@@ -17,6 +17,7 @@ export default {
   COMPRESS: process.env.COMPRESS === 'true' || false,
   CORS: process.env.CORS === 'true' || false,
   CORS_HEADERS: process.env.CORS_HEADERS || ['Link'],
+  EVENT_STATUS_TYPES: (process.env.EVENT_STATUS_TYPES || 'active,inactive').split(','),
   PGHOST: process.env.PGHOST || '127.0.0.1',
   PGDATABASE: process.env.PGDATABASE || 'cognicity',
   PGPASSWORD: process.env.PGPASSWORD || 'p@ssw0rd',
