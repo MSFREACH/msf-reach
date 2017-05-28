@@ -1,0 +1,4 @@
+- tests
+- does app start?
+- test options in index.js
+- test api integration with database
