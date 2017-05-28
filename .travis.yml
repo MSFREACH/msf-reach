@@ -1,4 +1,13 @@
 sudo: false
 language: node_js
+addons:
+  postgresql: "9.4"
+services: postgresql
 node_js:
   - "7.4.0"
+before_install:
+  - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
+  - git clone -b dev https://github.com/usergroupcoop/cognicity_msf-schema.git && cd cognicity_msf-schema && bash build.sh && cd -
+
+install:
+  - npm install
