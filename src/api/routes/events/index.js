@@ -18,7 +18,7 @@ export default ({ config, db, logger }) => {
     validate({
       query: {
         geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
-				status: Joi.any().valid(config.EVENT_STATUS_TYPES)
+				status: Joi.any().valid(config.API_EVENT_STATUS_TYPES)
       }
     }),
 		(req, res, next) => events(config, db, logger).all(req.query.status)
@@ -30,7 +30,6 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Get a single report
-
 	api.get('/:id', cacheResponse('1 minute'),
 		validate({
 			params: { id: Joi.number().integer().required() } ,
@@ -47,7 +46,6 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Create a new event record in the database
-
 	api.post('/',
 		validate({
 			body: Joi.object().keys({
@@ -61,13 +59,14 @@ export default ({ config, db, logger }) => {
 				})
 			})
 		}),
-		(req, res, next) => events(config, db, logger).addEvent()
+		(req, res, next) => events(config, db, logger).addEvent(req.body)
 		.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
 				logger.error(err);
 				next(err);
 			})
 	);
+
 
 	return api;
 };

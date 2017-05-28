@@ -62,9 +62,9 @@ export default (config, db, logger) => ({
 		// Execute
 		logger.debug(query, values);
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: data.id, status: body.status, type:body.type, created: body.created, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+			.then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
-	}),
+	})
 
 	/**
 	 *

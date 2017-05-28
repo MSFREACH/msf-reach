@@ -5,7 +5,7 @@ export default {
   API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
   API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
 // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
-  API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,offline').split(','),
+  API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
   API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'flood,earthquake').split(','),
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || 'https://data.msf.acrossthecloud.net',
   AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
@@ -17,7 +17,6 @@ export default {
   COMPRESS: process.env.COMPRESS === 'true' || false,
   CORS: process.env.CORS === 'true' || false,
   CORS_HEADERS: process.env.CORS_HEADERS || ['Link'],
-  EVENT_STATUS_TYPES: (process.env.EVENT_STATUS_TYPES || 'active,inactive').split(','),
   PGHOST: process.env.PGHOST || '127.0.0.1',
   PGDATABASE: process.env.PGDATABASE || 'cognicity',
   PGPASSWORD: process.env.PGPASSWORD || 'p@ssw0rd',
