@@ -10,6 +10,9 @@ import { cacheResponse, handleGeoResponse } from '../../../lib/util';
 import Joi from 'joi';
 import validate from 'celebrate';
 
+// Import ID generator
+import shortid from 'shortid';
+
 export default ({ config, db, logger }) => {
 	let api = Router();
 
@@ -59,14 +62,17 @@ export default ({ config, db, logger }) => {
 				})
 			})
 		}),
-		(req, res, next) => events(config, db, logger).addEvent(req.body)
-		.then((data) => handleGeoResponse(data, req, res, next))
-			.catch((err) => {
-				logger.error(err);
-				next(err);
-			})
+		(req, res, next) => {
+			let reportKey = shortid.generate();
+			events(config, db, logger).createEvent(reportKey, req.body)
+			.then((data) => handleGeoResponse(data, req, res, next))
+				.catch((err) => {
+					logger.error(err);
+					next(err);
+				})
+		}
 	);
 
-
+	// TODO - Update an event status
 	return api;
 };
