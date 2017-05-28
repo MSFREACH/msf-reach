@@ -9,7 +9,7 @@
     "start": "node dist",
     "prestart": "npm run -s build",
     "mocha": "mocha --compilers js:babel-core/register src/test/testCognicityServer.js",
-    "test": "eslint src"
+    "test": "eslint src && npm run-script mocha"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",

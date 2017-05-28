@@ -9,8 +9,8 @@ var logger = new (winston.Logger)({
   ]
 });
 
-describe('GET /user', function() {
-  it('does something', function(done){
+describe('Events endpoint', function() {
+  it('Gets events', function(done){
 
     init(logger).then((app) => {
       test.httpAgent(app)

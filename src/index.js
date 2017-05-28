@@ -1,5 +1,3 @@
-import Promise from 'bluebird';
-
 // Import express, fs and http
 import fs from 'fs';
 import path from 'path';
