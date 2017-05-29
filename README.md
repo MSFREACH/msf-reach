@@ -17,18 +17,19 @@ $ npm run
 ```
 
 ### Testing
-- currently on ESLint
-- *TODO* Add unit tests
+Integration tests run using unit.js and mocha. ESLint is used for formatting. For more information see doc/TESTING.md
+
+To run tests, do:
+```sh
+$ npm test
+```
 
 ### Data Formats
 - GeoJSON
 - TopoJSON
 
-### API Endpoints
-|Request Type|Endpoint|Action|Access|
-|------------|--------|------|------|
-|GET|/events/|Returns list of events|Private|
-|GET|/events/:id/|Returns event as specified by id|Private|
-|POST|/events/:id/|Create an event|Private|
-|GET|/events/:id/reports/|Returns list of reports for specified event|Private|
-|POST|/events/:id/reports/:hash/|Add a report|Public|
+
+### Documentation
+Further documentation can be found in the docs/, including:
+- API.md - inforamtion on API
+- TESTING.md - information on testing
