@@ -7,5 +7,6 @@ Testing runs against a live instance of the API server, connected to a local ins
 ### Travis CI
 Travis runs the integration testing as specified in .travis.yml. Note:
 - ~~Travis can only currently test schema against Postgresql 9.4 (schema built with 9.6)~~
-  - Updated 2017-05-29 - changed to use Travis VM with Postgres 9.5 and 9.5 support (see https://docs.travis-ci.com/user/database-setup/#PostgreSQL)
+  - Updated 2017-05-29 - changed to use Travis VM with Postgres 9.5 (see https://docs.travis-ci.com/user/database-setup/#PostgreSQL)
+  - This may cause problems if json functionality from 9.6 required in future changes
 - Script is hard coded to use master branch of schema, and so won't test other branches
