@@ -91,6 +91,54 @@ describe('Cognicity Server Testing Harness', function() {
 						}
 				});
 			});
+
+			// Can update an event, returning updated event
+			it('Create an event (POST /events)', function(done){
+					test.httpAgent(app)
+						.post('/events/' + event_id)
+						.send({
+							"status":"inactive",
+							"metadata":{
+								"updated_by":"integrated tester"
+							}
+						})
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res){
+							if (err) {
+								test.fail(err.message + ' ' + JSON.stringify(res));
+							}
+							else {
+									done()
+							}
+						});
+				});
+
+				// Can get get inactive events, including one just updated
+				it('Get inactive events (GET /events/?status=inactive)', function(done){
+					test.httpAgent(app)
+						.get('/events/?status=inactive')
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res){
+							if (err) {
+								test.fail(err.message + ' ' + JSON.stringify(res));
+							}
+							else {
+								// Now http tests passed, we test specific properties of the response against known values
+								let output = false;
+								for (let i = 0; i < res.body.result.objects.output.geometries.length; i++){
+									if (res.body.result.objects.output.geometries[i].properties.id === String(event_id)){
+										output = true;
+									}
+								}
+								// Updated event is found in output of inactive events
+								test.value(output).is(true);
+								done();
+							}
+					});
+				});
+		// End server test
 		return (done())})
 	});
 });
