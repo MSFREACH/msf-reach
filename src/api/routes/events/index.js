@@ -35,7 +35,7 @@ export default ({ config, db, logger }) => {
 	// Get a single report
 	api.get('/:id', cacheResponse('1 minute'),
 		validate({
-			params: { id: Joi.number().integer().required() } ,
+			params: { id: Joi.number().integer().min(1).required() } ,
 			query: {
 				geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
 			}
@@ -65,6 +65,25 @@ export default ({ config, db, logger }) => {
 		(req, res, next) => {
 			let reportKey = shortid.generate();
 			events(config, db, logger).createEvent(reportKey, req.body)
+			.then((data) => handleGeoResponse(data, req, res, next))
+				.catch((err) => {
+					logger.error(err);
+					next(err);
+				})
+		}
+	);
+
+	// Update an event record in the database
+	api.post('/:id',
+		validate({
+			params: { id: Joi.number().integer().min(1).required() } ,
+			body: Joi.object().keys({
+				status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+				metadata: Joi.object().required()
+			})
+		}),
+		(req, res, next) => {
+			events(config, db, logger).updateEvent(req.params.id, req.body)
 			.then((data) => handleGeoResponse(data, req, res, next))
 				.catch((err) => {
 					logger.error(err);
