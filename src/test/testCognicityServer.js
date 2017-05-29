@@ -10,14 +10,14 @@ const logger = new (winston.Logger)({
 });
 
 describe('Cognicity Server Testing Harness', function() {
- it('Server is started', function(done){
+ it('Starts server', function(done){
 	init(logger).then((app) => {
 		describe('Events endpoint', function() {
 
-			beforeEach(function(){
-				this.event_id = 0;
-				this.report_key = 'key';
-			});
+			// Holding variables
+			// TODO - should this go in a before()?
+			let event_id = 0;
+			let report_key = 'key';
 
 			it('GET /events', function(done){
 					test.httpAgent(app)
@@ -35,8 +35,8 @@ describe('Cognicity Server Testing Harness', function() {
 	    });
 
 			it('Create an event (POST /events)', function(done){
-					test.httpAgent(app)
-						.post('/events')
+					let agent = test.httpAgent(app);
+						agent.post('/events')
 						.send({
 								"status": "active",
 								"type": "flood",
@@ -46,34 +46,41 @@ describe('Cognicity Server Testing Harness', function() {
 									"lng":140
 								},
 								"metadata":{
-									"user":"tester"
+									"user":"integrated tester"
 								}
 						})
 						.expect(200)
 						.expect('Content-Type', /json/)
+
 						.end(function(err, res){
 							if (err) {
 								test.fail(err.message);
 							}
 							else {
-								done();
+									event_id = res.body.result.objects.output.geometries[0].properties.id;
+									report_key = res.body.result.objects.output.geometries[0].properties.report_key;
+									done()
 							}
+								//done();
+							})
+							//else {
+							//	done();
+							//}
 					});
-			});
+			//});
 
-			it('Get an event (GET /events/:id)', function(done){
+			it('Get the event that was just created (GET /events/:id)', function(done){
 				test.httpAgent(app)
-					.get('/events/27')
+					.get('/events/' + event_id)
 					.expect(200)
 					.expect('Content-Type', /json/)
-					//.expect(function(res){
-					//	res.body.id = this.event_id;
-					//})
 					.end(function(err, res){
 						if (err) {
 							test.fail(err.message);
 						}
 						else {
+							test.value(res.body.result.objects.output.geometries[0].properties.metadata.user).is('integrated tester');
+							test.value(res.body.result.objects.output.geometries[0].properties.report_key).is(report_key);
 							done();
 						}
 				});
