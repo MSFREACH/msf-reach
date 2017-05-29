@@ -11,6 +11,12 @@
     "mocha": "nyc mocha --compilers js:babel-core/register src/test/testCognicityServer.js",
     "test": "eslint src && npm run-script mocha"
   },
+  "nyc": {
+  "exclude": [
+    "**/test/**",
+    "build"
+    ]
+  },
   "eslintConfig": {
     "extends": "eslint:recommended",
     "parserOptions": {

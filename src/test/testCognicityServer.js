@@ -20,7 +20,6 @@ const logger = new (winston.Logger)({
 describe('Cognicity Server Testing Harness', function() {
  it('Server starts', function(done){
 	init(logger).then((app) => {
-
 		describe('Top level API endpoint', function(){
 			it('Gets current API version', function(done){
 				test.httpAgent(app)
