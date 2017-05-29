@@ -1,5 +1,6 @@
 import Promise from 'bluebird';
 
+// Express middleware and http
 import express from 'express';
 import http from 'http';
 
@@ -16,6 +17,7 @@ import initializeDb from './db';
 // Import the routes
 import routes from './api';
 
+// Config
 import config from './config';
 
 
