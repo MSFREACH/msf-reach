@@ -20,6 +20,40 @@ const logger = new (winston.Logger)({
 describe('Cognicity Server Testing Harness', function() {
  it('Server starts', function(done){
 	init(logger).then((app) => {
+
+		describe('Top level API endpoint', function(){
+			it('Gets current API version', function(done){
+				test.httpAgent(app)
+					.get('/')
+					.expect(200)
+					.expect('Content-Type', /json/)
+					.end(function(err, res){
+						if (err) {
+							test.fail(err.message + ' ' + JSON.stringify(res));
+						}
+						else {
+							done();
+						}
+					});
+			});
+
+			it('Can handle unknown routes', function(done){
+				test.httpAgent(app)
+					.get('/moon')
+					.expect(404)
+					.expect('Content-Type', /json/)
+					.end(function(err, res){
+						if (err) {
+							test.fail(err.message + ' ' + JSON.stringify(res));
+						}
+						else {
+							done();
+						}
+					});
+			});
+
+		});
+
 		describe('Events endpoint', function() {
 
 			// Shared variables, for transferring data between tests
