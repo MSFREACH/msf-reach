@@ -30,6 +30,6 @@ $ npm test
 
 
 ### Documentation
-Further documentation can be found in the docs/, including:
+Further documentation can be found in the doc/, including:
 - API.md - inforamtion on API
 - TESTING.md - information on testing

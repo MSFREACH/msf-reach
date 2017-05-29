@@ -13,6 +13,8 @@ Events, organised by geography. Returned as either TopoJSON or GeoJSON.
 - metadata: event information
 - uuid: PostgreSQL UUID for event (currently unused)
 
+* * *
+
 ### GET /events
 Get all events.
 
@@ -99,12 +101,16 @@ Two events were found
 }
 ```
 
+* * *
+
 ### GET /events/:id
 Get a specific event where id is the event identifier.
 
 |Query parameter|Description|Format|Required|
 |---------------|-----------|------|--------|
 |geoformat|What format should geographic results use (one of topojson, geojson defaults to topojson)|String|No|
+
+* * *
 
 ### POST /events/
 Create a new event, returns complete event object.
@@ -190,6 +196,9 @@ Event was created, and complete object is returned.
   }
 }
 ```
+
+* * *
+
 ### POST /events/:id
 Update an existing event's status, append new metadata, and returns complete event object.
 
