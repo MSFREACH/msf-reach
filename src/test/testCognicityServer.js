@@ -5,6 +5,15 @@
 // Import Unit.js
 const test = require('unit.js');
 
+// Import config
+import config from '../config';
+
+// Import DB initializer
+import initializeDb from '../db';
+
+// Import the routes
+import routes from '../api';
+
 // Import server object
 import { init } from '../server.js';
 
@@ -18,8 +27,16 @@ const logger = new (winston.Logger)({
 
 // Create a top-level testing harness
 describe('Cognicity Server Testing Harness', function() {
+ it('Server fails in database connection not possible', function(done){
+   let config = {}
+   init(config, initializeDb, routes, logger)
+		.catch((err) => {
+			console.log(err);
+			done();
+		})
+ });
  it('Server starts', function(done){
-	init(logger).then((app) => {
+	init(config, initializeDb, routes, logger).then((app) => {
 		describe('Top level API endpoint', function(){
 			it('Gets current API version', function(done){
 				test.httpAgent(app)

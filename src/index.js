@@ -5,6 +5,13 @@ import path from 'path';
 // Import config
 import config from './config';
 
+// Import DB initializer
+import initializeDb from './db';
+
+// Import the routes
+import routes from './api';
+
+// Import server
 import { init } from './server.js';
 
 // Import logging libraries
@@ -55,7 +62,7 @@ process
 	});
 
 // Try and start the server
-init(logger).then((app) => {
+init(config, initializeDb, routes, logger).then((app) => {
 	// All good to go, start listening for requests
 	app.server.listen(config.PORT);
 	logger.info(`Application started, listening on port ${app.server.address().port}`);
