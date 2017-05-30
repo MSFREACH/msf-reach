@@ -9,12 +9,13 @@
     "start": "node dist",
     "prestart": "npm run -s build",
     "mocha": "nyc mocha --compilers js:babel-core/register src/test/testCognicityServer.js",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "eslint src && npm run-script mocha"
   },
   "nyc": {
-  "exclude": [
-    "**/test/**",
-    "build"
+    "exclude": [
+      "**/test/**",
+      "build"
     ]
   },
   "eslintConfig": {
@@ -62,6 +63,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.22.0",
     "babel-register": "^6.22.0",
+    "coveralls": "^2.13.1",
     "eslint": "^3.15.0",
     "it-each": "^0.3.1",
     "mocha": "^3.2.0",
