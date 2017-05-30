@@ -27,7 +27,9 @@ export default ({ config, db, logger }) => {
 		(req, res, next) => events(config, db, logger).all(req.query.status)
 			.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
+				/* istanbul ignore next */
 				logger.error(err);
+				/* istanbul ignore next */
 				next(err);
 			})
 	);
@@ -43,7 +45,9 @@ export default ({ config, db, logger }) => {
 		(req, res, next) => events(config, db, logger).byId(req.params.id)
 			.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
+				/* istanbul ignore next */
 				logger.error(err);
+				/* istanbul ignore next */
 				next(err);
 			})
 	);
@@ -67,7 +71,9 @@ export default ({ config, db, logger }) => {
 			events(config, db, logger).createEvent(reportKey, req.body)
 			.then((data) => handleGeoResponse(data, req, res, next))
 				.catch((err) => {
+					/* istanbul ignore next */
 					logger.error(err);
+					/* istanbul ignore next */
 					next(err);
 				})
 		}
@@ -86,7 +92,9 @@ export default ({ config, db, logger }) => {
 			events(config, db, logger).updateEvent(req.params.id, req.body)
 			.then((data) => handleGeoResponse(data, req, res, next))
 				.catch((err) => {
+					/* istanbul ignore next */
 					logger.error(err);
+					/* istanbul ignore next */
 					next(err);
 				})
 		}

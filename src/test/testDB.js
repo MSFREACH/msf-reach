@@ -16,9 +16,11 @@ describe('Test CogniCity Server Database Module', function() {
    }
    initializeDb(config, logger)
     .then((db) => {
+      test.value(db).is(null);
       //done(); do nothing here, an error should be forced by empty config
     })
     .catch((err) => {
+      console.log(err);
       done();
     });
  });
