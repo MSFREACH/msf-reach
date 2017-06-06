@@ -16,7 +16,7 @@ import shortid from 'shortid';
 export default ({ config, db, logger }) => {
 	let api = Router();
 
-	// Get a list of all reports
+	// Get a list of all events
 	api.get('/', cacheResponse('1 minute'),
     validate({
       query: {
@@ -34,7 +34,7 @@ export default ({ config, db, logger }) => {
 			})
 	);
 
-	// Get a single report
+	// Get a single event
 	api.get('/:id', cacheResponse('1 minute'),
 		validate({
 			params: { id: Joi.number().integer().min(1).required() } ,
@@ -100,6 +100,5 @@ export default ({ config, db, logger }) => {
 		}
 	);
 
-	// TODO - Update an event status
 	return api;
 };
