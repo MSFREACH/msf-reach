@@ -27,6 +27,12 @@ const logger = new (winston.Logger)({
 
 // Create a top-level testing harness
 describe('Cognicity Server Testing Harness', function() {
+
+	// Shared variables, for transferring data between tests
+	let event_id = 0;
+	let report_key = 'key';
+	let report_id = 0;
+
  it('Server fails if database connection not possible', function(done){
    let config = {}
    init(config, initializeDb, routes, logger)
@@ -71,10 +77,6 @@ describe('Cognicity Server Testing Harness', function() {
 		});
 
 		describe('Events endpoint', function() {
-
-			// Shared variables, for transferring data between tests
-			let event_id = 0;
-			let report_key = 'key';
 
 			// Can get events
 			it('Get all events (GET /events)', function(done){
@@ -162,7 +164,7 @@ describe('Cognicity Server Testing Harness', function() {
 			});
 
 			// Can update an event, returning updated event
-			it('Create an event (POST /events)', function(done){
+			it('Update an event (POST /events)', function(done){
 					test.httpAgent(app)
 						.post('/events/' + event_id)
 						.send({
@@ -208,7 +210,143 @@ describe('Cognicity Server Testing Harness', function() {
 					});
 				});
 		// End server test
-		return (done())})
+		return (done())
+    });
+
+		// Report endpoint
+		describe('Reports endpoint', function() {
+			// Can create events, returning new event
+			it('Create a report (POST /reports)', function(done){
+					test.httpAgent(app)
+						.post('/reports')
+						.send({
+								"event_id": event_id,
+								"status": "confirmed",
+								"created": "2017-05-22T20:35Z",
+								"report_key": report_key,
+								"location":{
+									"lat":45,
+									"lng":140
+								},
+								"content":{
+									"user":"integrated tester"
+								}
+						})
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res){
+							if (err) {
+								test.fail(err.message + ' ' + JSON.stringify(res));
+							}
+							else {
+                  report_id = res.body.result.objects.output.geometries[0].properties.id;
+									done()
+							}
+						});
+				});
+
+				// Can catch invalid report key at schema level
+				it('Catch invalid report key (POST /reports)', function(done){
+						test.httpAgent(app)
+							.post('/reports')
+							.send({
+									"event_id": event_id,
+									"status": "confirmed",
+									"created": "2017-05-22T20:35Z",
+									"report_key": '123',
+									"location":{
+										"lat":45,
+										"lng":140
+									},
+									"content":{
+										"user":"integrated tester"
+									}
+							})
+							.expect(500)
+							.expect('Content-Type', /json/)
+							.end(function(err, res){
+								if (err) {
+									test.fail(err.message + ' ' + JSON.stringify(res));
+								}
+								else {
+										done()
+								}
+							});
+					});
+
+				// Can get specified report (tested against just created)
+				it('Get the event that was just created (GET /reports/:id)', function(done){
+					test.httpAgent(app)
+						.get('/reports/' + report_id)
+						.expect(200)
+						.expect('Content-Type', /json/)
+						.end(function(err, res){
+							if (err) {
+								test.fail(err.message + ' ' + JSON.stringify(res));
+							}
+							else {
+								// Now http tests passed, we test specific properties of the response against known values
+								test.value(res.body.result.objects.output.geometries[0].properties.content.user).is('integrated tester');
+								test.value(res.body.result.objects.output.geometries[0].properties.report_key).is(report_key);
+								done();
+							}
+					});
+				});
+
+				// Can update a report, returning updated event
+				it('Update an report (POST /reports)', function(done){
+						test.httpAgent(app)
+							.post('/reports/' + report_id)
+							.send({
+								"status":"verified",
+								"content":{
+									"updated_by":"integrated tester"
+								}
+							})
+							.expect(200)
+							.expect('Content-Type', /json/)
+							.end(function(err, res){
+								if (err) {
+									test.fail(err.message + ' ' + JSON.stringify(res));
+								}
+								else {
+										done()
+								}
+							});
+					});
+
+					// Can get reports
+					it('Get all reports (GET /reports)', function(done){
+							test.httpAgent(app)
+								.get('/reports')
+								.expect(200)
+								.expect('Content-Type', /json/)
+								.end(function(err, res){
+									if (err) {
+										test.fail(err.message + ' ' + JSON.stringify(res));
+									}
+									else {
+										done();
+									}
+							});
+					});
+
+					// Can get reports of a specific event
+					it('Get all reports from a specific event (GET /reports?event_id=)', function(done){
+							test.httpAgent(app)
+								.get('/reports?event_id='+event_id)
+								.expect(200)
+								.expect('Content-Type', /json/)
+								.end(function(err, res){
+									if (err) {
+										test.fail(err.message + ' ' + JSON.stringify(res));
+									}
+									else {
+										done();
+									}
+							});
+					});
+     });
 	});
 });
 });
