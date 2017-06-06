@@ -7,6 +7,7 @@ export default {
 // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
   API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
   API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'flood,earthquake').split(','),
+  API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'confirmed,verified').split(','),
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || 'https://data.msf.acrossthecloud.net',
   AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID || 'client_id',
   AUTH0_ISSUER: process.env.AUTH0_ISSUER || 'https://msf.au.auth0.com',
@@ -42,6 +43,6 @@ export default {
   SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
   TABLE_GRASP_CARDS: process.env.TABLE_GRASP_CARDS || 'grasp.cards',
   TABLE_GRASP_LOG: process.env.TABLE_GRASP_LOG || 'grasp.log',
-  TABLE_GRASP_REPORTS: process.env.TABLE_GRASP_REPORTS || 'grasp.reports',
+  TABLE_REPORTS: process.env.TABLE_REPORTS || 'cognicity.reports',
   TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events'
 }
