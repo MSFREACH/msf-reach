@@ -11,7 +11,7 @@ import { version } from '../../package.json';
 
 // Import our routes
 import events from './routes/events';
-//import reports from './routes/reports';
+import reports from './routes/reports';
 
 export default ({ config, db, logger }) => {
 	let api = Router();
@@ -23,8 +23,7 @@ export default ({ config, db, logger }) => {
 
 	// Mount the various endpoints
 	api.use('/events', events({ config, db, logger }));
-	//api.use('/cards', cards({ config, db, logger }));
-	//api.use('/reports', reports({ config, db, logger }));
+	api.use('/reports', reports({ config, db, logger }));
 
 	// Handle validation errors (wording of messages can be overridden using err.isJoi)
 	api.use(validate.errors());
