@@ -27,7 +27,7 @@ const logger = new (winston.Logger)({
 
 // Create a top-level testing harness
 describe('Cognicity Server Testing Harness', function() {
- it('Server fails in database connection not possible', function(done){
+ it('Server fails if database connection not possible', function(done){
    let config = {}
    init(config, initializeDb, routes, logger)
 		.catch((err) => {
@@ -95,10 +95,9 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can catch an error with events endpoint if database query fails
 			let oldTableEvents = config.TABLE_EVENTS;
 			config.TABLE_EVENTS = null;
-			it('Get all events (GET /events)', function(done){
+			it('Catches error with events endpoint if database query fails (GET /events)', function(done){
 					test.httpAgent(app)
 						.get('/events')
-						.catch((err) => console.log('test'))
 						.expect(500)
 						.expect('Content-Type', /json/)
 						.end(function(err, res){
