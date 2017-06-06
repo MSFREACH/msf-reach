@@ -17,7 +17,7 @@ import routes from '../api';
 // Import server object
 import { init } from '../server.js';
 
-// Mocker object for app
+// Mock logger object for app
 const winston = require('winston');
 const logger = new (winston.Logger)({
 	transports: [

@@ -11,7 +11,7 @@ import compression from 'compression';
 import responseTime from 'response-time';
 import morgan from 'morgan'; // Express logging
 
-// Function to start the initialize the api server config, db, logger
+// Function to initialize the api server config, db, logger
 const init = (config, initializeDb, routes, logger) => new Promise((resolve, reject) => {
 
 	// Create the server
