@@ -92,6 +92,26 @@ describe('Cognicity Server Testing Harness', function() {
 					});
 			});
 
+			// Can catch an error with events endpoint if database query fails
+			let oldTableEvents = config.TABLE_EVENTS;
+			config.TABLE_EVENTS = null;
+			it('Get all events (GET /events)', function(done){
+					test.httpAgent(app)
+						.get('/events')
+						.catch((err) => console.log('test'))
+						.expect(500)
+						.expect('Content-Type', /json/)
+						.end(function(err, res){
+							if (err === null){
+								test.fail('No error returned' + ' ' + JSON.stringify(res))
+							}
+							else {
+								done();
+							}
+					});
+			});
+			config.TABLE_EVENTS = oldTableEvents;
+
 			// Can create events, returning new event
 			it('Create an event (POST /events)', function(done){
 					test.httpAgent(app)
