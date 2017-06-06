@@ -9,7 +9,8 @@ export default (config, db, logger) => ({
 
 	/**
 	 * Return all events
-	 * TODO - filter by status {active|inactive}
+	 * @param {String} Status of event { active | inactive }
+
 	 */
 	all: (status) => new Promise((resolve, reject) => {
 		// Setup query
