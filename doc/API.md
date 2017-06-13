@@ -228,7 +228,6 @@ curl -X POST \
 
 Event was updated, and complete object is returned. Note appended metadata.
 ```js
-{
   {
     "statusCode": 200,
     "result": {
@@ -278,4 +277,187 @@ Event was updated, and complete object is returned. Note appended metadata.
       ]
     }
   }
+```
+
+* * *
+
+## /reports/
+Reports, organised by geography. Returned as either TopoJSON or GeoJSON.
+
+#### Response Object Properties
+- id: unique report identifier (e.g. "1")
+- event_id: unique event identifier (e.g. "1")
+- status: report status (e.g. "confirmed")
+- created: ISO8601 datetime string with time zone (e.g. "2017-05-22T20:35:00.000Z")
+- report_key: unique key for reports submitted against this event (e.g. "rySUYYO-W")
+- content: report information
+
+* * *
+
+### GET /events
+Get all events.
+
+#### Query Parameters
+|Query parameter|Description|Format|Required|
+|---------------|-----------|------|--------|
+|event_id|Filter by event identifier|Integer|No|
+|geoformat|What format should geographic results use (one of topojson, geojson defaults to topojson)|String|No|
+
+#### Example
+Here is a simple call to GET all inactive cards.
+```sh
+curl -X GET \
+  http://localhost:8001/reports \
+  -H 'cache-control: no-cache' \
+  -H 'postman-token: 194f1268-36f0-5ee3-65c8-93753ed3374d'
+```
+
+One report was found
+```js
+{
+  "statusCode": 200,
+  "result": {
+    "type": "Topology",
+    "objects": {
+      "output": {
+        "type": "GeometryCollection",
+        "geometries": [
+          {
+            "type": "Point",
+            "properties": {
+              "id": "52",
+              "event_id": "24",
+              "status": "verified",
+              "created": "2017-06-06T01:08:00.000Z",
+              "report_key": "r1gm2JtZb",
+              "content": {
+                "user": "postman",
+                "details": "user input...",
+                "verified_by": "postman"
+              }
+            },
+            "coordinates": [
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    "arcs": [],
+    "transform": {
+      "scale": [
+        1,
+        1
+      ],
+      "translate": [
+        45,
+        45
+      ]
+    },
+    "bbox": [
+      45,
+      45,
+      45,
+      45
+    ]
+  }
+}
+```
+
+### GET /reports/:id
+Get a specific report where id is the report identifier.
+
+|Query parameter|Description|Format|Required|
+|---------------|-----------|------|--------|
+|geoformat|What format should geographic results use (one of topojson, geojson defaults to topojson)|String|No|
+
+* * *
+
+### POST /reports/
+Create a new report, returns complete report object.
+
+#### Request Body Objects
+|Attribute|Description|Format|Required|
+|---------------|-----------|------|--------|
+|event_id|Event identifier|Integer|Yes|
+|status|Report status (confirmed or verified)|String|Yes|
+|created|Timestamp|String (ISO 8601)|Yes|
+|location|Point location of report|lat/lng in EPSG:4326|Yes|
+|content|Report information|String (JSON)|
+
+#### Example
+Example post to create event.
+```sh
+curl -X POST \
+  http://localhost:8001/reports/ \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: f59bd374-8a24-6538-7db0-5e828775c701' \
+  -d '{
+	"event_id": "135",
+	"status": "confirmed",
+	"created": "2017-05-22T20:35Z",
+	"location":{
+		"lat":45,
+		"lng":45
+	},
+	"report_key": "H1N9ohFbW",
+	"content":{
+		"user":"test",
+		"text":"This is a report"
+	}
+}'
+```
+
+Event was created, and complete object is returned.
+```js
+{
+  "statusCode": 200,
+  "result": {
+    "type": "Topology",
+    "objects": {
+      "output": {
+        "type": "GeometryCollection",
+        "geometries": [
+          {
+            "type": "Point",
+            "properties": {
+              "id": "65",
+              "event_id": "135",
+              "status": "confirmed",
+              "created": "2017-05-22T20:35:00.000Z",
+              "report_key": "H1N9ohFbW",
+              "content": {
+                "text": "This is a report",
+                "user": "test"
+              }
+            },
+            "coordinates": [
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    "arcs": [],
+    "transform": {
+      "scale": [
+        1,
+        1
+      ],
+      "translate": [
+        45,
+        45
+      ]
+    },
+    "bbox": [
+      45,
+      45,
+      45,
+      45
+    ]
+  }
+}
 ```
