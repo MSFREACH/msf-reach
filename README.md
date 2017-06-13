@@ -33,5 +33,5 @@ $ npm test
 
 ### Documentation
 Further documentation can be found in doc/ including:
-- API.md - inforamtion on API
+- API.md - information on API
 - TESTING.md - information on testing
