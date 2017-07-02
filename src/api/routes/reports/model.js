@@ -13,7 +13,7 @@ export default (config, db, logger) => ({
 	 */
 	all: (eventid) => new Promise((resolve, reject) => {
 		// Setup query
-		let query = `SELECT id, event_id, status, created, report_key, content, the_geom
+		let query = `SELECT id, event_id as eventId, status, created, report_key, content, the_geom
 			FROM ${config.TABLE_REPORTS}
 			WHERE ($1 is null or event_id = $1)
 			ORDER BY created DESC`;
@@ -34,7 +34,7 @@ export default (config, db, logger) => ({
 	byId: (id) => new Promise((resolve, reject) => {
 
 		// Setup query
-    let query = `SELECT id, event_id, status, created, report_key, content, the_geom
+    let query = `SELECT id, event_id as eventId, status, created, report_key, content, the_geom
       FROM ${config.TABLE_REPORTS}
       WHERE id = $1
       ORDER BY created DESC`;
@@ -63,12 +63,12 @@ export default (config, db, logger) => ({
 			RETURNING id, event_id, status, created, report_key, content, the_geom`;
 
 			// Setup values
-		let values = [ body.event_id, body.status, body.created, body.report_key, body.content, body.location.lng, body.location.lat ]
+		let values = [ body.eventId, body.status, body.created, body.report_key, body.content, body.location.lng, body.location.lat ]
 
 		// Execute
 		logger.debug(query, values);
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: data.id, event_id: data.event_id, status:data.status, created: data.created, report_key:data.report_key, content:data.content, the_geom:data.the_geom }))
+			.then((data) => resolve({ id: data.id, eventId: data.event_id, status:data.status, created: data.created, report_key:data.report_key, content:data.content, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
 	}),
 
@@ -92,7 +92,7 @@ export default (config, db, logger) => ({
 		// Execute
 		logger.debug(query, values);
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: String(id), status: body.status, event_id: data.event_id, created: data.created, report_key:data.report_key, content:data.content, the_geom:data.the_geom }))
+			.then((data) => resolve({ id: String(id), status: body.status, eventId: data.event_id, created: data.created, report_key:data.report_key, content:data.content, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
 	})
 });
