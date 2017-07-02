@@ -41,3 +41,4 @@ jspm_packages
 
 # Compiled ouput
 /dist
+.DS_Store
