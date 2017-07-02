@@ -41,6 +41,7 @@ export default {
   PORT: process.env.PORT || 8001,
   RESPONSE_TIME: process.env.RESPONSE_TIME === 'true' || false,
   SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
+  STATIC_PATH: process.env.STATIC_PATH || 'public',
   TABLE_GRASP_CARDS: process.env.TABLE_GRASP_CARDS || 'grasp.cards',
   TABLE_GRASP_LOG: process.env.TABLE_GRASP_LOG || 'grasp.log',
   TABLE_REPORTS: process.env.TABLE_REPORTS || 'cognicity.reports',
