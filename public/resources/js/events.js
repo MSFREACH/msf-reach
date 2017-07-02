@@ -28,7 +28,7 @@ var printEventProperties = function(err, eventProperties){
     var eventLink = HOSTNAME + eventProperties.id;
 
     // Create unique report link for this event
-    var eventReportLink = HOSTNAME + '/cards/' + eventProperties.report_key
+    var eventReportLink = HOSTNAME + '/cards/' + eventProperties.reportKey
 
     // Append output to body
     $( "<ul/>", {
@@ -46,7 +46,7 @@ var printEventProperties = function(err, eventProperties){
   * @returns {Object} eventProperties - Event properties unless error
   */
 var getEvent = function(eventId, callback){
-  $.getJSON('/api/events/' + eventId + '?' + GEOFORMAT, function ( data ){
+  $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Print output to page
     callback(null, data.result.features[0].properties);
   }).fail(function(err) {
@@ -56,7 +56,7 @@ var getEvent = function(eventId, callback){
 }
 
 var getReports = function(eventId, callback){
-  $.getJSON('/api/reports/?eventId=' + eventId + '&' + GEOFORMAT, function( data ){
+  $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
     callback(data);
   });
 };
