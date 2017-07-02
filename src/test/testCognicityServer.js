@@ -255,7 +255,7 @@ describe('Cognicity Server Testing Harness', function() {
 									"created": "2017-05-22T20:35Z",
 									"reportkey": '123',
 									"location":{
-										"lat":-6.8,
+										"lat":-6.10,
 										"lng":108.7
 									},
 									"content":{
