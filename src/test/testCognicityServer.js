@@ -30,7 +30,7 @@ describe('Cognicity Server Testing Harness', function() {
 
 	// Shared variables, for transferring data between tests
 	let eventId = 0;
-	let report_key = 'key';
+	let reportKey = 'key';
 	let report_id = 0;
 
  it('Server fails if database connection not possible', function(done){
@@ -137,7 +137,7 @@ describe('Cognicity Server Testing Harness', function() {
 							}
 							else {
 									eventId = res.body.result.objects.output.geometries[0].properties.id;
-									report_key = res.body.result.objects.output.geometries[0].properties.report_key;
+									reportKey = res.body.result.objects.output.geometries[0].properties.reportKey;
 									done()
 							}
 
@@ -157,7 +157,7 @@ describe('Cognicity Server Testing Harness', function() {
 						else {
 							// Now http tests passed, we test specific properties of the response against known values
 							test.value(res.body.result.objects.output.geometries[0].properties.metadata.user).is('integrated tester');
-							test.value(res.body.result.objects.output.geometries[0].properties.report_key).is(report_key);
+							test.value(res.body.result.objects.output.geometries[0].properties.reportkey).is(reportKey);
 							done();
 						}
 				});
@@ -223,7 +223,7 @@ describe('Cognicity Server Testing Harness', function() {
 								"eventId": eventId,
 								"status": "confirmed",
 								"created": "2017-05-22T20:35Z",
-								"report_key": report_key,
+								"reportKey": reportKey,
 								"location":{
 									"lat":45,
 									"lng":140
@@ -253,7 +253,7 @@ describe('Cognicity Server Testing Harness', function() {
 									"eventId": eventId,
 									"status": "confirmed",
 									"created": "2017-05-22T20:35Z",
-									"report_key": '123',
+									"reportKey": '123',
 									"location":{
 										"lat":45,
 										"lng":140
@@ -287,7 +287,7 @@ describe('Cognicity Server Testing Harness', function() {
 							else {
 								// Now http tests passed, we test specific properties of the response against known values
 								test.value(res.body.result.objects.output.geometries[0].properties.content.user).is('integrated tester');
-								test.value(res.body.result.objects.output.geometries[0].properties.report_key).is(report_key);
+								test.value(res.body.result.objects.output.geometries[0].properties.reportkey).is(reportKey);
 								done();
 							}
 					});
