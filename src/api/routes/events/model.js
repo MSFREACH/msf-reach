@@ -14,7 +14,7 @@ export default (config, db, logger) => ({
 	 */
 	all: (status) => new Promise((resolve, reject) => {
 		// Setup query
-		let query = `SELECT id, status, type, created, report_key, metadata, uuid, the_geom
+		let query = `SELECT id, status, type, created, report_key as reportKey, metadata, uuid, the_geom
 			FROM ${config.TABLE_EVENTS}
 			WHERE ($1 is null or status = $1)
 			ORDER BY created DESC`;
@@ -35,7 +35,7 @@ export default (config, db, logger) => ({
 	byId: (id) => new Promise((resolve, reject) => {
 
 		// Setup query
-    let query = `SELECT id, status, type, created, report_key, metadata, uuid, the_geom
+    let query = `SELECT id, status, type, created, report_key as reportKey, metadata, uuid, the_geom
       FROM ${config.TABLE_EVENTS}
       WHERE id = $1
       ORDER BY created DESC`;
@@ -69,7 +69,7 @@ export default (config, db, logger) => ({
 		// Execute
 		logger.debug(query, values);
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, report_key:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+			.then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportKey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
 	}),
 
@@ -93,7 +93,7 @@ export default (config, db, logger) => ({
 		// Execute
 		logger.debug(query, values);
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, report_key:data.report_key, metadata:data.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+			.then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportKey:data.report_key, metadata:data.metadata, uuid: data.uuid, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
 	})
 });
