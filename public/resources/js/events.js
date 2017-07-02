@@ -23,18 +23,17 @@ var printEventProperties = function(err, eventProperties){
       propertiesList.push( "<li id='" + key + "'>" + key + ": "
                             + JSON.stringify(val) + "</li>" );
     });
-
     // Create unique link to this event
-    var eventLink = HOSTNAME + eventProperties.id;
-
+    var eventLink = HOSTNAME + 'events/?eventId=' + eventProperties.id;
     // Create unique report link for this event
-    var eventReportLink = HOSTNAME + '/cards/' + eventProperties.reportKey
-
+    var eventReportLink = HOSTNAME + 'cards/' + eventProperties.reportkey
     // Append output to body
     $( "<ul/>", {
       "class": "eventPropertiesList",
       html: propertiesList.join( "" )
     }).appendTo( "#eventProperties" );
+    $("#eventProperties").append('<p><a href='+eventLink+'>'+eventLink+'</a></p>');
+    $("#eventProperties").append('<p><a href="eventReportLink">'+eventReportLink+'</a></p>');
   }
 }
 
@@ -55,6 +54,10 @@ var getEvent = function(eventId, callback){
   })
 }
 
+/**
+  * Function to get reports for an event
+  * @param {Number} eventId - UniqueId of event
+  **/
 var getReports = function(eventId, callback){
   $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
     callback(data);
@@ -73,3 +76,15 @@ if (eventId !== false && eventId != ''){
   // Catch condition where no event specified, print to screen
   printEventProperties('No event ID specified', null)
 }
+
+// Create map
+var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
+
+//
+var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 18,
+	ext: 'png'
+}).addTo(eventsMap);

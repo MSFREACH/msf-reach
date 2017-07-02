@@ -137,7 +137,7 @@ describe('Cognicity Server Testing Harness', function() {
 							}
 							else {
 									eventId = res.body.result.objects.output.geometries[0].properties.id;
-									reportKey = res.body.result.objects.output.geometries[0].properties.reportKey;
+									reportKey = res.body.result.objects.output.geometries[0].properties.reportkey;
 									done()
 							}
 
@@ -223,10 +223,10 @@ describe('Cognicity Server Testing Harness', function() {
 								"eventId": eventId,
 								"status": "confirmed",
 								"created": "2017-05-22T20:35Z",
-								"reportKey": reportKey,
+								"reportkey": reportKey,
 								"location":{
-									"lat":45,
-									"lng":140
+									"lat":-6.8,
+									"lng":108.7
 								},
 								"content":{
 									"user":"integrated tester"
@@ -253,10 +253,10 @@ describe('Cognicity Server Testing Harness', function() {
 									"eventId": eventId,
 									"status": "confirmed",
 									"created": "2017-05-22T20:35Z",
-									"reportKey": '123',
+									"reportkey": '123',
 									"location":{
-										"lat":45,
-										"lng":140
+										"lat":-6.8,
+										"lng":108.7
 									},
 									"content":{
 										"user":"integrated tester"
