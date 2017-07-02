@@ -1,6 +1,6 @@
-msf-reach-server
+msf-reach
 ================
-Data server for CogniCity MSF, built with NodeJS to provide JSON APIs to Postgres objects.
+Data server and web content for CogniCity MSF, built with NodeJS to provide JSON APIs to Postgres objects and accompanying web pages.
 
 [![Build Status](https://travis-ci.org/usergroupcoop/cognicity_msf-server.svg?branch=master)](https://travis-ci.org/usergroupcoop/cognicity_msf-server)
 
