@@ -46,7 +46,7 @@ describe('Cognicity Server Testing Harness', function() {
 		describe('Top level API endpoint', function(){
 			it('Gets current API version', function(done){
 				test.httpAgent(app)
-					.get('/')
+					.get('/api')
 					.expect(200)
 					.expect('Content-Type', /json/)
 					.end(function(err, res){
@@ -61,7 +61,7 @@ describe('Cognicity Server Testing Harness', function() {
 
 			it('Can handle unknown routes', function(done){
 				test.httpAgent(app)
-					.get('/moon')
+					.get('/api/moon')
 					.expect(404)
 					.expect('Content-Type', /json/)
 					.end(function(err, res){
@@ -81,7 +81,7 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can get events
 			it('Get all events (GET /events)', function(done){
 					test.httpAgent(app)
-						.get('/events')
+						.get('/api/events')
 						.expect(200)
 						.expect('Content-Type', /json/)
 						.end(function(err, res){
@@ -99,7 +99,7 @@ describe('Cognicity Server Testing Harness', function() {
 			config.TABLE_EVENTS = null;
 			it('Catches error with events endpoint if database query fails (GET /events)', function(done){
 					test.httpAgent(app)
-						.get('/events')
+						.get('/api/events')
 						.expect(500)
 						.expect('Content-Type', /json/)
 						.end(function(err, res){
@@ -116,7 +116,7 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can create events, returning new event
 			it('Create an event (POST /events)', function(done){
 					test.httpAgent(app)
-						.post('/events')
+						.post('/api/events')
 						.send({
 								"status": "active",
 								"type": "flood",
@@ -147,7 +147,7 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can get specified event (tested against just created)
 			it('Get the event that was just created (GET /events/:id)', function(done){
 				test.httpAgent(app)
-					.get('/events/' + event_id)
+					.get('/api/events/' + event_id)
 					.expect(200)
 					.expect('Content-Type', /json/)
 					.end(function(err, res){
@@ -166,7 +166,7 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can update an event, returning updated event
 			it('Update an event (POST /events)', function(done){
 					test.httpAgent(app)
-						.post('/events/' + event_id)
+						.post('/api/events/' + event_id)
 						.send({
 							"status":"inactive",
 							"metadata":{
@@ -188,7 +188,7 @@ describe('Cognicity Server Testing Harness', function() {
 				// Can get get inactive events, including one just updated
 				it('Get inactive events (GET /events/?status=inactive)', function(done){
 					test.httpAgent(app)
-						.get('/events/?status=inactive')
+						.get('/api/events/?status=inactive')
 						.expect(200)
 						.expect('Content-Type', /json/)
 						.end(function(err, res){
@@ -218,7 +218,7 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can create events, returning new event
 			it('Create a report (POST /reports)', function(done){
 					test.httpAgent(app)
-						.post('/reports')
+						.post('/api/reports')
 						.send({
 								"event_id": event_id,
 								"status": "confirmed",
@@ -248,7 +248,7 @@ describe('Cognicity Server Testing Harness', function() {
 				// Can catch invalid report key at schema level
 				it('Catch invalid report key (POST /reports)', function(done){
 						test.httpAgent(app)
-							.post('/reports')
+							.post('/api/reports')
 							.send({
 									"event_id": event_id,
 									"status": "confirmed",
@@ -277,7 +277,7 @@ describe('Cognicity Server Testing Harness', function() {
 				// Can get specified report (tested against just created)
 				it('Get the event that was just created (GET /reports/:id)', function(done){
 					test.httpAgent(app)
-						.get('/reports/' + report_id)
+						.get('/api/reports/' + report_id)
 						.expect(200)
 						.expect('Content-Type', /json/)
 						.end(function(err, res){
@@ -296,7 +296,7 @@ describe('Cognicity Server Testing Harness', function() {
 				// Can update a report, returning updated event
 				it('Update an report (POST /reports)', function(done){
 						test.httpAgent(app)
-							.post('/reports/' + report_id)
+							.post('/api/reports/' + report_id)
 							.send({
 								"status":"verified",
 								"content":{
@@ -318,7 +318,7 @@ describe('Cognicity Server Testing Harness', function() {
 					// Can get reports
 					it('Get all reports (GET /reports)', function(done){
 							test.httpAgent(app)
-								.get('/reports')
+								.get('/api/reports')
 								.expect(200)
 								.expect('Content-Type', /json/)
 								.end(function(err, res){
@@ -334,7 +334,7 @@ describe('Cognicity Server Testing Harness', function() {
 					// Can get reports of a specific event
 					it('Get all reports from a specific event (GET /reports?event_id=)', function(done){
 							test.httpAgent(app)
-								.get('/reports?event_id='+event_id)
+								.get('/api/reports?event_id='+event_id)
 								.expect(200)
 								.expect('Content-Type', /json/)
 								.end(function(err, res){
