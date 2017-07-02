@@ -11,7 +11,13 @@ import compression from 'compression';
 import responseTime from 'response-time';
 import morgan from 'morgan'; // Express logging
 
-// Function to initialize the api server config, db, logger
+/** Function to initialize the api server config, db, logger
+	* @class - Initialize server
+	* @param {Object} config - server config
+	* @param {Object} initializeDb - database initialization object
+	* @param {Object} routes - API router object
+	* @param {Object} logger - server logging object
+	**/
 const init = (config, initializeDb, routes, logger) => new Promise((resolve, reject) => {
 
 	// Create the server
@@ -47,7 +53,8 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 			logger.debug('Successfully connected to DB');
 
 			// Mount the routes
-			app.use('/', routes({ config, db, logger }));
+			app.use('/', express.static(config.STATIC_PATH));
+			app.use('/api', routes({ config, db, logger }));
 
 			// App is ready to go, resolve the promise
 			resolve(app);
