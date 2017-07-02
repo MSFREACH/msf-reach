@@ -32,7 +32,9 @@ var printEventProperties = function(err, eventProperties){
       "class": "eventPropertiesList",
       html: propertiesList.join( "" )
     }).appendTo( "#eventProperties" );
+    // Add unique link to this event
     $("#eventProperties").append('<p><a href='+eventLink+'>'+eventLink+'</a></p>');
+    // Add unique link to report to this event
     $("#eventProperties").append('<p><a href="eventReportLink">'+eventReportLink+'</a></p>');
   }
 }
