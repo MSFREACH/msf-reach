@@ -18,7 +18,7 @@ export default ({ config, db, logger }) => {
     validate({
       query: {
         geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
-				event_id: Joi.number().integer().min(1)
+				eventId: Joi.number().integer().min(1)
       }
     }),
 		(req, res, next) => reports(config, db, logger).all(req.query.status)
@@ -53,7 +53,7 @@ export default ({ config, db, logger }) => {
 	api.post('/',
 		validate({
 			body: Joi.object().keys({
-				event_id: Joi.number().integer().min(1).required(),
+				eventId: Joi.number().integer().min(1).required(),
 				status: Joi.string().valid(config.API_REPORT_STATUS_TYPES).required(),
 				created: Joi.date().iso().required(),
 				report_key: Joi.string().required(),

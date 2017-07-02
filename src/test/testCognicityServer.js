@@ -29,7 +29,7 @@ const logger = new (winston.Logger)({
 describe('Cognicity Server Testing Harness', function() {
 
 	// Shared variables, for transferring data between tests
-	let event_id = 0;
+	let eventId = 0;
 	let report_key = 'key';
 	let report_id = 0;
 
@@ -136,7 +136,7 @@ describe('Cognicity Server Testing Harness', function() {
 								test.fail(err.message + ' ' + JSON.stringify(res));
 							}
 							else {
-									event_id = res.body.result.objects.output.geometries[0].properties.id;
+									eventId = res.body.result.objects.output.geometries[0].properties.id;
 									report_key = res.body.result.objects.output.geometries[0].properties.report_key;
 									done()
 							}
@@ -147,7 +147,7 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can get specified event (tested against just created)
 			it('Get the event that was just created (GET /events/:id)', function(done){
 				test.httpAgent(app)
-					.get('/api/events/' + event_id)
+					.get('/api/events/' + eventId)
 					.expect(200)
 					.expect('Content-Type', /json/)
 					.end(function(err, res){
@@ -166,7 +166,7 @@ describe('Cognicity Server Testing Harness', function() {
 			// Can update an event, returning updated event
 			it('Update an event (POST /events)', function(done){
 					test.httpAgent(app)
-						.post('/api/events/' + event_id)
+						.post('/api/events/' + eventId)
 						.send({
 							"status":"inactive",
 							"metadata":{
@@ -199,7 +199,7 @@ describe('Cognicity Server Testing Harness', function() {
 								// Now http tests passed, we test specific properties of the response against known values
 								let output = false;
 								for (let i = 0; i < res.body.result.objects.output.geometries.length; i++){
-									if (res.body.result.objects.output.geometries[i].properties.id === String(event_id)){
+									if (res.body.result.objects.output.geometries[i].properties.id === String(eventId)){
 										output = true;
 									}
 								}
@@ -220,7 +220,7 @@ describe('Cognicity Server Testing Harness', function() {
 					test.httpAgent(app)
 						.post('/api/reports')
 						.send({
-								"event_id": event_id,
+								"eventId": eventId,
 								"status": "confirmed",
 								"created": "2017-05-22T20:35Z",
 								"report_key": report_key,
@@ -250,7 +250,7 @@ describe('Cognicity Server Testing Harness', function() {
 						test.httpAgent(app)
 							.post('/api/reports')
 							.send({
-									"event_id": event_id,
+									"eventId": eventId,
 									"status": "confirmed",
 									"created": "2017-05-22T20:35Z",
 									"report_key": '123',
@@ -332,9 +332,9 @@ describe('Cognicity Server Testing Harness', function() {
 					});
 
 					// Can get reports of a specific event
-					it('Get all reports from a specific event (GET /reports?event_id=)', function(done){
+					it('Get all reports from a specific event (GET /reports?eventId=)', function(done){
 							test.httpAgent(app)
-								.get('/api/reports?event_id='+event_id)
+								.get('/api/reports?eventId='+eventId)
 								.expect(200)
 								.expect('Content-Type', /json/)
 								.end(function(err, res){

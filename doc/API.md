@@ -286,7 +286,7 @@ Reports, organised by geography. Returned as either TopoJSON or GeoJSON.
 
 #### Response Object Properties
 - id: unique report identifier (e.g. "1")
-- event_id: unique event identifier (e.g. "1")
+- eventId: unique event identifier (e.g. "1")
 - status: report status (e.g. "confirmed")
 - created: ISO8601 datetime string with time zone (e.g. "2017-05-22T20:35:00.000Z")
 - report_key: unique key for reports submitted against this event (e.g. "rySUYYO-W")
@@ -294,13 +294,13 @@ Reports, organised by geography. Returned as either TopoJSON or GeoJSON.
 
 * * *
 
-### GET /events
+### GET /reports
 Get all events.
 
 #### Query Parameters
 |Query parameter|Description|Format|Required|
 |---------------|-----------|------|--------|
-|event_id|Filter by event identifier|Integer|No|
+|eventId|Filter by event identifier|Integer|No|
 |geoformat|What format should geographic results use (one of topojson, geojson defaults to topojson)|String|No|
 
 #### Example
@@ -326,7 +326,7 @@ One report was found
             "type": "Point",
             "properties": {
               "id": "52",
-              "event_id": "24",
+              "eventId": "24",
               "status": "verified",
               "created": "2017-06-06T01:08:00.000Z",
               "report_key": "r1gm2JtZb",
@@ -380,7 +380,7 @@ Create a new report, returns complete report object.
 #### Request Body Objects
 |Attribute|Description|Format|Required|
 |---------------|-----------|------|--------|
-|event_id|Event identifier|Integer|Yes|
+|eventId|Event identifier|Integer|Yes|
 |status|Report status (confirmed or verified)|String|Yes|
 |created|Timestamp|String (ISO 8601)|Yes|
 |location|Point location of report|lat/lng in EPSG:4326|Yes|
@@ -395,7 +395,7 @@ curl -X POST \
   -H 'content-type: application/json' \
   -H 'postman-token: f59bd374-8a24-6538-7db0-5e828775c701' \
   -d '{
-	"event_id": "135",
+	"eventId": "135",
 	"status": "confirmed",
 	"created": "2017-05-22T20:35Z",
 	"location":{
@@ -424,7 +424,7 @@ Event was created, and complete object is returned.
             "type": "Point",
             "properties": {
               "id": "65",
-              "event_id": "135",
+              "eventId": "135",
               "status": "confirmed",
               "created": "2017-05-22T20:35:00.000Z",
               "report_key": "H1N9ohFbW",
