@@ -60,18 +60,37 @@ var getEvent = function(eventId, callback){
   **/
 var getReports = function(eventId, callback){
   $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
-    callback(data);
+    callback(data.result);
   });
 };
 
-// Main (effective)
+/**
+  * Function to add reports to map
+  * @param {Object} reports - GeoJson FeatureCollection containing report points
+  **/
+var mapReports = function(reports){
+  var reportsMarker = {
+    radius: 8,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+  };
+
+  L.geoJSON(reports, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, reportsMarker);
+    }
+}).addTo(eventsMap);
+}
+
+// Main function (effective)
 var eventId = getQueryVariable("eventId");
 // Only ask API where event is specified and not empty
 if (eventId !== false && eventId != ''){
   getEvent(eventId, printEventProperties);
-  getReports(eventId, function(reports){
-    console.log(reports);
-  })
+  getReports(eventId, mapReports);
 } else {
   // Catch condition where no event specified, print to screen
   printEventProperties('No event ID specified', null)
@@ -80,7 +99,7 @@ if (eventId !== false && eventId != ''){
 // Create map
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
 
-//
+// Add some base tiles
 var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
 	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	subdomains: 'abcd',
