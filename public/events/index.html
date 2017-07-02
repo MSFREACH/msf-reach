@@ -1,29 +1,43 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Events &middot; MSF REACH</title>
 
-  <title>MSF REACH - EVENTS </title>
-  <meta name="description" content="MSF REACH EVENTS">
-  <meta name="author" content="MSF REACH EVENTS">
+    <!-- Bootstrap -->
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="containter"></div>
+      <!-- Map -->
+      <div id="map" class="col-md-8"></div>
+      <!-- Side pane -->
+      <div id="sidepane" class="col-md-4">
+        <h1>Event</h1>
+        <div id="eventProperties"></div>
+      </div>
+    </div>
 
-  <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-  <![endif]-->
-</head>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/lib/bootstrap/bootstrap.min.js"></script>
 
-<body>
-  <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
-  <script src="/lib/bootstrap/bootstrap.min.js"></script>
-
-  <!-- Get query parameter from URL -->
-  <!-- Ask the server for reports from specific event -->
-  <!-- Display event details -->
-  <!-- Display map with points -->
-  <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
-  <script src="/resources/js/events.js"></script>
-</body>
+    <!-- Get query parameter from URL -->
+    <!-- Ask the server for reports from specific event -->
+    <!-- Display event details -->
+    <!-- Display map with points -->
+    <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
+    <script src="/resources/js/events.js"></script>
+  </body>
 </html>

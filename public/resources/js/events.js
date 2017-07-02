@@ -11,7 +11,7 @@
 var printEventProperties = function(err, eventProperties){
   // If called with err, print that instead
   if (err){
-    $('body').append(err);
+    $('#eventProperties').append(err);
   } else {
     // Loop through properties and create a HTML list
     var propertiesList = [];
@@ -21,9 +21,9 @@ var printEventProperties = function(err, eventProperties){
     });
     // Append output to body
     $( "<ul/>", {
-      "class": "my-new-list",
+      "class": "eventPropertiesList",
       html: propertiesList.join( "" )
-    }).appendTo( "body" );
+    }).appendTo( "#eventProperties" );
   }
 }
 
@@ -44,12 +44,16 @@ var getEvent = function(eventId, callback){
   })
 }
 
+var getReports = function(eventId, callback){
+  $getJSON('/api/reports/' + )
+}
+
 // Main (effective)
 var event = getQueryVariable("eventId");
 // Only ask API where event is specified and not empty
 if (event !== false && event != ''){
   getEvent(event, printEventProperties);
 } else {
-  // Catch condition where no event specified
-  $('body').append('no event ID specified');
+  // Catch condition where no event specified, print to screen
+  printEventProperties('No event ID specified', null)
 }
