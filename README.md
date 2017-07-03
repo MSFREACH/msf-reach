@@ -26,6 +26,8 @@ To run tests, do:
 $ npm test
 ```
 
+Testing is run on travis-ci.
+
 ### Data Formats
 - GeoJSON
 - TopoJSON
