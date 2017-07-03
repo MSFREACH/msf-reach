@@ -26,16 +26,16 @@ var printEventProperties = function(err, eventProperties){
     // Create unique link to this event
     var eventLink = HOSTNAME + 'events/?eventId=' + eventProperties.id;
     // Create unique report link for this event
-    var eventReportLink = HOSTNAME + 'cards/' + eventProperties.reportkey
+    var eventReportLink = HOSTNAME + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey
     // Append output to body
     $( "<ul/>", {
       "class": "eventPropertiesList",
       html: propertiesList.join( "" )
     }).appendTo( "#eventProperties" );
     // Add unique link to this event
-    $("#eventProperties").append('<p><a href='+eventLink+'>'+eventLink+'</a></p>');
+    $("#eventProperties").append('<p>Event link: <a href='+eventLink+'>'+eventLink+'</a></p>');
     // Add unique link to report to this event
-    $("#eventProperties").append('<p><a href="eventReportLink">'+eventReportLink+'</a></p>');
+    $("#eventProperties").append('<p>Report link: <a href=' + eventReportLink + '>'+eventReportLink+'</a></p>');
   }
 }
 
