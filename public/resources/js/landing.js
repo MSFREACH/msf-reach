@@ -34,7 +34,7 @@ HOSTNAME='http://localhost:8001/'
      $('#eventsList').append(err);
    } else {
      // Construct a bootstrap table
-     var eventsTable = '<table class="table table-hover">';
+     var eventsTable = '<table class="table table-hover table-bordered">';
      eventsTable += '<tr><th>Event</th>'
      eventsTable += '<th>Status</th>'
      eventsTable += '<th>Type</th></tr>'
@@ -51,3 +51,15 @@ HOSTNAME='http://localhost:8001/'
  }
 
 getAllEvents(printAllEvents);
+
+// Create map
+var landingMap = L.map('landingMap').setView([-6.8, 108.7], 7);
+
+// Add some base tiles
+var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 18,
+	ext: 'png'
+}).addTo(landingMap);

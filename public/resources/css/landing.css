@@ -1,0 +1,10 @@
+html, body { height: 100% }
+
+#landingMap {
+  height:59vh;
+}
+
+#eventsTable {
+  height:35vh;
+  overflow:auto;
+}
