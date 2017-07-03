@@ -21,7 +21,7 @@ export default ({ config, db, logger }) => {
 				eventId: Joi.number().integer().min(1)
       }
     }),
-		(req, res, next) => reports(config, db, logger).all(req.query.status)
+		(req, res, next) => reports(config, db, logger).all(req.query.eventId)
 			.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
 				/* istanbul ignore next */
