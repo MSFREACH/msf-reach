@@ -1,11 +1,11 @@
-dist: trusty
-sudo: false
-language: node_js
+dist: precise
+sudo: true
+language: node_js:
+  - "6.10.0"
 addons:
-  postgresql: "9.6"
-services: postgresql
-node_js:
-  - "7.4.0"
+  postgresql: "9.5"
+#services: postgresql
+
 before_install:
   - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
   - git clone https://github.com/usergroupcoop/cognicity_msf-schema.git && cd cognicity_msf-schema && bash build.sh && cd -
