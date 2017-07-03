@@ -24,36 +24,39 @@ HOSTNAME='http://localhost:8001/'
    })
  };
 
+// Add popups
+ function onEachFeature(feature, layer) {
+ 		var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id + "'>Event " + feature.properties.id +"</a></strong>" + "<BR>Status: " + feature.properties.status +"<BR>Type: " + feature.properties.type +"<BR>Created: " + feature.properties.created;
+
+ 		if (feature.properties && feature.properties.popupContent) {
+ 			popupContent += feature.properties.popupContent;
+ 		}
+
+ 		layer.bindPopup(popupContent);
+ 	}
+
  /**
    * Function to print a table of events
    * @param {Object} events - GeoJSON Object containing event details
    */
- var printAllEvents = function(err, events){
+ var mapAllEvents = function(err, events){
    // If called with err, print that instead
    if (err){
-     $('#eventsList').append(err);
+     console.log( 'Error: ' + err );
    } else {
-     // Construct a bootstrap table
-     var eventsTable = '<table class="table table-hover table-bordered">';
-     eventsTable += '<tr><th>Event</th>'
-     eventsTable += '<th>Status</th>'
-     eventsTable += '<th>Type</th></tr>'
-     // Loop through properties and create a HTML list
-     for (var i = 0; i < events.features.length; i++){
-         eventsTable += "<tr><td><a href="+HOSTNAME+"events/?eventId="+events.features[i].properties.id+">" + events.features[i].properties.id + "</a></td>";
-         eventsTable += '<td>' + events.features[i].properties.status + "</td>";
-         eventsTable += '<td>' + events.features[i].properties.type + "</td></a></tr>";
-     };
-     eventsTable += '</table>'
-     // Append output to table
-    $('#eventsTable').append(eventsTable);
+     L.geoJSON(events, {
+       pointToLayer: function(feature, latlng){
+         return L.marker(latlng);
+       },
+       onEachFeature: onEachFeature
+     }).addTo(landingMap);
    }
  }
 
-getAllEvents(printAllEvents);
-
 // Create map
 var landingMap = L.map('landingMap').setView([-6.8, 108.7], 7);
+
+getAllEvents(mapAllEvents);
 
 // Add some base tiles
 var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
