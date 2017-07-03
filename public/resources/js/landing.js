@@ -6,7 +6,8 @@
 
 // Constants
 GEOFORMAT='geojson';
-HOSTNAME='http://localhost:8001/'
+HOSTNAME='http://localhost:8001/';
+TYPES=['earthquake', 'flood', 'conflict'];
 
  /**
    * Function to get all events from the API
@@ -40,23 +41,37 @@ HOSTNAME='http://localhost:8001/'
    * @param {Object} events - GeoJSON Object containing event details
    */
  var mapAllEvents = function(err, events){
-   // If called with err, print that instead
+   // If called with err, log that instead
    if (err){
      console.log( 'Error: ' + err );
    } else {
-     L.geoJSON(events, {
+     for (var i = 0; i < TYPES.length; i++){
+       console.log([TYPES[i]]);
+       var layer = L.geoJSON(events, {
+         pointToLayer: function(feature, latlng){
+                return L.marker(latlng);
+              },
+        onEachFeature: onEachFeature,
+        filter: function(feature, layer){
+          if (feature.properties.type === TYPES[i]){
+            return feature;
+          }
+        }})
+        layer.addTo(landingMap);
+        layerControl.addOverlay(layer, TYPES[i]);
+      };
+     }
+     /*var eventsLayer = L.geoJSON(events, {
        pointToLayer: function(feature, latlng){
          return L.marker(latlng);
        },
        onEachFeature: onEachFeature
-     }).addTo(landingMap);
-   }
+     });*/
+     //eventsLayer.addTo(landingMap);
  }
 
 // Create map
 var landingMap = L.map('landingMap').setView([-6.8, 108.7], 7);
-
-getAllEvents(mapAllEvents);
 
 // Add some base tiles
 var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
@@ -66,3 +81,13 @@ var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terr
 	maxZoom: 18,
 	ext: 'png'
 }).addTo(landingMap);
+
+var baseMaps = {
+  "Terrain Basemap": Stamen_Terrain
+}
+
+var overlayMaps = {};
+
+var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(landingMap);
+
+getAllEvents(mapAllEvents);
