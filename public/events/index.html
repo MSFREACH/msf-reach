@@ -25,28 +25,51 @@
 
   </head>
   <body>
-    <div class="containter">
-      <div class="row">
-      <!-- Map -->
-        <div id="map" class="col-md-8"></div>
-        <!-- Side pane -->
-        <div id="sidepane" class="col-md-4">
-          <a href="/">[Home]</a>
-          <h1>Event</h1>
-          <div id="eventProperties"></div>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">MSF Reach</a>
         </div>
-      </div> <!-- row -->
-      <div class='row'>
-        <div class="col-md-8">
-          <p>Contacts & Mission Histories table</p>
-        </div>
-      </div> <!-- row -->
-    </div><!-- container -->
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+              <li><a href="/">Home</a></li>
+              <li><a href="/events/new">Create New Event</a><li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Session <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">user@msf.org</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="/events/new">Logout</a><li>
+                </ul>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    <!-- Map -->
+    <div class="col-md-8">
+      <div id="map"></div>
+    </div>
+    <!-- Side pane -->
+    <div id="sidepane" class="col-md-4">
+      <h3 id="title">Event</h3>
+      <div id="eventProperties"></div>
+    </div>
+    <div class="col-md-8">
+      <p>Contacts & Mission Histories table</p>
+    </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/lib/bootstrap/bootstrap.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Get query parameter from URL -->
     <!-- Ask the server for reports from specific event -->
