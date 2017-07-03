@@ -25,7 +25,7 @@ HOSTNAME='http://localhost:8001/'
  };
 
  /**
-   * Function to print a list of events
+   * Function to print a table of events
    * @param {Object} events - GeoJSON Object containing event details
    */
  var printAllEvents = function(err, events){
@@ -33,32 +33,20 @@ HOSTNAME='http://localhost:8001/'
    if (err){
      $('#eventsList').append(err);
    } else {
+     // Construct a bootstrap table
+     var eventsTable = '<table class="table table-hover">';
+     eventsTable += '<tr><th>Event</th>'
+     eventsTable += '<th>Status</th>'
+     eventsTable += '<th>Type</th></tr>'
      // Loop through properties and create a HTML list
-     var propertiesList = [];
      for (var i = 0; i < events.features.length; i++){
-       //console.log(i)
-       //console.log(events.features[215]);
-       //console.log(events.features.length)
-       //$.each( events.features[i].properties, function( key, val ) {
-       console.log(events.features[i].properties.id)
-         propertiesList.push( "<li id='event'> Event: <a href="+HOSTNAME+"events/?eventId="+events.features[i].properties.id+">"
-                               + JSON.stringify(events.features[i].properties.id) + "</a></li>" );
-       //});
-     //};
-
-
+         eventsTable += "<tr><td><a href="+HOSTNAME+"events/?eventId="+events.features[i].properties.id+">" + events.features[i].properties.id + "</a></td>";
+         eventsTable += '<td>' + events.features[i].properties.status + "</td>";
+         eventsTable += '<td>' + events.features[i].properties.type + "</td></a></tr>";
      };
-     // Create unique link to this event
-     //var eventLink = HOSTNAME + 'events/?eventId=' + eventProperties.id;
-     // Create unique report link for this event
-     //var eventReportLink = HOSTNAME + 'cards/' + //eventProperties.reportkey
-     // Append output to body
-     $( "<ul/>", {
-       "class": "eventPropertiesList",
-       html: propertiesList.join( "" )
-     }).appendTo( "#eventsList" );
-     //$("#eventProperties").append('<p><a href='+eventLink+'>'+eventLink+'</a></p>');
-     //$("#eventProperties").append('<p><a href="eventReportLink">'+eventReportLink+'</a></p>');
+     eventsTable += '</table>'
+     // Append output to table
+    $('#eventsTable').append(eventsTable);
    }
  }
 
