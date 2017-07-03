@@ -1,3 +1,7 @@
 #map {
-  height: 800px;
+  height: 88vh;
+}
+
+#title{
+  margin-top:0;
 }

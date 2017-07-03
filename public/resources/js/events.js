@@ -36,6 +36,7 @@ var printEventProperties = function(err, eventProperties){
     $("#eventProperties").append('<p>Event link: <a href='+eventLink+'>'+eventLink+'</a></p>');
     // Add unique link to report to this event
     $("#eventProperties").append('<p>Report link: <a href=' + eventReportLink + '>'+eventReportLink+'</a></p>');
+    $('#title').append(' ' + eventProperties.id);
   }
 }
 
