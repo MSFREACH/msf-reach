@@ -8,7 +8,7 @@
     <title>Landing &middot; MSF REACH</title>
 
     <!-- Bootstrap -->
-    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,25 +18,31 @@
     <![endif]-->
 
     <!-- Leaflet -->
-    <link rel="stylesheet" href="/lib/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="lib/leaflet/leaflet.css"/>
 
   </head>
   <body>
     <div class="containter">
-      <div id="eventsList"></div>
+      <div class="col-md-8">
+        <h1>Index of Events</h1>
+        <div id="eventsTable"></div>
+      </div>
+      <div class="col-md-4">
+        <h1><button tye="button" class="btn btn-primary">New Event</button><h1>
+      </div>
     </div><!-- container -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="lib/jquery/jquery-3.2.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/lib/bootstrap/bootstrap.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Get query parameter from URL -->
     <!-- Ask the server for reports from specific event -->
     <!-- Display event details -->
     <!-- Display map with points -->
-    <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
-    <script src="/lib/leaflet/leaflet.js"></script>
-    <script src="/resources/js/landing.js"></script>
+    <script src="lib/getQueryVariable/getQueryVariable.js"></script>
+    <script src="lib/leaflet/leaflet.js"></script>
+    <script src="resources/js/landing.js"></script>
   </body>
 </html>
