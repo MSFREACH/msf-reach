@@ -6,7 +6,7 @@ export default {
   API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
 // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
   API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
-  API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'flood,earthquake').split(','),
+  API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'flood,earthquake,conflict').split(','),
   API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'confirmed,verified').split(','),
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || 'https://data.msf.acrossthecloud.net',
   AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID || 'client_id',
