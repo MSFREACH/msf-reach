@@ -74,17 +74,23 @@ TYPES=['earthquake', 'flood', 'conflict'];
 var landingMap = L.map('landingMap').setView([-6.8, 108.7], 7);
 
 // Add some base tiles
-var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
 	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	subdomains: 'abcd',
 	minZoom: 0,
 	maxZoom: 18,
 	ext: 'png'
+});
+
+// Add some satellite tiles
+var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 }).addTo(landingMap);
 
 var baseMaps = {
-  "Terrain Basemap": Stamen_Terrain
-}
+  "Terrain": stamenTerrain,
+  "Satellite" : mapboxSatellite
+};
 
 var overlayMaps = {};
 
