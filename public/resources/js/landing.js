@@ -16,7 +16,7 @@ TYPES=['earthquake', 'flood', 'conflict'];
    * @returns {Object} events - Events as GeoJSON FeatureCollection
    */
  var getAllEvents = function(callback){
-   $.getJSON('/api/events/?geoformat=' + GEOFORMAT, function ( data ){
+   $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT, function ( data ){
      // Print output to page
      callback(null, data.result);
    }).fail(function(err) {

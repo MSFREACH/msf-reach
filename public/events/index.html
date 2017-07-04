@@ -25,6 +25,25 @@
 
   </head>
   <body>
+    <!-- Modal -->
+    <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+          </div>
+          <div class="modal-body">
+            Archived events will no longer be shown on the MSF Reach Landing Page.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="btnArchive" type="button" class="btn btn-danger">Archive Event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page -->
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -61,6 +80,10 @@
     <div id="sidepane" class="col-md-4">
       <h3 id="title">Event</h3>
       <div id="eventProperties"></div>
+      <button class=" btn btn-primary">Edit</button>
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">
+        Archive</button>
     </div>
     <div class="col-md-8">
       <p>Contacts & Mission Histories table</p>
