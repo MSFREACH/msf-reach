@@ -8,6 +8,9 @@
  GEOFORMAT = 'geojson'; // Change to topojson for prod
  HOSTNAME = 'http://localhost:8001/'; // Change to host for prod
 
+ // Globals
+ var currentEventId;
+
 /**
   * Function to print a list of event details to web page
   * @param {Object} eventProperties - Object containing event details
@@ -89,11 +92,11 @@ var mapReports = function(reports){
 }
 
 // Main function (effective)
-var eventId = getQueryVariable("eventId");
+currentEventId = getQueryVariable("eventId");
 // Only ask API where event is specified and not empty
-if (eventId !== false && eventId != ''){
-  getEvent(eventId, printEventProperties);
-  getReports(eventId, mapReports);
+if (currentEventId !== false && currentEventId != ''){
+  getEvent(currentEventId, printEventProperties);
+  getReports(currentEventId, mapReports);
 } else {
   // Catch condition where no event specified, print to screen
   printEventProperties('No event ID specified', null)
@@ -110,3 +113,23 @@ var Stamen_Terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terr
 	maxZoom: 18,
 	ext: 'png'
 }).addTo(eventsMap);
+
+// Archive support
+$('#btnArchive').click(function(e){
+
+  var body = {
+    "status":"inactive",
+    "metadata":{}
+  }
+
+  $.ajax({
+    type: "POST",
+    url: "/api/events/" + currentEventId,
+    data: JSON.stringify(body),
+    contentType: 'application/json'
+  }).done(function( data, textStatus, req ){
+    window.location.href = '/';
+  }).fail(function (reqm, textStatus, err){
+    alert(err);
+  });
+})
