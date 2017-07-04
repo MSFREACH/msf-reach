@@ -22,7 +22,9 @@ newEventMap.on('click', function(e) {
 $('#createEvent').on('click', function (e) {
 
     if (latlng === null){
-      alert('Please select a location');
+			$('#newEventModalTitle').html('<h4>Missing event location</h4>');
+			$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>')
+			$('#newEventModal').modal('toggle');
     }
     else {
       var body = {
@@ -45,10 +47,11 @@ $('#createEvent').on('click', function (e) {
         contentType: 'application/json'
       }).done(function( data, textStatus, req ){
         var eventId = data.result.objects.output.geometries[0].properties.id;
-        alert("New event created");
         window.location.href = '/events/?eventId='+eventId;
       }).fail(function (reqm, textStatus, err){
-        alert(err);
+				$('#newEventModalTitle').html('<h4>Error creating event</h4>');
+				$('#newEventModalContent').html('<p>' + err +'.</p>')
+				$('#newEventModal').modal('toggle');
       });
     }
 })
