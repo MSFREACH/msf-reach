@@ -4,7 +4,7 @@ import { Router } from 'express';
 import events from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -17,7 +17,7 @@ export default ({ config, db, logger }) => {
 	let api = Router();
 
 	// Get a list of all events
-	api.get('/', cacheResponse('1 minute'),
+	api.get('/', jwtCheck, cacheResponse('1 minute'),
     validate({
       query: {
         geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
