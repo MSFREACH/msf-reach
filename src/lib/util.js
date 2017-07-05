@@ -16,23 +16,20 @@ let cache = apicache.middleware;
 const cacheResponse = (duration) => cache(duration, config.CACHE);
 
 // Configure our JWT checker
-const jwtCheck = jwt({
-  secret: new Buffer(config.AUTH0_SECRET),
-  audience: config.AUTH0_CLIENT_ID
+const jwtCheck = jwt({ algorithm: 'RS256',
+  secret: config.AWS_COGNITO_PEM,
+  getToken: function fromHeader(req){
+    //console.log(req);
+    var cookies = (req.headers.cookie).split('; ');
+    var jwt;
+    for (var i = 0; i < cookies.length; i++){
+      if (cookies[i].split('=')[0] === 'jwt'){
+        jwt = cookies[i].split('=')[1];
+      }
+    }
+    return jwt;
+  }
 });
-// TODO: Move to single auth0 mechanism once they support SPA auth using API
-/*const jwtCheck = jwt({
-  credentialsRequired: config.SECURE_AUTH0,
-  secret: jwks.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: `${config.AUTH0_ISSUER}/.well-known/jwks.json`
-  }),
-  audience: config.AUTH0_AUDIENCE,
-  issuer: config.AUTH0_ISSUER,
-  algorithms: ['RS256']
-});*/
 
 // Setup dbgeo
 dbgeo.defaults = {

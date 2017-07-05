@@ -11,6 +11,9 @@ import compression from 'compression';
 import responseTime from 'response-time';
 import morgan from 'morgan'; // Express logging
 
+import { jwtCheck } from './lib/util';
+
+
 /** Function to initialize the api server config, db, logger
 	* @class - Initialize server
 	* @param {Object} config - server config
@@ -51,9 +54,11 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 		.then((db) => {
 			// Log debug message
 			logger.debug('Successfully connected to DB');
-
+			//app.use(cookieParser()); // Enable cookies
 			// Mount the routes
-			app.use('/', express.static(config.STATIC_PATH));
+			app.use('/login', express.static(config.STATIC_AUTH_PATH));
+			app.use('/lib', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
+			app.use('/', [jwtCheck, express.static(config.STATIC_PATH)]);
 			app.use('/api', routes({ config, db, logger }));
 
 			// App is ready to go, resolve the promise
