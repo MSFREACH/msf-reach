@@ -16,18 +16,20 @@ let cache = apicache.middleware;
 const cacheResponse = (duration) => cache(duration, config.CACHE);
 
 // Configure our JWT checker
-const jwtCheck = jwt({ algorithm: 'RS256',
-  secret: config.AWS_COGNITO_PEM,
+const jwtCheck = jwt({ algorithm: config.AWS_COGNITO_ALGORITHM,
+  secret: config.AWS_COGNITO_PEM, // RSA Public Key
+  // Extract the JWT from cookie in requests
   getToken: function fromHeader(req){
-    //console.log(req);
-    var cookies = (req.headers.cookie).split('; ');
-    var jwt;
-    for (var i = 0; i < cookies.length; i++){
+    let jwt; // token from client (to check)
+    let cookies = (req.headers.cookie).split('; '); // Extract cookies from header
+    // Find cookies labelled 'jwt'
+    for (let i = 0; i < cookies.length; i++){
       if (cookies[i].split('=')[0] === 'jwt'){
-        jwt = cookies[i].split('=')[1];
+        jwt = cookies[i].split('=')[1]; // Extract the jwt from cookie label
       }
     }
-    return jwt;
+    console.log('\n\n\n\n'+jwt);
+    return jwt; // Return to the token to jwt middleware for verification
   }
 });
 

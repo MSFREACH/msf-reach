@@ -67,6 +67,7 @@
     "coveralls": "^2.13.1",
     "eslint": "^3.19.0",
     "it-each": "^0.3.1",
+    "jsonwebtoken": "^7.4.1",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
     "nyc": "^11.0.2",
