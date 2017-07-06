@@ -58,6 +58,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 			// Mount the routes
 			app.use('/login', express.static(config.STATIC_AUTH_PATH));
 			app.use('/lib', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
+			// Set jetCheck on root. All paths below this will also have JWT checks applied.
 			app.use('/', [jwtCheck, express.static(config.STATIC_PATH)]);
 			app.use('/api', routes({ config, db, logger }));
 

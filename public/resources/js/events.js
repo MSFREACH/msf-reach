@@ -11,6 +11,10 @@
  // Globals
  var currentEventId;
 
+var zoomToEvent = function(latlng){
+  eventsMap.setView(latlng, 12);
+}
+
 /**
   * Function to print a list of event details to web page
   * @param {Object} eventProperties - Object containing event details
@@ -52,6 +56,8 @@ var printEventProperties = function(err, eventProperties){
   */
 var getEvent = function(eventId, callback){
   $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
+    // Zoom to location
+    zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]])
     // Print output to page
     callback(null, data.result.features[0].properties);
   }).fail(function(err) {
@@ -92,6 +98,7 @@ var mapReports = function(reports){
 }
 
 // Main function (effective)
+// Get eventId from URL
 currentEventId = getQueryVariable("eventId");
 // Only ask API where event is specified and not empty
 if (currentEventId !== false && currentEventId != ''){
