@@ -12,6 +12,9 @@ Data server and web content for CogniCity MSF, built with NodeJS to provide JSON
 $ npm install
 ```
 
+### Environment variables
+Set AWS_COGNITO_ALGORITHM to 'RS256', and AWS_COGNITO_PEM to the public key incl. line breaks—on AWS ElasticBeanstalk where line breaks are not supported in environment variables you need to replace new lines with commas when entering the environment variable, which will be converted back to line breaks in the code.
+
 ### Build and Run
 Code is written in ES2015 and compiled with babel to a dist folder.
 ```sh
