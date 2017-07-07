@@ -35,7 +35,7 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Get a single event
-	api.get('/:id', cacheResponse('1 minute'),
+	api.get('/:id',jwtCheck, cacheResponse('1 minute'),
 		validate({
 			params: { id: Joi.number().integer().min(1).required() } ,
 			query: {
@@ -53,7 +53,7 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Create a new event record in the database
-	api.post('/',
+	api.post('/',jwtCheck,
 		validate({
 			body: Joi.object().keys({
 				status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
@@ -80,7 +80,7 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Update an event record in the database
-	api.post('/:id',
+	api.post('/:id',jwtCheck,
 		validate({
 			params: { id: Joi.number().integer().min(1).required() } ,
 			body: Joi.object().keys({

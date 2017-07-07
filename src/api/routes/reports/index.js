@@ -4,7 +4,7 @@ import { Router } from 'express';
 import reports from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -14,7 +14,7 @@ export default ({ config, db, logger }) => {
 	let api = Router();
 
 	// Get a list of all reports
-	api.get('/', cacheResponse('1 minute'),
+	api.get('/', jwtCheck, cacheResponse('1 minute'),
     validate({
       query: {
         geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
@@ -32,7 +32,7 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Get a single report
-	api.get('/:id', cacheResponse('1 minute'),
+	api.get('/:id', jwtCheck, cacheResponse('1 minute'),
 		validate({
 			params: { id: Joi.number().integer().min(1).required() } ,
 			query: {
@@ -77,7 +77,7 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Update an event record in the database
-	api.post('/:id',
+	api.post('/:id', jwtCheck,
 		validate({
 			params: { id: Joi.number().integer().min(1).required() } ,
 			body: Joi.object().keys({
