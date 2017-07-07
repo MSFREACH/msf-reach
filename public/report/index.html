@@ -1,2 +1,70 @@
-Add a new report here.
-- database will check whether reportkey is valid
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>New Event &middot; MSF REACH</title>
+
+    <!-- Bootstrap -->
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="/lib/leaflet/leaflet.css"/>
+
+    <!-- Events -->
+    <link rel="stylesheet" href="/resources/css/new-report.css"/>
+
+  </head>
+  <body>
+    <!-- Modal -->
+    <div class="modal fade" id="newEventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="newEventModalTitle"></h4>
+          </div>
+          <div class="modal-body" id="newEventModalContent"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+    <!-- Map -->
+      <h4 id="title">1. Select location</h4>
+      <div id="map"></div>
+    <!-- Side pane -->
+      <h4 id="title">2. Add report info</h4>
+      <div id="reportProperties">
+          <textarea class="form-control" rows="3" id="inputReportText" placeholder="" required></textarea>
+
+        </div>
+        <div style="margin-top:15px;">
+        <button type="button" id="createReport" class="btn btn-primary btn-lg">Submit</button>
+        </div>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Get query parameter from URL -->
+    <!-- Ask the server for reports from specific event -->
+    <!-- Display event details -->
+    <!-- Display map with points -->
+    <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
+    <script src="/lib/leaflet/leaflet.js"></script>
+    <script src="/resources/js/new-report.js"></script>
+  </body>
+</html>

@@ -57,10 +57,17 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 			//app.use(cookieParser()); // Enable cookies
 			// Mount the routes
 			app.use('/login', express.static(config.STATIC_AUTH_PATH));
-			app.use('/lib', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
+			app.use('/report', express.static(config.STATIC_REPORT_PATH))
+			app.use('/lib', express.static(config.STATIC_LIB_PATH)); // Allow resources to be shared with un-authed path
+			app.use('/resources', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
+
+
+			// Mount the API. authentication specified within routes
+			app.use('/api', routes({ config, db, logger }));
+
+
 			// Set jetCheck on root. All paths below this will also have JWT checks applied.
 			app.use('/', [jwtCheck, express.static(config.STATIC_PATH)]);
-			app.use('/api', routes({ config, db, logger }));
 
 			// App is ready to go, resolve the promise
 			resolve(app);
