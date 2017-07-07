@@ -17,7 +17,7 @@ const cacheResponse = (duration) => cache(duration, config.CACHE);
 
 // Configure our JWT checker
 const jwtCheck = jwt({ algorithm: config.AWS_COGNITO_ALGORITHM,
-  secret: new Buffer(config.AWS_COGNITO_PEM, 'base64'), // RSA Public Key
+  secret: config.AWS_COGNITO_PEM, // RSA Public Key
   // Extract the JWT from cookie in requests
   getToken: function fromHeader(req){
     let jwt; // token from client (to check)
