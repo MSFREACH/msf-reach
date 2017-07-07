@@ -28,7 +28,7 @@
 
     <div class="container">
 
-      <form class="form-signin">
+      <form class="form-signin" id="form-signin">
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputEmail" class="sr-only">Email address</label>
         <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
@@ -41,6 +41,12 @@
         </div>
           <button type="button" id="login" class="btn btn-primary btn-lg">Login</button>
       </form>
+        <form class="form-signin" style="display:none" id="form-password-reset">
+          <h2 class="form-signin-heading">First login - please reset your password</h2>
+          <label for="inputPassword" class="sr-only">New Password</label>
+          <input type="password" id="input-new-password" class="form-control" placeholder="New Password" required>
+            <button type="button" id="btn-confirm-reset-password" class="btn btn-primary btn-lg">Confirm</button>
+        </form>
 
     </div> <!-- /container -->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

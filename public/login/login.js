@@ -1,5 +1,5 @@
 // Get JWT from AWS Cognito based on username and password
-console.log('script')
+console.log('Authenticaiton script running');
 
 var setJWTCookie = function(jwt){
   Cookies.set("jwt", jwt);
@@ -27,8 +27,8 @@ var authSuccess = function(result){
 var cognitoAuth = function(){
   console.log('running here')
   var authenticationData = {
-      Username : $('#inputEmail').val(),
-      Password : $('#inputPassword').val(),
+       Username : $('#inputEmail').val(),
+       Password : $('#inputPassword').val(),
   };
   var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
   var poolData = {
@@ -44,16 +44,23 @@ var cognitoAuth = function(){
   cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: authSuccess,
       newPasswordRequired: function(userAttributes, requiredAttributes) {
-          // User was signed up by an admin and must provide new
-          // password and required attributes, if any, to complete
-          // authentication.
-          // TODO - allow user to modify password
+          $('#form-signin').hide()
+          $('#form-password-reset').toggle();
           var self = this;
           console.log('New password required')
           // the api doesn't accept this field back
           delete userAttributes.email_verified;
-
-          cognitoUser.completeNewPasswordChallenge('secrets', userAttributes, self);
+          $('#btn-confirm-reset-password').on('click', function(){
+            cognitoUser.completeNewPasswordChallenge($('#input-new-password').val(), userAttributes, {
+              onSuccess: function(result){
+                alert('Please login with new password');
+                window.location.replace("/login");
+              },
+              onFailure: function(error){
+                alert(error.message);
+              }
+            });
+          })
       },
 
       onFailure: function(err) {
