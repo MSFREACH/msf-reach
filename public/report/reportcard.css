@@ -1,0 +1,80 @@
+html,body {
+    height: 100%;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carddiv{
+  border:1px solid;
+  max-width:300px;
+  min-height: 400px;
+  background-color: black;
+  padding: 10px;
+  color: white;
+}
+
+.nextbtn {
+  width:100%;
+  height:10%;
+}
+
+#cardContent {
+  position: relative;
+  width: 100%;
+  height: 90%;
+  /*Change on the fly*/
+  text-align: center;
+  z-index: 3;
+  background-color: black;
+  color:white;
+  overflow: hidden;
+}
+
+
+
+::-webkit-scrollbar {
+  display: none;
+}
+@media screen {
+  #cardWrapper {
+    position: relative;
+  }
+}
+@media screen and (min-width: 240px) {
+  #cardWrapper {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 240px) and (min-height: 200px) {
+  #cardWrapper {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 240px) and (min-height: 720px) {
+  #cardWrapper {
+    height: 720px;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
+  }
+}
+@media screen and (min-width: 420px) {
+  #cardWrapper {
+    width: 420px;
+    margin: auto;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
+  }
+}
+@media screen and (min-width: 420px) and (min-height: 200px) {
+  #cardWrapper {
+    height: 100%;
+  }
+}
+@media screen and (min-width: 420px) and (min-height: 720px) {
+  #cardWrapper {
+    height: 720px;
+  }
+}
