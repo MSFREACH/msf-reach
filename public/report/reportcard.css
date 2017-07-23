@@ -2,20 +2,58 @@ html,body {
     height: 100%;
 }
 
-.container {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.report-root
+{
+  opacity:1;
+  text-rendering: optimizeLegibility;
+  pointer-events: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  right: 0;
+ z-index: 1000000;
 }
 
-.carddiv{
-  border:1px solid;
-  max-width:300px;
-  min-height: 400px;
-  background-color: black;
-  padding: 10px;
-  color: white;
+@media (min-width: 481px)
+{.report-root
+ {
+    display: table;
+ }
+}
+
+@media screen and (max-width: 480px)
+.report-root{
+    position: absolute;
+}
+
+.report-overlay
+{
+  background: radial-gradient(#40404b, #111118) rgba(34,34,40,0.94);
+  position: fixed;
+  opacity: 0.9;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: -1;
+}
+
+@media screen and (max-width: 480px)
+{.report-overlay {
+    display: none;
+}
+}
+
+@media (min-width: 481px)
+{
+.report-card-wrapper {
+    vertical-align: middle;
+    display: table-cell;
+    margin: auto;
+    overflow-y: auto;
+  }
 }
 
 .nextbtn {
@@ -23,58 +61,36 @@ html,body {
   height:10%;
 }
 
-#cardContent {
+.report-card-widget {
   position: relative;
-  width: 100%;
-  height: 90%;
-  /*Change on the fly*/
+  width: 300px;
   text-align: center;
   z-index: 3;
   background-color: black;
   color:white;
   overflow: hidden;
+  margin: 0 auto;
+  border-radius: 5px;
+  max-height: 100vh;
 }
 
+@media screen and (max-width: 480px)
+{
+.report-card-widget {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 0;
+ }
+}
 
+.report-card-container{
+  position: relative;
+  height:100%;
+}
 
 ::-webkit-scrollbar {
   display: none;
-}
-@media screen {
-  #cardWrapper {
-    position: relative;
-  }
-}
-@media screen and (min-width: 240px) {
-  #cardWrapper {
-    width: 100%;
-  }
-}
-@media screen and (min-width: 240px) and (min-height: 200px) {
-  #cardWrapper {
-    height: 100%;
-  }
-}
-@media screen and (min-width: 240px) and (min-height: 720px) {
-  #cardWrapper {
-    height: 720px;
-    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
-  }
-}
-@media screen and (min-width: 420px) {
-  #cardWrapper {
-    width: 420px;
-    margin: auto;
-    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
-  }
-}
-@media screen and (min-width: 420px) and (min-height: 200px) {
-  #cardWrapper {
-    height: 100%;
-  }
-}
-@media screen and (min-width: 420px) and (min-height: 720px) {
-  #cardWrapper {
-    height: 720px;
-  }
 }
