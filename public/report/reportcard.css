@@ -6,7 +6,6 @@ html,body {
 {
   opacity:1;
   text-rendering: optimizeLegibility;
-  pointer-events: none;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -65,7 +64,6 @@ html,body {
   position: relative;
   width: 300px;
   text-align: center;
-  z-index: 3;
   background-color: black;
   color:white;
   overflow: hidden;
