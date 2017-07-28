@@ -30,19 +30,36 @@
       <div class="report-card-container">
       <div style="height:90%;position:relative;">
        <div style="margin:10px;">
-      <h4>Hello!</h4>
-      <p>MSF would like to request any information you may have about an event that may be happening in your area.
-      <p>We are piloting a new system for sharing information. Please follow the instructions to submit your report.</p>
-      <p>THANK YOU for being part of our team! </p>
+         <div class="form-section">
+           <h4>Hello!</h4>
+           <p>MSF would like to request any information you may have about an event that may be happening in your area.</p>
+           <p>We are piloting a new system for sharing information. Please follow the instructions to submit your report.</p>
+           <p>THANK YOU for being part of our team! </p>
+          </div>
+          <div class="form-section">
+            <h4>PLEASE SELECT YOUR LOCATION ON THE MAP </h4>
+            <p>map here</p>
+           </div>
+      </div>
     </div>
-      </div>
-      <button type="button" name="button" class="btn btn-danger nextbtn">Next</button>
-      </div>
+    <div class="form-navigation">
+      <button type="button" class="previous btn btn-info pull-left">PREVIOUS</button>
+      <button type="button" class="next btn btn-danger pull-right">NEXT</button>
+      <input type="submit" class="btn btn-default pull-right" style="display: none;">
+      <span class="clearfix"></span>
+    </div>
+
+  </div>
     </div>
 
 </div>
 </div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/lib/jquery/jquery-3.2.1.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/lib/bootstrap/js/bootstrap.min.js"></script>
 
+<script src="reportcard.js"></script>
 </body>
 
 </html>
