@@ -1,5 +1,10 @@
 html, body { height: 100% }
 
 #landingMap {
-  height:88vh;
+  height:92vh;
+  width:100vw;
+}
+
+.col-md-12 {
+  padding:0;
 }

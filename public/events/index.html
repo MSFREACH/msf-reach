@@ -23,6 +23,9 @@
     <!-- Events -->
     <link rel="stylesheet" href="/resources/css/events.css"/>
 
+    <!-- Nav -->
+    <link rel="stylesheet" href="/resources/css/nav.css"/>
+
   </head>
   <body>
     <!-- Modal -->
@@ -54,15 +57,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">MSF Reach</a>
+          <a class="navbar-brand"><img src="/resources/images/msf.jpg" height=50px; width=auto;></img> </a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-              <li><a href="/">Home</a></li>
-              <li><a href="/events/new">Create New Event</a><li>
+              <li><a href="/">MSF REACH</a></li>
+              <li><a href="/events/new">NEW EVENT</a><li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Session <span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="#">user@msf.org</a></li>
                   <li role="separator" class="divider"></li>
@@ -72,21 +75,32 @@
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
-    <!-- Map -->
-    <div class="col-md-8">
-      <div id="map"></div>
-    </div>
     <!-- Side pane -->
-    <div id="sidepane" class="col-md-4">
-      <h3 id="title">Event</h3>
-      <div id="eventProperties"></div>
-      <button class=" btn btn-primary">Edit</button>
-      <!-- Button trigger modal -->
-      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">
-        Archive</button>
-    </div>
-    <div class="col-md-8">
-      <p>Contacts & Mission Histories table</p>
+      <div id="sidepane" class="col-md-4" style="min-height:90vh;">
+        <ul class="nav nav-tabs">
+          <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
+          <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
+          <li role="presentation"><a data-toggle="tab" href="#" >Contacts</a></li>
+          <li role="presentation"><a href="#">Missions</a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="event" class="tab-pane fade in active">
+              <div id="eventProperties"></div>
+                <div class="row" style="position:absolute;bottom:1%">
+                  <button class=" btn btn-primary">Edit</button>
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">Archive</button>
+                </div>
+          </div>
+          <div id="tweets" class="tab-pane fade">
+            <h3>Tweet Feed</h3>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          </div>
+        </div>
+      </div>
+    <!-- Map -->
+    <div id="mapContainer" class="col-md-8">
+      <div id="map"></div>
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -101,5 +115,26 @@
     <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
     <script src="/lib/leaflet/leaflet.js"></script>
     <script src="/resources/js/events.js"></script>
+    <script>
+                $('#feedTab').on('click', function(e){
+                  //$('#mapContainer').removeClass('col-md-8');
+                  $('#mapContainer').toggle();
+                  $('#sidepane').removeClass('col-md-4');
+                  $('#sidepane').addClass('col-md-12');
+                  setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                });
+
+                $('#eventTab').on('click', function(e){
+                  $('#mapContainer').toggle();
+                  $('#mapContainer').addClass('col-md-8');
+                  $('#sidepane').removeClass('col-md-12');
+                  $('#sidepane').addClass('col-md-4');
+                  setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                });
+
+
+
+    </script>
+
   </body>
 </html>
