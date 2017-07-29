@@ -69,7 +69,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 			// Set jetCheck on root. All paths below this will also have JWT checks applied.
 			app.use('/', [jwtCheck, express.static(config.STATIC_PATH)], function(err, req, res, next){
 				if (err.name === 'UnauthorizedError'){
-					res.redirect(301, '/login');
+					res.redirect('/login');
 				}
 			});
 
