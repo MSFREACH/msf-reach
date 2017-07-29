@@ -1,0 +1,16 @@
+.navbar {
+  background-color: #FFF;
+  margin-bottom: 0;
+}
+
+.navbar-default .navbar-nav > li > a:visited {
+  color:#777777!important;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color:#EA0B19!important;
+}
+
+.navbar-brand {
+  padding:0;
+}

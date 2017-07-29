@@ -8,8 +8,8 @@
  GEOFORMAT = 'geojson'; // Change to topojson for prod
  HOSTNAME = 'http://localhost:8001/'; // Change to host for prod
 
- // Globals
- var currentEventId;
+// Globals
+var currentEventId;
 
 var zoomToEvent = function(latlng){
   eventsMap.setView(latlng, 12);

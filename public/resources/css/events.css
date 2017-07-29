@@ -1,7 +1,15 @@
 #map {
-  height: 88vh;
+  height: 92vh;
 }
 
-#title{
+#title {
   margin-top:0;
+}
+
+.col-md-8 {
+  padding-right:0;
+}
+
+#sidepane {
+  padding-top:15px;
 }
