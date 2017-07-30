@@ -132,3 +132,7 @@ html,body {
     margin: 10px;
     cursor:pointer;
 }
+
+.rtype-selected{
+  border:3px solid red;
+}
