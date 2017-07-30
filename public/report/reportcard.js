@@ -36,4 +36,8 @@ $(function () {
     //$(section).find(':input').attr('data-parsley-group', 'block-' + index);
   });
   navigateTo(0); // Start at the beginning
+  $('.rtype-item').on('click',function(){
+    $(this).toggleClass('rtype-selected');
+  });
+
 });
