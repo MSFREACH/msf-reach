@@ -85,19 +85,26 @@ var getReports = function(eventId, callback){
   * @param {Object} reports - GeoJson FeatureCollection containing report points
   **/
 var mapReports = function(reports){
-  var reportsMarker = {
-    radius: 8,
-    fillColor: "#ff7800",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-  };
+
+  function onEachFeature(feature, layer) {
+     //var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id + "'>Event " + feature.properties.id +"</a></strong>" + "<BR>Status: " + feature.properties.status +"<BR>Type: " + feature.properties.type +"<BR>Created: " + feature.properties.created;
+
+     var popupContent = '';
+
+     if (feature.properties && feature.properties.content) {
+       popupContent += feature.properties.content.text;
+     }
+
+     layer.bindPopup(popupContent);
+   }
+
+  var reportsMarker = L.divIcon({className: 'report-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
 
   L.geoJSON(reports, {
     pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, reportsMarker);
-    }
+        return L.marker(latlng, {icon: reportsMarker});
+    },
+    onEachFeature: onEachFeature
 }).addTo(eventsMap);
 }
 
