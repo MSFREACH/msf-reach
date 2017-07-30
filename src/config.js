@@ -8,7 +8,7 @@ export default {
   API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
   API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'flood,earthquake,conflict').split(','),
   API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'confirmed,verified').split(','),
-  AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || new Buffer('public_key')).replace(/,/g,'\n'),
+  AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
   AWS_COGNITO_ALGORITHM: process.env.AWS_COGNITO_ALGORITHM || 'RS256',
   BODY_LIMIT: process.env.BODY_LIMIT || '100kb',
   CACHE: process.env.CACHE === 'true' || false,
