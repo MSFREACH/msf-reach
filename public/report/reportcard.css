@@ -89,10 +89,17 @@ html,body {
   height:400px;
   margin:10px;
 }
+#map {
+  height:305px;;
+}
+
 @media screen and (max-width: 480px)
 {
   .report-card-container{
     height:100vh;
+  }
+  #map {
+    height:80vh;
   }
 }
 
