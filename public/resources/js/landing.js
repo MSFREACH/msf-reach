@@ -36,6 +36,15 @@ TYPES=['earthquake', 'flood', 'conflict'];
  		layer.bindPopup(popupContent);
  	}
 
+  // MSF Icons
+  var msfIcon = L.icon({
+    iconUrl: '/resources/images/msf_icon.png',
+
+    iconSize:     [26, 26], // size of the icon
+    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+});
+
  /**
    * Function to print a table of events
    * @param {Object} events - GeoJSON Object containing event details
@@ -49,7 +58,7 @@ TYPES=['earthquake', 'flood', 'conflict'];
        console.log([TYPES[i]]);
        var layer = L.geoJSON(events, {
          pointToLayer: function(feature, latlng){
-                return L.marker(latlng);
+                return L.marker(latlng, {icon: msfIcon});
               },
         onEachFeature: onEachFeature,
         filter: function(feature, layer){
