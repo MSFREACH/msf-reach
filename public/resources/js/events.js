@@ -6,7 +6,7 @@
 
 // Constants
  GEOFORMAT = 'geojson'; // Change to topojson for prod
- HOSTNAME = 'http://localhost:8001/'; // Change to host for prod
+ WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
  EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 // Globals
@@ -35,9 +35,9 @@ var printEventProperties = function(err, eventProperties){
       }
     });
     // Create unique link to this event
-    var eventLink = HOSTNAME + 'events/?eventId=' + eventProperties.id;
+    var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
     // Create unique report link for this event
-    var eventReportLink = HOSTNAME + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey
+    var eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey
     // Add unique link to this event
     propertiesTable += "<tr><td>Event link</td><td><a href='"+eventLink+"'>"+eventLink+"</a></td></tr>";
     // Add unique link to report to this event
@@ -59,7 +59,7 @@ var printEventProperties = function(err, eventProperties){
   * @returns {Object} eventProperties - Event properties unless error
   */
 var getEvent = function(eventId, callback){
-  $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
+  $.getJSON('/api/events/' + eventId + '?GEOFORMAT=' + GEOFORMAT, function ( data ){
     // Zoom to location
     zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]])
     // Print output to page
@@ -75,7 +75,7 @@ var getEvent = function(eventId, callback){
   * @param {Number} eventId - UniqueId of event
   **/
 var getReports = function(eventId, callback){
-  $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
+  $.getJSON('/api/reports/?eventId=' + eventId + '&GEOFORMAT=' + GEOFORMAT, function( data ){
     callback(data.result);
   });
 };
