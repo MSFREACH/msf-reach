@@ -8,7 +8,7 @@ addons:
 
 before_install:
   - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
-  - git clone https://github.com/usergroupcoop/cognicity_msf-schema.git && cd cognicity_msf-schema && bash build.sh && cd -
+  - git clone https://github.com/usergroupcoop/msf-reach-schema && cd msf-reach-schema && bash build.sh && cd -
 
 install:
   - npm install
