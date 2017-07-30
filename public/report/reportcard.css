@@ -62,7 +62,7 @@ html,body {
   text-align: center;
   background-color: black;
   color:white;
-  /*overflow: hidden;*/
+  overflow: hidden;
   margin: 0 auto;
   border-radius: 5px;
   max-height: 100vh;
@@ -86,7 +86,7 @@ html,body {
   margin:10px;
 }
 #map {
-  height:305px;;
+  height:305px;
 }
 
 @media screen and (max-width: 480px)
