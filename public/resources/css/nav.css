@@ -1,10 +1,7 @@
 .navbar {
   background-color: #FFF;
   margin-bottom: 0;
-}
-
-.navbar-default .navbar-nav > li > a:visited {
-  color:#777777!important;
+  font-weight: 600!important;
 }
 
 .navbar-default .navbar-nav > li > a:hover {
