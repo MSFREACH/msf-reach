@@ -59,7 +59,7 @@ var printEventProperties = function(err, eventProperties){
   * @returns {Object} eventProperties - Event properties unless error
   */
 var getEvent = function(eventId, callback){
-  $.getJSON('/api/events/' + eventId + '?GEOFORMAT=' + GEOFORMAT, function ( data ){
+  $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Zoom to location
     zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]])
     // Print output to page
