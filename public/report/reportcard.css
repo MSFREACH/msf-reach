@@ -55,10 +55,6 @@ html,body {
   }
 }
 
-.nextbtn {
-  float:right;
-  margin-right: 10px;
-}
 
 .report-card-widget {
   position: relative;
@@ -66,7 +62,7 @@ html,body {
   text-align: center;
   background-color: black;
   color:white;
-  overflow: hidden;
+  /*overflow: hidden;*/
   margin: 0 auto;
   border-radius: 5px;
   max-height: 100vh;
@@ -96,10 +92,10 @@ html,body {
 @media screen and (max-width: 480px)
 {
   .report-card-container{
-    height:100vh;
+    height:85vh;
   }
   #map {
-    height:80vh;
+    height:65vh;
   }
 }
 
