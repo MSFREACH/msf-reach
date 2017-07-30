@@ -26,8 +26,6 @@ $(function () {
 
   // Next button goes forward iff current block validates
   $('.form-navigation .next').on('click',function() {
-    console.log('hhh');
-    //if ($('.demo-form').parsley().validate({group: 'block-' + curIndex()}))
       navigateTo(curIndex() + 1);
   });
 
