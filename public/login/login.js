@@ -1,6 +1,12 @@
 // Get JWT from AWS Cognito based on username and password
 console.log('Authenticaiton script running');
 
+// Constants
+var POOL_DATA = {
+    UserPoolId : 'us-east-2_n5nz37NTc', // Your user pool id here
+    ClientId : '7j3psl0ukc5s1tbjv34u4nmcke' // Your client id here
+};
+
 var setJWTCookie = function(jwt){
   Cookies.set("jwt", jwt);
   $.ajax({
@@ -13,6 +19,9 @@ var setJWTCookie = function(jwt){
       console.log(err);
     },
     success: function(){
+      var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(POOL_DATA);
+      var cognitoUser = userPool.getCurrentUser();
+      localStorage.setItem("username", JSON.stringify(cognitoUser.username).replace(/\"/g, ""));
       window.location.replace("/");
     }
   });
@@ -31,11 +40,8 @@ var cognitoAuth = function(){
        Password : $('#inputPassword').val(),
   };
   var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
-  var poolData = {
-      UserPoolId : 'us-east-2_n5nz37NTc', // Your user pool id here
-      ClientId : '7j3psl0ukc5s1tbjv34u4nmcke' // Your client id here
-  };
-  var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+
+  var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(POOL_DATA);
   var userData = {
       Username : $('#inputEmail').val(),
       Pool : userPool
