@@ -5,9 +5,9 @@
  */
 
 // Constants
- GEOFORMAT = 'geojson'; // Change to topojson for prod
- WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
- EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
+var GEOFORMAT = 'geojson'; // Change to topojson for prod
+var WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
+var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 // Globals
 var currentEventId;
@@ -82,7 +82,7 @@ var getEvent = function(eventId, callback){
   * @param {Number} eventId - UniqueId of event
   **/
 var getReports = function(eventId, callback){
-  $.getJSON('/api/reports/?eventId=' + eventId + '&GEOFORMAT=' + GEOFORMAT, function( data ){
+  $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
   });
 };
