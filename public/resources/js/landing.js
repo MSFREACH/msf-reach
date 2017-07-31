@@ -5,9 +5,9 @@
  */
 
 // Constants
-GEOFORMAT='geojson';
-HOSTNAME='http://localhost:8001/';
-TYPES=['earthquake', 'flood', 'conflict'];
+var GEOFORMAT='geojson';
+var HOSTNAME='http://localhost:8001/';
+var TYPES=['earthquake', 'flood', 'conflict'];
 
  /**
    * Function to get all events from the API
