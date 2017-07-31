@@ -16,6 +16,14 @@ var zoomToEvent = function(latlng){
   eventsMap.setView(latlng, 12);
 }
 
+var clipboard = new Clipboard('.btn');
+clipboard.on('success', function(e) {
+    console.log(e);
+});
+clipboard.on('error', function(e) {
+    console.log(e);
+});
+
 /**
   * Function to print a list of event details to web page
   * @param {Object} eventProperties - Object containing event details
@@ -31,7 +39,7 @@ var printEventProperties = function(err, eventProperties){
     $.each( eventProperties, function( key, val ) {
       if (EVENT_PROPERTIES.indexOf(key) > -1 ){
         propertiesTable += "<tr id='" + key + "'><td>" + key.charAt(0).toUpperCase()+key.slice(1) + "</td><td>"
-                              + val + "</td></tr>" ;
+                              + val + "</td><td></td></tr>" ;
       }
     });
     // Create unique link to this event
@@ -39,15 +47,14 @@ var printEventProperties = function(err, eventProperties){
     // Create unique report link for this event
     var eventReportLink = HOSTNAME + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey
     // Add unique link to this event
-    propertiesTable += "<tr><td>Event link</td><td><a href='"+eventLink+"'>"+eventLink+"</a></td></tr>";
+    propertiesTable += "<tr><td>Event link</td><td><a id='eventLink'  href='"+eventLink+"'>"+eventLink+"</a></td><td><button class='btn btn-primary  ' data-clipboard-target='#eventLink'>Copy</button></td></tr>";
     // Add unique link to report to this event
-    propertiesTable += "<tr><td>Report link</td><td><a href='"+eventReportLink+"'>"+eventReportLink+"</a></td></tr>";
-    $("#eventProperties").append('<p>Report link: <a href=' + eventReportLink + '>'+eventReportLink+'</a></p>');
+    propertiesTable += "<tr><td>Report link</td><td><a id='reportLink' href='"+eventReportLink+"'>"+eventReportLink+"</a></td><td><button class='btn btn-primary' data-clipboard-target='#reportLink'>Copy</button></td></tr>";
+
     // Append output to body
     propertiesTable += "</table>"
     $("#eventProperties").html(propertiesTable);
 
-    //$('#title').append(' ' + eventProperties.id);
   }
 }
 
