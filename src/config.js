@@ -6,7 +6,7 @@ export default {
   API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
 // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
   API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
-  API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'flood,earthquake,conflict').split(','),
+  API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'natural_hazard,conflict,epidemiological').split(','),
   API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'confirmed,verified').split(','),
   AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
   AWS_COGNITO_ALGORITHM: process.env.AWS_COGNITO_ALGORITHM || 'RS256',
