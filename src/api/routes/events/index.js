@@ -80,7 +80,7 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Update an event record in the database
-	api.post('/:id',jwtCheck,
+	api.put('/:id',jwtCheck,
 		validate({
 			params: { id: Joi.number().integer().min(1).required() } ,
 			body: Joi.object().keys({
