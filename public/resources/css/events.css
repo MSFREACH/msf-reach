@@ -26,6 +26,12 @@
   margin-top:15px;
 }
 
+.panel-heading a {
+  font-size:14px;
+  font-weight: normal;
+  color:rgb(35, 82, 124);
+}
+
 .panel-heading a:after {
     font-family:'Glyphicons Halflings';
     content:"\e114";
@@ -34,4 +40,8 @@
 }
 .panel-heading a.collapsed:after {
     content:"\e080";
+}
+
+textarea {
+  resize: vertical;
 }

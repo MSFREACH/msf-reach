@@ -32,7 +32,7 @@
 
   </head>
   <body>
-    <!-- Modal -->
+    <!-- Archive Modal -->
     <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -46,6 +46,47 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button id="btnArchive" type="button" class="btn btn-danger">Archive Event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Edit Event</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Summary</h3>
+              </div>
+              <div class="panel-body">
+              <input type="text" id="inputSummary" class="form-control" placeholder="" aria-describedby="basic-addon1">
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Practical Details</h3>
+              </div>
+              <div class="panel-body">
+              <textarea class="form-control" rows="2" id="inputPracticalDetails" placeholder="" required></textarea>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Security Details</h3>
+              </div>
+              <div class="panel-body">
+              <textarea class="form-control" rows="2" id="inputSecurityDetails" placeholder="" required></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="btnSaveEdits" type="button" class="btn btn-primary">Save Edits</button>
           </div>
         </div>
       </div>
@@ -136,7 +177,7 @@
                   </div>
               </div>
           </div>
-              <button class=" btn btn-primary">Edit</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#editModal">Edit</button>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">Archive</button>
         </div>
