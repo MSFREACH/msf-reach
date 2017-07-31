@@ -6,7 +6,7 @@
 
 // Constants
  GEOFORMAT = 'geojson'; // Change to topojson for prod
- HOSTNAME = 'http://localhost:8001/'; // Change to host for prod
+ WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
  EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 // Globals
@@ -43,9 +43,9 @@ var printEventProperties = function(err, eventProperties){
       }
     });
     // Create unique link to this event
-    var eventLink = HOSTNAME + 'events/?eventId=' + eventProperties.id;
+    var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
     // Create unique report link for this event
-    var eventReportLink = HOSTNAME + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey
+    var eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey
     // Add unique link to this event
     propertiesTable += "<tr><td>Event link</td><td><a id='eventLink'  href='"+eventLink+"'>"+eventLink+"</a></td><td><button class='btn btn-primary  ' data-clipboard-target='#eventLink'>Copy</button></td></tr>";
     // Add unique link to report to this event
@@ -82,7 +82,7 @@ var getEvent = function(eventId, callback){
   * @param {Number} eventId - UniqueId of event
   **/
 var getReports = function(eventId, callback){
-  $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
+  $.getJSON('/api/reports/?eventId=' + eventId + '&GEOFORMAT=' + GEOFORMAT, function( data ){
     callback(data.result);
   });
 };

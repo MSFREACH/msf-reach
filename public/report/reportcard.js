@@ -11,7 +11,7 @@ $(function () {
     $('.form-navigation .previous').toggle(index > 0);
     var atTheEnd = index >= $sections.length - 1;
     $('.form-navigation .next').toggle(!atTheEnd);
-    $('.form-navigation [type=submit]').toggle(atTheEnd);
+    $('.form-navigation [id=createReport]').toggle(atTheEnd);
   }
 
   function curIndex() {
@@ -26,8 +26,6 @@ $(function () {
 
   // Next button goes forward iff current block validates
   $('.form-navigation .next').on('click',function() {
-    console.log('hhh');
-    //if ($('.demo-form').parsley().validate({group: 'block-' + curIndex()}))
       navigateTo(curIndex() + 1);
   });
 
@@ -36,4 +34,8 @@ $(function () {
     //$(section).find(':input').attr('data-parsley-group', 'block-' + index);
   });
   navigateTo(0); // Start at the beginning
+  $('.rtype-item').on('click',function(){
+    $(this).toggleClass('rtype-selected');
+  });
+
 });
