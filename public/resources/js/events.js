@@ -45,11 +45,24 @@ var printEventProperties = function(err, eventProperties){
     // Create unique link to this event
     var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
     // Create unique report link for this event
-    var eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey
+    var eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
     // Add unique link to this event
     propertiesTable += "<tr><td>Event link</td><td><a id='eventLink'  href='"+eventLink+"'>"+eventLink+"</a></td><td><button class='btn btn-primary  ' data-clipboard-target='#eventLink'>Copy</button></td></tr>";
     // Add unique link to report to this event
     propertiesTable += "<tr><td>Report link</td><td><a id='reportLink' href='"+eventReportLink+"'>"+eventReportLink+"</a></td><td><button class='btn btn-primary' data-clipboard-target='#reportLink'>Copy</button></td></tr>";
+    // Add user metadata
+    if (eventProperties.metadata.user){
+      propertiesTable += "<tr><td>Owner</td><td>"+eventProperties.metadata.user+"</td></tr>"
+    }
+    if (eventProperties.metadata.user_edit){
+      propertiesTable += "<tr><td>Edits</td><td>"+eventProperties.metadata.user_edit+"</td></tr>"
+    }
+
+    // Pre-fil edit modal
+    $('#inputSummary').val(eventProperties.metadata.summary);
+    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
+    $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
+
 
     // Append output to body
     propertiesTable += "</table>"
@@ -166,7 +179,7 @@ $('#btnArchive').click(function(e){
   }
 
   $.ajax({
-    type: "POST",
+    type: "PUT",
     url: "/api/events/" + currentEventId,
     data: JSON.stringify(body),
     contentType: 'application/json'
@@ -175,4 +188,30 @@ $('#btnArchive').click(function(e){
   }).fail(function (reqm, textStatus, err){
     alert(err);
   });
-})
+});
+
+// Edit support
+$('#btnSaveEdits').click(function(e){
+
+  var body = {
+    "status":"active",
+    "metadata":{
+      "summary": $("#inputSummary").val(),
+      "practical_details": $("#inputPracticalDetails").val(),
+      "security_details": $("#inputSecurityDetails").val(),
+      "user_edit": localStorage.getItem("username")
+    }
+  }
+
+  $.ajax({
+    type: "PUT",
+    url: "/api/events/" + currentEventId,
+    data: JSON.stringify(body),
+    contentType: 'application/json'
+  }).done(function( data, textStatus, req ){
+    //$('#editModal').modal('toggle'); // toggling doesn't refresh data on page.
+    window.location.href = '/events/?eventId=' + currentEventId;
+  }).fail(function (reqm, textStatus, err){
+    alert(err);
+  });
+});
