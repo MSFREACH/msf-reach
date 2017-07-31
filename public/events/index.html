@@ -91,12 +91,55 @@
         <div class="tab-content">
           <div id="event" class="tab-pane fade in active">
               <div id="eventProperties"></div>
-                <div class="row" style="position:absolute;bottom:1%">
-                  <button class=" btn btn-primary">Edit</button>
-                  <!-- Button trigger modal -->
-                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">Archive</button>
-                </div>
+              <div class="panel-group" id="accordion">
+              <div class="panel panel-default" id="panel1">
+                  <div class="panel-heading">
+                       <h4 class="panel-title">
+                  <a data-toggle="collapse" data-target="#collapseOne"
+                     href="#collapseOne">
+                    Summary
+                  </a>
+                </h4>
+                  </div>
+                  <div id="collapseOne" class="panel-collapse collapse in">
+                      <div class="panel-body" id="eventSummary"></div>
+                  </div>
+              </div>
+              <div class="panel panel-default" id="panel2">
+                  <div class="panel-heading">
+                       <h4 class="panel-title">
+                  <a data-toggle="collapse" data-target="#collapseTwo"
+                     href="#collapseTwo" class="collapsed">
+                    Practical Details
+                    </details>
+                  </a>
+                </h4>
+
+                  </div>
+                  <div id="collapseTwo" class="panel-collapse collapse">
+                      <div class="panel-body" id="eventPracticalDetails"></div>
+                  </div>
+              </div>
+              <div class="panel panel-default" id="panel3">
+                  <div class="panel-heading">
+                       <h4 class="panel-title">
+                  <a data-toggle="collapse" data-target="#collapseThree"
+                     href="#collapseThree" class="collapsed">
+                    Security Details
+                    </details>
+                  </a>
+                </h4>
+
+                  </div>
+                  <div id="collapseThree" class="panel-collapse collapse">
+                      <div class="panel-body" id="eventSecurityDetails"></div>
+                  </div>
+              </div>
           </div>
+              <button class=" btn btn-primary">Edit</button>
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">Archive</button>
+        </div>
           <div id="tweets" class="tab-pane fade">
             <h3>Tweet Feed</h3>
             <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>

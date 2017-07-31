@@ -55,6 +55,10 @@ var printEventProperties = function(err, eventProperties){
     propertiesTable += "</table>"
     $("#eventProperties").html(propertiesTable);
 
+    console.log(eventProperties);
+    $("#eventSummary").append(eventProperties.metadata.summary);
+    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
+    $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
   }
 }
 
