@@ -21,6 +21,7 @@
 
    <link rel="stylesheet" href="reportcard.css">
 
+
 </head>
 <body>
   <div class="report-root">
@@ -38,8 +39,8 @@
           </div>
           <div class="form-section">
             <h4>PLEASE SELECT YOUR LOCATION ON THE MAP </h4>
-            <p>map here</p>
-           </div>
+              <div id="map"></div>
+          </div>
            <div class="form-section">
              <p>PLEASE HELP US BEST ASSESS THE SITUATION BY HELPING US SORT YOUR REPORT.</p>
              <div class="rtype-container">
@@ -52,14 +53,14 @@
            </div>
            <div class="form-section">
              <h4>PLEASE ENTER TEXT IN THE BOX BELOW TO SHARE YOUR INFORMATION.</h4>
-             <textarea rows="6" placeholder="typing..." style="width:100%;"></textarea>
+             <textarea rows="6" placeholder="typing..." style="width:100%;color:black;" id="inputReportText"></textarea>
             </div>
       </div>
     </div>
     <div class="form-navigation">
       <button type="button" class="previous btn btn-info pull-left">PREVIOUS</button>
       <button type="button" class="next btn btn-danger pull-right">NEXT</button>
-      <input type="submit" class="btn btn-default pull-right" style="display: none;">
+      <button type="button" id="createReport" class="btn btn-primary pull-right" style="display: none;">Submit</button>
       <span class="clearfix"></span>
     </div>
 
@@ -71,7 +72,14 @@
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Get query parameter from URL -->
+<!-- Ask the server for reports from specific event -->
+<!-- Display event details -->
+<!-- Display map with points -->
+<script src="/lib/getQueryVariable/getQueryVariable.js"></script>
+<script src="/lib/leaflet/leaflet.js"></script>
+<script src="/resources/js/new-report.js"></script>
 
 <script src="reportcard.js"></script>
 </body>
