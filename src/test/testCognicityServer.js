@@ -34,7 +34,7 @@ const token = jwt.sign({}, new Buffer('public_key'), {algorithm: 'HS256'});
 describe('Cognicity Server Testing Harness', function() {
 
   // Shared variables, for transferring data between tests
-  let eventId = 0;
+  let eventId = 1;
   let reportKey = 'key';
   let report_id = 0;
 
@@ -125,16 +125,10 @@ describe('Cognicity Server Testing Harness', function() {
       // Can create events, returning new event
       it('Create an event (POST /events)', function(done){
           test.httpAgent(app)
-            .post('/api/events')
+            .put('/api/events/'+eventId)
             .set('Cookie', 'jwt='+token)
             .send({
                 "status": "active",
-                "type": "flood",
-                "created": "2017-05-22T20:35Z",
-                "location":{
-                  "lat":45,
-                  "lng":140
-                },
                 "metadata":{
                   "user":"integrated tester"
                 }
@@ -177,7 +171,7 @@ describe('Cognicity Server Testing Harness', function() {
       // Can update an event, returning updated event
       it('Update an event (POST /events)', function(done){
           test.httpAgent(app)
-            .post('/api/events/' + eventId)
+            .put('/api/events/' + eventId)
             .set('Cookie', 'jwt='+token)
             .send({
               "status":"inactive",
