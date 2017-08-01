@@ -1,5 +1,5 @@
-dist: precise
-sudo: true
+dist: trusty
+sudo: false
 language: node_js
 node_js:
   - "6.10.0"
