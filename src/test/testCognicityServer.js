@@ -222,11 +222,11 @@ describe('Cognicity Server Testing Harness', function() {
 
     // Report endpoint
     describe('Reports endpoint', function() {
-      // Can create events, returning new event
+      // Can create reports, returning a new report
       it('Create a report (POST /reports)', function(done){
           test.httpAgent(app)
             .post('/api/reports')
-            .set('Cookie', 'jwt='+token)
+            // .set('Cookie', 'jwt='+token) this end point not authenticated
             .send({
                 "eventId": eventId,
                 "status": "confirmed",
@@ -307,7 +307,7 @@ describe('Cognicity Server Testing Harness', function() {
         it('Update an report (POST /reports)', function(done){
             test.httpAgent(app)
               .post('/api/reports/' + report_id)
-              .set('Cookie', 'jwt='+token)
+              .set('Cookie', 'jwt='+token) // to chagne existing report auth is required
               .send({
                 "status":"verified",
                 "content":{
