@@ -47,7 +47,7 @@ $('#createEvent').on('click', function (e) {
         "created": new Date().toISOString(),
         "location": latlng,
         "metadata":{
-          "user": "user@msf.org",
+          "user": localStorage.getItem("username"),
           "summary": $("#inputSummary").val(),
           "practical_details": $("#inputPracticals").val(),
           "security_details": $("#inputSecurity").val()
