@@ -125,10 +125,16 @@ describe('Cognicity Server Testing Harness', function() {
       // Can create events, returning new event
       it('Create an event (POST /events)', function(done){
           test.httpAgent(app)
-            .put('/api/events/'+eventId)
+            .post('/api/events')
             .set('Cookie', 'jwt='+token)
             .send({
                 "status": "active",
+                "type": "natural_hazard",
+                "created": "2017-05-22T20:35Z",
+                "location":{
+                  "lat":45,
+                  "lng":140
+                },
                 "metadata":{
                   "user":"integrated tester"
                 }
@@ -169,7 +175,7 @@ describe('Cognicity Server Testing Harness', function() {
       });
 
       // Can update an event, returning updated event
-      it('Update an event (POST /events)', function(done){
+      it('Update an event (PUT /events/:id)', function(done){
           test.httpAgent(app)
             .put('/api/events/' + eventId)
             .set('Cookie', 'jwt='+token)
