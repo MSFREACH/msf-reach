@@ -47,5 +47,9 @@ export default {
   TABLE_GRASP_CARDS: process.env.TABLE_GRASP_CARDS || 'grasp.cards',
   TABLE_GRASP_LOG: process.env.TABLE_GRASP_LOG || 'grasp.log',
   TABLE_REPORTS: process.env.TABLE_REPORTS || 'cognicity.reports',
-  TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events'
+  TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events',
+  TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
+  TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
+  TWITTER_ACCESS_KEY: process.env.TWITTER_ACCESS_KEY,
+  TWITTER_ACCESS_SECRET: process.env.TWITTER_ACCESS_SECRET
 }

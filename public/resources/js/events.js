@@ -11,6 +11,7 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 // Globals
 var currentEventId;
+var eventReportLink;
 
 var zoomToEvent = function(latlng){
   eventsMap.setView(latlng, 12);
@@ -45,7 +46,7 @@ var printEventProperties = function(err, eventProperties){
     // Create unique link to this event
     var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
     // Create unique report link for this event
-    var eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
+    eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
     // Add unique link to this event
     propertiesTable += "<tr><td>Event link</td><td><a id='eventLink'  href='"+eventLink+"'>"+eventLink+"</a></td><td><button class='btn btn-primary  ' data-clipboard-target='#eventLink'>Copy</button></td></tr>";
     // Add unique link to report to this event
