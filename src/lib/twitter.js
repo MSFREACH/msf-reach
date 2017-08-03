@@ -7,7 +7,6 @@ import Twitter from 'twitter';
 // Config
 import config from '../config';
 
-// TODO geolocate tweet search
 // TODO rate limit of 180 searches per 15 mins
 // TODO exclude tweets already saved
 
@@ -21,18 +20,14 @@ const client = new Twitter({
 const searchTwitter = (queryTerm) => new Promise((resolve, reject) => {
   client.get('search/tweets', {q: queryTerm, geocode:'-5,120,3000km'}, function(error, tweets, response) {
    if (error) reject (error);
-   console.log(response.headers);
-   console.log(tweets);
    resolve(tweets);
  });
 });
 
 const embedTweet = (tweetId, tweetURL) => new Promise((resolve, reject) => {
     request('https://publish.twitter.com/oembed?url='+tweetURL+'&omit_script=true', function (err, response, body){
-    console.log(response.headers['content-type']);
     if (!err){
       if (response.headers['content-type'] === 'application/json; charset=utf-8'){
-        console.log(JSON.parse(body));
         resolve({tweetId:tweetId, tweetEmbed: JSON.parse(body)});
       }
     }
