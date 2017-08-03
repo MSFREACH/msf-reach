@@ -12,6 +12,7 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 // Globals
 var currentEventId;
 var eventReportLink;
+var currentEventProperties;
 
 var zoomToEvent = function(latlng){
   eventsMap.setView(latlng, 12);
@@ -30,6 +31,10 @@ clipboard.on('error', function(e) {
   * @param {Object} eventProperties - Object containing event details
   */
 var printEventProperties = function(err, eventProperties){
+
+  // Make a global store of current event properties
+  currentEventProperties = eventProperties;
+
   // If called with err, print that instead
   if (err){
     $('#eventProperties').append(err);
@@ -74,6 +79,15 @@ var printEventProperties = function(err, eventProperties){
     $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
     $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
   }
+  if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0){
+    $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
+      console.log(value.html);
+      $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
+      var tweetEventReportLink = eventReportLink.replace("&", "%26");
+      $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
+      twttr.widgets.load();
+    })
+    }
 }
 
 /**

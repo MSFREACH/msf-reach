@@ -15,10 +15,31 @@ function dropSaveTweet(ev) {
     var tweetDivId = ev.dataTransfer.getData("tweetDivId");
     console.log(eventReportLink);
     var tweetEventReportLink = eventReportLink.replace("&", "%26")
-    console.log('make put request for save tweet:'+tweetDivId);
+    console.log('make put request for save tweet:'+tweetDivId+JSON.stringify(currentEventProperties));
     $('#savedTweets').prepend(document.getElementById(tweetDivId));
     $('#'+tweetDivId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+tweetDivId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
 
+    if (currentEventProperties.metadata.saved_tweets){
+      currentEventProperties.metadata.saved_tweets.push({"tweetId":tweetDivId, "html":tweetIdHTMLMap[tweetDivId]});
+    }
+    else {
+      currentEventProperties.metadata["saved_tweets"] = [{"tweetId":tweetDivId, "html":tweetIdHTMLMap[tweetDivId]}]
+    }
+    console.log(currentEventProperties.metadata.saved_tweets);
+    var body = {
+      "status":"active",
+      "metadata":{"saved_tweets":currentEventProperties.metadata.saved_tweets}
+    }
+    $.ajax({
+      type: "PUT",
+      url: "/api/events/" + currentEventProperties.id,
+      data: JSON.stringify(body),
+      contentType: 'application/json'
+    }).done(function( data, textStatus, req ){
+      console.log('save tweet on server');
+    }).fail(function (reqm, textStatus, err){
+      alert(err);
+    });
   }
 
 function dropRemoveTweet(ev) {

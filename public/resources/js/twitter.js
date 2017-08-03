@@ -1,3 +1,6 @@
+// Globals
+var tweetIdHTMLMap = {};
+
 var loadTweets = function(err, tweets){
   if (err){
     alert('Error loading tweets: '+ err)
@@ -6,6 +9,7 @@ var loadTweets = function(err, tweets){
     $('#tweetFeed').empty();
     $.each(tweets, function(key, value){
       $('#tweetFeed').append('<div id="'+value.tweetId+'" draggable="true" ondragstart="drag(event)">'+value.tweetEmbed.html+'</div>');
+      tweetIdHTMLMap[value.tweetId] = value.tweetEmbed.html;
     })
     twttr.widgets.load()
   }
