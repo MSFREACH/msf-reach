@@ -27,7 +27,6 @@ export default ({ config, db, logger }) => {
 					promiseArray.push(embedTweet(data.statuses[i].id_str, 'https://twitter.com/'+data.statuses[i].user.screen_name+'/status/'+data.statuses[i].id_str))
 				}
 				Promise.all(promiseArray).then(function(resultArray){
-						//console.log(resultArray);
 						res.status(200).json({statusCode: 200, result:resultArray})
 				})
 					//.then((result) => res.status(200).json({ statusCode: 200, result: result }))
