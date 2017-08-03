@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 import { Router } from 'express';
 
 // Import any required utility functions
@@ -9,7 +11,7 @@ import { searchTwitter, embedTweet } from '../../../lib/twitter.js';
 import Joi from 'joi';
 import validate from 'celebrate';
 
-export default ({ config, db, logger }) => {
+export default ({ logger }) => {
 	let api = Router();
 
 	// Get a list of all reports

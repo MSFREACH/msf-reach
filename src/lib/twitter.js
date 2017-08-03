@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 // request functionality
 import request from 'request';
 
@@ -19,7 +21,7 @@ const client = new Twitter({
 
 const searchTwitter = (queryTerm) => new Promise((resolve, reject) => {
   client.get('search/tweets', {q: queryTerm, geocode:'-5,120,3000km'}, function(error, tweets, response) {
-   if (error) reject (error);
+   if (error) reject (error+': '+response);
    resolve(tweets);
  });
 });
@@ -30,6 +32,9 @@ const embedTweet = (tweetId, tweetURL) => new Promise((resolve, reject) => {
       if (response.headers['content-type'] === 'application/json; charset=utf-8'){
         resolve({tweetId:tweetId, tweetEmbed: JSON.parse(body)});
       }
+    }
+    else {
+      reject (err+': '+response);
     }
   });
 });

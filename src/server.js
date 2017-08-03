@@ -71,6 +71,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 				if (err.name === 'UnauthorizedError'){
 					res.redirect('/login');
 				}
+				else if (err){
+					next(err);
+				}
 			});
 
 			// App is ready to go, resolve the promise
