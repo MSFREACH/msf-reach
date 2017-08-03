@@ -36,6 +36,10 @@ newReportMap.on('click', function(e) {
 $('#createReport').on('click', function (e) {
 		var eventId = getQueryVariable("eventId");
 		var reportKey = getQueryVariable("reportkey");
+		var reportTags=[];
+		$('.rtype-selected').each(function() {
+			reportTags.push(this.getAttribute('data-msf-value'));
+		});
 
     if (latlng === null){
 			//$('#newEventModalTitle').html('<h4>Missing event location</h4>');
@@ -51,10 +55,13 @@ $('#createReport').on('click', function (e) {
 				"reportkey": reportKey,
 				"location":latlng,
 				"content":{
-					"text":$("#inputReportText").val()
+					"report_tags": JSON.stringify(reportTags),
+					"username/alias":$("#inputReportUserName").val(),
+					"description":$("#inputReportText").val(),
+					"image_link": "",
 				}
 			}
-
+      //console.log(body);
       $.ajax({
         type: "POST",
         url: "/api/reports",
