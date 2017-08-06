@@ -26,7 +26,8 @@ export default ({ config, db, logger }) => {
 	// Mount the various endpoints
 	api.use('/events', events({ config, db, logger }));
 	api.use('/reports', reports({ config, db, logger }));
-	api.use('/utils', utils({ config, db, logger }) )
+	api.use('/twitter', twitter({ logger}));
+	api.use('/utils', utils({ config, db, logger }) );
 
 	// Handle validation errors (wording of messages can be overridden using err.isJoi)
 	api.use(validate.errors());
