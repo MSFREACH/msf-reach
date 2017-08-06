@@ -12,6 +12,11 @@ $(function () {
     var atTheEnd = index >= $sections.length - 2;
     $('.form-navigation .next').toggle(!atTheEnd);
     $('.form-navigation [id=createReport]').toggle(index ==  $sections.length - 2 );
+    if (index == 1 )
+     {
+       newReportMap.invalidateSize();
+       newReportMap.locate({setView: true, maxZoom: 16});
+     }
   }
 
   function curIndex() {
