@@ -38,23 +38,47 @@
            <p>THANK YOU for being part of our team! </p>
           </div>
           <div class="form-section">
-            <h4>PLEASE SELECT YOUR LOCATION ON THE MAP </h4>
+            <h4>Please select your location on the map:</h4>
               <div id="map"></div>
           </div>
            <div class="form-section">
-             <p>PLEASE HELP US BEST ASSESS THE SITUATION BY HELPING US SORT YOUR REPORT.</p>
+             <p>Please help us best assess the situation by helping us sort your report.</p>
              <div class="rtype-container">
-                <div class="rtype-item">ACCESS<br><i>describe</i></div>
-                <div class="rtype-item">NEEDS<br><i>request</i></div>
-                <div class="rtype-item">CONTACTS<br><i>share</i></div>
-                <div class="rtype-item">SECURITY<br><i>warn</i></div>
+                <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>describe</i></div>
+                <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>request</i></div>
+                <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>share</i></div>
+                <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>warn</i></div>
               </div>
-              <p>SELECT ALL CATEGORIES THAT APPLY.</p>
+              <p>Select all categories that apply.</p>
            </div>
            <div class="form-section">
-             <h4>PLEASE ENTER TEXT IN THE BOX BELOW TO SHARE YOUR INFORMATION.</h4>
+             <h4>Please enter text in the box below to share your information.</h4>
              <textarea rows="6" placeholder="typing..." style="width:100%;color:black;" id="inputReportText"></textarea>
+             <i> Optional</i>
+            <input placeholder="name..." style="width:100%;color:black;" id="inputReportUserName">
             </div>
+            <div class="form-section">
+              <h4>Would you like to upload an image ? </h4>
+              <form enctype="multipart/form-data">
+              <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
+              <a id="btnUpTrigger" style="color:red;text-transform:uppercase;cursor:pointer;" > Camera or Browse </a>
+              <div style="margin-top:10px;width:100%;height:250px;background-color:white;color:black;">
+                <img id="imgPreview" src="#" alt="your image" style="width:100%;height:250px;"/>
+              </div>
+              </form>
+
+            </div>
+            <div class="form-section">
+              <br>
+              <div id="divProgress"></div>
+              <div id="divSuccess" style="display:none;">
+               <h4>Thank you for your report!</h4>
+               <br>
+               <p>We will continue to monitor the situation.</p>
+               <br>
+              </div>
+
+             </div>
       </div>
     </div>
     <div class="form-navigation">

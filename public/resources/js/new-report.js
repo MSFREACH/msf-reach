@@ -36,35 +36,87 @@ newReportMap.on('click', function(e) {
 $('#createReport').on('click', function (e) {
 		var eventId = getQueryVariable("eventId");
 		var reportKey = getQueryVariable("reportkey");
+		var reportTags=[];
+		var imgLink="";
+		$('.rtype-selected').each(function() {
+			reportTags.push(this.getAttribute('data-msf-value'));
+		});
 
     if (latlng === null){
 			//$('#newEventModalTitle').html('<h4>Missing event location</h4>');
 			//$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>')
 			//$('#newEventModal').modal('toggle');
-			console.log('new location supplied')
+			alert("Please select a report location on the map first.");
+			console.log('new location supplied'); //why do we need this line ?
     }
     else {
-      var body = {
-				"eventId": eventId,
-				"status": "confirmed",
-				"created": new Date().toISOString(),
-				"reportkey": reportKey,
-				"location":latlng,
-				"content":{
-					"text":$("#inputReportText").val()
-				}
-			}
+			$('#divProgress').html('Submitting your report...');
+			var files=document.getElementById('inputImageUpload').files;
+			if (files && files[0])
+			{
+				var imgFileName=files[0].name;
+			  var fileType=files[0].type;
+				var photo=files[0];
+			$.ajax({
+	        url : '../api/utils/uploadurl',
+	        data: 'filename='+imgFileName,// + '&mime=' + fileType,
+	        type : "GET",
+	        dataType : "json",
+	        cache : false,
+	      })
+	      .then(function(retData) {
+	        console.log('url received:');
+	        console.log(retData.url);
+					imgLink=retData.url;
+	       return $.ajax({
+	          url : retData.signedRequest,
+	          type : "PUT",
+	          data : photo,
+	          dataType : "text",
+	          cache : false,
+	          //contentType : file.type,
+	          processData : false,
+	        });
+	      }).then(function(data,txt,jq){
+					  console.log('Upload successfull')
+						var body = {
+							"eventId": eventId,
+							"status": "confirmed",
+							"created": new Date().toISOString(),
+							"reportkey": reportKey,
+							"location":latlng,
+							"content":{
+								"report_tags": JSON.stringify(reportTags),
+								"username/alias":$("#inputReportUserName").val(),
+								"description":$("#inputReportText").val(),
+								"image_link": imgLink
+							}
+						}
+						//console.log(body);
+						$.ajax({
+							type: "POST",
+							url: "/api/reports",
+							data: JSON.stringify(body),
+							contentType: 'application/json'
+						}).done(function( data, textStatus, req ){
+							$('#divProgress').html('Report submitted!');
+							$('#divSuccess').show(500);
+						}).fail(function (req, textStatus, err){
+							$('#divProgress').html('An error occured');
+							console.log(err);
+							console.log(textStatus);
+						});
 
-      $.ajax({
-        type: "POST",
-        url: "/api/reports",
-        data: JSON.stringify(body),
-        contentType: 'application/json'
-      }).done(function( data, textStatus, req ){
-				alert('Report submitted');
-      }).fail(function (req, textStatus, err){
-				console.log(err);
-				console.log(textStatus);
-      });
+	      })
+	      .fail(function(err){
+	        //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
+					$('#divProgress').html('An error occured while uploading the photo.');
+	        console.error('error: ');
+	        console.log(err);
+	      });
+
+      }//if
+
+
     }
 })
