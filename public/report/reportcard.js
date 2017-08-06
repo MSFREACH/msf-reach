@@ -8,10 +8,10 @@ $(function () {
       .eq(index)
         .addClass('current');
     // Show only the navigation buttons that make sense for the current section:
-    $('.form-navigation .previous').toggle(index > 0);
-    var atTheEnd = index >= $sections.length - 1;
+    $('.form-navigation .previous').toggle(index > 0 && index<($sections.length - 1));
+    var atTheEnd = index >= $sections.length - 2;
     $('.form-navigation .next').toggle(!atTheEnd);
-    $('.form-navigation [id=createReport]').toggle(atTheEnd);
+    $('.form-navigation [id=createReport]').toggle(index ==  $sections.length - 2 );
   }
 
   function curIndex() {
@@ -29,13 +29,33 @@ $(function () {
       navigateTo(curIndex() + 1);
   });
 
-  // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
-  $sections.each(function(index, section) {
-    //$(section).find(':input').attr('data-parsley-group', 'block-' + index);
-  });
   navigateTo(0); // Start at the beginning
   $('.rtype-item').on('click',function(){
     $(this).toggleClass('rtype-selected');
   });
+
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#imgPreview').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$("#inputImageUpload").change(function(){
+    readURL(this);
+});
+
+$('#btnUpTrigger').click(function(){
+   $('#inputImageUpload').trigger('click');
+ });
+
+ $('.form-navigation [id=createReport]').click(function(){
+   navigateTo($sections.length - 1);
+ })
 
 });

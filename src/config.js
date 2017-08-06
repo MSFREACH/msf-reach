@@ -10,6 +10,8 @@ export default {
   API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'confirmed,verified').split(','),
   AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
   AWS_COGNITO_ALGORITHM: process.env.AWS_COGNITO_ALGORITHM || 'RS256',
+  AWS_S3_REGION: process.env.AWS_S3_REGION || 'ap-southeast-2',
+  AWS_S3_BUCKETNAME: process.env.AWS_S3_BUCKETNAME || 'msf-reach-image-uploads',
   BODY_LIMIT: process.env.BODY_LIMIT || '100kb',
   CACHE: process.env.CACHE === 'true' || false,
   CACHE_DURATION_CARDS: process.env.CACHE_DURATION_CARDS || '1 minute',
