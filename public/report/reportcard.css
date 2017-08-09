@@ -134,6 +134,7 @@ html,body {
     /*height: 100px;*/
     margin: 10px;
     cursor:pointer;
+    border:3px solid white;
 }
 
 .rtype-selected{
