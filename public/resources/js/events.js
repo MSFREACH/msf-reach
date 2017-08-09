@@ -150,12 +150,17 @@ var mapReports = function(reports){
 
   var reportsMarker = L.divIcon({className: 'report-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
 
+  var points = []; // local storage for coordinates of reports (used for map bounds)
+
   L.geoJSON(reports, {
     pointToLayer: function (feature, latlng) {
+        points.push([latlng.lat, latlng.lng]);
         return L.marker(latlng, {icon: reportsMarker});
     },
     onEachFeature: onEachFeature
-}).addTo(eventsMap);
+}).addTo(eventsMap); // Add reports to map
+// Now that we have all reports, fit the map to their bounds
+eventsMap.fitBounds(points);
 }
 
 // Main function (effective)
