@@ -49,6 +49,14 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 	// Parse body messages into json
 	app.use(bodyParser.json({ limit : config.BODY_LIMIT }));
 
+	// Redirect http to https
+	app.use(function redirectHTTP(req, res, next) {
+		if (config.REDIRECT_HTTP && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'].toLowerCase() === 'http') {
+	 	return res.redirect('https://' + req.headers.host + req.url);
+		}
+  	next();
+	});
+
 	// Try and connect to the db
 	initializeDb(config, logger)
 		.then((db) => {

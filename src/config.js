@@ -39,6 +39,7 @@ export default {
   LOG_MAX_FILES: process.env.LOG_MAX_FILES || 10,
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: process.env.PORT || 8001,
+  REDIRECT_HTTP: process.env.REDIRECT_HTTP === 'true' || false,
   RESPONSE_TIME: process.env.RESPONSE_TIME === 'true' || false,
   SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
   STATIC_PATH: process.env.STATIC_PATH || 'public',
