@@ -22,7 +22,7 @@ var baseMaps = {
 
 var overlayMaps = {};
 
-var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(newReportMap);
+var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'topright'}).addTo(newReportMap);
 
 var marker;
 var latlng = null;
@@ -36,10 +36,10 @@ newReportMap.on('click', function(e) {
 $('#createReport').on('click', function (e) {
 		var eventId = getQueryVariable("eventId");
 		var reportKey = getQueryVariable("reportkey");
-		var reportTags=[];
+		var reportTag="";
 		var imgLink="";
 		$('.rtype-selected').each(function() {
-			reportTags.push(this.getAttribute('data-msf-value'));
+			reportTag = this.getAttribute('data-msf-value');
 		});
 
     if (latlng === null){
@@ -86,7 +86,7 @@ $('#createReport').on('click', function (e) {
 							"reportkey": reportKey,
 							"location":latlng,
 							"content":{
-								"report_tags": JSON.stringify(reportTags),
+								"report_tag": reportTag,
 								"username/alias":$("#inputReportUserName").val(),
 								"description":$("#inputReportText").val(),
 								"image_link": imgLink
