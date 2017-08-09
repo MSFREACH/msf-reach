@@ -7,7 +7,7 @@
 // Constants
 var GEOFORMAT='geojson';
 var HOSTNAME='http://localhost:8001/';
-var TYPES=['earthquake', 'flood', 'conflict'];
+var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Hazard'}, {'epidemiological':'Epidemiological'}];
 
  /**
    * Function to get all events from the API
@@ -55,28 +55,56 @@ var TYPES=['earthquake', 'flood', 'conflict'];
      console.log( 'Error: ' + err );
    } else {
      for (var i = 0; i < TYPES.length; i++){
-       console.log([TYPES[i]]);
+       var key = Object.keys(TYPES[i])[0];
+       var name = TYPES[i][key];
        var layer = L.geoJSON(events, {
          pointToLayer: function(feature, latlng){
                 return L.marker(latlng, {icon: msfIcon});
               },
         onEachFeature: onEachFeature,
         filter: function(feature, layer){
-          if (feature.properties.type === TYPES[i]){
+          if (feature.properties.type === key){
             return feature;
           }
         }})
         layer.addTo(landingMap);
-        layerControl.addOverlay(layer, TYPES[i]);
+        layerControl.addOverlay(layer, name);
       };
      }
-     /*var eventsLayer = L.geoJSON(events, {
-       pointToLayer: function(feature, latlng){
-         return L.marker(latlng);
-       },
-       onEachFeature: onEachFeature
-     });*/
-     //eventsLayer.addTo(landingMap);
+ }
+
+ /**
+   * Function to get reports for an event
+   * @param {Number} eventId - UniqueId of event
+   **/
+ var getHazards = function(callback){
+   $.getJSON('/api/hazards/', function( data ){
+     callback(data.result);
+   });
+ };
+
+ /**
+   * Function to add reports to map
+   * @param {Object} reports - GeoJson FeatureCollection containing report points
+   **/
+ var mapHazards = function(hazards){
+   function onEachFeature(feature, layer) {
+      var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
+
+      layer.bindPopup(popupContent);
+    }
+
+   var hazardsMarker = L.divIcon({className: 'hazard-icon', html: '<span class="glyphicon glyphicon-certificate"></span>'});
+
+   var hazardsLayer = L.geoJSON(hazards, {
+     pointToLayer: function (feature, latlng) {
+         return L.marker(latlng, {icon: hazardsMarker});
+     },
+     onEachFeature: onEachFeature
+ })
+ hazardsLayer.addTo(landingMap);
+ layerControl.addOverlay(hazardsLayer, 'PDC Hazards');
+
  }
 
 // Create map
@@ -106,3 +134,4 @@ var overlayMaps = {};
 var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(landingMap);
 
 getAllEvents(mapAllEvents);
+getHazards(mapHazards);

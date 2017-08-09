@@ -8,3 +8,8 @@ html, body { height: 100% }
 .col-md-12 {
   padding:0;
 }
+
+.hazard-icon{
+  font-size:20px;
+  color:orange;
+}
