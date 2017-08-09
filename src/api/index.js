@@ -14,6 +14,7 @@ import events from './routes/events';
 import reports from './routes/reports';
 import twitter from './routes/twitter';
 import hazards from './routes/hazards';
+import utils from './routes/utils';
 
 export default ({ config, db, logger }) => {
 	let api = Router();
@@ -28,6 +29,7 @@ export default ({ config, db, logger }) => {
 	api.use('/reports', reports({ config, db, logger }));
 	api.use('/twitter', twitter({ logger }));
 	api.use('/hazards', hazards({ logger }));
+	api.use('/utils', utils({ config, db, logger }) )
 
 	// Handle validation errors (wording of messages can be overridden using err.isJoi)
 	api.use(validate.errors());
