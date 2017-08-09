@@ -52,9 +52,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 	// Redirect http to https
 	app.use(function redirectHTTP(req, res, next) {
 		if (config.REDIRECT_HTTP && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'].toLowerCase() === 'http') {
-	 	return res.redirect('https://' + req.headers.host + req.url);
+			return res.redirect('https://' + req.headers.host + req.url);
 		}
-  	next();
+		next();
 	});
 
 	// Try and connect to the db
