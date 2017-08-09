@@ -33,11 +33,19 @@ $(function () {
 
   // Next button goes forward iff current block validates
   $('.form-navigation .next').on('click',function() {
-      navigateTo(curIndex() + 1);
+      var cInd=curIndex();
+      if ((cInd==1)&&(!latlng))
+       {
+         alert("Please select a report location on the map to proceed.");
+         return;
+       }
+
+      navigateTo(cInd + 1);
   });
 
   navigateTo(0); // Start at the beginning
   $('.rtype-item').on('click',function(){
+    $('.rtype-item').removeClass('rtype-selected');
     $(this).toggleClass('rtype-selected');
   });
 

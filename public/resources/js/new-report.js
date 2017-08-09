@@ -33,25 +33,62 @@ newReportMap.on('click', function(e) {
     marker = L.marker(e.latlng).addTo(newReportMap);
 });
 
+function postReport(eventID,reportKey,imgLink)
+{
+	var body = {
+		"eventId": eventID,
+		"status": "confirmed",
+		"created": new Date().toISOString(),
+		"reportkey": reportKey,
+		"location":latlng,
+		"content":{
+			"report_tag": $('.rtype-selected').attr('data-msf-value'),
+			"username/alias":$("#inputReportUserName").val(),
+			"description":$("#inputReportText").val(),
+			"image_link": imgLink
+		}
+	}
+	//console.log(body);
+	$.ajax({
+		type: "POST",
+		url: "/api/reports",
+		data: JSON.stringify(body),
+		contentType: 'application/json'
+	}).done(function( data, textStatus, req ){
+		$('#divProgress').html('Report submitted!');
+		$('#divSuccess').show(500);
+	}).fail(function (req, textStatus, err){
+		$('#divProgress').html('An error occured');
+		console.log(err);
+		console.log(textStatus);
+	});
+}
+
+
 $('#createReport').on('click', function (e) {
 		var eventId = getQueryVariable("eventId");
 		var reportKey = getQueryVariable("reportkey");
-		var reportTag="";
+
+		if ((!eventId)||(!reportKey))
+		{
+			alert("EventId and/or reportKey missing in the URL. Please verify and try again.");
+		}
+
 		var imgLink="";
-		$('.rtype-selected').each(function() {
-			reportTag = this.getAttribute('data-msf-value');
-		});
+
+
 
     if (latlng === null){
 			//$('#newEventModalTitle').html('<h4>Missing event location</h4>');
 			//$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>')
 			//$('#newEventModal').modal('toggle');
-			alert("Please select a report location on the map first.");
+			//alert("Please select a report location on the map first.");
 			console.log('new location supplied'); //why do we need this line ?
     }
     else {
 			$('#divProgress').html('Submitting your report...');
 			var files=document.getElementById('inputImageUpload').files;
+
 			if (files && files[0])
 			{
 				var imgFileName=files[0].name;
@@ -78,35 +115,8 @@ $('#createReport').on('click', function (e) {
 	          processData : false,
 	        });
 	      }).then(function(data,txt,jq){
-					  console.log('Upload successfull')
-						var body = {
-							"eventId": eventId,
-							"status": "confirmed",
-							"created": new Date().toISOString(),
-							"reportkey": reportKey,
-							"location":latlng,
-							"content":{
-								"report_tag": reportTag,
-								"username/alias":$("#inputReportUserName").val(),
-								"description":$("#inputReportText").val(),
-								"image_link": imgLink
-							}
-						}
-						//console.log(body);
-						$.ajax({
-							type: "POST",
-							url: "/api/reports",
-							data: JSON.stringify(body),
-							contentType: 'application/json'
-						}).done(function( data, textStatus, req ){
-							$('#divProgress').html('Report submitted!');
-							$('#divSuccess').show(500);
-						}).fail(function (req, textStatus, err){
-							$('#divProgress').html('An error occured');
-							console.log(err);
-							console.log(textStatus);
-						});
-
+					  console.log('Upload successfull,submitting the report..');
+						postReport(eventId,reportKey,imgLink);
 	      })
 	      .fail(function(err){
 	        //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
@@ -115,7 +125,9 @@ $('#createReport').on('click', function (e) {
 	        console.log(err);
 	      });
 
-      }//if
+      }else {//no image just submit the report
+				postReport(eventId,reportKey,imgLink);
+			}//else
 
 
     }
