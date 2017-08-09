@@ -7,7 +7,10 @@
 // Constants
 var GEOFORMAT='geojson';
 var HOSTNAME='http://localhost:8001/';
-var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Hazard'}, {'epidemiological':'Epidemiological'}];
+var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
+  {'epidemiological':'Disease outbreak'}, {'search_and_rescue':'Search and rescue'},
+  {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
+];
 
  /**
    * Function to get all events from the API
