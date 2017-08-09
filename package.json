@@ -40,6 +40,7 @@
   "dependencies": {
     "api-error-handler": "^1.0.0",
     "apicache": "^0.8.7",
+    "aws-sdk": "^2.94.0",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "celebrate": "^4.0.1",
@@ -53,6 +54,7 @@
     "jwk-to-pem": "^1.2.6",
     "morgan": "^1.8.2",
     "pg-promise": "^6.3.6",
+    "request": "^2.81.0",
     "response-time": "^2.3.2",
     "shortid": "^2.2.8",
     "twitter": "^1.7.1",
