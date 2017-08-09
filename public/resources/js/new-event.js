@@ -48,6 +48,7 @@ $('#createEvent').on('click', function (e) {
         "location": latlng,
         "metadata":{
           "user": localStorage.getItem("username"),
+					"name": $("#inputName").val(),
           "summary": $("#inputSummary").val(),
           "practical_details": $("#inputPracticals").val(),
           "security_details": $("#inputSecurity").val()
