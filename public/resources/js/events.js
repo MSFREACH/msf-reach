@@ -132,12 +132,17 @@ var getReports = function(eventId, callback){
 var mapReports = function(reports){
 
   function onEachFeature(feature, layer) {
-     //var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id + "'>Event " + feature.properties.id +"</a></strong>" + "<BR>Status: " + feature.properties.status +"<BR>Type: " + feature.properties.type +"<BR>Created: " + feature.properties.created;
 
      var popupContent = '';
 
      if (feature.properties && feature.properties.content) {
-       popupContent += feature.properties.content.text;
+       popupContent += feature.properties.content.description + '<BR>';
+       popupContent += feature.properties.content.report_tag + '<BR>';
+       popupContent += feature.properties.content["username/alias"] + '<BR>';
+       if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
+         popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">'
+       }
+
      }
 
      layer.bindPopup(popupContent);
