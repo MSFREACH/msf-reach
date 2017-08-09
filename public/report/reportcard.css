@@ -58,7 +58,7 @@ html,body {
 
 .report-card-widget {
   position: relative;
-  width: 250px;
+  width: 350px;
   text-align: center;
   background-color: black;
   color:white;
@@ -82,11 +82,11 @@ html,body {
 
 .report-card-container{
   position: relative;
-  height:400px;
+  height:90vh;
   margin:10px;
 }
 #map {
-  height:305px;
+  height:70vh;
 }
 
 @media screen and (max-width: 480px)
@@ -101,6 +101,7 @@ html,body {
 
 .form-section {
     display: none;
+    margin-top: 20px;
 }
 
 .form-section.current{
