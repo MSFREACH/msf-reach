@@ -65,16 +65,17 @@ var printEventProperties = function(err, eventProperties){
     }
 
     // Pre-fil edit modal
+    $('#inputName').val(eventProperties.metadata.name);
     $('#inputSummary').val(eventProperties.metadata.summary);
     $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
     $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
-
 
     // Append output to body
     propertiesTable += "</table>"
     $("#eventProperties").html(propertiesTable);
 
     console.log(eventProperties);
+    $("#eventName").append(eventProperties.metadata.name);
     $("#eventSummary").append(eventProperties.metadata.summary);
     $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
     $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
@@ -211,6 +212,7 @@ $('#btnSaveEdits').click(function(e){
   var body = {
     "status":"active",
     "metadata":{
+      "name": $("#inputName").val(),
       "summary": $("#inputSummary").val(),
       "practical_details": $("#inputPracticalDetails").val(),
       "security_details": $("#inputSecurityDetails").val(),
