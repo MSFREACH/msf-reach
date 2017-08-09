@@ -3,8 +3,8 @@ console.log('Authenticaiton script running');
 
 // Constants
 var POOL_DATA = {
-    UserPoolId : 'ap-southeast-2_izc55nNFX', // Your user pool id here
-    ClientId : 'uke84ie7fl3aj9djnpqufoam' // Your client id here
+    UserPoolId : 'us-east-2_n5nz37NTc', // Your user pool id here
+    ClientId : '7j3psl0ukc5s1tbjv34u4nmcke' // Your client id here
 };
 
 var setJWTCookie = function(jwt){
