@@ -18,7 +18,7 @@ export default ({ logger }) => {
 	api.get('/', jwtCheck, cacheResponse('10 minutes'),
 		(req, res, next) => GeoRSS()
 			.then((events) => {
-				res.status(200).json({statusCode: 200, result:events})
+				res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
 			})
 			.catch((err) => {
 				/* istanbul ignore next */

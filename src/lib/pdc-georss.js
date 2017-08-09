@@ -38,7 +38,6 @@ const GeoRSS = () => new Promise((resolve, reject) => {
             feature.properties["summary"] = event.summary[0];
             // push feature to feature collection
             features.push(feature);
-            features.push(new Date());
           }
         }
         // return GeoJSON
