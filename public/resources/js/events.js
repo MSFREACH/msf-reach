@@ -145,7 +145,7 @@ var mapReports = function(reports){
 
      }
 
-     layer.bindPopup(popupContent);
+     layer.bindPopup(popupContent, {  maxWidth: "auto" });
    }
 
   var reportsMarker = L.divIcon({className: 'report-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
