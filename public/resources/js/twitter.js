@@ -1,6 +1,7 @@
 // Globals
-var tweetIdHTMLMap = {};
+var tweetIdHTMLMap = {}; // Dictionary of tweetID + embedded tweet HTML markup
 
+// Load Tweets to page
 var loadTweets = function(err, tweets){
   if (err){
     alert('Error loading tweets: '+ err)
@@ -15,6 +16,7 @@ var loadTweets = function(err, tweets){
   }
 }
 
+// Perform GET call to get tweets
 var getTweets = function(searchString){
   console.log(searchString);
   $.getJSON('/api/twitter/?searchString=' + searchString, function (data){
@@ -24,11 +26,18 @@ var getTweets = function(searchString){
   })
 }
 
+// Search Twitter
 $('#btnSearchTwitter').click(function(e){
   if ($('#searchTerm').val() !== ""){
     var search = $('#searchTerm').val()
-
     getTweets(search);
 
   }
 });
+
+$('#btnSearchTwitter').trigger('click');
+
+
+// Pre-Load the Twitter Search AI with keyword terms
+console.log(currentEventProperties);
+var term = currentEventProperties

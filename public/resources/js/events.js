@@ -35,6 +35,11 @@ var printEventProperties = function(err, eventProperties){
   // Make a global store of current event properties
   currentEventProperties = eventProperties;
 
+  // Add to Twitter search "AI"
+  $(document).ready(function(){
+    $('#searchTerm').val(currentEventProperties.metadata.name);
+  });
+
   // If called with err, print that instead
   if (err){
     $('#eventProperties').append(err);
