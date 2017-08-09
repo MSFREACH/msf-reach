@@ -34,10 +34,3 @@ $('#btnSearchTwitter').click(function(e){
 
   }
 });
-
-$('#btnSearchTwitter').trigger('click');
-
-
-// Pre-Load the Twitter Search AI with keyword terms
-console.log(currentEventProperties);
-var term = currentEventProperties

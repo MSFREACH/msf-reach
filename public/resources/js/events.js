@@ -38,6 +38,7 @@ var printEventProperties = function(err, eventProperties){
   // Add to Twitter search "AI"
   $(document).ready(function(){
     $('#searchTerm').val(currentEventProperties.metadata.name);
+    $('#btnSearchTwitter').trigger('click');
   });
 
   // If called with err, print that instead
