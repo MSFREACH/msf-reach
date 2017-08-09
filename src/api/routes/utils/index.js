@@ -25,10 +25,10 @@ export default ({ config, db, logger }) => {
     });
 
 
-	api.get('/uploadurl', jwtCheck, cacheResponse('1 minute'), validate({
+	api.get('/uploadurl', cacheResponse('1 minute'), validate({
       query: {
         filename: Joi.string().required(),
-        _:Joi.any() //jQuery adds this when cache=false? 
+        _:Joi.any() //jQuery adds this when cache=false?
 			//	mime: Joi.string().required()
       }
     }),
