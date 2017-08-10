@@ -161,7 +161,9 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
 }).addTo(eventsMap); // Add reports to map
 // Now that we have all reports, fit the map to their bounds
-eventsMap.fitBounds(points);
+if (points.length > 0){
+  eventsMap.fitBounds(points);
+  }
 }
 
 // Main function (effective)
