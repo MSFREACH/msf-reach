@@ -134,8 +134,8 @@
         <ul class="nav nav-tabs">
           <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
           <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
-          <li role="presentation"><a data-toggle="tab" href="#" >Contacts</a></li>
-          <li role="presentation"><a href="#">Missions</a></li>
+          <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
+          <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
         </ul>
         <div class="tab-content">
           <div id="event" class="tab-pane fade in active">
@@ -219,7 +219,19 @@
               <div style="border:1px dashed blue; height:200px; width:500px;" ondrop="dropSaveTweet(event)" ondragover="allowDrop(event)"><p style="padding-left:160px;padding-top:90px;">Drag Tweets Here to Save</p> </div>
               <div id="savedTweets" style="height:45vh;overflow-y:auto;"></div>
             </div>
-
+          </div>
+          <div id="contacts" class="tab-pane fade">
+            <div class="col-md-12" >
+              <h4>MSF Regional Contacts</h4>
+              <div id="contactsContainer"></div>
+            </div>
+          </div>
+          <div id="missions" class="tab-pane fade">
+            <div class="col-md-12" >
+              <h4>MSF Regional Missions</h4>
+              <div id="missionsContainer"></div>
+            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -247,13 +259,44 @@
     <script src="/resources/js/nav.js"></script>
     <script src="/resources/js/dragdrop.js"></script>
     <script src="/resources/js/twitter.js"></script>
+    <script src="/resources/js/contacts.js"></script>
+    <script src="/resources/js/missions.js"></script>
+
     <script>
+
+                var mapOn = 1;
+
                 $('#feedTab').on('click', function(e){
                   //$('#mapContainer').removeClass('col-md-8');
-                  $('#mapContainer').toggle();
-                  $('#sidepane').removeClass('col-md-4');
-                  $('#sidepane').addClass('col-md-12');
-                  setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                  if (mapOn === 1){
+                    $('#mapContainer').toggle();
+                    $('#sidepane').removeClass('col-md-4');
+                    $('#sidepane').addClass('col-md-12');
+                    mapOn = 0;
+                    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                  }
+                });
+
+                $('#contactsTab').on('click', function(e){
+                  //$('#mapContainer').removeClass('col-md-8');
+                  if (mapOn === 1){
+                    $('#mapContainer').toggle();
+                    $('#sidepane').removeClass('col-md-4');
+                    $('#sidepane').addClass('col-md-12');
+                    mapOn = 0;
+                    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                  }
+                });
+
+                $('#missionsTab').on('click', function(e){
+                  //$('#mapContainer').removeClass('col-md-8');
+                  if (mapOn === 1){
+                    $('#mapContainer').toggle();
+                    $('#sidepane').removeClass('col-md-4');
+                    $('#sidepane').addClass('col-md-12');
+                    mapOn = 0;
+                    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                  }
                 });
 
                 $('#eventTab').on('click', function(e){
@@ -261,6 +304,7 @@
                   $('#mapContainer').addClass('col-md-8');
                   $('#sidepane').removeClass('col-md-12');
                   $('#sidepane').addClass('col-md-4');
+                  mapOn = 1;
                   setTimeout(function(){eventsMap.invalidateSize()}, 400);
                 });
 
