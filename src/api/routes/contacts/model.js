@@ -13,7 +13,7 @@ export default (config, db, logger) => ({
 	all: () => new Promise((resolve, reject) => {
 		// Setup query
 
-    let query = `SELECT array_to_json(array_agg(row_to_json(m.*))) as missions FROM (SELECT id, properties FROM ${config.TABLE_MISSIONS} ORDER BY id) m`
+    let query = `SELECT array_to_json(array_agg(row_to_json(m.*))) as contacts FROM (SELECT id, properties FROM ${config.TABLE_CONTACTS} ORDER BY id) m`
 
 		// Execute
 		db.any(query).timeout(config.PGTIMEOUT)
