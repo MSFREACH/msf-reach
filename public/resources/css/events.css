@@ -22,6 +22,16 @@
   color:yellow;
 }
 
+.contacts-icon{
+  font-size:20px;
+  color:green;
+}
+
+.missions-icon{
+  font-size:20px;
+  color: blue;
+}
+
 .table {
   margin-top:15px;
 }
