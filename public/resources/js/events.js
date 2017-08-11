@@ -127,95 +127,6 @@ var getReports = function(eventId, callback){
 };
 
 /**
-  * Function to get contacts
-  **/
-var getContacts = function(callback){
-  $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
-    callback(data.result);
-  });
-};
-
-/**
-  * Function to get missions
-  **/
-var getMissions = function(callback){
-  $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
-    callback(data.result);
-  });
-};
-
-/**
-  * Function to add missions to map
-  * @param {Object} missions - GeoJson FeatureCollection containing mission points
-  **/
-var mapMissions = function(missions ){
-
-  function onEachFeature(feature, layer) {
-
-     var popupContent = '';
-
-     if (feature.properties && feature.properties.content) {
-       popupContent += feature.properties.content.type + '<BR>'
-       popupContent += feature.properties.content.name + '<BR>';
-       popupContent += 'Start date: ' + feature.properties.content.startDate + '<BR>';
-       popupContent += 'Finish date: ' + feature.properties.content.finishDate + '<BR>';
-       popupContent += 'Managing OC: ' + feature.properties.content.managingOC + '<BR>';
-       popupContent += 'Severity: ' + feature.properties.content.severity + '<BR>';
-       popupContent += 'Capacity: ' + feature.properties.content.capacity + + '<BR>';
-     }
-
-     layer.bindPopup(popupContent, {  maxWidth: "auto" });
-   }
-
-  var missionMarker = L.divIcon({className: 'missions-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
-
-  var points = []; // local storage for coordinates of contacts (used for map bounds)
-
-  L.geoJSON(reports, {
-    pointToLayer: function (feature, latlng) {
-        points.push([latlng.lat, latlng.lng]);
-        return L.marker(latlng, {icon: missionsMarker});
-    },
-    onEachFeature: onEachFeature
-  }).addTo(eventsMap); // Add missions to map
-
-}
-
-
-/**
-  * Function to add contacts to map
-  * @param {Object} contacts - GeoJson FeatureCollection containing contact points
-  **/
-var mapContacts = function(contacts ){
-
-  function onEachFeature(feature, layer) {
-
-     var popupContent = '';
-
-     if (feature.properties && feature.properties.content) {
-       popupContent += feature.properties.content.name + '<BR>';
-       popupContent += feature.properties.content.cell;
-
-     }
-
-     layer.bindPopup(popupContent, {  maxWidth: "auto" });
-   }
-
-  var contentsMarker = L.divIcon({className: 'contacts-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
-
-  var points = []; // local storage for coordinates of contacts (used for map bounds)
-
-  L.geoJSON(reports, {
-    pointToLayer: function (feature, latlng) {
-        points.push([latlng.lat, latlng.lng]);
-        return L.marker(latlng, {icon: contentsMarker});
-    },
-    onEachFeature: onEachFeature
-  }).addTo(eventsMap); // Add contacts to map
-
-}
-
-/**
   * Function to add reports to map
   * @param {Object} reports - GeoJson FeatureCollection containing report points
   **/
@@ -248,10 +159,10 @@ var mapReports = function(reports){
         return L.marker(latlng, {icon: reportsMarker});
     },
     onEachFeature: onEachFeature
-  }).addTo(eventsMap); // Add reports to map
-  // Now that we have all reports, fit the map to their bounds
-  if (points.length > 0){
-    eventsMap.fitBounds(points);
+}).addTo(eventsMap); // Add reports to map
+// Now that we have all reports, fit the map to their bounds
+if (points.length > 0){
+  eventsMap.fitBounds(points);
   }
 }
 
@@ -262,8 +173,6 @@ currentEventId = getQueryVariable("eventId");
 if (currentEventId !== false && currentEventId != ''){
   getEvent(currentEventId, printEventProperties);
   getReports(currentEventId, mapReports);
-  getContacts(mapContacts);
-  getMissions(mapMissions);
 } else {
   // Catch condition where no event specified, print to screen
   printEventProperties('No event ID specified', null)
