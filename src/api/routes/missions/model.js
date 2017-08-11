@@ -14,7 +14,7 @@ export default (config, db, logger) => ({
 		// Setup query
 
 		let query = `SELECT properties, the_geom
-			FROM ${config.TABLE_CONTACTS}
+			FROM ${config.TABLE_MISSIONS}
 			ORDER BY id`;
 
 		// Execute
