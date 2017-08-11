@@ -148,7 +148,7 @@ var mapAllEvents = function(err, events){
          popupContent += 'Capacity: ' + feature.properties.content.capacity + + '<BR>';
        }
 
-       layer.bindPopup(popupContent, {  maxWidth: "auto" });
+       layer.bindPopup(popupContent);
      }
 
     var missionMarker = L.divIcon({className: 'missions-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
@@ -183,7 +183,7 @@ var mapAllEvents = function(err, events){
 
        }
 
-       layer.bindPopup(popupContent, {  maxWidth: "auto" });
+       layer.bindPopup(popupContent);
      }
 
     var contactMarker = L.divIcon({className: 'contacts-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
