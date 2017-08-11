@@ -138,14 +138,14 @@ var mapAllEvents = function(err, events){
 
        var popupContent = '';
 
-       if (feature.properties && feature.properties.content) {
-         popupContent += feature.properties.content.type + '<BR>'
-         popupContent += feature.properties.content.name + '<BR>';
-         popupContent += 'Start date: ' + feature.properties.content.startDate + '<BR>';
-         popupContent += 'Finish date: ' + feature.properties.content.finishDate + '<BR>';
-         popupContent += 'Managing OC: ' + feature.properties.content.managingOC + '<BR>';
-         popupContent += 'Severity: ' + feature.properties.content.severity + '<BR>';
-         popupContent += 'Capacity: ' + feature.properties.content.capacity + + '<BR>';
+       if (feature.properties && feature.properties.properties) {
+         popupContent += feature.properties.properties.type + '<BR>'
+         popupContent += feature.properties.properties.name + '<BR>';
+         popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
+         popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
+         popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
+         popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
+         popupContent += 'Capacity: ' + feature.properties.properties.capacity + + '<BR>';
        }
 
        layer.bindPopup(popupContent);
@@ -175,11 +175,11 @@ var mapAllEvents = function(err, events){
 
        var popupContent = '';
 
-       if (feature.properties && feature.properties.content) {
-         popupContent += feature.properties.content.name + '<BR>';
-         popupContent += feature.properties.content.type + '<BR>';
-         popupContent += feature.properties.content.email + '<BR>';
-         popupContent += feature.properties.content.cell;
+       if (feature.properties && feature.properties.properties) {
+         popupContent += feature.properties.properties.name + '<BR>';
+         popupContent += feature.properties.properties.type + '<BR>';
+         popupContent += feature.properties.properties.email + '<BR>';
+         popupContent += feature.properties.properties.cell;
 
        }
 
