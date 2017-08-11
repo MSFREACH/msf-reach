@@ -72,10 +72,18 @@ var cognitoAuth = function(){
       onFailure: function(err) {
           console.log('err: '+ err);
           alert(err);
+          $('#login').html('LOGIN').attr('disabled',false);
       },
   });
 }
 
 $('#login').click(function(){
+  $('#login').html('Authenticating....').attr('disabled',true);
   cognitoAuth();
+});
+
+$("#inputPassword").keyup(function(event){
+    if(event.keyCode == 13){
+        $("#login").click();
+    }
 });
