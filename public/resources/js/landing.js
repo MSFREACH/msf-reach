@@ -145,7 +145,7 @@ var mapAllEvents = function(err, events){
          popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
          popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
          popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
-         popupContent += 'Capacity: ' + feature.properties.properties.capacity + + '<BR>';
+         popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
        }
 
        layer.bindPopup(popupContent);
