@@ -5,11 +5,11 @@ var loadContacts = function(err, contacts){
   }
   else {
 
-    $('#contactsContainer').append('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>Cell</th></tr></thead><tbody>');
+    $('#contactsContainer').append('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>Org</th><th>Email</th><th>Cell</th></tr></thead><tbody>');
 
     $.each(contacts, function(key, value){
       console.log(key, value)
-      $('#contactsTable').append('<tr><td>'+value.properties.properties.name+'</td><td>'+value.properties.properties.cell+'</td></tr>');
+      $('#contactsTable').append('<tr><td>'+value.properties.properties.name+'</td><td>'+value.properties.properties.type+'</td><td>'+value.properties.properties.email+'</td><td>'+value.properties.properties.cell+'</td></tr>');
     })
 
     $('#contactsTable').append('</tbody></table>');
