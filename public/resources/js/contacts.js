@@ -19,7 +19,7 @@ var loadContacts = function(err, contacts){
 // Perform GET call to get tweets
 var getContacts = function(){
   $.getJSON('/api/contacts?geoformat=geojson', function (data){
-    loadContacts(null, data.results.features);
+    loadContacts(null, data.result.features);
   }).fail(function(err){
     loadContacts(err.responseText, null);
   })
