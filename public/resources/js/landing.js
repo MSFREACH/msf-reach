@@ -156,7 +156,7 @@ var mapAllEvents = function(err, events){
 
     var missionsLayer = L.geoJSON(missions, {
       pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: missionsMarker});
+        return L.marker(latlng, {icon: missionMarker});
       },
       onEachFeature: onEachFeature
     })
@@ -186,12 +186,12 @@ var mapAllEvents = function(err, events){
        layer.bindPopup(popupContent, {  maxWidth: "auto" });
      }
 
-    var contentsMarker = L.divIcon({className: 'contacts-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
+    var contactMarker = L.divIcon({className: 'contacts-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
 
 
     var contactsLayer = L.geoJSON(contacts, {
       pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: contactsMarker});
+        return L.marker(latlng, {icon: contactMarker});
       },
       onEachFeature: onEachFeature
     })
