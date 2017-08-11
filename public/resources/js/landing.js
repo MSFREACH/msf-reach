@@ -33,10 +33,10 @@ function onEachFeature(feature, layer) {
   var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id + "'>Event " + feature.properties.id +"</a></strong>" + "<BR>Status: " + feature.properties.status +"<BR>Type: " + feature.properties.type +"<BR>Created: " + feature.properties.created;
   $('#eventProperties').append(
     '<p>' +
-    'Name: ' + feature.properties.properties.name + '<br>' +
-    'Type: ' + feature.properties.properties.type + '<br>' + // needs conversion
-    'Status: ' + feature.properties.properties.status + '<br>' +
-    'Created: ' + feature.properties.properties.created
+    'Name: ' + feature.properties.metadata.name + '<br>' +
+    'Type: ' + feature.properties.metadata.type + '<br>' + // needs conversion
+    'Status: ' + feature.properties.metadata.status + '<br>' +
+    'Created: ' + feature.properties.metadata.created
   +'</p>');
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
