@@ -9,7 +9,7 @@ var loadContacts = function(err, contacts){
 
     $.each(contacts, function(key, value){
       console.log(key, value)
-      $('#contactsTable').append('<tr><td>'+value.properties.name+'</td><td>'+value.properties.cell+'</td></tr>');
+      $('#contactsTable').append('<tr><td>'+value.properties.properties.name+'</td><td>'+value.properties.properties.cell+'</td></tr>');
     })
 
     $('#contactsTable').append('</tbody></table>');
@@ -18,8 +18,8 @@ var loadContacts = function(err, contacts){
 
 // Perform GET call to get tweets
 var getContacts = function(){
-  $.getJSON('/api/contacts', function (data){
-    loadContacts(null, data.result[0].contacts);
+  $.getJSON('/api/contacts?geoformat=geojson', function (data){
+    loadContacts(null, data.results.features);
   }).fail(function(err){
     loadContacts(err.responseText, null);
   })
