@@ -18,7 +18,7 @@ var loadMissions = function(err, missions){
 // Perform GET call to get tweets
 var getMissions = function(){
   $.getJSON('/api/missions?geoformat=geojson', function (data){
-    loadMissions(null, data.results.features);
+    loadMissions(null, data.result.features);
   }).fail(function(err){
     loadMissions(err.responseText, null);
   })
