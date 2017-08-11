@@ -16,10 +16,14 @@ import shortid from 'shortid';
 export default ({ config, db, logger }) => {
 	let api = Router();
 
-	// Get a list of all events
 	api.get('/', jwtCheck, cacheResponse('10 minutes'),
-		(req, res, next) => missions(config, db, logger).all()
-			.then((data) => res.status(200).json({statusCode: 200, result:data}))
+		validate({
+			query: {
+				geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
+			}
+		}),
+		(req, res, next) => missions(config, db, logger).all(req.query.status)
+			.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
 				/* istanbul ignore next */
 				logger.error(err);
