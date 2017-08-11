@@ -229,3 +229,5 @@ var mapAllEvents = function(err, events){
 
   getAllEvents(mapAllEvents);
   getHazards(mapHazards);
+  getMissions(mapMissions);
+  getContacts(mapContacts);
