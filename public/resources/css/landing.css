@@ -13,3 +13,13 @@ html, body { height: 100% }
   font-size:20px;
   color:orange;
 }
+
+.missions-icon{
+  font-size:20px;
+  color:green;
+}
+
+.contacs-icon{
+  font-size:20px;
+  color:blue;
+}
