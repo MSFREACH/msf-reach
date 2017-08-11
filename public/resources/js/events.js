@@ -39,6 +39,13 @@ var printEventProperties = function(err, eventProperties){
   $(document).ready(function(){
     $('#searchTerm').val(currentEventProperties.metadata.name);
     $('#btnSearchTwitter').trigger('click');
+
+    $("#searchTerm").keyup(function(event){
+        if(event.keyCode == 13){
+          $('#btnSearchTwitter').trigger('click');
+        }
+    });
+
   });
 
   // If called with err, print that instead
