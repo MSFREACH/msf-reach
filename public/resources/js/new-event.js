@@ -51,9 +51,29 @@ $('#createEvent').on('click', function (e) {
 					"name": $("#inputName").val(),
           "summary": $("#inputSummary").val(),
           "practical_details": $("#inputPracticals").val(),
-          "security_details": $("#inputSecurity").val()
-          }
+          "security_details": $("#inputSecurity").val(),
+					/* Exploratory details: free text, ask user for
+					 * "Main results of the exploratory mission"
+					 */
+					"exploratory_details": $("#inputExploratoryDetails").val(),
+					"operational_center": $("#inputOpCenter").val(), // check box with only one of OCA/OCBA/OBG/OCB/OCP ticked
+					"other_orgs": $("#inputOtherOrgs").val(), // other organisations, free text
+					"deployment": $("#inputDeployment").val(), // deployment details, free text
+					"capacity": $("#inputCapacity").val(), // capacity, free text
+					/* For next two items have asked for
+					 * Check Boxes + exact number of medical supply + date of arrival
+					 * but not listed anything, so leave as free text
+					 */
+					"medicalMaterials": $("#inputMedicalMaterials").val(),
+					"nonMedicalMaterials": $("#inputNonMedicalMaterials").val()
+					"population_total": $("#inputPopulationTotal").val(), // total population in area affected
+					"population_affected": ($"inputPopulationAffected").val(), // population affected
+					/* Note need to display % but we can
+					* calcuate and display this on events page
+					* from above two variables
+					*/
         }
+      }
 
       $.ajax({
         type: "POST",
