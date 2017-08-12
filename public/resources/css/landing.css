@@ -1,8 +1,8 @@
 html, body { height: 100% }
 
 #landingMap {
-  height:92vh;
-  width:100vw;
+  height:90vh;
+  width:100%;
 }
 
 .col-md-12 {
