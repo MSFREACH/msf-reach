@@ -39,22 +39,20 @@ function onEachFeature(feature, layer) {
     "<BR>Status: " + feature.properties.status +
     "<BR>Type: " + feature.properties.type +
     "<BR>Created: " + feature.properties.created;
+  var populationContent = '';
   if (percentagePopulation) {
-    popupContent += "<BR>Total population: " + feature.properties.metadata.population_total +
+    populationContent += "<BR>Total population: " + feature.properties.metadata.population_total +
     "<BR>% pop. affected: " + percentagePopulation;
+    popupContent += populationContent;
   }
   $('#eventProperties').append(
     '<p>' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
     'Status: ' + feature.properties.status + '<br>' +
-    'Created: ' + feature.properties.created);
-  if (percentagePopulation) {
-    $('#eventProperties').append(
-      '<br>Total population: ' + feature.properties.metadata.population_total + '<br>' +
-      '% pop. affected: ' + percentagePopulation)
-  }
-  $('#eventProperties').append('</p>');
+    'Created: ' + feature.properties.created +
+    populationContent + '</p>');
+
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
   }
