@@ -65,9 +65,9 @@ $('#createEvent').on('click', function (e) {
 					 * but not listed anything, so leave as free text
 					 */
 					"medicalMaterials": $("#inputMedicalMaterials").val(),
-					"nonMedicalMaterials": $("#inputNonMedicalMaterials").val()
+					"nonMedicalMaterials": $("#inputNonMedicalMaterials").val(),
 					"population_total": $("#inputPopulationTotal").val(), // total population in area affected
-					"population_affected": ($"inputPopulationAffected").val(), // population affected
+					"population_affected": $("#inputPopulationAffected").val() // population affected
 					/* Note need to display % but we can
 					* calcuate and display this on events page
 					* from above two variables
