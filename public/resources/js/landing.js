@@ -54,6 +54,7 @@ function onEachFeature(feature, layer) {
       '<br>Total population: ' + feature.properties.metadata.population_total + '<br>' +
       '% pop. affected: ' + percentagePopulation +
       '</p>');
+  }
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
   }
