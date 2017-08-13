@@ -40,7 +40,7 @@ function onEachFeature(feature, layer) {
     "<BR>Type: " + feature.properties.type +
     "<BR>Created: " + feature.properties.created;
   if (percentagePopulation) {
-    popupContent += "<BR>Total population: " + feature.properties.metadadata.population_total +
+    popupContent += "<BR>Total population: " + feature.properties.metadata.population_total +
     "<BR>% pop. affected: " + percentagePopulation;
   }
   $('#eventProperties').append(
