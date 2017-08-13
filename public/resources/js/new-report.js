@@ -12,12 +12,12 @@ var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terra
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
-  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+	attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 }).addTo(newReportMap);
 
 var baseMaps = {
-  "Terrain": stamenTerrain,
-  "Satellite" : mapboxSatellite
+	"Terrain": stamenTerrain,
+	"Satellite" : mapboxSatellite
 };
 
 var overlayMaps = {};
@@ -27,10 +27,10 @@ var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'topright
 var marker;
 var latlng = null;
 newReportMap.on('click', function(e) {
-    if(marker)
-        newReportMap.removeLayer(marker);
-    latlng = e.latlng; // e is an event object (MouseEvent in this case)
-    marker = L.marker(e.latlng).addTo(newReportMap);
+	if(marker)
+	newReportMap.removeLayer(marker);
+	latlng = e.latlng; // e is an event object (MouseEvent in this case)
+	marker = L.marker(e.latlng).addTo(newReportMap);
 });
 
 function postReport(eventID,reportKey,imgLink) {
@@ -65,69 +65,69 @@ function postReport(eventID,reportKey,imgLink) {
 
 
 $('#createReport').on('click', function (e) {
-		var eventId = getQueryVariable("eventId");
-		var reportKey = getQueryVariable("reportkey");
+	var eventId = getQueryVariable("eventId");
+	var reportKey = getQueryVariable("reportkey");
 
-		if ((!eventId)||(!reportKey))
+	if ((!eventId)||(!reportKey))
+	{
+		alert("EventId and/or reportKey missing in the URL. Please verify and try again.");
+	}
+
+	var imgLink="";
+
+
+
+	if (latlng === null){
+		//$('#newEventModalTitle').html('<h4>Missing event location</h4>');
+		//$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>')
+		//$('#newEventModal').modal('toggle');
+		//alert("Please select a report location on the map first.");
+		console.log('new location supplied'); //why do we need this line ?
+	}
+	else {
+		$('#divProgress').html('Submitting your report...');
+		var files=document.getElementById('inputImageUpload').files;
+
+		if (files && files[0])
 		{
-			alert("EventId and/or reportKey missing in the URL. Please verify and try again.");
-		}
-
-		var imgLink="";
-
-
-
-    if (latlng === null){
-			//$('#newEventModalTitle').html('<h4>Missing event location</h4>');
-			//$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>')
-			//$('#newEventModal').modal('toggle');
-			//alert("Please select a report location on the map first.");
-			console.log('new location supplied'); //why do we need this line ?
-    }
-    else {
-			$('#divProgress').html('Submitting your report...');
-			var files=document.getElementById('inputImageUpload').files;
-
-			if (files && files[0])
-			{
-				var imgFileName=files[0].name;
-			  var fileType=files[0].type;
-				var photo=files[0];
+			var imgFileName=files[0].name;
+			var fileType=files[0].type;
+			var photo=files[0];
 			$.ajax({
-	        url : '../api/utils/uploadurl',
-	        data: 'filename='+imgFileName,// + '&mime=' + fileType,
-	        type : "GET",
-	        dataType : "json",
-	        cache : false,
-	      })
-	      .then(function(retData) {
-	        console.log('url received:');
-	        console.log(retData.url);
-					imgLink=retData.url;
-	       return $.ajax({
-	          url : retData.signedRequest,
-	          type : "PUT",
-	          data : photo,
-	          dataType : "text",
-	          cache : false,
-	          //contentType : file.type,
-	          processData : false,
-	        });
-	      }).then(function(data,txt,jq){
-					  console.log('Upload successfull,submitting the report..');
-						postReport(eventId,reportKey,imgLink);
-	      })
-	      .fail(function(err){
-	        //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
-					$('#divProgress').html('An error occured while uploading the photo.');
-	        console.error('error: ');
-	        console.log(err);
-	      });
-
-      }else {//no image just submit the report
+				url : '../api/utils/uploadurl',
+				data: 'filename='+imgFileName,// + '&mime=' + fileType,
+				type : "GET",
+				dataType : "json",
+				cache : false,
+			})
+			.then(function(retData) {
+				console.log('url received:');
+				console.log(retData.url);
+				imgLink=retData.url;
+				return $.ajax({
+					url : retData.signedRequest,
+					type : "PUT",
+					data : photo,
+					dataType : "text",
+					cache : false,
+					//contentType : file.type,
+					processData : false,
+				});
+			}).then(function(data,txt,jq){
+				console.log('Upload successfull,submitting the report..');
 				postReport(eventId,reportKey,imgLink);
-			}//else
+			})
+			.fail(function(err){
+				//$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
+				$('#divProgress').html('An error occured while uploading the photo.');
+				console.error('error: ');
+				console.log(err);
+			});
+
+		}else {//no image just submit the report
+			postReport(eventId,reportKey,imgLink);
+		}//else
 
 
-    }
+	}
 });
