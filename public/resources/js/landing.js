@@ -30,15 +30,22 @@ var getAllEvents = function(callback){
 
 // Add popups
 function onEachFeature(feature, layer) {
-  var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id + "'>Event " + feature.properties.id +"</a></strong>" + "<BR>Status: " + feature.properties.status +"<BR>Type: " + feature.properties.type +"<BR>Created: " + feature.properties.created;
+  var percentagePopulation = String(Math.round(Number(feature.properties.metadata.population_affected)/Number(feature.properties.metadata.population_total)*100));
+  var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id +
+    "'>Event " + feature.properties.id +"</a></strong>" +
+    "<BR>Status: " + feature.properties.status +
+    "<BR>Type: " + feature.properties.type +
+    "<BR>Created: " + feature.properties.created +
+    "<BR>Total population: " + feature.properties.metadadata.population_total +
+    "<BR>% pop. affected: " + percentagePopulation;
   $('#eventProperties').append(
     '<p>' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
     'Status: ' + feature.properties.status + '<br>' +
     'Created: ' + feature.properties.created + '<br>' +
-    'Total population: ' + feature.properties.population_total + '<br>' +
-    '% pop. affected: ' + String(Math.round(Number(feature.properties.population_affected)/Number(feature.properties.population_total)*100)) +
+    'Total population: ' + feature.properties.metadata.population_total + '<br>' +
+    '% pop. affected: ' + percentagePopulation +
     '</p>');
     if (feature.properties && feature.properties.popupContent) {
       popupContent += feature.properties.popupContent;
