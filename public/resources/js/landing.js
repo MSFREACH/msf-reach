@@ -52,9 +52,10 @@ function onEachFeature(feature, layer) {
   if (percentagePopulation) {
     $('#eventProperties').append(
       '<br>Total population: ' + feature.properties.metadata.population_total + '<br>' +
-      '% pop. affected: ' + percentagePopulation +
-      '</p>');
+      '% pop. affected: ' + percentagePopulation)
+    }
   }
+  $('#eventProperties').append('</p>');
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
   }
