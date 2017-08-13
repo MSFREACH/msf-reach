@@ -152,6 +152,7 @@ var mapAllEvents = function(err, events){
          popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
          popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
          popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
+         popupContent += '% affected: ' + String(Math.round(Number(feature.properties.properties.population_affected)/Number(feature.properties.population_total)*100)) + '<BR>';
        }
 
        layer.bindPopup(popupContent);
@@ -235,5 +236,5 @@ var mapAllEvents = function(err, events){
 
   getAllEvents(mapAllEvents);
   getHazards(mapHazards);
-  getMissions(mapMissions);
-  getContacts(mapContacts);
+  //getMissions(mapMissions);
+  //getContacts(mapContacts);
