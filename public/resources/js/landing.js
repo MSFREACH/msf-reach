@@ -53,7 +53,6 @@ function onEachFeature(feature, layer) {
     $('#eventProperties').append(
       '<br>Total population: ' + feature.properties.metadata.population_total + '<br>' +
       '% pop. affected: ' + percentagePopulation)
-    }
   }
   $('#eventProperties').append('</p>');
   if (feature.properties && feature.properties.popupContent) {
