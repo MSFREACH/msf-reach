@@ -37,7 +37,7 @@ function onEachFeature(feature, layer) {
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
     'Status: ' + feature.properties.status + '<br>' +
     'Created: ' + feature.properties.created + '<br>' +
-    '% pop. affected: ' + String(Math.round(Number(feature.properties.properties.population_affected)/Number(feature.properties.properties.population_total)*100)) +
+    '% pop. affected: ' + String(Math.round(Number(feature.properties.population_affected)/Number(feature.properties.population_total)*100)) +
     '</p>');
     if (feature.properties && feature.properties.popupContent) {
       popupContent += feature.properties.popupContent;
