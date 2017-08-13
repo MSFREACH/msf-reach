@@ -37,7 +37,7 @@ $(function(){
 
 	    if (latlng === null){
 				$('#newEventModalTitle').html('<h4>Missing event location</h4>');
-				$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>')
+				$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>');
 				$('#newEventModal').modal('toggle');
 	    }
 	    else {
@@ -73,7 +73,7 @@ $(function(){
 						* from above two variables
 						*/
 	        }
-	      }
+	      };
 
 	      $.ajax({
 	        type: "POST",
@@ -85,7 +85,7 @@ $(function(){
 	        window.location.href = '/events/?eventId='+eventId;
 	      }).fail(function (reqm, textStatus, err){
 					$('#newEventModalTitle').html('<h4>Error creating event</h4>');
-					$('#newEventModalContent').html('<p>' + err +'.</p>')
+					$('#newEventModalContent').html('<p>' + err +'.</p>');
 					$('#newEventModal').modal('toggle');
 	      });
 	    }

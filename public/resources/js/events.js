@@ -14,9 +14,9 @@ var currentEventId;
 var eventReportLink;
 var currentEventProperties;
 
-var zoomToEvent = function(latlng){
+var zoomToEvent = function(latlng) {
   eventsMap.setView(latlng, 12);
-}
+};
 
 var clipboard = new Clipboard('.btn');
 clipboard.on('success', function(e) {
@@ -54,11 +54,11 @@ var printEventProperties = function(err, eventProperties){
   } else {
     // Loop through properties and create a HTML list
     var propertiesTable = "";
-    propertiesTable += '<table class="table">'
+    propertiesTable += '<table class="table">';
     $.each( eventProperties, function( key, val ) {
       if (EVENT_PROPERTIES.indexOf(key) > -1 ){
-        propertiesTable += "<tr id='" + key + "'><td>" + key.charAt(0).toUpperCase()+key.slice(1) + "</td><td>"
-                              + val + "</td><td></td></tr>" ;
+        propertiesTable += "<tr id='" + key + "'><td>" + key.charAt(0).toUpperCase()+key.slice(1) + "</td><td>" +
+                              val + "</td><td></td></tr>" ;
       }
     });
     // Create unique link to this event
@@ -70,11 +70,11 @@ var printEventProperties = function(err, eventProperties){
     // Add unique link to report to this event
     propertiesTable += "<tr><td>Report link</td><td><a id='reportLink' href='"+eventReportLink+"'>"+eventReportLink+"</a></td><td><button class='btn btn-primary' data-clipboard-target='#reportLink'>Copy</button></td></tr>";
     // Add user metadata
-    if (eventProperties.metadata.user){
-      propertiesTable += "<tr><td>Owner</td><td>"+eventProperties.metadata.user+"</td></tr>"
+    if (eventProperties.metadata.user) {
+      propertiesTable += "<tr><td>Owner</td><td>"+eventProperties.metadata.user+"</td></tr>";
     }
-    if (eventProperties.metadata.user_edit){
-      propertiesTable += "<tr><td>Edits</td><td>"+eventProperties.metadata.user_edit+"</td></tr>"
+    if (eventProperties.metadata.user_edit) {
+      propertiesTable += "<tr><td>Edits</td><td>"+eventProperties.metadata.user_edit+"</td></tr>";
     }
 
     // Pre-fil edit modal
@@ -84,7 +84,7 @@ var printEventProperties = function(err, eventProperties){
     $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
 
     // Append output to body
-    propertiesTable += "</table>"
+    propertiesTable += "</table>";
     $("#eventProperties").html(propertiesTable);
 
     console.log(eventProperties);
@@ -93,16 +93,16 @@ var printEventProperties = function(err, eventProperties){
     $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
     $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
   }
-  if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0){
+  if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
     $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
       console.log(value.html);
       $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
       var tweetEventReportLink = eventReportLink.replace("&", "%26");
       $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
       twttr.widgets.load();
-    })
-    }
-}
+    });
+  }
+};
 
 /**
   * Function to get event details from API
@@ -114,14 +114,14 @@ var printEventProperties = function(err, eventProperties){
 var getEvent = function(eventId, callback){
   $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Zoom to location
-    zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]])
+    zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]]);
     // Print output to page
     callback(null, data.result.features[0].properties);
   }).fail(function(err) {
     // Catch condition where no data returned
     callback(err.responseText, null);
-  })
-}
+  });
+};
 
 /**
   * Function to get reports for an event
@@ -148,9 +148,8 @@ var mapReports = function(reports){
        popupContent += feature.properties.content.report_tag + '<BR>';
        popupContent += feature.properties.content["username/alias"] + '<BR>';
        if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
-         popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">'
+         popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
        }
-
      }
 
      layer.bindPopup(popupContent, {  maxWidth: "auto" });
@@ -171,7 +170,7 @@ var mapReports = function(reports){
 if (points.length > 0){
   eventsMap.fitBounds(points);
   }
-}
+};
 
 // Main function (effective)
 // Get eventId from URL
@@ -182,7 +181,7 @@ if (currentEventId !== false && currentEventId != ''){
   getReports(currentEventId, mapReports);
 } else {
   // Catch condition where no event specified, print to screen
-  printEventProperties('No event ID specified', null)
+  printEventProperties('No event ID specified', null);
 }
 
 // Create map
@@ -217,7 +216,7 @@ $('#btnArchive').click(function(e){
   var body = {
     "status":"inactive",
     "metadata":{}
-  }
+  };
 
   $.ajax({
     type: "PUT",
@@ -243,7 +242,7 @@ $('#btnSaveEdits').click(function(e){
       "security_details": $("#inputSecurityDetails").val(),
       "user_edit": localStorage.getItem("username")
     }
-  }
+  };
 
   $.ajax({
     type: "PUT",

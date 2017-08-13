@@ -25,7 +25,7 @@ var getAllEvents = function(callback){
   }).fail(function(err) {
     // Catch condition where no data returned
     callback(err.responseText, null);
-  })
+  });
 };
 
 // Add popups
@@ -37,8 +37,8 @@ function onEachFeature(feature, layer) {
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
     'Status: ' + feature.properties.status + '<br>' +
     'Created: ' + feature.properties.created + '<br>' +
-    '% pop. affected: ' + String(Math.round(Number(feature.properties.properties.population_affected)/Number(feature.properties.population_total)*100));
-  +'</p>');
+    '% pop. affected: ' + String(Math.round(Number(feature.properties.properties.population_affected)/Number(feature.properties.properties.population_total)*100)) +
+    '</p>');
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
   }
@@ -73,15 +73,15 @@ var mapAllEvents = function(err, events){
         },
         onEachFeature: onEachFeature,
         filter: function(feature, layer){
-          if (feature.properties.type === key){
+          if (feature.properties.type === key) {
             return feature;
           }
-        }})
+        }});
         layer.addTo(landingMap);
         layerControl.addOverlay(layer, name);
-      };
+      }
     }
-  }
+  };
 
   /**
   * Function to get reports for an event
@@ -111,11 +111,11 @@ var mapAllEvents = function(err, events){
         return L.marker(latlng, {icon: hazardsMarker});
       },
       onEachFeature: onEachFeature
-    })
+    });
     hazardsLayer.addTo(landingMap);
     layerControl.addOverlay(hazardsLayer, 'PDC Hazards');
 
-  }
+  };
 
   /**
     * Function to get contacts
@@ -146,7 +146,7 @@ var mapAllEvents = function(err, events){
        var popupContent = '';
 
        if (feature.properties && feature.properties.properties) {
-         popupContent += feature.properties.properties.type + '<BR>'
+         popupContent += feature.properties.properties.type + '<BR>';
          popupContent += feature.properties.properties.name + '<BR>';
          popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
          popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
@@ -166,10 +166,10 @@ var mapAllEvents = function(err, events){
         return L.marker(latlng, {icon: missionMarker});
       },
       onEachFeature: onEachFeature
-    })
+    });
     missionsLayer.addTo(landingMap);
     layerControl.addOverlay(missionsLayer, 'past missions');
-  }
+  };
 
 
   /**
@@ -201,11 +201,11 @@ var mapAllEvents = function(err, events){
         return L.marker(latlng, {icon: contactMarker});
       },
       onEachFeature: onEachFeature
-    })
+    });
     contactsLayer.addTo(landingMap);
     layerControl.addOverlay(contactsLayer, 'contacts');
 
-  }
+  };
 
 
   // Create map
