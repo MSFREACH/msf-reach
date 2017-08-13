@@ -33,8 +33,7 @@ newReportMap.on('click', function(e) {
     marker = L.marker(e.latlng).addTo(newReportMap);
 });
 
-function postReport(eventID,reportKey,imgLink)
-{
+function postReport(eventID,reportKey,imgLink) {
 	var body = {
 		"eventId": eventID,
 		"status": "confirmed",
@@ -47,7 +46,7 @@ function postReport(eventID,reportKey,imgLink)
 			"description":$("#inputReportText").val(),
 			"image_link": imgLink
 		}
-	}
+	};
 	//console.log(body);
 	$.ajax({
 		type: "POST",
@@ -131,4 +130,4 @@ $('#createReport').on('click', function (e) {
 
 
     }
-})
+});

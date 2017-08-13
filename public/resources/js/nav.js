@@ -5,4 +5,4 @@ $('#username').append(USERNAME);
 $('#logout').click(function(){
   Cookies.remove('jwt', {path: '/'} );
   localStorage.removeItem("username");
-})
+});
