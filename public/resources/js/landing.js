@@ -36,7 +36,8 @@ function onEachFeature(feature, layer) {
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
     'Status: ' + feature.properties.status + '<br>' +
-    'Created: ' + feature.properties.created
+    'Created: ' + feature.properties.created + '<br>' +
+    '% pop. affected: ' + String(Math.round(Number(feature.properties.properties.population_affected)/Number(feature.properties.population_total)*100));
   +'</p>');
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
@@ -152,7 +153,6 @@ var mapAllEvents = function(err, events){
          popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
          popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
          popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
-         popupContent += '% affected: ' + String(Math.round(Number(feature.properties.properties.population_affected)/Number(feature.properties.population_total)*100)) + '<BR>';
        }
 
        layer.bindPopup(popupContent);
