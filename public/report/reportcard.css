@@ -141,3 +141,14 @@ html,body {
 .rtype-selected{
   border:3px solid red;
 }
+
+.btn-msf{
+  color: #fff;
+  background-color: black;
+  border-color: white;
+  text-transform: uppercase;
+}
+.btn-msf:hover , .btn-msf:focus{
+  color: #fff;
+  background-color:#555555;
+}
