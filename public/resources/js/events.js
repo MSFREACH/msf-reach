@@ -1,8 +1,8 @@
 /**
- * Events page script
- * @file public/resources/js/events.js
- * Display and interact with event objects from events page
- */
+* Events page script
+* @file public/resources/js/events.js
+* Display and interact with event objects from events page
+*/
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
@@ -20,16 +20,16 @@ var zoomToEvent = function(latlng) {
 
 var clipboard = new Clipboard('.btn');
 clipboard.on('success', function(e) {
-    console.log(e);
+  console.log(e);
 });
 clipboard.on('error', function(e) {
-    console.log(e);
+  console.log(e);
 });
 
 /**
-  * Function to print a list of event details to web page
-  * @param {Object} eventProperties - Object containing event details
-  */
+* Function to print a list of event details to web page
+* @param {Object} eventProperties - Object containing event details
+*/
 var printEventProperties = function(err, eventProperties){
 
   // Make a global store of current event properties
@@ -41,9 +41,9 @@ var printEventProperties = function(err, eventProperties){
     $('#btnSearchTwitter').trigger('click');
 
     $("#searchTerm").keyup(function(event){
-        if(event.keyCode == 13){
-          $('#btnSearchTwitter').trigger('click');
-        }
+      if(event.keyCode == 13){
+        $('#btnSearchTwitter').trigger('click');
+      }
     });
 
   });
@@ -58,7 +58,7 @@ var printEventProperties = function(err, eventProperties){
     $.each( eventProperties, function( key, val ) {
       if (EVENT_PROPERTIES.indexOf(key) > -1 ){
         propertiesTable += "<tr id='" + key + "'><td>" + key.charAt(0).toUpperCase()+key.slice(1) + "</td><td>" +
-                              val + "</td><td></td></tr>" ;
+        val + "</td><td></td></tr>" ;
       }
     });
     // Create unique link to this event
@@ -105,12 +105,12 @@ var printEventProperties = function(err, eventProperties){
 };
 
 /**
-  * Function to get event details from API
-  * @param {Number} eventId - Unique event ID to fetch
-  * @param {Function} callback - Function to call once data returned
-  * @returns {String} err - Error message if any, else none
-  * @returns {Object} eventProperties - Event properties unless error
-  */
+* Function to get event details from API
+* @param {Number} eventId - Unique event ID to fetch
+* @param {Function} callback - Function to call once data returned
+* @returns {String} err - Error message if any, else none
+* @returns {Object} eventProperties - Event properties unless error
+*/
 var getEvent = function(eventId, callback){
   $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Zoom to location
@@ -124,9 +124,9 @@ var getEvent = function(eventId, callback){
 };
 
 /**
-  * Function to get reports for an event
-  * @param {Number} eventId - UniqueId of event
-  **/
+* Function to get reports for an event
+* @param {Number} eventId - UniqueId of event
+**/
 var getReports = function(eventId, callback){
   $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
@@ -134,26 +134,26 @@ var getReports = function(eventId, callback){
 };
 
 /**
-  * Function to add reports to map
-  * @param {Object} reports - GeoJson FeatureCollection containing report points
-  **/
+* Function to add reports to map
+* @param {Object} reports - GeoJson FeatureCollection containing report points
+**/
 var mapReports = function(reports){
 
   function onEachFeature(feature, layer) {
 
-     var popupContent = '';
+    var popupContent = '';
 
-     if (feature.properties && feature.properties.content) {
-       popupContent += feature.properties.content.description + '<BR>';
-       popupContent += feature.properties.content.report_tag + '<BR>';
-       popupContent += feature.properties.content["username/alias"] + '<BR>';
-       if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
-         popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
-       }
-     }
+    if (feature.properties && feature.properties.content) {
+      popupContent += feature.properties.content.description + '<BR>';
+      popupContent += feature.properties.content.report_tag + '<BR>';
+      popupContent += feature.properties.content["username/alias"] + '<BR>';
+      if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
+        popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
+      }
+    }
 
-     layer.bindPopup(popupContent, {  maxWidth: "auto" });
-   }
+    layer.bindPopup(popupContent, {  maxWidth: "auto" });
+  }
 
   var reportsMarker = L.divIcon({className: 'report-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
 
@@ -161,14 +161,14 @@ var mapReports = function(reports){
 
   L.geoJSON(reports, {
     pointToLayer: function (feature, latlng) {
-        points.push([latlng.lat, latlng.lng]);
-        return L.marker(latlng, {icon: reportsMarker});
+      points.push([latlng.lat, latlng.lng]);
+      return L.marker(latlng, {icon: reportsMarker});
     },
     onEachFeature: onEachFeature
-}).addTo(eventsMap); // Add reports to map
-// Now that we have all reports, fit the map to their bounds
-if (points.length > 0){
-  eventsMap.fitBounds(points);
+  }).addTo(eventsMap); // Add reports to map
+  // Now that we have all reports, fit the map to their bounds
+  if (points.length > 0){
+    eventsMap.fitBounds(points);
   }
 };
 
@@ -189,11 +189,11 @@ var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
 
 // Add some base tiles
 var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
-	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-	subdomains: 'abcd',
-	minZoom: 0,
-	maxZoom: 18,
-	ext: 'png'
+  attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  subdomains: 'abcd',
+  minZoom: 0,
+  maxZoom: 18,
+  ext: 'png'
 });
 
 // Add some satellite tiles
