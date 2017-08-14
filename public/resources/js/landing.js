@@ -46,12 +46,12 @@ function onEachFeature(feature, layer) {
     popupContent += populationContent;
   }
   $('#eventProperties').append(
-    '<p>' +
+    '<div class="list-group-item">' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
     'Status: ' + feature.properties.status + '<br>' +
     'Created: ' + feature.properties.created +
-    populationContent + '</p>');
+    populationContent + '</div>');
 
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
