@@ -79,7 +79,7 @@ var cognitoAuth = function(){
 
 $('#login').click(function(){
   $('#login').html('Authenticating....').attr('disabled',true);
-  cognitoAuth();
+  setTimeout(cognitoAuth,2);//force UI update before authenticating
 });
 
 $("#inputPassword").keyup(function(event){
