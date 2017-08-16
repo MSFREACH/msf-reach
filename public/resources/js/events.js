@@ -155,9 +155,10 @@ var mapReports = function(reports){
     var popupContent = '';
 
     if (feature.properties && feature.properties.content) {
-      popupContent += feature.properties.content.description + '<BR>';
-      popupContent += feature.properties.content.report_tag + '<BR>';
-      popupContent += feature.properties.content["username/alias"] + '<BR>';
+      popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
+      popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
+      popupContent += 'Reporter: ' + feature.properties.content["username/alias"] + '<BR>';
+      popupContent += 'Created: ' + feature.properties.created + '<BR>';
       if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
         popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
       }
