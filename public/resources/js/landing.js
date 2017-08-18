@@ -250,5 +250,5 @@ function onEachFeature(feature, layer) {
 
     getAllEvents(mapAllEvents);
     getHazards(mapHazards);
-    //getMissions(mapMissions);
-    //getContacts(mapContacts);
+    getMissions(mapMissions);
+    getContacts(mapContacts);
