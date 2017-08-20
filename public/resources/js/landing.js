@@ -183,12 +183,18 @@ function onEachFeature(feature, layer) {
         layer.bindPopup(popupContent);
       }
 
-      var missionMarker = L.divIcon({className: 'missions-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
+      // MSF Icons
+      var missionIcon = L.icon({
+        iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
 
+        iconSize:     [26, 26], // size of the icon
+        //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+      });
 
       var missionsLayer = L.geoJSON(missions, {
         pointToLayer: function (feature, latlng) {
-          return L.marker(latlng, {icon: missionMarker});
+          return L.marker(latlng, {icon: missionIcon});
         },
         onEachFeature: onEachFeature
       });
@@ -218,8 +224,6 @@ function onEachFeature(feature, layer) {
         layer.bindPopup(popupContent);
       }
 
-      var contactMarker = L.divIcon({className: 'contacts-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
-
       // MSF Icons
       var contactIcon = L.icon({
         iconUrl: '/resources/images/icons/contacts/Contact_Black-42.svg',
@@ -228,8 +232,6 @@ function onEachFeature(feature, layer) {
         //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
         //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
       });
-
-
 
       var contactsLayer = L.geoJSON(contacts, {
         pointToLayer: function (feature, latlng) {
