@@ -187,7 +187,7 @@ function onEachFeature(feature, layer) {
       var missionIcon = L.icon({
         iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
 
-        iconSize:     [26, 26], // size of the icon
+        iconSize:     [46, 46], // size of the icon
         //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
         //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
       });
