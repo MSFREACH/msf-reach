@@ -12,6 +12,8 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
 {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+var TYPEICONS={'conflict':'CONFLICT-47.svg', 'epidemiological':'EPIDEMIC-44.svg' , 'search_and_rescue':'SEARCH_AND_RESCUE-48.svg', 'displacement':'DISPLACEMENT-46.svg','malnutrition':'MALNUTRITION-45.svg' };
+
 /**
 * Function to get all events from the API
 * @param {Function} callback - Function to call once data returned
@@ -61,13 +63,22 @@ function onEachFeature(feature, layer) {
 }
 
   // MSF Icons
-  var msfIcon = L.icon({
-    iconUrl: '/resources/images/msf_icon.png',
+  function  getEventIcon(typeKey) {
+    var iconFile='msf_icon.png';
+    var iconSize=26;
+    if (TYPEICONS[typeKey])
+      {iconFile='icons/event_types/'+TYPEICONS[typeKey];
+       iconSize=52
+     }
 
-    iconSize:     [26, 26], // size of the icon
+    return L.icon({
+    iconUrl: ('/resources/images/'+iconFile),
+
+    iconSize:     [iconSize, iconSize], // size of the icon
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
+ }
 
   /**
   * Function to print a table of events
@@ -83,7 +94,7 @@ function onEachFeature(feature, layer) {
         var name = TYPES[i][key];
         var layer = L.geoJSON(events, {
           pointToLayer: function(feature, latlng){
-            return L.marker(latlng, {icon: msfIcon});
+            return L.marker(latlng, {icon: getEventIcon(key)});
           },
           onEachFeature: onEachFeature,
           filter: function(feature, layer){
@@ -209,10 +220,20 @@ function onEachFeature(feature, layer) {
 
       var contactMarker = L.divIcon({className: 'contacts-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
 
+      // MSF Icons
+      var contactIcon = L.icon({
+        iconUrl: '/resources/images/icons/contacts/Contact_Black-42.svg',
+
+        iconSize:     [26, 26], // size of the icon
+        //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+      });
+
+
 
       var contactsLayer = L.geoJSON(contacts, {
         pointToLayer: function (feature, latlng) {
-          return L.marker(latlng, {icon: contactMarker});
+          return L.marker(latlng, {icon: contactIcon});
         },
         onEachFeature: onEachFeature
       });

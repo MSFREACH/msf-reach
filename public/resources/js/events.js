@@ -169,12 +169,21 @@ var mapReports = function(reports){
 
   var reportsMarker = L.divIcon({className: 'report-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
 
+  // MSF Icons
+  var reportsIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/REPORT_UNVERIFIED_BASIC-31.svg',
+
+    iconSize:     [40, 40], // size of the icon
+    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
+
   var points = []; // local storage for coordinates of reports (used for map bounds)
 
   L.geoJSON(reports, {
     pointToLayer: function (feature, latlng) {
       points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: reportsMarker});
+      return L.marker(latlng, {icon: reportsIcon});
     },
     onEachFeature: onEachFeature
   }).addTo(eventsMap); // Add reports to map
