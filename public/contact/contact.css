@@ -1,0 +1,154 @@
+html,body {
+    height: 100%;
+}
+
+.report-root
+{
+  opacity:1;
+  text-rendering: optimizeLegibility;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  right: 0;
+ z-index: 1000000;
+}
+
+@media (min-width: 481px)
+{.report-root
+ {
+    display: table;
+ }
+}
+
+@media screen and (max-width: 480px)
+.report-root{
+    position: absolute;
+}
+
+.report-overlay
+{
+  background: radial-gradient(#40404b, #111118) rgba(34,34,40,0.94);
+  position: fixed;
+  opacity: 0.9;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: -1;
+}
+
+@media screen and (max-width: 480px)
+{.report-overlay {
+    display: none;
+}
+}
+
+@media (min-width: 481px)
+{
+.report-card-wrapper {
+    vertical-align: middle;
+    display: table-cell;
+    margin: auto;
+    overflow-y: auto;
+  }
+}
+
+
+.report-card-widget {
+  position: relative;
+  width: 350px;
+  text-align: center;
+  background-color: black;
+  color:white;
+  overflow: hidden;
+  margin: 0 auto;
+  border-radius: 5px;
+  max-height: 100vh;
+}
+
+@media screen and (max-width: 480px)
+{
+.report-card-widget {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 0;
+ }
+}
+
+.report-card-container{
+  position: relative;
+  height:90vh;
+  margin:10px;
+}
+#map {
+  height:70vh;
+}
+
+@media screen and (max-width: 480px)
+{
+  .report-card-container{
+    height:87vh;
+  }
+  #map {
+    height:65vh;
+  }
+}
+
+.form-section {
+    display: none;
+    margin-top: 20px;
+}
+
+.form-section.current{
+    display: inherit;
+}
+
+.form-navigation .previous
+{
+  display: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+
+.rtype-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 50%;
+    background-color: black;
+}
+
+.rtype-item {
+    background-color: white;
+    color:black;
+    width: 40%;
+    /*height: 100px;*/
+    margin: 10px;
+    cursor:pointer;
+    border:3px solid white;
+}
+
+.rtype-selected{
+  border:3px solid red;
+}
+
+.btn-msf{
+  color: #fff;
+  background-color: black;
+  border-color: white;
+  text-transform: uppercase;
+}
+.btn-msf:hover , .btn-msf:focus{
+  color: #fff;
+  background-color:#555555;
+}
