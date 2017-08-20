@@ -226,7 +226,7 @@ function onEachFeature(feature, layer) {
 
       // MSF Icons
       var contactIcon = L.icon({
-        iconUrl: '/resources/images/icons/contacts/Contact_Black-42.svg',
+        iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
 
         iconSize:     [26, 26], // size of the icon
         //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
