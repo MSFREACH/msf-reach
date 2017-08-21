@@ -21,6 +21,8 @@
 
    <link rel="stylesheet" href="contact.css">
 
+   <!-- jqueryui css -->
+   <link rel="stylessheet" href="/resources/css/jquery-ui-1.12.1.min.css">
 
 </head>
 <body>
@@ -49,13 +51,24 @@
             <div class="form-group">
               <input placeholder="Other Names..." class="form-control" style="color:black;" id="inputContactOtherName">
             </div>
+            <div class="form-group">
+              Date of birth: <input type="text" id="inputDOB">
+            </div>
+            <div class="form-group" style="text-align:left;">
+              <label for="inputGender" style="text-transform:uppercase;">Gender</label>
+              <select class="form-control" style="color:black;" id="inputGender" size="4">
+                <option value="male">male</option>
+                <option value="female">female</option>
+                <option value="other">other</option>
+              </select>
+            </div>
             <div class="form-group" style="text-align:left;">
               <label for="inputContactTitle" style="text-transform:uppercase;">Title</label>
               <select class="form-control" style="color:black;" id="inputContactTitle" size="4">
                 <option value="Mr">Mr</option>
-                <option value="Mr">Mrs</option>
-                <option value="Mr">Miss</option>
-                <option value="Mr">Dr</option>
+                <option value="Mrs">Mrs</option>
+                <option value="Ms">Ms</option>
+                <option value="Dr">Dr</option>
               </select>
             </div>
             <div class="form-group" style="text-align:left;">
@@ -63,6 +76,9 @@
               <select class="form-control" style="color:black;" id="inputContactAff" size="4">
                 <option value="MSF Peer">MSF Peer</option>
                 <option value="Current MSF Staff">Current MSF Staff</option>
+                <option value="Assocation member">Association member</option>
+                <option value="UN">UN</option>
+                <option value="Other NGO">Other NGO</option>
                 <option value="Supplier">Supplier</option>
                 <option value="Academic">Academic</option>
               </select>
@@ -77,11 +93,21 @@
            <div class="form-section">
              <h4>Contact details</h4>
              <div class="form-group">
-               <input placeholder="Phone..." class="form-control" style="color:black;" id="inputContactCell" >
+               <input placeholder="Mobile phone..." class="form-control" style="color:black;" id="inputContactCell" >
+             </div>
+             <div class="form-group">
+               <input placeholder="Work phone..." class="form-control" style="color:black;" id="inputContactWork" >
+             </div>
+             <div class="form-group">
+               <input placeholder="Work phone..." class="form-control" style="color:black;" id="inputContactHome" >
              </div>
              <div class="form-group">
                <input placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
              </div>
+             <div class="form-group">
+               <input placeholder="Other email..." class="form-control" style="color:black;" id="inputContactEmail2" >
+             </div>
+
             </div>
 
             <div class="form-section">
@@ -117,6 +143,7 @@
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
+<script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 
 <!-- Get query parameter from URL -->

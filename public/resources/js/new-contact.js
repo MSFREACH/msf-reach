@@ -34,15 +34,19 @@ newContactMap.on('click', function(e) {
 });
 
 function postContact() {
-	var title=$("#inputContactTitle").val() || '';
 	var contName=title+' '+ $("#inputContactFirstName").val()+' '+$("#inputContactLastName").val()+' '+$("#inputContactOtherName").val();
 	var body = {
 		"location":latlng,
 		"properties":{
+			"title": $("#inputContactTitle").val(),
+			"gender": $("#inputGender").val(),
 			"name": contName.trim(),
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
-			"cell":$("#inputContactCell").val(),
-			"email":$("#inputContactEmail").val()
+			"cell":$("#inputContactCell").val() || '',
+			"home":$("#inputContactHome").val() || '',
+			"work":$("#inputContactWork").val() || '',
+			"email":$("#inputContactEmail").val(),
+			"email2": $("#inputContactEmail2").val() || '',
 		}
 	};
 	//console.log(body);
