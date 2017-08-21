@@ -55,7 +55,7 @@ function postContact() {
 			"Skype": $("#inputSkype").val() || '',
 			"Instagram": $("#inputInstagram").val() || '',
 			"nationality1": $("#nationality1").val(),
-			"nationality2": $("#nationality2").val()
+			"nationality2": $("#nationality2").val() || ''
 		}
 	};
 	//console.log(body);
