@@ -54,8 +54,8 @@ function postContact() {
 			"Facebook": $("#inputFacebook").val() || '',
 			"Skype": $("#inputSkype").val() || '',
 			"Instagram": $("#inputInstagram").val() || '',
-			"nationality1": $("#nationality1").val(),
-			"nationality2": $("#nationality2").val() || ''
+			"nationality1": $("#nationality1").countrySelect("getSelectedCountryData"),
+			"nationality2": $("#nationality2").countrySelect("getSelectedCountryData") || ''
 		}
 	};
 	//console.log(body);
@@ -83,8 +83,11 @@ $( function() {
 	 				$('#datepicker').text(dateText);
 				}
     });
-	$("#nationality1").countrySelect();
-	$("#nationality2").countrySelect();
+	var preferred_countries = {
+	  "preferredCountries": ["us", "gb", "id", "au", "hk"]
+	};
+	$("#nationality1").countrySelect(preferred_countries);
+	$("#nationality2").countrySelect(preferred_countries);
 
 });
 
