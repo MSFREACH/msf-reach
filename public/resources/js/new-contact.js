@@ -54,6 +54,8 @@ function postContact() {
 			"Facebook": $("#inputFacebook").val() || '',
 			"Skype": $("#inputSkype").val() || '',
 			"Instagram": $("#inputInstagram").val() || '',
+			"nationality1": $("#nationality1").val(),
+			"nationality2": $("#nationality2").val()
 		}
 	};
 	//console.log(body);
@@ -72,15 +74,17 @@ function postContact() {
 	});
 }
 
-
-$('#createContact').on('click', function (e) {
-		$('#divProgress').html('Submitting new contact...');
-		postContact();
-});
-
 $( function() {
 	$( "#datepicker" ).datepicker({
       changeMonth: true,
       changeYear: true
     });
+});
+
+$("#nationality1").countrySelect();
+$("#nationality2").countrySelect();
+
+$('#createContact').on('click', function (e) {
+		$('#divProgress').html('Submitting new contact...');
+		postContact();
 });
