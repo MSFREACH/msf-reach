@@ -119,6 +119,22 @@ function onEachFeature(feature, layer) {
     };
 
     /**
+    * Function to map from hazard summary to hazard icon
+    * @param {String} hazardSummary - hazard summary
+    **/
+    var hazardIcon = function(hazardSummary) {
+      var iconUrl = '/resources/images/hazards/';
+      iconUrl += hazardSummary.split(' ')[0].toLowerCase();
+      return L.icon({
+        "iconUrl": iconUrl,
+        iconSize:     [26, 26], // size of the icon
+        //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+      });
+
+    }
+
+    /**
     * Function to add hazards to map
     * @param {Object} hazards - GeoJson FeatureCollection containing hazard points
     **/
@@ -129,11 +145,9 @@ function onEachFeature(feature, layer) {
         layer.bindPopup(popupContent);
       }
 
-      var hazardsMarker = L.divIcon({className: 'hazard-icon', html: '<span class="glyphicon glyphicon-certificate"></span>'});
-
       var hazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
-          return L.marker(latlng, {icon: hazardsMarker});
+          return L.marker(latlng, {icon: hazardIcon(feature.properties.summary)});
         },
         onEachFeature: onEachFeature
       });
