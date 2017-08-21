@@ -79,10 +79,10 @@ $( function() {
       changeMonth: true,
       changeYear: true
     });
-});
+	$("#nationality1").countrySelect();
+	$("#nationality2").countrySelect();
 
-$("#nationality1").countrySelect();
-$("#nationality2").countrySelect();
+});
 
 $('#createContact').on('click', function (e) {
 		$('#divProgress').html('Submitting new contact...');
