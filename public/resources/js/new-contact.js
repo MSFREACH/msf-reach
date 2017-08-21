@@ -78,8 +78,8 @@ $( function() {
 	$( "#datepicker" ).datepicker({
       changeMonth: true,
       changeYear: true,
-			maxDate: '-100Y',
-			minDate: '-12Y'
+			minDate: '-100Y',
+			maxDate: '-12Y'
     });
 	$("#nationality1").countrySelect();
 	$("#nationality2").countrySelect();
