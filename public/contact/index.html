@@ -23,6 +23,8 @@
 
    <!-- jqueryui css -->
    <link rel="stylesheet" href="/resources/css/jquery-ui-1.12.1.min.css">
+   <!-- country selector -->
+  <link rel="stylesheet" href="/resources/css/countrySelect.min.css">
 
 </head>
 <body>
@@ -86,8 +88,16 @@
             </div>
           </div>
           <div class="form-section">
+            <h4>Nationality</h4>
+            <div class="form-group">
+              Nationality 1: <input type="text" id="nationality1">
+            </div>
+            <div class="form-group">
+              Nationality 2: <input type="text" id="nationality2">
+            </div>
             <h4>Please select your current home location on the map.</h4>
-              <div id="map"></div>
+            <div id="map"></div>
+
           </div>
 
            <div class="form-section">
@@ -170,6 +180,7 @@
 <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
 <script src="/lib/leaflet/leaflet.js"></script>
 <script src="/resources/js/new-contact.js"></script>
+<script src="/lib/js/countrySelect.min.js"></script>
 
 <script src="contact.js"></script>
 </body>
