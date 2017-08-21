@@ -86,7 +86,7 @@ html,body {
   margin:10px;
 }
 #map {
-  height:50vh;
+  height:70vh;
 }
 
 @media screen and (max-width: 480px)
