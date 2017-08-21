@@ -70,3 +70,7 @@ $('#createContact').on('click', function (e) {
 		$('#divProgress').html('Submitting new contact...');
 		postContact();
 });
+
+$( function() {
+	$( "#inputDOB" ).datepicker();
+} );
