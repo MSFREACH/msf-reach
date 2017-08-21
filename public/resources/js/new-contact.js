@@ -42,6 +42,7 @@ function postContact() {
 			"gender": $("#inputGender").val(),
 			"name": contName.trim(),
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
+			"dob":$("#datepicker").val(),
 			"cell":$("#inputContactCell").val() || '',
 			"home":$("#inputContactHome").val() || '',
 			"work":$("#inputContactWork").val() || '',
@@ -72,7 +73,7 @@ $('#createContact').on('click', function (e) {
 });
 
 $( function() {
-	$( "#inputDOB" ).datepicker({
+	$( "#datepicker" ).datepicker({
       changeMonth: true,
       changeYear: true
     });
