@@ -83,11 +83,12 @@ $( function() {
 	 				$('#datepicker').text(dateText);
 				}
     });
-	var preferred_countries = {
-	  "preferredCountries": ["us", "gb", "id", "au", "hk"]
+	var countryParams = {
+		"defaultCountry": "xx",
+	  "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
 	};
-	$("#nationality1").countrySelect(preferred_countries);
-	$("#nationality2").countrySelect(preferred_countries);
+	$("#nationality1").countrySelect(countryParams);
+	$("#nationality2").countrySelect(countryParams);
 
 });
 
