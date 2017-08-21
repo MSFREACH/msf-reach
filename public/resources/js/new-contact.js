@@ -48,6 +48,12 @@ function postContact() {
 			"work":$("#inputContactWork").val() || '',
 			"email":$("#inputContactEmail").val(),
 			"email2": $("#inputContactEmail2").val() || '',
+			"WhatsApp": $("#inputWhatsApp").val() || '',
+			"Twitter": $("#inputTwitter").val() || '',
+			"Telegram": $("#inputTelegram").val() || '',
+			"Facebook": $("#inputFacebook").val() || '',
+			"Skype": $("#inputSkype").val() || '',
+			"Instagram": $("#inputInstagram").val() || '',
 		}
 	};
 	//console.log(body);
