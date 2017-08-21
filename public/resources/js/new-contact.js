@@ -34,7 +34,7 @@ newContactMap.on('click', function(e) {
 });
 
 function postContact() {
-	var contName=title+' '+ $("#inputContactFirstName").val()+' '+$("#inputContactLastName").val()+' '+$("#inputContactOtherName").val();
+	var contName=$("#inputContactFirstName").val()+' '+$("#inputContactLastName").val()+' '+$("#inputContactOtherName").val();
 	var body = {
 		"location":latlng,
 		"properties":{
