@@ -78,8 +78,10 @@ $( function() {
 	$( "#datepicker" ).datepicker({
       changeMonth: true,
       changeYear: true,
-			minDate: '-100Y',
-			maxDate: '-12Y'
+			yearRange: '1900:' + new Date().getFullYear(),
+			onSelect: function(dateText, inst) {
+	 				$('#datepicker').text(dateText);
+				}
     });
 	$("#nationality1").countrySelect();
 	$("#nationality2").countrySelect();
