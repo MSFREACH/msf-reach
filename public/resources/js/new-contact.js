@@ -72,5 +72,8 @@ $('#createContact').on('click', function (e) {
 });
 
 $( function() {
-	$( "#inputDOB" ).datepicker();
-} );
+	$( "#inputDOB" ).datepicker({
+      changeMonth: true,
+      changeYear: true
+    });
+});
