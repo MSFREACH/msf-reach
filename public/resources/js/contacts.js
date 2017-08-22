@@ -10,16 +10,16 @@ var loadContacts = function(err, contacts){
     $.each(contacts, function(key, value) {
       //console.log(key, value);
       $('#contactsTable').append('<tr><td>'+value.properties.properties.title + ' ' + value.properties.properties.name
-        +'</td><td>'+value.properties.properties.dob
-        +'</td><td>'+value.properties.properties.nationality1.name
-        +'</td><td>'+value.properties.properties.nationality2.name
-        +'</td><td>'+value.properties.properties.dob
-        +'</td><td>'+value.properties.properties.type
-        +'</td><td>'+value.properties.properties.email
-        +'</td><td>'+value.properties.properties.cell
-        +'</td><td>'+value.properties.properties.WhatsApp
-        +'</td><td>'+value.properties.properties.Twitter
-        +'</td><td>'+value.properties.properties.Facebook
+        +'</td><td>'+value.properties.properties.dob || ''
+        +'</td><td>'+value.properties.properties.nationality1.name || ''
+        +'</td><td>'+value.properties.properties.nationality2.name || ''
+        +'</td><td>'+value.properties.properties.dob || ''
+        +'</td><td>'+value.properties.properties.type || ''
+        +'</td><td>'+value.properties.properties.email || ''
+        +'</td><td>'+value.properties.properties.cell || ''
+        +'</td><td>'+value.properties.properties.WhatsApp || ''
+        +'</td><td>'+value.properties.properties.Twitter || ''
+        +'</td><td>'+value.properties.properties.Facebook || ''
         +'</td></tr>');
     });
 
