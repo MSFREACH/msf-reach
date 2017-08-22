@@ -241,7 +241,7 @@ function onEachFeature(feature, layer) {
     var contactIcon = L.icon({
       iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
 
-      iconSize:     [39, 39], // size of the icon
+      iconSize:     [36, 36], // size of the icon
       //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
       //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
