@@ -131,13 +131,11 @@ function onEachFeature(feature, layer) {
     var hazardIcon = function(hazardSummary) {
       var iconUrl = '/resources/images/hazards/';
       iconUrl += hazardSummary.split(' ')[0].toLowerCase()+'.png';
-      /*
       if (hazardSummary.split(' ')[0].toLowerCase() === 'volcano') {
         iconUrl += '.svg';
       } else{
         iconUrl += '.png';
       }
-      */
       return L.icon({
         "iconUrl": iconUrl,
         iconSize:     [26, 26], // size of the icon
