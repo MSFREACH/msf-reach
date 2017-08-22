@@ -66,9 +66,9 @@ function onEachFeature(feature, layer) {
   function  getEventIcon(typeKey) {
     var iconFile='msf_icon.png';
     var iconSize=26;
-    if (TYPEICONS[typeKey])
-      {iconFile='icons/event_types/'+TYPEICONS[typeKey];
-       iconSize=52
+    if (TYPEICONS[typeKey]) {
+      iconFile='icons/event_types/'+TYPEICONS[typeKey];
+      iconSize=52;
      }
 
     return L.icon({
@@ -100,7 +100,7 @@ function onEachFeature(feature, layer) {
               iconSize:     [26, 26], // size of the icon
               //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
               //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-            });
+            })});
           },
           onEachFeature: onEachFeature,
           filter: function(feature, layer){
@@ -132,9 +132,9 @@ function onEachFeature(feature, layer) {
       var iconUrl = '/resources/images/hazards/';
       iconUrl += hazardSummary.split(' ')[0].toLowerCase();
       if (hazardSummary.split(' ')[0].toLowerCase() === 'volcano') {
-        iconUrl += '.svg'
+        iconUrl += '.svg';
       } else{
-        iconUrl += '.png'
+        iconUrl += '.png';
       }
       return L.icon({
         "iconUrl": iconUrl,
@@ -143,7 +143,7 @@ function onEachFeature(feature, layer) {
         //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
       });
 
-    }
+    };
 
     /**
     * Function to add hazards to map
