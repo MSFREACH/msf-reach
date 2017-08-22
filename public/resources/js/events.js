@@ -229,7 +229,7 @@ var mapContacts = function(contacts ){
     },
     onEachFeature: onEachFeature
   });
-  contactsLayer.addTo(landingMap);
+  contactsLayer.addTo(eventsMap);
   layerControl.addOverlay(contactsLayer, 'Contacts');
 
 };
@@ -290,7 +290,7 @@ var mapMissions = function(missions ){
     },
     onEachFeature: onEachFeature
   });
-  missionsLayer.addTo(landingMap);
+  missionsLayer.addTo(eventsMap);
   layerControl.addOverlay(missionsLayer, 'Mission Histories');
 };
 
