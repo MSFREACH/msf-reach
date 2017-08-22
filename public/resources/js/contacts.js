@@ -11,8 +11,8 @@ var loadContacts = function(err, contacts){
       //console.log(key, value);
       $('#contactsTable').append('<tr><td>'+(typeof(value.properties.properties.title)==='undefined' ? '' : value.properties.properties.title) + ' ' + value.properties.properties.name
         +'</td><td>'+(typeof(value.properties.properties.dob)==='undefined' ? '' : value.properties.properties.dob)
-        +'</td><td>'+(typeof(value.properties.properties.nationality1.name)==='undefined' ? '' : value.properties.properties.nationality1.name)
-        +'</td><td>'+(typeof(value.properties.properties.nationality2.name)==='undefined' ? '' : value.properties.properties.nationality2.name)
+        +'</td><td>'+(typeof(value.properties.properties.nationality1)==='undefined' ? '' : value.properties.properties.nationality1.name)
+        +'</td><td>'+(typeof(value.properties.properties.nationality2)==='undefined' ? '' : value.properties.properties.nationality2.name)
         +'</td><td>'+(typeof(value.properties.properties.dob)==='undefined' ? '' : value.properties.properties.dob)
         +'</td><td>'+(typeof(value.properties.properties.type)==='undefined' ? '' : value.properties.properties.type)
         +'</td><td>'+(typeof(value.properties.properties.email)==='undefined' ? '' : value.properties.properties.email)
