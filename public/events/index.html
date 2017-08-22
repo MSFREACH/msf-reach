@@ -303,9 +303,9 @@
                 $('#contactsTab').on('click', function(e){
                   //$('#mapContainer').removeClass('col-md-8');
                     $('#mapContainer').toggle();
-                    $('#mapContainer').addClass('col-md-8');
+                    $('#mapContainer').addClass('col-md-6');
                     $('#sidepane').removeClass('col-md-12');
-                    $('#sidepane').addClass('col-md-4');
+                    $('#sidepane').addClass('col-md-6');
                     mapOn = 1;
                     setTimeout(function(){eventsMap.invalidateSize()}, 400);
                 });
