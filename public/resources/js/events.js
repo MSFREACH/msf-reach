@@ -223,7 +223,7 @@ var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2l
 }).addTo(eventsMap);
 
 var baseMaps = {
-  "Terrain": stamenTerrain,
+  "Terrain": mapboxTerrain,
   "Satellite" : mapboxSatellite
 };
 
