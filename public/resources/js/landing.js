@@ -276,7 +276,7 @@ function onEachFeature(feature, layer) {
   }).addTo(landingMap);
 
   var baseMaps = {
-    "Terrain": stamenTerrain,
+    "Terrain": mapboxTerrain,
     "Satellite" : mapboxSatellite
   };
 
