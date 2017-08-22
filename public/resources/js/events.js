@@ -88,10 +88,18 @@ var printEventProperties = function(err, eventProperties){
     $("#eventProperties").html(propertiesTable);
 
     console.log(eventProperties);
-    $("#eventName").append(eventProperties.metadata.name);
     $("#eventSummary").append(eventProperties.metadata.summary);
     $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
     $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
+
+   $("#eventBasicInfo").append("<dt>Name: </dt><dd>"+eventProperties.metadata.name+"</dd>");
+   $("#eventBasicInfo").append("<dt>Sub Type: </dt><dd>"+eventProperties.metadata.sub_type+"</dd>");
+   $("#eventBasicInfo").append("<dt>Event Status </dt><dd>"+eventProperties.metadata.event_status+"</dd>");
+   $("#eventBasicInfo").append("<dt>Person In charge </dt><dd>"+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+"</dd>");
+   $("#eventBasicInfo").append("<dt>Severity </dt><dd>"+eventProperties.metadata.severity+"</dd>");
+   $("#eventBasicInfo").append("<dt>Sharepoint Link </dt><dd>"+eventProperties.metadata.sharepoint_link+"</dd>");
+
+
 
     $("#eventExtra").append("<dt>Exploratory details</dt><dd>"+eventProperties.metadata.exploratory_details+"</dd>")
     $("#eventExtra").append("<dt>Operational Center</dt><dd>"+eventProperties.metadata.operational_center+"</dd>")
