@@ -10,13 +10,12 @@ var loadContacts = function(err, contacts){
     $.each(contacts, function(key, value) {
       //console.log(key, value);
       $('#contactsTable').append('<tr><td>'+(typeof(value.properties.properties.title)==='undefined' ? '' : value.properties.properties.title) + ' ' + value.properties.properties.name
-        +'</td><td>'+(typeof(value.properties.properties.dob)==='undefined' ? '' : value.properties.properties.dob)
-        +'</td><td>'+(typeof(value.properties.properties.nationality1)==='undefined' ? '' : value.properties.properties.nationality1.name)
-        +'</td><td>'+(typeof(value.properties.properties.nationality2)==='undefined' ? '' : value.properties.properties.nationality2.name)
-        +'</td><td>'+(typeof(value.properties.properties.dob)==='undefined' ? '' : value.properties.properties.dob)
         +'</td><td>'+(typeof(value.properties.properties.type)==='undefined' ? '' : value.properties.properties.type)
         +'</td><td>'+(typeof(value.properties.properties.email)==='undefined' ? '' : value.properties.properties.email)
         +'</td><td>'+(typeof(value.properties.properties.cell)==='undefined' ? '' : value.properties.properties.cell)
+        +'</td><td>'+(typeof(value.properties.properties.dob)==='undefined' ? '' : value.properties.properties.dob)
+        +'</td><td>'+(typeof(value.properties.properties.nationality1)==='undefined' ? '' : value.properties.properties.nationality1.name)
+        +'</td><td>'+(typeof(value.properties.properties.nationality2)==='undefined' ? '' : value.properties.properties.nationality2.name)
         +'</td><td>'+(typeof(value.properties.properties.WhatsApp)==='undefined' ? '' : value.properties.properties.WhatsApp)
         +'</td><td>'+(typeof(value.properties.properties.Twitter)==='undefined' ? '' : value.properties.properties.Twitter)
         +'</td><td>'+(typeof(value.properties.properties.Facebook)==='undefined' ? '' : value.properties.properties.Facebook)
