@@ -138,9 +138,9 @@
     <!-- Side pane -->
       <div id="sidepane" class="col-md-4" style="min-height:90vh;">
         <ul class="nav nav-tabs">
-          <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
+          <li role="presentation"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
           <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
-          <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
+          <li role="presentation" class="active"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
           <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
         </ul>
         <div class="tab-content">
@@ -306,7 +306,7 @@
                     $('#mapContainer').toggle();
                     $('#sidepane').removeClass('col-md-4');
                     $('#sidepane').addClass('col-md-12');
-                    mapOn = 0;
+                    mapOn = 1;
                     setTimeout(function(){eventsMap.invalidateSize()}, 400);
                   }
                 });
