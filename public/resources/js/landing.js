@@ -97,7 +97,7 @@ function onEachFeature(feature, layer) {
             return L.marker(latlng, {icon: L.icon({
               iconUrl: '/resources/images/icons/event_types/open_event.svg',
 
-              iconSize:     [26, 26], // size of the icon
+              iconSize:     [33, 33], // size of the icon
               //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
               //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
             })});
@@ -214,7 +214,7 @@ function onEachFeature(feature, layer) {
       var missionIcon = L.icon({
         iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
 
-        iconSize:     [46, 46], // size of the icon
+        iconSize:     [33, 33], // size of the icon
         //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
         //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
       });
