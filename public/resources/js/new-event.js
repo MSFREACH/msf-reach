@@ -41,6 +41,7 @@ $(function(){
 			$('#newEventModal').modal('toggle');
 		}
 		else {
+			$('select:hidden').val('');
 			var body = {
 				"status": "active",
 				"type": $('#selectType').val(),
@@ -49,6 +50,13 @@ $(function(){
 				"metadata":{
 					"user": localStorage.getItem("username"),
 					"name": $("#inputName").val(),
+					"sub_type": $("#inputDisasterType").val() || $("#inputDiseaseType").val()  || $("#inputOther").val(),
+					"event_datetime": $("#inputEvDateTime").val(),
+					"event_status": $("#inputEvStatus").val(),
+					"incharge_name": $("#inputInChargeName").val(),
+					"incharge_position": $("#inputInChargePosition").val(),
+					"severity":  $("#inputSeverity").val(),
+					"sharepoint_link":  $("#inputSharepointLink").val(),
 					"summary": $("#inputSummary").val(),
 					"practical_details": $("#inputPracticals").val(),
 					"security_details": $("#inputSecurity").val(),
@@ -94,6 +102,23 @@ $(function(){
 	$('#nextEventTab').on('click',function(){
 		console.log('hi');
 		$('#extraTab').tab('show');
+	});
+
+	$("#inputEvDateTime").val((new Date()).toISOString());
+
+	$("#inputEvDateTime").change(function(){
+		$("#inputName").val($("#selectType").val()+"-"+$("#inputEvDateTime").val());
+	});
+
+	$('#selectType').change(function(){
+		$('#divNaturalDisaster').toggle(this.value == "natural_hazard");
+		$('#divDisease').toggle(this.value == "epidemiological");
+		$('#divOther').toggle(this.value == "other");
+		$("#inputName").val(this.value+"-"+$("#inputEvDateTime").val());
+	});
+  $('#inputDisasterType , #inputDiseaseType').change(function(){
+		console.log(this);
+		$('#divOther').toggle(!this.value);
 	});
 
 
