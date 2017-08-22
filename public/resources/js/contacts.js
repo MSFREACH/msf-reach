@@ -18,9 +18,9 @@ var loadContacts = function(err, contacts){
         +'</td><td>'+(typeof(value.properties.properties.email)==='undefined' ? '' : value.properties.properties.email)
         +'</td><td>'+(typeof(value.properties.properties.cell)==='undefined' ? '' : value.properties.properties.cell)
         +'</td><td>'+(typeof(value.properties.properties.WhatsApp)==='undefined' ? '' : value.properties.properties.WhatsApp)
-        +'</td><td>'+(typeof(value.properties.properties.Twitter)==='undefined' ? '' : (value.properties.properties.Twitter)
-        +'</td><td>'+(typeof(value.properties.properties.Facebook)==='undefined' ? '' : (value.properties.properties.Facebook)
-        +'</td><td>'+(typeof(value.properties.properties.Skype)==='undefined' ? '' : (value.properties.properties.Skype)
+        +'</td><td>'+(typeof(value.properties.properties.Twitter)==='undefined' ? '' : value.properties.properties.Twitter)
+        +'</td><td>'+(typeof(value.properties.properties.Facebook)==='undefined' ? '' : value.properties.properties.Facebook)
+        +'</td><td>'+(typeof(value.properties.properties.Skype)==='undefined' ? '' : value.properties.properties.Skype)
         +'</td></tr>');
     });
 
