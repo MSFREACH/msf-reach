@@ -229,7 +229,7 @@ function onEachFeature(feature, layer) {
       if (feature.properties && feature.properties.properties) {
         popupContent += feature.properties.properties.name + '<BR>';
         popupContent += feature.properties.properties.type + '<BR>';
-        popupContent += feature.properties.properties.email + '<BR>';
+        popupContent += '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a><BR>';
         popupContent += feature.properties.properties.cell;
 
       }
