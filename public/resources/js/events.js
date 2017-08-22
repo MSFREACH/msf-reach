@@ -193,6 +193,108 @@ var mapReports = function(reports){
   }
 };
 
+/**
+* Function to add contacts to map
+* @param {Object} contacts - GeoJson FeatureCollection containing contact points
+**/
+var mapContacts = function(contacts ){
+
+  function onEachFeature(feature, layer) {
+
+    var popupContent = '';
+
+    if (feature.properties && feature.properties.properties) {
+      popupContent += feature.properties.properties.name + '<BR>';
+      popupContent += feature.properties.properties.type + '<BR>';
+      popupContent += feature.properties.properties.email + '<BR>';
+      popupContent += feature.properties.properties.cell;
+
+    }
+
+    layer.bindPopup(popupContent);
+  }
+
+  // MSF Icons
+  var contactIcon = L.icon({
+    iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
+
+    iconSize:     [26, 26], // size of the icon
+    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
+
+  var contactsLayer = L.geoJSON(contacts, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: contactIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+  contactsLayer.addTo(landingMap);
+  layerControl.addOverlay(contactsLayer, 'Contacts');
+
+};
+
+/**
+* Function to get contacts
+**/
+var getContacts = function(callback){
+  $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
+    callback(data.result);
+  });
+};
+
+/**
+* Function to get missions
+**/
+var getMissions = function(callback){
+  $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
+    callback(data.result);
+  });
+};
+
+/**
+* Function to add missions to map
+* @param {Object} missions - GeoJson FeatureCollection containing mission points
+**/
+var mapMissions = function(missions ){
+
+  function onEachFeature(feature, layer) {
+
+    var popupContent = '';
+
+    if (feature.properties && feature.properties.properties) {
+      popupContent += feature.properties.properties.type + '<BR>';
+      popupContent += feature.properties.properties.name + '<BR>';
+      popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
+      popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
+      popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
+      popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
+      popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
+    }
+
+    layer.bindPopup(popupContent);
+  }
+
+  // MSF Icons
+  var missionIcon = L.icon({
+    iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
+
+    iconSize:     [33, 33], // size of the icon
+    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
+
+  var missionsLayer = L.geoJSON(missions, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: missionIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+  missionsLayer.addTo(landingMap);
+  layerControl.addOverlay(missionsLayer, 'Mission Histories');
+};
+
+
 // Main function (effective)
 // Get eventId from URL
 currentEventId = getQueryVariable("eventId");
@@ -200,6 +302,8 @@ currentEventId = getQueryVariable("eventId");
 if (currentEventId !== false && currentEventId != ''){
   getEvent(currentEventId, printEventProperties);
   getReports(currentEventId, mapReports);
+  getContacts(mapContacts);
+  getMissions(mapMissions);
 } else {
   // Catch condition where no event specified, print to screen
   printEventProperties('No event ID specified', null);
