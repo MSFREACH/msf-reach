@@ -94,7 +94,13 @@ function onEachFeature(feature, layer) {
         var name = TYPES[i][key];
         var layer = L.geoJSON(events, {
           pointToLayer: function(feature, latlng){
-            return L.marker(latlng, {icon: getEventIcon(key)});
+            return L.marker(latlng, {icon: L.icon({
+              iconUrl: '/resources/images/icons/event_types/open_event.svg',
+
+              iconSize:     [26, 26], // size of the icon
+              //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+              //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+            });
           },
           onEachFeature: onEachFeature,
           filter: function(feature, layer){
@@ -124,7 +130,12 @@ function onEachFeature(feature, layer) {
     **/
     var hazardIcon = function(hazardSummary) {
       var iconUrl = '/resources/images/hazards/';
-      iconUrl += hazardSummary.split(' ')[0].toLowerCase()+'.png';
+      iconUrl += hazardSummary.split(' ')[0].toLowerCase();
+      if (hazardSummary.split(' ')[0].toLowerCase() === 'volcano') {
+        iconUrl += '.svg'
+      } else{
+        iconUrl += '.png'
+      }
       return L.icon({
         "iconUrl": iconUrl,
         iconSize:     [26, 26], // size of the icon
