@@ -5,14 +5,14 @@ var loadContacts = function(err, contacts){
   }
   else {
 
-    $('#contactsContainer').append('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>D.O.B.</th><th>Nationality 1</th><th>Nationality 2</th><th>Org</th><th>Email</th><th>Cell</th><th>WhatsApp</th><th>Twitter</th><th>Facebook</th></tr></thead><tbody>');
+    $('#contactsContainer').append('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>Email</th><th>Cell</th><th>Org</th><th>D.O.B.</th><th>Nationality 1</th><th>Nationality 2</th><th>WhatsApp</th><th>Twitter</th><th>Facebook</th></tr></thead><tbody>');
 
     $.each(contacts, function(key, value) {
       //console.log(key, value);
       $('#contactsTable').append('<tr><td>'+(typeof(value.properties.properties.title)==='undefined' ? '' : value.properties.properties.title) + ' ' + value.properties.properties.name
-        +'</td><td>'+(typeof(value.properties.properties.type)==='undefined' ? '' : value.properties.properties.type)
-        +'</td><td>'+(typeof(value.properties.properties.email)==='undefined' ? '' : value.properties.properties.email)
+        +'</td><td>'+(typeof(value.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+value.properties.properties.email+'">'+value.properties.properties.email+'</a>')
         +'</td><td>'+(typeof(value.properties.properties.cell)==='undefined' ? '' : value.properties.properties.cell)
+        +'</td><td>'+(typeof(value.properties.properties.type)==='undefined' ? '' : value.properties.properties.type)
         +'</td><td>'+(typeof(value.properties.properties.dob)==='undefined' ? '' : value.properties.properties.dob)
         +'</td><td>'+(typeof(value.properties.properties.nationality1)==='undefined' ? '' : value.properties.properties.nationality1.name)
         +'</td><td>'+(typeof(value.properties.properties.nationality2)==='undefined' ? '' : value.properties.properties.nationality2.name)
