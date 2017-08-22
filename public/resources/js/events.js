@@ -179,9 +179,9 @@ var mapReports = function(reports){
 
   // MSF Icons
   var reportsIcon = L.icon({
-    iconUrl: '/resources/images/icons/reports/REPORT_UNVERIFIED_BASIC-31.svg',
+    iconUrl: '/resources/images/icons/reports/report_icon.svg',
 
-    iconSize:     [40, 40], // size of the icon
+    iconSize:     [60, 60], // size of the icon
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
@@ -225,7 +225,7 @@ var mapContacts = function(contacts ){
   var contactIcon = L.icon({
     iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
 
-    iconSize:     [26, 26], // size of the icon
+    iconSize:     [39, 39], // size of the icon
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
@@ -286,7 +286,7 @@ var mapMissions = function(missions ){
   var missionIcon = L.icon({
     iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
 
-    iconSize:     [33, 33], // size of the icon
+    iconSize:     [50, 50], // size of the icon
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
