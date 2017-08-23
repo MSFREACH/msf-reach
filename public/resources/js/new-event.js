@@ -41,7 +41,7 @@ $(function(){
 			$('#newEventModal').modal('toggle');
 		}
 		else {
-			$('select:hidden').val('');
+
 			var body = {
 				"status": "active",
 				"type": $('#selectType').val(),
@@ -82,7 +82,7 @@ $(function(){
 					*/
 				}
 			};
-
+      console.log(body);
 			$.ajax({
 				type: "POST",
 				url: "/api/events",
