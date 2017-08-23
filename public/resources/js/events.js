@@ -79,8 +79,8 @@ var printEventProperties = function(err, eventProperties){
 
     // Pre-fil edit modal
     $('#inputName').val(eventProperties.metadata.name);
-    $('#inputSummary').val(eventProperties.metadata.summary);
-    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
+//    $('#inputSummary').val(eventProperties.metadata.summary);
+//    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
     $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
 
     // Append output to body
@@ -88,8 +88,8 @@ var printEventProperties = function(err, eventProperties){
     $("#eventProperties").html(propertiesTable);
 
     console.log(eventProperties);
-    $("#eventSummary").append(eventProperties.metadata.summary);
-    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
+//    $("#eventSummary").append(eventProperties.metadata.summary);
+//    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
     $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
 
    $("#eventBasicInfo").append("<dt>Name: </dt><dd>"+eventProperties.metadata.name+"</dd>");
@@ -370,8 +370,8 @@ $('#btnSaveEdits').click(function(e){
     "status":"active",
     "metadata":{
       "name": $("#inputName").val(),
-      "summary": $("#inputSummary").val(),
-      "practical_details": $("#inputPracticalDetails").val(),
+//      "summary": $("#inputSummary").val(),
+//      "practical_details": $("#inputPracticalDetails").val(),
       "security_details": $("#inputSecurityDetails").val(),
       "user_edit": localStorage.getItem("username")
     }
