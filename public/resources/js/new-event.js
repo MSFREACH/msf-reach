@@ -107,14 +107,14 @@ $(function(){
 	$("#inputEvDateTime").val((new Date()).toISOString());
 
 	$("#inputEvDateTime").change(function(){
-		$("#inputName").val($("#selectType").val()+"-"+$("#inputEvDateTime").val());
+		$("#inputName").val($("#selectType".replace('_',' ')).val()+" "+$("#inputEvDateTime").val());
 	});
 
 	$('#selectType').change(function(){
 		$('#divNaturalDisaster').toggle(this.value == "natural_hazard");
 		$('#divDisease').toggle(this.value == "epidemiological");
 		$('#divOther').toggle(this.value == "other");
-		$("#inputName").val(this.value+"-"+$("#inputEvDateTime").val());
+		$("#inputName").val(this.value.replace('_',' ')+" "+$("#inputEvDateTime").val());
 	});
   $('#inputDisasterType , #inputDiseaseType').change(function(){
 		console.log(this);
