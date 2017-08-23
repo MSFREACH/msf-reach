@@ -113,15 +113,23 @@ $(function(){
 */
 	$('#selectType').change(function(){
 		$('#divNaturalDisaster').toggle(this.value == "natural_hazard");
+		if (this.value != "natural_hazard")
+		  $('#inputDisasterType').val('');
+
 		$('#divDisease').toggle(this.value == "epidemiological");
+		if (this.value != "epidemiological")
+			$('#inputDiseaseType').val('');
+
+
 		$('#divOther').toggle(this.value == "other");
 		//$("#inputName").val(this.value.replace('_',' ')+" "+$("#inputEvDateTime").val());
 	});
 
 
   $('#inputDisasterType , #inputDiseaseType').change(function(){
-		console.log(this);
 		$('#divOther').toggle(!this.value);
+		if (this.value)
+			$('#inputOther').val('');
 	});
 
 
