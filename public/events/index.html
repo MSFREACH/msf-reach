@@ -306,12 +306,14 @@
 
                 $('#contactsTab').on('click', function(e){
                   //$('#mapContainer').removeClass('col-md-8');
+                  if (mapOn === 0) {
                     $('#mapContainer').toggle();
                     $('#mapContainer').addClass('col-md-6');
                     $('#sidepane').removeClass('col-md-12');
                     $('#sidepane').addClass('col-md-6');
                     mapOn = 1;
                     setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                  }
                 });
 
                 $('#missionsTab').on('click', function(e){
@@ -326,12 +328,14 @@
                 });
 
                 $('#eventTab').on('click', function(e){
-                  $('#mapContainer').toggle();
-                  $('#mapContainer').addClass('col-md-6');
-                  $('#sidepane').removeClass('col-md-12');
-                  $('#sidepane').addClass('col-md-6');
-                  mapOn = 1;
-                  setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                  if (mapOn === 0) {
+                    $('#mapContainer').toggle();
+                    $('#mapContainer').addClass('col-md-6');
+                    $('#sidepane').removeClass('col-md-12');
+                    $('#sidepane').addClass('col-md-6');
+                    mapOn = 1;
+                    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+                  }
                 });
 
 
