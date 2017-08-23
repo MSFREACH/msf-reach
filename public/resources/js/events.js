@@ -287,6 +287,7 @@ var mapMissions = function(missions ){
     iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
 
     iconSize:     [50, 50], // size of the icon
+    opacity: 0.8
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
