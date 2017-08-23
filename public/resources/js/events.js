@@ -101,15 +101,15 @@ var printEventProperties = function(err, eventProperties){
 
 
 
-    $("#eventExtra").append("<dt>Exploratory details</dt><dd>"+eventProperties.metadata.exploratory_details+"</dd>")
-    $("#eventExtra").append("<dt>Operational Center</dt><dd>"+eventProperties.metadata.operational_center+"</dd>")
-    $("#eventExtra").append("<dt>Other organisations</dt><dd>"+eventProperties.metadata.other_orgs+"</dd>")
-    $("#eventExtra").append("<dt>Deployment details</dt><dd>"+eventProperties.metadata.deployment+"</dd>")
-    $("#eventExtra").append("<dt>Capacity </dt><dd>"+eventProperties.metadata.capacity+"</dd>")
-    $("#eventExtra").append("<dt>Medical Materials</dt><dd>"+eventProperties.metadata.medicalMaterials+"</dd>")
-    $("#eventExtra").append("<dt>Nonmedical Materials </dt><dd>"+eventProperties.metadata.nonMedicalMaterials+"</dd>")
-    $("#eventExtra").append("<dt>Total population</dt><dd>"+eventProperties.metadata.population_total+"</dd>")
-    $("#eventExtra").append("<dt>Affected population</dt><dd>"+eventProperties.metadata.population_affected+"</dd>")
+    $("#eventExtra").append("<dt>Exploratory details</dt><dd>"+eventProperties.metadata.exploratory_details+"</dd>");
+    $("#eventExtra").append("<dt>Operational Center</dt><dd>"+eventProperties.metadata.operational_center+"</dd>");
+    $("#eventExtra").append("<dt>Other organisations</dt><dd>"+eventProperties.metadata.other_orgs+"</dd>");
+    $("#eventExtra").append("<dt>Deployment details</dt><dd>"+eventProperties.metadata.deployment+"</dd>");
+    $("#eventExtra").append("<dt>Capacity </dt><dd>"+eventProperties.metadata.capacity+"</dd>");
+    $("#eventExtra").append("<dt>Medical Materials</dt><dd>"+eventProperties.metadata.medicalMaterials+"</dd>");
+    $("#eventExtra").append("<dt>Nonmedical Materials </dt><dd>"+eventProperties.metadata.nonMedicalMaterials+"</dd>");
+    $("#eventExtra").append("<dt>Total population</dt><dd>"+eventProperties.metadata.population_total+"</dd>");
+    $("#eventExtra").append("<dt>Affected population</dt><dd>"+eventProperties.metadata.population_affected+"</dd>");
 
   }
   if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
