@@ -88,10 +88,18 @@ var printEventProperties = function(err, eventProperties){
     $("#eventProperties").html(propertiesTable);
 
     console.log(eventProperties);
-    $("#eventName").append(eventProperties.metadata.name);
     $("#eventSummary").append(eventProperties.metadata.summary);
     $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
     $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
+
+   $("#eventBasicInfo").append("<dt>Name: </dt><dd>"+eventProperties.metadata.name+"</dd>");
+   $("#eventBasicInfo").append("<dt>Sub Type: </dt><dd>"+eventProperties.metadata.sub_type+"</dd>");
+   $("#eventBasicInfo").append("<dt>Event Status </dt><dd>"+eventProperties.metadata.event_status+"</dd>");
+   $("#eventBasicInfo").append("<dt>Person In charge </dt><dd>"+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+"</dd>");
+   $("#eventBasicInfo").append("<dt>Severity </dt><dd>"+eventProperties.metadata.severity+"</dd>");
+   $("#eventBasicInfo").append("<dt>Sharepoint Link </dt><dd>"+eventProperties.metadata.sharepoint_link+"</dd>");
+
+
 
     $("#eventExtra").append("<dt>Exploratory details</dt><dd>"+eventProperties.metadata.exploratory_details+"</dd>")
     $("#eventExtra").append("<dt>Operational Center</dt><dd>"+eventProperties.metadata.operational_center+"</dd>")
@@ -171,9 +179,9 @@ var mapReports = function(reports){
 
   // MSF Icons
   var reportsIcon = L.icon({
-    iconUrl: '/resources/images/icons/reports/REPORT_UNVERIFIED_BASIC-31.svg',
+    iconUrl: '/resources/images/icons/reports/report_icon.svg',
 
-    iconSize:     [40, 40], // size of the icon
+    iconSize:     [60, 60], // size of the icon
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
@@ -217,7 +225,7 @@ var mapContacts = function(contacts ){
   var contactIcon = L.icon({
     iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
 
-    iconSize:     [26, 26], // size of the icon
+    iconSize:     [36, 36], // size of the icon
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
@@ -278,7 +286,7 @@ var mapMissions = function(missions ){
   var missionIcon = L.icon({
     iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
 
-    iconSize:     [33, 33], // size of the icon
+    iconSize:     [50, 50], // size of the icon
     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });

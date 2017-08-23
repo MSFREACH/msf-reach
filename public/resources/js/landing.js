@@ -65,10 +65,10 @@ function onEachFeature(feature, layer) {
   // MSF Icons
   function  getEventIcon(typeKey) {
     var iconFile='msf_icon.png';
-    var iconSize=26;
+    var iconSize=39;
     if (TYPEICONS[typeKey]) {
       iconFile='icons/event_types/'+TYPEICONS[typeKey];
-      iconSize=52;
+      iconSize=78;
     }
 
     return L.icon({
@@ -90,7 +90,7 @@ function onEachFeature(feature, layer) {
       pointToLayer: function (feature, latlng) {
         return L.marker(latlng, {icon: L.icon({
           iconUrl: '/resources/images/icons/event_types/open_event.svg',
-          iconSize:     [33, 33], // size of the icon
+          iconSize:     [50, 50], // size of the icon
           //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
           //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
         })});
@@ -126,7 +126,7 @@ function onEachFeature(feature, layer) {
     }
     return L.icon({
       "iconUrl": iconUrl,
-      iconSize:     [26, 26], // size of the icon
+      iconSize:     [39, 39], // size of the icon
       //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
       //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
@@ -200,7 +200,7 @@ function onEachFeature(feature, layer) {
     var missionIcon = L.icon({
       iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
 
-      iconSize:     [33, 33], // size of the icon
+      iconSize:     [50, 50], // size of the icon
       //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
       //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
@@ -241,7 +241,7 @@ function onEachFeature(feature, layer) {
     var contactIcon = L.icon({
       iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
 
-      iconSize:     [26, 26], // size of the icon
+      iconSize:     [36, 36], // size of the icon
       //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
       //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
