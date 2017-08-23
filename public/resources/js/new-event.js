@@ -1,5 +1,6 @@
 // Create map
 var newEventMap = L.map('map').setView([-6.8, 108.7], 7);
+var autocompleteMap=newEventMap;
 
 // Add some base tiles
 var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
@@ -57,8 +58,6 @@ $(function(){
 					"incharge_position": $("#inputInChargePosition").val(),
 					"severity":  $("#inputSeverity").val(),
 					"sharepoint_link":  $("#inputSharepointLink").val(),
-					"summary": $("#inputSummary").val(),
-					"practical_details": $("#inputPracticals").val(),
 					"security_details": $("#inputSecurity").val(),
 					/* Exploratory details: free text, ask user for
 					* "Main results of the exploratory mission"
@@ -113,15 +112,23 @@ $(function(){
 */
 	$('#selectType').change(function(){
 		$('#divNaturalDisaster').toggle(this.value == "natural_hazard");
+		if (this.value != "natural_hazard")
+		  $('#inputDisasterType').val('');
+
 		$('#divDisease').toggle(this.value == "epidemiological");
+		if (this.value != "epidemiological")
+			$('#inputDiseaseType').val('');
+
+
 		$('#divOther').toggle(this.value == "other");
 		//$("#inputName").val(this.value.replace('_',' ')+" "+$("#inputEvDateTime").val());
 	});
 
 
   $('#inputDisasterType , #inputDiseaseType').change(function(){
-		console.log(this);
 		$('#divOther').toggle(!this.value);
+		if (this.value)
+			$('#inputOther').val('');
 	});
 
 
