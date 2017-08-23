@@ -57,8 +57,6 @@ $(function(){
 					"incharge_position": $("#inputInChargePosition").val(),
 					"severity":  $("#inputSeverity").val(),
 					"sharepoint_link":  $("#inputSharepointLink").val(),
-					"summary": $("#inputSummary").val(),
-					"practical_details": $("#inputPracticals").val(),
 					"security_details": $("#inputSecurity").val(),
 					/* Exploratory details: free text, ask user for
 					* "Main results of the exploratory mission"
