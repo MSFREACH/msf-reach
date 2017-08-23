@@ -253,7 +253,7 @@ function onEachFeature(feature, layer) {
       },
       onEachFeature: onEachFeature
     });
-    contactsLayer.addTo(landingMap);
+    //contactsLayer.addTo(landingMap);
     layerControl.addOverlay(contactsLayer, 'Contacts');
 
   };
