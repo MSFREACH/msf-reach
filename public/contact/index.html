@@ -96,6 +96,9 @@
           </div>
           <div class="form-section">
             <h4>Please select your current home location on the map.</h4>
+            <div class="form-group">
+              <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
+            </div>
             <div id="map"></div>
 
           </div>
@@ -197,6 +200,8 @@
 <script src="/lib/countrySelect.min.js"></script>
 <script src="/resources/js/new-contact.js"></script>
 <script src="contact.js"></script>
+<script src="/resources/js/address-autocomplete.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
 </body>
 
 </html>
