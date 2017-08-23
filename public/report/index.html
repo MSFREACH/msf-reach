@@ -35,7 +35,7 @@
   <div class="report-card-wrapper">
     <div class="report-card-widget" >
       <div class="report-card-container">
-      <div style="height:90%;position:relative;">
+      <div style="height:90%;position:relative;overflow:scroll;">
        <div style="margin:10px;">
          <div class="form-section">
            <h4>Hello!</h4>
@@ -46,6 +46,9 @@
           </div>
           <div class="form-section">
             <h4>Please select your location on the map:</h4>
+            <div class="form-group">
+              <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
+            </div>
               <div id="map"></div>
           </div>
            <div class="form-section">
@@ -117,8 +120,9 @@
 <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
 <script src="/lib/leaflet/leaflet.js"></script>
 <script src="/resources/js/new-report.js"></script>
-
 <script src="reportcard.js"></script>
+<script src="/resources/js/address-autocomplete.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
 </body>
 
 </html>
