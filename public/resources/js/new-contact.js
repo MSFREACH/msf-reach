@@ -78,7 +78,7 @@ $( function() {
 	$( "#datepicker" ).datepicker({
       changeMonth: true,
       changeYear: true,
-			dateFormat: 'dd/mm/yyyy',
+			dateFormat: 'dd/mm/yy',
 			yearRange: '1900:' + new Date().getFullYear(),
 			onSelect: function(dateText, inst) {
 	 				$('#datepicker').text(dateText);
