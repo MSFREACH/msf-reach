@@ -88,7 +88,7 @@
       <h3 id="title">2. Add event metadata</h3>
       <div id="eventProperties">
         <ul class="nav nav-tabs">
-          <li role="presentation" class="active"><a id="basicTab" data-toggle="tab" href="#basic">Basic details</a></li>
+          <li role="presentation" class="active"><a id="basicTab" data-toggle="tab" href="#basic">Basic Information</a></li>
           <li role="presentation" ><a id="extraTab" data-toggle="tab" href="#extra">Extra details</a></li>
         </ul>
         <div class="tab-content">
@@ -98,22 +98,76 @@
                 <div class="form-group">
                    <label for="selectType">Event Type</label>
                    <select class="form-control" id="selectType"> <!--Supplement an id here instead of using 'name'-->
-                   <option value="natural_hazard">Natural disaster (earthquake/volcano/typhon/flood/tsunami/drought/others)</option>
                    <option value="conflict" selected>Armed conflict</option>
-                   <option value="epidemiological">Disease outbreak (Cholera/Ebola/Dengue/Malaria/Measles/Meningococcal Meningitis/Yellow Fever/others)</option>
+                   <option value="natural_hazard">Natural disaster </option>
+                   <option value="epidemiological">Disease outbreak </option>
                    <option value="search_and_rescue">Search and rescue</option>
                    <option value="displacement">Displacement</option>
                    <option value="malnutrition">Malnutrition</option>
-                   <option value="other">Other (detail in summary)</option>
+                   <option value="other">Other</option>
                  </select>
+                 </div>
+                 <div class="form-group" id="divNaturalDisaster" style="display:none;">
+                   <select class="form-control" id="inputDisasterType">
+                     <option value="" disabled selected>Please select ...</option>
+                      <option value="earthquake">Earthquake</option>
+                      <option value="volcano">Volcano</option>
+                      <option value="typhon">Typhon</option>
+                      <option value="flood">Flood</option>
+                      <option value="tsunami">Tsunami</option>
+                      <option value="drought">Drought</option>
+                      <option value="">other</option>
+                   </select>
+                 </div>
+                 <div class="form-group" id="divDisease"  style="display:none;">
+                   <select class="form-control" id="inputDiseaseType">
+                     <option value="" disabled selected>Please select ...</option>
+                     <option value="Cholera">Cholera</option>
+                     <option value="Ebola">Ebola</option>
+                     <option value="Dengue">Dengue</option>
+                     <option value="Malaria">Malaria</option>
+                     <option value="Measles">Measles</option>
+                     <option value="Meningococcal Meningitis">  Meningococcal Meningitis</option>
+                     <option value="Yellow Fever">Yellow Fever</option>
+                     <option value="">other</option>
+                   </select>
+                 </div>
+                 <div class="form-group" id="divOther"  style="display:none;">
+                   <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
+                 </div>
+                 <div class="form-group">
+                    <label for="inputEvDateTime">Date/time of Event</label>
+                    <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYYMMDD hh:mm:ss" >
+                 </div>
+                 <div class="form-group" >
+                   <label for="inputEvStatus">Status</label>
+                   <select class="form-control" id="inputEvStatus">
+                    <option value="Monitoring" > Monitoring </option>
+                    <option value="Exploration" > Exploration </option>
+                    <option value="Intervention" > Intervention </option>
+                    <option value="Completed Mission" > Completed Mission </option>
+                   </select>
+                 </div>
+                 <div class="form-group">
+                    <label for="">Person in charge</label>
+                    <input type="text" id="inputInChargeName" class="form-control" placeholder="Name" >
+                    <input type="text" id="inputInChargePosition" class="form-control" placeholder="Position" >
+                 </div>
+                 <div class="form-group">
+                    <label for="inputSeverity">Severity</label>
+                    <input type="text" id="inputSeverity" class="form-control" placeholder="Severity" >
+                 </div>
+                 <div class="form-group">
+                    <label for="inputSharepointLink">Link to sharepoint folder</label>
+                    <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
                  </div>
                  <div class="form-group">
                     <label for="inputName">Name</label>
-                    <input type="text" id="inputName" class="form-control" placeholder="Event Name (30 characters )" aria-describedby="basic-addon1">
+                    <input type="text" id="inputName" class="form-control" placeholder="Event Name" >
                  </div>
                  <div class="form-group">
                     <label for="inputSummary">Summary</label>
-                    <input type="text" id="inputSummary" class="form-control" placeholder="Event Summary (140 characters)" aria-describedby="basic-addon1">
+                    <input type="text" id="inputSummary" class="form-control" placeholder="Event Summary (140 characters)" >
                  </div>
                  <div class="form-group">
                     <label for="inputPracticals">Practical Details</label>
@@ -135,7 +189,7 @@
               <div class="panel-body">
                  <div class="form-group">
                     <label for="inputExploratoryDetails">Exploratory details</label>
-                    <input type="text" id="inputExploratoryDetails" class="form-control" placeholder="Main results of the exploratory mission" aria-describedby="basic-addon1">
+                    <input type="text" id="inputExploratoryDetails" class="form-control" placeholder="Main results of the exploratory mission" >
                  </div>
                  <div class="form-group">
                     <label for="inputOpCenter">Operational center</label>
@@ -150,32 +204,32 @@
                  </div>
                  <div class="form-group">
                     <label for="inputOtherOrgs">Other organisations</label>
-                    <input type="text" id="inputOtherOrgs" class="form-control" placeholder="Other organisations" aria-describedby="basic-addon1">
+                    <input type="text" id="inputOtherOrgs" class="form-control" placeholder="Other organisations" >
                  </div>
                  <div class="form-group">
                     <label for="inputDeployment">Deployment details</label>
-                    <input type="text" id="inputDeployment" class="form-control" placeholder="Deployment details" aria-describedby="basic-addon1">
+                    <input type="text" id="inputDeployment" class="form-control" placeholder="Deployment details" >
                  </div>
                  <div class="form-group">
                     <label for="inputCapacity">Capacity</label>
-                    <input type="text" id="inputCapacity" class="form-control" placeholder="Capacity" aria-describedby="basic-addon1">
+                    <input type="text" id="inputCapacity" class="form-control" placeholder="Capacity" >
                  </div>
                  <div class="form-group">
                     <label for="inputMedicalMaterials">Medical materials</label>
-                    <input type="text" id="inputMedicalMaterials" class="form-control" placeholder="Medical materials" aria-describedby="basic-addon1">
+                    <input type="text" id="inputMedicalMaterials" class="form-control" placeholder="Medical materials" >
 
                  </div>
                  <div class="form-group">
                     <label for="inputNonMedicalMaterials">Nonmedical materials</label>
-                    <input type="text" id="inputNonMedicalMaterials" class="form-control" placeholder="Nonmedical materials" aria-describedby="basic-addon1">
+                    <input type="text" id="inputNonMedicalMaterials" class="form-control" placeholder="Nonmedical materials" >
                  </div>
                  <div class="form-group">
                     <label for="inputPopulationTotal">Total population</label>
-                    <input type="text" id="inputPopulationTotal" class="form-control" placeholder="Total population in area affected" aria-describedby="basic-addon1">
+                    <input type="text" id="inputPopulationTotal" class="form-control" placeholder="Total population in area affected" >
                  </div>
                  <div class="form-group">
                     <label for="inputPopulationAffected">Affected population</label>
-                    <input type="text" id="inputPopulationTotal" class="form-control" placeholder="Population affected" aria-describedby="basic-addon1">
+                    <input type="text" id="inputPopulationTotal" class="form-control" placeholder="Population affected" >
                  </div>
 
               <button type="button" id="createEvent" class="btn btn-msf">Create</button>
