@@ -79,10 +79,10 @@ var printEventProperties = function(err, eventProperties){
 
     // Pre-fil edit modal
     $('#inputName').val(eventProperties.metadata.name);
-    if (typeof(eventProperties.metadata.status)==='undefined') {
+    if (typeof(eventProperties.metadata.event_status)==='undefined') {
       $('#inputStatus').val('monitoring');
     } else {
-      $('#inputStatus').val(eventProperties.metadata.status);
+      $('#inputStatus').val(eventProperties.metadata.event_status);
     }
 //    $('#inputSummary').val(eventProperties.metadata.summary);
 //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
