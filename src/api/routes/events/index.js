@@ -12,6 +12,7 @@ import validate from 'celebrate';
 
 // Import ID generator
 import shortid from 'shortid';
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ._');
 
 export default ({ config, db, logger }) => {
 	let api = Router();
