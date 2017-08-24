@@ -79,6 +79,11 @@ var printEventProperties = function(err, eventProperties){
 
     // Pre-fil edit modal
     $('#inputName').val(eventProperties.metadata.name);
+    if (typeof(eventProperties.metadata.status)==='undefined') {
+      $('#inputStatus').val('monitoring');
+    } else {
+      $('#inputStatus').val(eventProperties.metadata.status);
+    }
 //    $('#inputSummary').val(eventProperties.metadata.summary);
 //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
     $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
@@ -367,9 +372,10 @@ $('#btnArchive').click(function(e){
 $('#btnSaveEdits').click(function(e){
 
   var body = {
-    "status":"active",
+    "status":$("#inputStatus").val()==='complete' ? 'complete' : 'active',
     "metadata":{
       "name": $("#inputName").val(),
+      "status": $("#inputStatus").val(),
 //      "summary": $("#inputSummary").val(),
 //      "practical_details": $("#inputPracticalDetails").val(),
       "security_details": $("#inputSecurityDetails").val(),
