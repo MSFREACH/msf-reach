@@ -375,7 +375,7 @@ $('#btnSaveEdits').click(function(e){
     "status":$("#inputStatus").val()==='complete' ? 'complete' : 'active',
     "metadata":{
       "name": $("#inputName").val(),
-      "status": $("#inputStatus").val(),
+      "event_status": $("#inputStatus").val(),
 //      "summary": $("#inputSummary").val(),
 //      "practical_details": $("#inputPracticalDetails").val(),
       "security_details": $("#inputSecurityDetails").val(),
