@@ -51,7 +51,8 @@ function onEachFeature(feature, layer) {
     '<div class="list-group-item">' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
-    'Status: ' + feature.properties.status + '<br>' +
+    'Latest notification: ' feature.properties.properties.notification + '<br>' +
+    'Status: ' + feature.properties.properties.status + '<br>' +
     'Created: ' + feature.properties.created +
     populationContent + '</div>');
 
@@ -186,6 +187,9 @@ function onEachFeature(feature, layer) {
       if (feature.properties && feature.properties.properties) {
         popupContent += feature.properties.properties.type + '<BR>';
         popupContent += feature.properties.properties.name + '<BR>';
+        if (typeof(feature.properties.properties.notification)!=='undefined'){
+          popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+        }
         popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
         popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
         popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
