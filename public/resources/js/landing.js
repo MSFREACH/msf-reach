@@ -36,30 +36,38 @@ function onEachFeature(feature, layer) {
   if (feature.properties.metadata.population_affected && feature.properties.metadata.population_total) {
     percentagePopulation = String(Math.round(Number(feature.properties.metadata.population_affected)/Number(feature.properties.metadata.population_total)*100));
   }
+
+  var notificationStr = '';
+  var statusStr = '';
+  if(typeof(feature.properties.metadata.notification)!=='undefined' {
+    notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
+  }
+  if(typeof(feature.properties.metadata.status)!=='undefined' {
+    statusStr = 'Status: ' + feature.properties.metadata.notification + '<br>';
+  } else {
+    statusStr = 'Status: ' + feature.properties.status + '<br>';
+  }
+
   var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id +
-  "'>Event " + feature.properties.id +"</a></strong>" +
-  "<BR>Status: " + feature.properties.status +
-  "<BR>Type: " + feature.properties.type +
-  "<BR>Created: " + feature.properties.created;
+  "'>Event " + feature.properties.id +"</a></strong>" + "<BR>" +
+  "Created: " + feature.properties.created +
+  "Type: " + feature.properties.type + "<BR>" +
+  statusStr +
+  notificationStr.replace('<br>',''); // fixme
   var populationContent = '';
   if (percentagePopulation) {
     populationContent += "<BR>Total population: " + feature.properties.metadata.population_total +
     "<BR>% pop. affected: " + percentagePopulation;
     popupContent += populationContent;
   }
+
   $('#eventProperties').append(
     '<div class="list-group-item">' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-    'Type: ' + feature.properties.type + '<br>'
-  );
-  if (typeof(feature.properties.metadata.notification)!=='undefined') {
-    $('#eventProperties').append(
-      'Latest notification: ' + feature.properties.metadata.notification + '<br>'
-    );
-  }
-  $('#eventProperties').append(
-    'Status: ' + feature.properties.metadata.status + '<br>' +
     'Created: ' + feature.properties.created +
+    'Type: ' + feature.properties.type + '<br>' +
+    statusStr +
+    notificationStr +
     populationContent + '</div>'
   );
 
