@@ -42,15 +42,15 @@ function onEachFeature(feature, layer) {
   if(typeof(feature.properties.metadata.notification)!=='undefined') {
     notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
   }
-  if(typeof(feature.properties.metadata.status)!=='undefined') {
-    statusStr = 'Status: ' + feature.properties.metadata.notification + '<br>';
+  if(typeof(feature.properties.metadata.event_status)!=='undefined') {
+    statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
   } else {
     statusStr = 'Status: ' + feature.properties.status + '<br>';
   }
 
   var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id +
   "'>Event " + feature.properties.id +"</a></strong>" + "<BR>" +
-  "Created: " + feature.properties.created +
+  "Created: " + feature.properties.created + "<BR>" +
   "Type: " + feature.properties.type + "<BR>" +
   statusStr +
   notificationStr.replace('<br>',''); // fixme
@@ -64,7 +64,7 @@ function onEachFeature(feature, layer) {
   $('#eventProperties').append(
     '<div class="list-group-item">' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-    'Created: ' + feature.properties.created +
+    'Created: ' + feature.properties.created + '<br>' +
     'Type: ' + feature.properties.type + '<br>' +
     statusStr +
     notificationStr +
