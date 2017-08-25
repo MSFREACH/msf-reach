@@ -102,7 +102,10 @@ var printEventProperties = function(err, eventProperties){
 
    $("#eventBasicInfo").append("<dt>Name: </dt><dd>"+eventProperties.metadata.name+"</dd>");
    $("#eventBasicInfo").append("<dt>Sub Type: </dt><dd>"+eventProperties.metadata.sub_type+"</dd>");
-   $("#eventBasicInfo").append("<dt>Event Status </dt><dd>"+eventProperties.metadata.event_status+"</dd>");
+   $("#eventBasicInfo").append("<dt>Event Status: </dt><dd>"+eventProperties.metadata.event_status+"</dd>");
+   if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification !== '') {
+     $('#eventBasicInfo').append('<dt>Latest nofitication: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
+   }
    $("#eventBasicInfo").append("<dt>Person In charge </dt><dd>"+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+"</dd>");
    $("#eventBasicInfo").append("<dt>Severity </dt><dd>"+eventProperties.metadata.severity+"</dd>");
    $("#eventBasicInfo").append("<dt>Sharepoint Link </dt><dd>"+eventProperties.metadata.sharepoint_link+"</dd>");
