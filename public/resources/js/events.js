@@ -88,7 +88,7 @@ var printEventProperties = function(err, eventProperties){
 //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
     $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
     if (typeof(eventProperties.metadata.notification)!=='undefined') {
-      $('#inputStatus').val(eventProperties.metadata.notification);
+      $('#inputNotification').val(eventProperties.metadata.notification);
     }
 
     // Append output to body
