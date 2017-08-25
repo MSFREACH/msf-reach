@@ -34,12 +34,12 @@ var getAllEvents = function(callback){
 function onEachFeature(feature, layer) {
   var affectedPopulationStr = '';
   if (typeof(feature.properties.metadata.population_affected) !== 'undefined') {
-    affectedPopulationStr = 'Population affected: ' + population_affected + '<br>';
+    affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
   }
 
   var totalPopulationStr = '';
   if (typeof(feature.properties.metadata.population_total) !== 'undefined') {
-    totalPopulationStr = 'Population affected: ' + population_total + '<br>';
+    totalPopulationStr = 'Population affected: ' + feature.properties.metadata.population_total + '<br>';
   }
 
   var notificationStr = '';
