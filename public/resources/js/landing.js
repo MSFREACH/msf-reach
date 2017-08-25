@@ -52,13 +52,13 @@ function onEachFeature(feature, layer) {
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>'
   );
-  if (typeof(feature.properties.properties.notification)!=='undefined') {
+  if (typeof(feature.properties.metadata.notification)!=='undefined') {
     $('#eventProperties').append(
-      'Latest notification: ' + feature.properties.properties.notification + '<br>'
+      'Latest notification: ' + feature.properties.metadata.notification + '<br>'
     );
   }
   $('#eventProperties').append(
-    'Status: ' + feature.properties.properties.status + '<br>' +
+    'Status: ' + feature.properties.metadata.status + '<br>' +
     'Created: ' + feature.properties.created +
     populationContent + '</div>'
   );
