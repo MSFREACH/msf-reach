@@ -52,7 +52,7 @@ function onEachFeature(feature, layer) {
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>'
   );
-  if (feature.properties.properties.hasOwnProperty('notification')) {
+  if (typeof(feature.properties.properties.notification)!=='undefined') {
     $('#eventProperties').append(
       'Latest notification: ' + feature.properties.properties.notification + '<br>'
     );
@@ -194,7 +194,7 @@ function onEachFeature(feature, layer) {
       if (feature.properties && feature.properties.properties) {
         popupContent += feature.properties.properties.type + '<BR>';
         popupContent += feature.properties.properties.name + '<BR>';
-        if (feature.properties.properties.hasOwnProperty('notification')){
+        if (typeof(feature.properties.properties.notification) !== 'undefined'){
           popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
         }
         popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
