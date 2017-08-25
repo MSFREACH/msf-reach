@@ -51,7 +51,9 @@ function onEachFeature(feature, layer) {
     '<div class="list-group-item">' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>' + // needs conversion
-    'Latest notification: ' feature.properties.properties.notification + '<br>' +
+    if (typeof(feature.properties.properties.notification)!=='undefined') {
+      'Latest notification: ' + feature.properties.properties.notification + '<br>' +
+    }
     'Status: ' + feature.properties.properties.status + '<br>' +
     'Created: ' + feature.properties.created +
     populationContent + '</div>');
