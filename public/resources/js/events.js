@@ -79,7 +79,7 @@ var printEventProperties = function(err, eventProperties){
 
     // Pre-fil edit modal
     $('#inputName').val(eventProperties.metadata.name);
-    if (typeof(eventProperties.metadata.event_status)==='undefined') {
+    if (!eventProperties.metadata.hasOwnProperty('event_status')) {
       $('#inputStatus').val('monitoring');
     } else {
       $('#inputStatus').val(eventProperties.metadata.event_status);
@@ -87,7 +87,7 @@ var printEventProperties = function(err, eventProperties){
 //    $('#inputSummary').val(eventProperties.metadata.summary);
 //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
     $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
-    if (typeof(eventProperties.metadata.notification)!=='undefined') {
+    if (eventProperties.metadata.hasOwnProperty('notification')) {
       $('#inputStatus').val(eventProperties.metadata.notification);
     }
 
