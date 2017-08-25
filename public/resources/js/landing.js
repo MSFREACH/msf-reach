@@ -194,7 +194,7 @@ function onEachFeature(feature, layer) {
       if (feature.properties && feature.properties.properties) {
         popupContent += feature.properties.properties.type + '<BR>';
         popupContent += feature.properties.properties.name + '<BR>';
-        if (typeof(feature.properties.properties.notification)!=='undefined'){
+        if (feature.properties.properties.hasOwnProperty('notification')){
           popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
         }
         popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
