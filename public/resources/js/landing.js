@@ -32,9 +32,14 @@ var getAllEvents = function(callback){
 
 // Add popups
 function onEachFeature(feature, layer) {
-  var percentagePopulation;
-  if (feature.properties.metadata.population_affected && feature.properties.metadata.population_total) {
-    percentagePopulation = String(Math.round(Number(feature.properties.metadata.population_affected)/Number(feature.properties.metadata.population_total)*100));
+  var affectedPopulationStr = '';
+  if (typeof(feature.properties.metadata.population_affected) !== 'undefined') {
+    affectedPopulationStr = 'Population affected: ' + population_affected + '<br>';
+  }
+
+  var totalPopulationStr = '';
+  if (typeof(feature.properties.metadata.population_total) !== 'undefined') {
+    totalPopulationStr = 'Population affected: ' + population_total + '<br>';
   }
 
   var notificationStr = '';
@@ -49,16 +54,17 @@ function onEachFeature(feature, layer) {
   }
 
   var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id +
-  "'>Event " + feature.properties.id +"</a></strong>" + "<BR>" +
-  "Created: " + feature.properties.created + "<BR>" +
-  "Type: " + feature.properties.type + "<BR>" +
-  statusStr +
-  notificationStr.replace('<br>',''); // fixme
-  var populationContent = '';
-  if (percentagePopulation) {
-    populationContent += "<BR>Total population: " + feature.properties.metadata.population_total +
-    "<BR>% pop. affected: " + percentagePopulation;
-    popupContent += populationContent;
+    "'>Event " + feature.properties.id +"</a></strong>" + "<BR>" +
+    "Created: " + feature.properties.created + "<BR>" +
+    "Type: " + feature.properties.type + "<br>" +
+    statusStr +
+    notificationStr +
+    totalPopulationStr +
+    affectedPopulationStr;
+
+
+  if (popupContent.endsWith('<br>')) {
+    popupContent.substr(0,popupContent.length-4)
   }
 
   $('#eventProperties').append(
@@ -68,7 +74,9 @@ function onEachFeature(feature, layer) {
     'Type: ' + feature.properties.type + '<br>' +
     statusStr +
     notificationStr +
-    populationContent + '</div>'
+    totalPopulationStr +
+    affectedPopulationStr +
+    '</div>'
   );
 
   if (feature.properties && feature.properties.popupContent) {
