@@ -52,7 +52,7 @@ function onEachFeature(feature, layer) {
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
     'Type: ' + feature.properties.type + '<br>'
   );
-  if (typeof(feature.properties.properties.notification)!=='undefined') {
+  if (feature.properties.properties.hasOwnProperty('notification')) {
     $('#eventProperties').append(
       'Latest notification: ' + feature.properties.properties.notification + '<br>'
     );
