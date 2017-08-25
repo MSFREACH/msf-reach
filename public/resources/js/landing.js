@@ -33,13 +33,13 @@ var getAllEvents = function(callback){
 // Add popups
 function onEachFeature(feature, layer) {
   var affectedPopulationStr = '';
-  if (typeof(feature.properties.metadata.population_affected) !== 'undefined') {
+  if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
     affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
   }
 
   var totalPopulationStr = '';
-  if (typeof(feature.properties.metadata.population_total) !== 'undefined') {
-    totalPopulationStr = 'Population affected: ' + feature.properties.metadata.population_total + '<br>';
+  if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
+    totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
   }
 
   var notificationStr = '';
