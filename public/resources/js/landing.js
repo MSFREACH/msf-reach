@@ -42,7 +42,7 @@ function onEachFeature(feature, layer) {
   if(typeof(feature.properties.metadata.notification)!=='undefined') {
     notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
   }
-  if(typeof(feature.properties.metadata.status)!=='undefined' {
+  if(typeof(feature.properties.metadata.status)!=='undefined') {
     statusStr = 'Status: ' + feature.properties.metadata.notification + '<br>';
   } else {
     statusStr = 'Status: ' + feature.properties.status + '<br>';
