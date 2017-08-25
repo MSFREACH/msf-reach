@@ -87,6 +87,9 @@ var printEventProperties = function(err, eventProperties){
 //    $('#inputSummary').val(eventProperties.metadata.summary);
 //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
     $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
+    if (typeof(eventProperties.metadata.notification)!=='undefined') {
+      $('#inputStatus').val(eventProperties.metadata.notification);
+    }
 
     // Append output to body
     propertiesTable += "</table>";
@@ -375,6 +378,7 @@ $('#btnSaveEdits').click(function(e){
     "status":$("#inputStatus").val()==='complete' ? 'complete' : 'active',
     "metadata":{
       "name": $("#inputName").val(),
+      "notification": $("#inputNotification"),
       "event_status": $("#inputStatus").val(),
 //      "summary": $("#inputSummary").val(),
 //      "practical_details": $("#inputPracticalDetails").val(),
