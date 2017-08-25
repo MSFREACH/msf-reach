@@ -50,20 +50,25 @@ function onEachFeature(feature, layer) {
   $('#eventProperties').append(
     '<div class="list-group-item">' +
     'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-    'Type: ' + feature.properties.type + '<br>' + // needs conversion
-    if (typeof(feature.properties.properties.notification)!=='undefined') {
-      'Latest notification: ' + feature.properties.properties.notification + '<br>' +
-    }
+    'Type: ' + feature.properties.type + '<br>'
+  );
+  if (typeof(feature.properties.properties.notification)!=='undefined') {
+    $('#eventProperties').append(
+      'Latest notification: ' + feature.properties.properties.notification + '<br>'
+    );
+  }
+  $('#eventProperties').append(
     'Status: ' + feature.properties.properties.status + '<br>' +
     'Created: ' + feature.properties.created +
-    populationContent + '</div>');
+    populationContent + '</div>'
+  );
 
-    if (feature.properties && feature.properties.popupContent) {
-      popupContent += feature.properties.popupContent;
-    }
-
-    layer.bindPopup(popupContent);
+  if (feature.properties && feature.properties.popupContent) {
+    popupContent += feature.properties.popupContent;
   }
+
+  layer.bindPopup(popupContent);
+}
 
   // MSF Icons
   function  getEventIcon(typeKey) {
