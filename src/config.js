@@ -19,7 +19,7 @@ export default {
   CORS: process.env.CORS === 'true' || false,
   CORS_HEADERS: process.env.CORS_HEADERS || ['Link'],
   PGHOST: process.env.PGHOST || '127.0.0.1',
-  PGDATABASE: process.env.PGDATABASE || 'cognicity_msf',
+  PGDATABASE: process.env.PGDATABASE || 'msf_reach',
   PGPASSWORD: process.env.PGPASSWORD || '',
   PGPORT: process.env.PGPORT || 5432,
   PGSSL: process.env.PGSSL === 'true' || false,
