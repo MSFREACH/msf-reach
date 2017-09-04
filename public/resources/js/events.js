@@ -240,7 +240,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   securityLayer.addTo(eventsMap);
-  layerControl.addOverlay(needsLayer, 'security reports');
+  layerControl.addOverlay(securityLayer, 'security reports');
 
   var contactsLayer = L.geoJSON(reports, {
     filter: function (feature) {
