@@ -209,7 +209,7 @@ var mapReports = function(reports){
   var accessLayer = L.geoJSON(reports, {
     filter: function (feature) {
       return (feature.properties.content.report_tag === "ACCESS");
-    }
+    },
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: accessIcon});
     },
@@ -221,7 +221,7 @@ var mapReports = function(reports){
   var needsLayer = L.geoJSON(reports, {
     filter: function (feature) {
       return (feature.properties.content.report_tag === "NEEDS");
-    }
+    },
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: needsIcon});
     },
@@ -233,7 +233,7 @@ var mapReports = function(reports){
   var securityLayer = L.geoJSON(reports, {
     filter: function (feature) {
       return (feature.properties.content.report_tag === "SECURITY");
-    }
+    },
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: securityIcon});
     },
@@ -245,14 +245,14 @@ var mapReports = function(reports){
   var contactsLayer = L.geoJSON(reports, {
     filter: function (feature) {
       return (feature.properties.content.report_tag === "CONTACTS");
-    }
+    },
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: contactsIcon});
     },
     onEachFeature: onEachFeature
   });
   contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer), 'contact reports');
+  layerControl.addOverlay(contactsLayer, 'contact reports');
 
   if (points.length > 0){
     eventsMap.fitBounds(points);
