@@ -197,19 +197,67 @@ var mapReports = function(reports){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
+
   var points = []; // local storage for coordinates of reports (used for map bounds)
 
-  L.geoJSON(reports, {
+  // fixme:
+  var accessIcon = reportsIcon;
+  var needsIcon = reportsIcon;
+  var contactsIcon = reportsIcon;
+  var securityIcon = reportsIcon;
+
+  var accessLayer = L.geoJSON(reports, {
+    filter: function (feature) {
+      return (feature.properties.content.report_tag === "ACCESS");
+    }
     pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: reportsIcon});
+      return L.marker(latlng, {icon: accessIcon});
     },
     onEachFeature: onEachFeature
-  }).addTo(eventsMap); // Add reports to map
-  // Now that we have all reports, fit the map to their bounds
+  });
+  accessLayer.addTo(eventsMap);
+  layerControl.addOverlay(accessLayer, 'access reports');
+
+  var needsLayer = L.geoJSON(reports, {
+    filter: function (feature) {
+      return (feature.properties.content.report_tag === "NEEDS");
+    }
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: needsIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+  needsLayer.addTo(eventsMap);
+  layerControl.addOverlay(needsLayer, 'needs reports');
+
+  var securityLayer = L.geoJSON(reports, {
+    filter: function (feature) {
+      return (feature.properties.content.report_tag === "SECURITY");
+    }
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: securityIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+  securityLayer.addTo(eventsMap);
+  layerControl.addOverlay(needsLayer, 'security reports');
+
+  var contactsLayer = L.geoJSON(reports, {
+    filter: function (feature) {
+      return (feature.properties.content.report_tag === "CONTACTS");
+    }
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: contactsIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+  contactsLayer.addTo(eventsMap);
+  layerControl.addOverlay(contactsLayer), 'contact reports');
+
   if (points.length > 0){
     eventsMap.fitBounds(points);
   }
+
 };
 
 /**
