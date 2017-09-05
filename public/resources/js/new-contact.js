@@ -43,6 +43,7 @@ function postContact() {
 			"title": $("#inputContactTitle").val(),
 			"gender": $("#inputGender").val(),
 			"name": contName.trim(),
+			"speciality": $("#inputSpeciality").val() || '',
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
 			"dob":$("#datepicker").val(),
 			"cell":$("#inputContactCell").val() || '',
