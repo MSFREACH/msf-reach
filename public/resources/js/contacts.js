@@ -5,7 +5,7 @@ var loadContacts = function(err, contacts){
   }
   else {
 
-    $('#contactsContainer').append('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>Email</th><th>Cell</th><th>Org</th><th>D.O.B.</th><th>Nationality 1</th><th>Nationality 2</th><th>WhatsApp</th><th>Twitter</th><th>Facebook</th></tr></thead><tbody>');
+    $('#contactsContainer').append('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Type</th><th>Speciality</th></tr></thead><tbody>');
 
     $.each(contacts, function(key, value) {
       //console.log(key, value);
