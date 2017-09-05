@@ -256,11 +256,11 @@ function onEachFeature(feature, layer) {
 
       if (feature.properties && feature.properties.properties) {
         popupContent =
-        '<table><tr><td>'+(typeof(value.properties.properties.title)==='undefined' ? '' : value.properties.properties.title) + ' ' + value.properties.properties.name +
-          '</td><td>'+(typeof(value.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+value.properties.properties.email+'">'+value.properties.properties.email+'</a>') +
-          '</td><td>'+(typeof(value.properties.properties.cell)==='undefined' ? '' : value.properties.properties.cell) +
-          '</td><td>'+(typeof(value.properties.properties.type)==='undefined' ? '' : value.properties.properties.type) +
-          '</td><td>'+(typeof(value.properties.properties.speciality)==='undefined' ? '' : value.properties.properties.speciality) +
+        '<table><tr><td>'+(typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name +
+          '</td><td>'+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+          '</td><td>'+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+          '</td><td>'+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+          '</td><td>'+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality) +
           '</td></tr></table>'
       }
 
