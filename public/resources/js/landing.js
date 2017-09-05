@@ -255,11 +255,13 @@ function onEachFeature(feature, layer) {
       var popupContent = '';
 
       if (feature.properties && feature.properties.properties) {
-        popupContent += feature.properties.properties.name + '<BR>';
-        popupContent += feature.properties.properties.type + '<BR>';
-        popupContent += '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a><BR>';
-        popupContent += feature.properties.properties.cell;
-
+        popupContent =
+        '<table><tr><td>'+(typeof(value.properties.properties.title)==='undefined' ? '' : value.properties.properties.title) + ' ' + value.properties.properties.name +
+          '</td><td>'+(typeof(value.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+value.properties.properties.email+'">'+value.properties.properties.email+'</a>') +
+          '</td><td>'+(typeof(value.properties.properties.cell)==='undefined' ? '' : value.properties.properties.cell) +
+          '</td><td>'+(typeof(value.properties.properties.type)==='undefined' ? '' : value.properties.properties.type) +
+          '</td><td>'+(typeof(value.properties.properties.speciality)==='undefined' ? '' : value.properties.properties.speciality) +
+          '</td></tr></table>'
       }
 
       layer.bindPopup(popupContent);
