@@ -143,7 +143,7 @@ function onEachFeature(feature, layer) {
   var hazardIcon = function(hazardSummary) {
     var iconUrl = '/resources/images/hazards/';
     iconUrl += hazardSummary.split(' ')[0].toLowerCase() + '-' +
-      hazardSummary.split(' ')[1].toLowerCase().replace(/\(\)/g,'');
+      hazardSummary.split(' ')[1].toLowerCase().replace(/(\(|\))/g,'');
 
     return L.icon({
       "iconUrl": iconUrl,
