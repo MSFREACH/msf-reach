@@ -1,6 +1,6 @@
 // Import dependencies
 import Promise from 'bluebird';
-import jwt from 'express-jwt';
+import expressJWT from 'express-jwt';
 // import jwks from 'jwks-rsa'; // See TODO below regarding Auth0 mechanism
 import dbgeo from 'dbgeo';
 
@@ -16,7 +16,7 @@ let cache = apicache.middleware;
 const cacheResponse = (duration) => cache(duration, config.CACHE);
 
 // Configure our JWT checker
-const jwtCheck = jwt({ algorithm: config.AWS_COGNITO_ALGORITHM,
+const jwtCheck = config.AUTH ? expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
   secret: config.AWS_COGNITO_PEM, // RSA Public Key
   // Extract the JWT from cookie in requests
   getToken: function fromHeader(req){
@@ -35,7 +35,9 @@ const jwtCheck = jwt({ algorithm: config.AWS_COGNITO_ALGORITHM,
       return new Error({name: "UnauthorizedError"})
     }
   }
-});
+}) : function(res, req, next) {
+  next();
+};
 
 // Setup dbgeo
 dbgeo.defaults = {
