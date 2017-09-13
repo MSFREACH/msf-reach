@@ -186,25 +186,36 @@ var mapReports = function(reports){
     layer.bindPopup(popupContent, {  maxWidth: "auto" });
   }
 
-  var reportsMarker = L.divIcon({className: 'report-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
+  var points = []; // local storage for coordinates of reports (used for map bounds)
 
   // MSF Icons
-  var reportsIcon = L.icon({
-    iconUrl: '/resources/images/icons/reports/report_icon.svg',
-
+  const accessIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/access_icon.svg',
     iconSize:     [60, 60], // size of the icon
-    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
+  const securityIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/security_icon.svg',
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
 
-  var points = []; // local storage for coordinates of reports (used for map bounds)
+  const contactsIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
 
-  // fixme:
-  var accessIcon = reportsIcon;
-  var needsIcon = reportsIcon;
-  var contactsIcon = reportsIcon;
-  var securityIcon = reportsIcon;
+  const needsIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/needs_icon.svg',
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
 
   var accessLayer = L.geoJSON(reports, {
     filter: function (feature) {
