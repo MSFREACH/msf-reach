@@ -12,7 +12,10 @@ Data server and web content for CogniCity MSF, built with NodeJS to provide JSON
 $ npm install
 ```
 
-### Environment variables
+### Local environment
+For running locally, make sure you have a .env file with any overrides for src/config.js, and also update [public/resources/js/events.js#L9](https://github.com/MSFREACH/msf-reach/blob/master/public/resources/js/events.js#L9) to your localhost (and port number as per config). Use of cognito for authentication is disabled by default to make local testing easier (but enabled for our hosted environment).
+
+### Cognito environment variables
 Set AWS_COGNITO_ALGORITHM to 'RS256', and AWS_COGNITO_PEM to the public key incl. line breaks—on AWS ElasticBeanstalk where line breaks are not supported in environment variables you need to replace new lines with commas when entering the environment variable, which will be converted back to line breaks in the code.
 
 ### Build and Run
