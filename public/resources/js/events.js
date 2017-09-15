@@ -227,7 +227,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   accessLayer.addTo(eventsMap);
-  layerControl.addOverlay(accessLayer, 'access', 'Reports');
+  layerControl.addOverlay(accessLayer, '  access', 'Reports');
 
   var needsLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -239,7 +239,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   needsLayer.addTo(eventsMap);
-  layerControl.addOverlay(needsLayer, 'needs', 'Reports');
+  layerControl.addOverlay(needsLayer, '  needs', 'Reports');
 
   var securityLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -251,7 +251,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   securityLayer.addTo(eventsMap);
-  layerControl.addOverlay(securityLayer, 'security', 'Reports');
+  layerControl.addOverlay(securityLayer, '  security', 'Reports');
 
   var contactsLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -263,7 +263,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, 'contacts', 'Reports');
+  layerControl.addOverlay(contactsLayer, '  contacts', 'Reports');
 
   if (points.length > 0){
     eventsMap.fitBounds(points);
@@ -412,12 +412,14 @@ var baseMaps = {
 };
 
 var groupedOverlays = {
-  "Reports": {}
+  "Reports": {},
 };
+
+var baseLayers = {};
 
 var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
-var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, options).addTo(eventsMap);
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, groupOptions).addTo(eventsMap);
 
 // Archive support
 $('#btnArchive').click(function(e){
