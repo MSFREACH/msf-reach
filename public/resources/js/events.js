@@ -6,7 +6,7 @@
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
-var WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
+var WEB_HOST = 'http://localhost:8001/'; // Change to host for prod
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 // Globals
@@ -227,7 +227,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   accessLayer.addTo(eventsMap);
-  layerControl.addOverlay(accessLayer, 'access reports');
+  layerControl.addOverlay(accessLayer, 'access', 'Reports');
 
   var needsLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -239,7 +239,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   needsLayer.addTo(eventsMap);
-  layerControl.addOverlay(needsLayer, 'needs reports');
+  layerControl.addOverlay(needsLayer, 'needs', 'Reports');
 
   var securityLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -251,7 +251,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   securityLayer.addTo(eventsMap);
-  layerControl.addOverlay(securityLayer, 'security reports');
+  layerControl.addOverlay(securityLayer, 'security', 'Reports');
 
   var contactsLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -263,7 +263,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, 'contact reports');
+  layerControl.addOverlay(contactsLayer, 'contacts', 'Reports');
 
   if (points.length > 0){
     eventsMap.fitBounds(points);
@@ -411,9 +411,13 @@ var baseMaps = {
   "Satellite" : mapboxSatellite
 };
 
-var overlayMaps = {};
+var groupedOverlays = {
+  "Reports": {}
+};
 
-var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(eventsMap);
+var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, options).addTo(eventsMap);
 
 // Archive support
 $('#btnArchive').click(function(e){
