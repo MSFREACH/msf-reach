@@ -23,7 +23,7 @@ export default (config, db, logger) => ({
 			ORDER BY id`;
 
 		// Format search string for Postgres
-		let text = '%'+search+'%'	;
+		let text = (!search) ? null : '%'+search+'%'	;
 		let values = [ text ];
 
 		// Execute
