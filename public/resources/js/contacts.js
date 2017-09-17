@@ -5,7 +5,7 @@ var loadContacts = function(err, contacts){
   }
   else {
 
-    $('#contactsContainer').append('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Type</th><th>Speciality</th></tr></thead><tbody>');
+    $('#contactsContainer').html('<table class="table table-striped" id="contactsTable"><thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Type</th><th>Speciality</th></tr></thead><tbody>');
 
     $.each(contacts, function(key, value) {
       //console.log(key, value);
@@ -22,12 +22,18 @@ var loadContacts = function(err, contacts){
 };
 
 // Perform GET call to get tweets
-var getContacts = function(){
-  $.getJSON('/api/contacts?geoformat=geojson', function (data){
+var getContacts = function(term){
+  $('#contactsContainer').html('<i class="glyphicon glyphicon-refresh gly-spin"></i>Loading contacts...')
+  let url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'')
+  $.getJSON(url, function (data){
     loadContacts(null, data.result.features);
   }).fail(function(err){
     loadContacts(err.responseText, null);
   });
 };
 
-getContacts();
+getContacts(null);
+
+$('#contSearchTerm').on('input',function(){
+  getContacts(this.value);
+});
