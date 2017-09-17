@@ -6,7 +6,7 @@
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
-var WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
+var WEB_HOST = 'http://localhost:8001/'; // Change to host for prod
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 // Globals
@@ -186,25 +186,36 @@ var mapReports = function(reports){
     layer.bindPopup(popupContent, {  maxWidth: "auto" });
   }
 
-  var reportsMarker = L.divIcon({className: 'report-icon', html: '<span class="glyphicon glyphicon-info-sign"></span>'});
+  var points = []; // local storage for coordinates of reports (used for map bounds)
 
   // MSF Icons
-  var reportsIcon = L.icon({
-    iconUrl: '/resources/images/icons/reports/report_icon.svg',
-
+  const accessIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/access_icon.svg',
     iconSize:     [60, 60], // size of the icon
-    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
+  const securityIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/security_icon.svg',
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
 
-  var points = []; // local storage for coordinates of reports (used for map bounds)
+  const contactsIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
 
-  // fixme:
-  var accessIcon = reportsIcon;
-  var needsIcon = reportsIcon;
-  var contactsIcon = reportsIcon;
-  var securityIcon = reportsIcon;
+  const needsIcon = L.icon({
+    iconUrl: '/resources/images/icons/reports/needs_icon.svg',
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
 
   var accessLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -216,7 +227,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   accessLayer.addTo(eventsMap);
-  layerControl.addOverlay(accessLayer, 'access reports');
+  layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
   var needsLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -228,7 +239,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   needsLayer.addTo(eventsMap);
-  layerControl.addOverlay(needsLayer, 'needs reports');
+  layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
   var securityLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -240,7 +251,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   securityLayer.addTo(eventsMap);
-  layerControl.addOverlay(securityLayer, 'security reports');
+  layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
   var contactsLayer = L.geoJSON(reports, {
     filter: function (feature) {
@@ -252,7 +263,7 @@ var mapReports = function(reports){
     onEachFeature: onEachFeature
   });
   contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, 'contact reports');
+  layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
 
   if (points.length > 0){
     eventsMap.fitBounds(points);
@@ -400,9 +411,15 @@ var baseMaps = {
   "Satellite" : mapboxSatellite
 };
 
-var overlayMaps = {};
+var groupedOverlays = {
+  "Reports": {},
+};
 
-var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(eventsMap);
+var baseLayers = {};
+
+var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, groupOptions).addTo(eventsMap);
 
 // Archive support
 $('#btnArchive').click(function(e){
