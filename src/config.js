@@ -1,6 +1,7 @@
 require('dotenv').config({silent:true})
 
 export default {
+  AUTH: process.env.AUTH === 'true' || false,
   APP_NAME: process.env.APP_NAME || 'msf-reach',
   API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
   API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w

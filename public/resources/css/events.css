@@ -48,3 +48,10 @@ textarea {
 
 #tweetFeed{
 }
+
+#contactsTable td.emailcell {
+  width: 10vw;
+  display: inline-block;
+  overflow: hidden;
+  word-break: break-all;
+}
