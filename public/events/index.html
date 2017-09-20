@@ -237,6 +237,9 @@
           <div id="missions" class="tab-pane fade">
             <div class="col-md-12" >
               <h4>MSF Regional Missions</h4>
+              <div class="form-group">
+                <input type="text" class="form-control" id="messSearchTerm" name="" value="" placeholder="Search by typing Name, Phone or Email ...">
+              </div>
               <div id="missionsContainer"></div>
             </div>
           </div>
@@ -249,6 +252,7 @@
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/lodash.min.js"></script>
     <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
