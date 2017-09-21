@@ -8,17 +8,26 @@ import Promise from 'bluebird';
 export default (config, db, logger) => ({
 
 	/**
-	 * Return all events
+	 * Return contacts
+	 * @function all - returns contacts, optionally filtered by string
+	 * @param {String} search - optional string search against name, email, cell
 	 */
-	all: () => new Promise((resolve, reject) => {
+	all: (search) => new Promise((resolve, reject) => {
 		// Setup query
-
 		let query = `SELECT properties, the_geom
 			FROM ${config.TABLE_CONTACTS}
+			WHERE ($1 IS NULL OR (
+				properties ->> 'name' LIKE $1
+				OR properties ->> 'cell' LIKE $1
+				OR properties ->> 'email' LIKE $1))
 			ORDER BY id`;
 
+		// Format search string for Postgres
+		let text = (!search) ? null : '%'+search+'%'	;
+		let values = [ text ];
+
 		// Execute
-		db.any(query).timeout(config.PGTIMEOUT)
+		db.any(query, values).timeout(config.PGTIMEOUT)
 			.then((data) => resolve(data))
 			.catch((err) => reject(err));
 	}),

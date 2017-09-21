@@ -19,10 +19,11 @@ export default ({ config, db, logger }) => {
 	api.get('/', jwtCheck, cacheResponse('1 minute'),
     validate({
       query: {
+				search: Joi.string().min(1),
         geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
       }
     }),
-		(req, res, next) => contacts(config, db, logger).all(req.query.status)
+		(req, res, next) => contacts(config, db, logger).all(req.query.search)
 			.then((data) => handleGeoResponse(data, req, res, next))
 			.catch((err) => {
 				/* istanbul ignore next */
