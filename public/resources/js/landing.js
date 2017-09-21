@@ -196,6 +196,30 @@ function onEachFeature(feature, layer) {
   };
 
   /**
+    * Function to get feeds
+    **/
+  var getFeeds = function(url, callback) {
+    $.getJSON(url, function( data ){
+      callback(data.result);
+    });
+  };
+
+  var mapFeeds = function(feeds) {
+    for(var i = 0; i <= feeds.features.length; i++) {
+      var feature = feeds.features[i];
+      if (feature) {
+        $('#rssFeeds').append(
+          '<div class="list-group-item">' +
+          'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
+          'Updated: ' + feature.properties.updated + '<br>' +        
+          'Summary: ' + feature.properties.summary.trim() + '<br>' +
+          '</div>'
+        );      
+      }
+    }
+  };
+
+  /**
   * Function to add missions to map
   * @param {Object} missions - GeoJson FeatureCollection containing mission points
   **/
@@ -315,3 +339,7 @@ function onEachFeature(feature, layer) {
   getHazards(mapHazards);
   getMissions(mapMissions);
   getContacts(mapContacts);
+
+  getFeeds("/api/hazards/usgs", mapFeeds);
+  getFeeds("/api/hazards/tsr", mapFeeds);
+  getHazards(mapFeeds);

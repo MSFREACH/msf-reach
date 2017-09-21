@@ -88,11 +88,17 @@
         <div id="sidepane" class="col-md-3" style="min-height:90vh;">
           <ul class="nav nav-tabs">
             <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Events</a></li>
+            <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
           </ul>
           <div class="tab-content">
             <div id="event" class="tab-pane fade in active">
                 <div id="eventProperties" class="list-group">
 
+                </div>
+            </div>
+            <div id="feed" class="tab-pane fade">
+                <div id="rssFeeds" class="list-group">
+                  
                 </div>
             </div>
           </div>
@@ -104,6 +110,7 @@
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <!-- Cookies -->
     <script src="/lib/cookie/js.cookie-2.1.4.min.js"></script>
+    <script src="/lib/jquery-plugins/jquery.jfeed.js"></script>
 
     <!-- Get query parameter from URL -->
     <!-- Ask the server for reports from specific event -->
