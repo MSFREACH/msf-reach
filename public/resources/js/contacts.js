@@ -22,7 +22,7 @@ var loadContacts = function(err, contacts){
 
 // Perform GET call to get tweets
 var getContacts = function(term){
-  $('#contactsContainer').html('<i class="glyphicon glyphicon-refresh gly-spin"></i>Loading contacts...')
+  //$('#contactsContainer').html('<i class="glyphicon glyphicon-refresh gly-spin"></i>Loading contacts...')
   let url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'')
   $.getJSON(url, function (data){
     loadContacts(null, data.result.features);
@@ -33,6 +33,8 @@ var getContacts = function(term){
 
 getContacts(null);
 
+
 $('#contSearchTerm').on('input',function(){
-  getContacts(this.value);
+  var throttFunc=_.throttle(getContacts, 300);
+  throttFunc(this.value);
 });

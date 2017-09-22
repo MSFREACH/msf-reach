@@ -30,5 +30,6 @@ var getMissions = function(term) {
 getMissions(null);
 
 $("#messSearchTerm").on("input", function() {
-  _.throttle(getMissions(this.value), 300);
+  var throttFunc=_.throttle(getMissions, 300);
+  throttFunc(this.value);
 });
