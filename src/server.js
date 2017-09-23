@@ -67,7 +67,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 			app.use('/login', express.static(config.STATIC_AUTH_PATH));
 			app.use('/report', express.static(config.STATIC_REPORT_PATH))
 			app.use('/contact', express.static(config.STATIC_CONTACT_PATH))
-			app.use('/contact/details', express.static(config.STATIC_CONTACT_DETAILS_PATH))
 			app.use('/lib', express.static(config.STATIC_LIB_PATH)); // Allow resources to be shared with un-authed path
 			app.use('/resources', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
 

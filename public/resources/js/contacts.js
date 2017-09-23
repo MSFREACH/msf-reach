@@ -10,7 +10,7 @@ var loadContacts = function(err, contacts) {
     $.each(contacts, function(key, value) {
       // console.log(key, value);
       $("#contactsTable").append(
-        "<tr><td><a href='#' onclick='onContactLinkClick(" +
+        "<tr><td><a data-toggle='modal' data-target='#contactDetailsModal' href='#' onclick='onContactLinkClick(" +
           value.properties.id +
           ")' class='contact-link btn btn-sm btn-primary' title='Quick View'><i class='glyphicon glyphicon-eye-open'></i></a></td><td>" +
           (typeof value.properties.properties.title === "undefined"
@@ -40,10 +40,6 @@ var loadContacts = function(err, contacts) {
 
     $("#contactsTable").append("</tbody></table>");
   }
-};
-
-var onContactLinkClick = function(id) {
-  window.open('/contact/details?id=' + id, "popupWindow", "width=600,height=640,scrollbars=auto");
 };
 
 // Perform GET call to get tweets

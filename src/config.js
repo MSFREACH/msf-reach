@@ -47,7 +47,6 @@ export default {
   STATIC_AUTH_PATH: process.env.STATIC_AUTH_PATH || 'public/login',
   STATIC_REPORT_PATH: process.env.STATIC_REPORT_PATH || 'public/report',
   STATIC_CONTACT_PATH: process.env.STATIC_CONTACT_PATH || 'public/contact',
-  STATIC_CONTACT_DETAILS_PATH: process.env.STATIC_CONTACT_PATH || 'public/contact/details',
   STATIC_RESOURCES_PATH: process.env.STATIC_RESOURCES_PATH || 'public/resources',
   STATIC_LIB_PATH: process.env.STATIC_LIB_PATH || 'public/lib',
   TABLE_GRASP_CARDS: process.env.TABLE_GRASP_CARDS || 'grasp.cards',
