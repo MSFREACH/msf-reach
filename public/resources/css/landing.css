@@ -23,3 +23,14 @@ html, body { height: 100% }
   font-size:20px;
   color:blue;
 }
+
+.btn-msf{
+  color: #fff;
+  background-color: black;
+  border-color: white;
+}
+
+.btn-msf:hover , .btn-msf:focus{
+  color: #fff;
+  background-color:#555555;
+}
