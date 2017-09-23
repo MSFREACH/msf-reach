@@ -58,16 +58,11 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-              <!--<a class="navbar-brand"><img src="/resources/images/msf.jpg" height=50px; width=auto;></img></a>-->
+              <a href="/" class="navbar-brand"><img src="/resources/images/msf-reach-logo-trans-01.png" style="height:100%;width:auto;" /></a>
           </div>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="#">MSF REACH</a></li>
-                <li><a href="/events/new" target="_blank">NEW EVENT</a><li>
-                <li><a href="/contact" target="_blank">NEW CONTACT</a><li>
-                <!--<p>Envelope icon: <span style="color:orange" class="glyphicon glyphicon-certificate"></span>
-                 -->
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
                   <ul class="dropdown-menu">
@@ -81,14 +76,17 @@
       </nav>
 
 
-        <div class="col-md-9">
+        <div class="col-md-8">
           <div id="landingMap"></div>
         </div>
 
-        <div id="sidepane" class="col-md-3" style="min-height:90vh;">
+        <div id="sidepane" class="col-md-4" style="min-height:90vh;">
           <ul class="nav nav-tabs">
             <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Events</a></li>
+            <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
+            <li role="presentation"><a id="infoTab" data-toggle="tab" href="#info">Info</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
+
           </ul>
           <div class="tab-content">
             <div id="event" class="tab-pane fade in active">
@@ -96,9 +94,22 @@
 
                 </div>
             </div>
+            <div id="toolbox" class="tab-pane fade">
+              <div class="list-group">
+                  <a  href="/events/new" target="_blank" class="list-group-item list-group-item-action">Create a new event</a>
+                  <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
+              </div>
+            </div>
+            <div id="info" class="tab-pane fade">
+              <div class="list-group">
+                  <a  class="list-group-item list-group-item-action">How-to videos</a>
+                  <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action">Partnership and confidentiality</a>
+              </div>
+            </div>
+
             <div id="feed" class="tab-pane fade">
                 <div id="rssFeeds" class="list-group">
-                  
+
                 </div>
             </div>
           </div>
