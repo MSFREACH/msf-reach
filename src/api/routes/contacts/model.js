@@ -14,7 +14,7 @@ export default (config, db, logger) => ({
 	 */
 	all: (search) => new Promise((resolve, reject) => {
 		// Setup query
-		let query = `SELECT properties, the_geom
+		let query = `SELECT id, properties, the_geom
 			FROM ${config.TABLE_CONTACTS}
 			WHERE ($1 IS NULL OR (
 				properties ->> 'name' LIKE $1
@@ -31,6 +31,21 @@ export default (config, db, logger) => ({
 			.then((data) => resolve(data))
 			.catch((err) => reject(err));
 	}),
+
+	byId: (id) => new Promise((resolve, reject) => {
+		// Setup query
+		let query = `SELECT id, properties, the_geom
+			FROM ${config.TABLE_CONTACTS}
+			WHERE id = $1`;
+
+		// Format search string for Postgres
+		let values = [ id ];
+
+		// Execute
+		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+			.then((data) => resolve(data))
+			.catch((err) => reject(err));
+	}),	
 
 	/**
 	 * Create a new contact

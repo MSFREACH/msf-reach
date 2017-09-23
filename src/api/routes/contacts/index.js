@@ -33,6 +33,24 @@ export default ({ config, db, logger }) => {
 			})
 	);
 
+    api.get('/:id', jwtCheck, cacheResponse('1 minute'),
+    validate({
+      query: {
+        params: { id: Joi.number().integer().min(1).required() }
+      }
+    }),
+        (req, res, next) => contacts(config, db, logger).byId(req.params.id)
+            .then((data) => {
+                res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: data });
+            })
+            .catch((err) => {
+                /* istanbul ignore next */
+                logger.error(err);
+                /* istanbul ignore next */
+                next(err);
+            })
+    );
+
 	// Create a new contact record in the database
 	api.post('/',
 		validate({

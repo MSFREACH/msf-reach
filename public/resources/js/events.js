@@ -37,7 +37,9 @@ var printEventProperties = function(err, eventProperties){
 
   // Add to Twitter search "AI"
   $(document).ready(function(){
-    $('#searchTerm').val(currentEventProperties.metadata.name);
+    if (currentEventProperties) {
+      $('#searchTerm').val(currentEventProperties.metadata.name);
+    }
     $('#btnSearchTwitter').trigger('click');
 
     $("#searchTerm").keyup(function(event){
@@ -123,14 +125,16 @@ var printEventProperties = function(err, eventProperties){
     $("#eventExtra").append("<dt>Affected population</dt><dd>"+eventProperties.metadata.population_affected+"</dd>");
 
   }
-  if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
-    $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
-      console.log(value.html);
-      $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
-      var tweetEventReportLink = eventReportLink.replace("&", "%26");
-      $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
-      twttr.widgets.load();
-    });
+  if (currentEventProperties) {
+    if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
+      $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
+        console.log(value.html);
+        $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
+        var tweetEventReportLink = eventReportLink.replace("&", "%26");
+        $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
+        twttr.widgets.load();
+      });
+    }
   }
 };
 
