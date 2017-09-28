@@ -13,7 +13,7 @@ export default (config, db, logger) => ({
 	all: (search) => new Promise((resolve, reject) => {
 		// Setup query
 
-		let query = `SELECT properties, the_geom
+		let query = `SELECT id, properties, the_geom
 			FROM ${config.TABLE_MISSIONS}
 			WHERE ($1 IS NULL OR (
 				properties ->> 'capacity' LIKE $1
