@@ -90,6 +90,18 @@ body {
   background-color:#555555;
 }
 
+.btn-msf-contact{
+  color: #fff;
+  background-color: red;
+  border-color: white;
+  text-transform: uppercase;
+}
+
+.btn-msf-contact:hover , .btn-msf:focus{
+  color: #fff;
+  background-color:#550000;
+}
+
 
 .msflogo{
   background-color: white;
