@@ -257,7 +257,7 @@ var mapReports = function(reports){
   securityLayer.addTo(eventsMap);
   layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-  var contactsLayer = L.geoJSON(reports, {
+  var reportLayer = L.geoJSON(reports, {
     filter: function (feature) {
       return (feature.properties.content.report_tag === "CONTACTS");
     },
@@ -266,8 +266,8 @@ var mapReports = function(reports){
     },
     onEachFeature: onEachFeature
   });
-  contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
+  reportLayer.addTo(eventsMap);
+  layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
 
   if (points.length > 0){
     eventsMap.fitBounds(points);
