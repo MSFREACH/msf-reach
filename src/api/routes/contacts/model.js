@@ -12,19 +12,21 @@ export default (config, db, logger) => ({
 	 * @function all - returns contacts, optionally filtered by string
 	 * @param {String} search - optional string search against name, email, cell
 	 */
-	all: (search) => new Promise((resolve, reject) => {
+	all: (search,bounds) => new Promise((resolve, reject) => {
 		// Setup query
 		let query = `SELECT id, properties, the_geom
 			FROM ${config.TABLE_CONTACTS}
 			WHERE ($1 IS NULL OR (
 				properties ->> 'name' LIKE $1
 				OR properties ->> 'cell' LIKE $1
-				OR properties ->> 'email' LIKE $1))
+				OR properties ->> 'email' LIKE $1)) AND
+				($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
 			ORDER BY id`;
 
 		// Format search string for Postgres
 		let text = (!search) ? null : '%'+search+'%'	;
-		let values = [ text ];
+		let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax)
+		let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
 
 		// Execute
 		db.any(query, values).timeout(config.PGTIMEOUT)
@@ -45,7 +47,7 @@ export default (config, db, logger) => ({
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
 			.then((data) => resolve(data))
 			.catch((err) => reject(err));
-	}),	
+	}),
 
 	/**
 	 * Create a new contact
