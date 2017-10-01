@@ -386,7 +386,7 @@ currentEventId = getQueryVariable("eventId");
 if (currentEventId !== false && currentEventId != ''){
   getEvent(currentEventId, printEventProperties);
   getReports(currentEventId, mapReports);
-  getContacts(mapContacts);
+  //getContacts(mapContacts);
   getMissions(mapMissions);
 } else {
   // Catch condition where no event specified, print to screen
