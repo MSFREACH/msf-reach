@@ -53,14 +53,12 @@ var normalizeLng=function(lng){
 
 // Perform GET call to get tweets
 var getContacts = function(term){
-  //$('#contactsContainer').html('<i class="glyphicon glyphicon-refresh gly-spin"></i>Loading contacts...')
   var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'')
   var lngmin= normalizeLng(eventsMap.getBounds().getSouthWest().lng);
   var latmin= eventsMap.getBounds().getSouthWest().lat;
   var lngmax= normalizeLng(eventsMap.getBounds().getNorthEast().lng);
   var latmax= eventsMap.getBounds().getNorthEast().lat;
   url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
-  console.log(url);
   $.getJSON(url, function (data){
     loadContacts(null, data.result.features);
   }).fail(function(err){
@@ -74,7 +72,6 @@ var thGetContacts=_.throttle(getContacts, 300);
 //attach handler to different map events
 eventsMap.on('load', function(){thGetContacts(null);});
 eventsMap.on('moveend', function(){thGetContacts($('#contSearchTerm').val());});
-//eventsMap.on('zoomend', function(){thGetContacts($('#contSearchTerm').val());});
 
 
 $('#contSearchTerm').on('input',function(){
