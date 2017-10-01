@@ -42,10 +42,23 @@ var loadContacts = function(err, contacts) {
   }
 };
 
+var normalizeLng=function(lng){
+  if (lng>180)
+   return 180;
+  else if (lng<-180)
+   return -180;
+  else
+    return lng;
+}
+
 // Perform GET call to get tweets
 var getContacts = function(term){
-  //$('#contactsContainer').html('<i class="glyphicon glyphicon-refresh gly-spin"></i>Loading contacts...')
-  let url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'')
+  var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'')
+  var lngmin= normalizeLng(eventsMap.getBounds().getSouthWest().lng);
+  var latmin= eventsMap.getBounds().getSouthWest().lat;
+  var lngmax= normalizeLng(eventsMap.getBounds().getNorthEast().lng);
+  var latmax= eventsMap.getBounds().getNorthEast().lat;
+  url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
   $.getJSON(url, function (data){
     loadContacts(null, data.result.features);
   }).fail(function(err){
@@ -53,10 +66,14 @@ var getContacts = function(term){
   });
 };
 
-getContacts(null);
+//Create a throttled version
+var thGetContacts=_.throttle(getContacts, 300);
+
+//attach handler to different map events
+eventsMap.on('load', function(){thGetContacts(null);});
+eventsMap.on('moveend', function(){thGetContacts($('#contSearchTerm').val());});
 
 
 $('#contSearchTerm').on('input',function(){
-  var throttFunc=_.throttle(getContacts, 300);
-  throttFunc(this.value);
+  thGetContacts(this.value);
 });
