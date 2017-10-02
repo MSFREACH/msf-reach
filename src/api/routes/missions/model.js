@@ -16,10 +16,10 @@ export default (config, db, logger) => ({
 		let query = `SELECT properties, the_geom
 			FROM ${config.TABLE_MISSIONS}
 			WHERE ($1 IS NULL OR (
-				properties ->> 'capacity' LIKE $1
-				OR properties ->> 'name' LIKE $1
-				OR properties ->> 'region' LIKE $1
-				OR properties ->> 'severity' LIKE $1))
+				properties ->> 'capacity' ILIKE $1
+				OR properties ->> 'name' ILIKE $1
+				OR properties ->> 'region' ILIKE $1
+				OR properties ->> 'severity' ILIKE $1))
 			ORDER BY id`;
 
 		// Format search string for Postgres
