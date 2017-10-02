@@ -280,7 +280,7 @@ var mapReports = function(reports){
 * Function to add contacts to map
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
-var mapContacts = function(contacts, withOverlay){
+var mapContacts = function(contacts){
 
   function onEachFeature(feature, layer) {
 
@@ -317,7 +317,7 @@ var mapContacts = function(contacts, withOverlay){
     onEachFeature: onEachFeature
   });
   contactsLayer.addTo(eventsMap);
-  //commenting out for now as it keeps adding layers 
+  //commenting out for now as it keeps adding layers
   //layerControl.addOverlay(contactsLayer, 'Contacts');
 
 };
