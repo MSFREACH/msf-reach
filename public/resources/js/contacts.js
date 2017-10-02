@@ -1,16 +1,25 @@
+function openContactPopup(id)
+{
+  contactsLayer.eachLayer(function(layer){
+    if (layer.feature.properties.id == id)
+     layer.openPopup();
+
+  });
+}
+
 // Load Contacts to contacts table tab
 var loadContacts = function(err, contacts) {
   if (err) {
     alert("Error loading contacts: " + err);
   } else {
     $("#contactsContainer").html(
-      '<table class="table table-striped" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Email</th><th>Mobile</th><th>Speciality</th></tr></thead><tbody>'
+      '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Email</th><th>Mobile</th><th>Speciality</th></tr></thead><tbody>'
     );
 
     $.each(contacts, function(key, value) {
       // console.log(key, value);
       $("#contactsTable").append(
-        "<tr><td><a data-toggle='modal' data-target='#contactDetailsModal' href='#' onclick='onContactLinkClick(" +
+        "<tr id='crow"+value.properties.id+"' class='cursorPointer' onclick='openContactPopup("+value.properties.id+")'><td><a data-toggle='modal' data-target='#contactDetailsModal' href='#' onclick='onContactLinkClick(" +
           value.properties.id +
           ")' class='contact-link btn btn-sm btn-primary' title='Quick View'><i class='glyphicon glyphicon-eye-open'></i></a></td><td>" +
           (typeof value.properties.properties.title === "undefined"
@@ -63,6 +72,11 @@ var getContacts = function(term){
     loadContacts(null, data.result.features);
     //remap contacts
     mapContacts(data.result);
+    contactsLayer.eachLayer(function(layer){
+      layer.on('mouseover',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+      layer.on('mouseout',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+    });
+
   }).fail(function(err){
     loadContacts(err.responseText, null);
   });
