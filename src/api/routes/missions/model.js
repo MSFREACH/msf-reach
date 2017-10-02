@@ -10,27 +10,27 @@ export default (config, db, logger) => ({
 	/**
 	 * Return all events
 	 */
-	all: (search) => new Promise((resolve, reject) => {
-		// Setup query
+	 all: (search,bounds) => new Promise((resolve, reject) => {
+ 		// Setup query
+ 		let query = `SELECT id, properties, the_geom
+ 			FROM ${config.TABLE_MISSIONS}
+ 			WHERE ($1 IS NULL OR (
+ 				properties ->> 'name' ILIKE $1
+ 				OR properties ->> 'cell' ILIKE $1
+ 				OR properties ->> 'email' ILIKE $1)) AND
+ 				($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
+ 			ORDER BY id`;
 
-		let query = `SELECT properties, the_geom
-			FROM ${config.TABLE_MISSIONS}
-			WHERE ($1 IS NULL OR (
-				properties ->> 'capacity' ILIKE $1
-				OR properties ->> 'name' ILIKE $1
-				OR properties ->> 'region' ILIKE $1
-				OR properties ->> 'severity' ILIKE $1))
-			ORDER BY id`;
+ 		// Format search string for Postgres
+ 		let text = (!search) ? null : '%'+search+'%'	;
+ 		let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax)
+ 		let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
 
-		// Format search string for Postgres
-		let text = !search ? null : "%" + search + "%";
-		let values = [text];
-
-		// Execute
-		db.any(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve(data))
-			.catch((err) => reject(err));
-	}),
+ 		// Execute
+ 		db.any(query, values).timeout(config.PGTIMEOUT)
+ 			.then((data) => resolve(data))
+ 			.catch((err) => reject(err));
+ 	}),
 
   /**
    * Return mission specified by ID

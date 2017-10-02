@@ -1,3 +1,13 @@
+
+var normalizeLng = function(lng){
+  if (lng>180)
+   return 180;
+  else if (lng<=180)
+   return -180;
+  else
+    return lng;
+};
+
 // Load Missions to missions table tab
 var loadMissions = function(err, missions) {
   if (err) {
@@ -33,8 +43,15 @@ var loadMissions = function(err, missions) {
 
 // Perform GET call to get Missions
 var getMissions = function(term) {
+
+  var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'')
+  var lngmin = normalizeLng(eventsMap.getBounds().getSouthWest().lng);
+  var latmin = eventsMap.getBounds().getSouthWest().lat;
+  var lngmax = normalizeLng(eventsMap.getBounds().getNorthEast().lng);
+  var latmax = eventsMap.getBounds().getNorthEast().lat;
+  url = url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
   $.getJSON(
-    "/api/missions?geoformat=geojson" + (term ? "&search=" + term : ""),
+    url,
     function(data) {
       loadMissions(null, data.result.features);
     }
@@ -69,7 +86,7 @@ var onMissionLinkClick = function(id) {
           $("span.event-" + key).html(value);
         });
         callback();
-      });      
+      });
     }
   ]);
 };
