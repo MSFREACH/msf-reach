@@ -13,6 +13,7 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var currentEventId;
 var eventReportLink;
 var currentEventProperties;
+var contactsLayer;
 
 var zoomToEvent = function(latlng) {
   eventsMap.setView(latlng, 12);
@@ -257,7 +258,7 @@ var mapReports = function(reports){
   securityLayer.addTo(eventsMap);
   layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-  var contactsLayer = L.geoJSON(reports, {
+  var reportLayer = L.geoJSON(reports, {
     filter: function (feature) {
       return (feature.properties.content.report_tag === "CONTACTS");
     },
@@ -266,8 +267,8 @@ var mapReports = function(reports){
     },
     onEachFeature: onEachFeature
   });
-  contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
+  reportLayer.addTo(eventsMap);
+  layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
 
   if (points.length > 0){
     eventsMap.fitBounds(points);
@@ -279,7 +280,7 @@ var mapReports = function(reports){
 * Function to add contacts to map
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
-var mapContacts = function(contacts ){
+var mapContacts = function(contacts){
 
   function onEachFeature(feature, layer) {
 
@@ -306,14 +307,18 @@ var mapContacts = function(contacts ){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  var contactsLayer = L.geoJSON(contacts, {
+  if (contactsLayer)
+    eventsMap.removeLayer(contactsLayer);
+
+  contactsLayer = L.geoJSON(contacts, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: contactIcon});
     },
     onEachFeature: onEachFeature
   });
   contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, 'Contacts');
+  //commenting out for now as it keeps adding layers
+  //layerControl.addOverlay(contactsLayer, 'Contacts');
 
 };
 
@@ -386,7 +391,7 @@ currentEventId = getQueryVariable("eventId");
 if (currentEventId !== false && currentEventId != ''){
   getEvent(currentEventId, printEventProperties);
   getReports(currentEventId, mapReports);
-  getContacts(mapContacts);
+  //getContacts(mapContacts);
   getMissions(mapMissions);
 } else {
   // Catch condition where no event specified, print to screen

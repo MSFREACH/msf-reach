@@ -61,6 +61,8 @@ var getContacts = function(term){
   url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
   $.getJSON(url, function (data){
     loadContacts(null, data.result.features);
+    //remap contacts
+    mapContacts(data.result);
   }).fail(function(err){
     loadContacts(err.responseText, null);
   });
