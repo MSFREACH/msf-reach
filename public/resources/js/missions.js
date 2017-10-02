@@ -1,5 +1,11 @@
+function openMissionPopup(id) {
+  missionsLayer.eachLayer(function(layer){
+    if (layer.feature.properties.id == id)
+     layer.openPopup();
+  });
+}
 
-var normalizeLng = function(lng){
+var normalizeLng = function(lng) {
   if (lng > 180)
    return 180;
   else if (lng < -180)
@@ -60,13 +66,6 @@ var getMissions = function(term) {
   });
 };
 
-getMissions(null);
-
-$("#messSearchTerm").on("input", function() {
-  var throttFunc=_.throttle(getMissions, 300);
-  throttFunc(this.value);
-});
-
 var missionData = {};
 var onMissionLinkClick = function(id) {
   async.waterfall([
@@ -90,3 +89,15 @@ var onMissionLinkClick = function(id) {
     }
   ]);
 };
+
+//Create a throttled version
+var thGetMissions=_.throttle(getMissions, 300);
+
+//attach handler to different map events
+eventsMap.on('load', function(){thGetMissions(null);});
+eventsMap.on('moveend', function(){thGetMissions($('#missSearchTerm').val());});
+
+
+$('#missSearchTerm').on('input',function(){
+  thGetMissions(this.value);
+});
