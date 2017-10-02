@@ -2,7 +2,6 @@
 
 function initGoogle()
 {
-  console.log('heree');
 
   var autocomplete = new google.maps.places.Autocomplete(document.getElementById('mapAddress'),{
     types: ['geocode'],
@@ -29,7 +28,13 @@ function initGoogle()
     var addrDetailLevel=place.address_components.length;
     console.log(addrDetailLevel);
     if (autocompleteMap)
-      autocompleteMap.setView([foundLatLng.lat, foundLatLng.lng],(addrDetailLevel > 3) ? 17 : 7);
+      {
+        autocompleteMap.setView([foundLatLng.lat, foundLatLng.lng],(addrDetailLevel > 3) ? 17 : 7);
+        if(marker)
+          autocompleteMap.removeLayer(marker);
+        latlng = foundLatLng;
+        marker = L.marker(foundLatLng).addTo(autocompleteMap);
+      }
 
 
 
