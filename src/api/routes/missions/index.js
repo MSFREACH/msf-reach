@@ -27,7 +27,7 @@ export default ({ config, db, logger }) => {
           geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
         }
       }),
-      (req, res, next) => contacts(config, db, logger).all(req.query.search,{
+      (req, res, next) => missions(config, db, logger).all(req.query.search,{
         xmin: req.query.lngmin,
         ymin: req.query.latmin,
         xmax: req.query.lngmax,
