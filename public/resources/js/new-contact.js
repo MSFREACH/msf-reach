@@ -40,6 +40,7 @@ function postContact() {
 	var body = {
 		"location":latlng,
 		"properties":{
+			"address": $('#mapAddress').val(),
 			"title": $("#inputContactTitle").val(),
 			"gender": $("#inputGender").val(),
 			"name": contName.trim(),
