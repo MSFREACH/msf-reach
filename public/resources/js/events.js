@@ -13,6 +13,7 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var currentEventId;
 var eventReportLink;
 var currentEventProperties;
+var contactsLayer;
 
 var zoomToEvent = function(latlng) {
   eventsMap.setView(latlng, 12);
@@ -279,7 +280,7 @@ var mapReports = function(reports){
 * Function to add contacts to map
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
-var mapContacts = function(contacts ){
+var mapContacts = function(contacts, withOverlay){
 
   function onEachFeature(feature, layer) {
 
@@ -306,14 +307,18 @@ var mapContacts = function(contacts ){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  var contactsLayer = L.geoJSON(contacts, {
+  if (contactsLayer)
+    eventsMap.removeLayer(contactsLayer);
+
+  contactsLayer = L.geoJSON(contacts, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: contactIcon});
     },
     onEachFeature: onEachFeature
   });
   contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, 'Contacts');
+  //commenting out for now as it keeps adding layers 
+  //layerControl.addOverlay(contactsLayer, 'Contacts');
 
 };
 
