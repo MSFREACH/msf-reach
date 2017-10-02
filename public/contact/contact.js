@@ -34,9 +34,9 @@ $(function () {
   // Next button goes forward iff current block validates
   $('.form-navigation .next').on('click',function() {
       var cInd=curIndex();
-      if ((cInd==2)&&(!latlng))
+      if ((cInd==2)&&((!latlng)||(!$('#mapAddress').val())))
        {
-         alert("Please select a report location on the map to proceed.");
+         alert("Please enter an address to proceed.");
          return;
        }
 
