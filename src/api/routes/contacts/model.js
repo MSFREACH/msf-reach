@@ -17,9 +17,9 @@ export default (config, db, logger) => ({
 		let query = `SELECT id, properties, the_geom
 			FROM ${config.TABLE_CONTACTS}
 			WHERE ($1 IS NULL OR (
-				properties ->> 'name' LIKE $1
-				OR properties ->> 'cell' LIKE $1
-				OR properties ->> 'email' LIKE $1)) AND
+				properties ->> 'name' ILIKE $1
+				OR properties ->> 'cell' ILIKE $1
+				OR properties ->> 'email' ILIKE $1)) AND
 				($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
 			ORDER BY id`;
 
