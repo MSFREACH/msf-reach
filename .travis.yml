@@ -2,7 +2,7 @@ dist: trusty
 sudo: false
 language: node_js
 node_js:
-  - "6.10.0"
+  - "8.4.o"
 addons:
   postgresql: "9.6"
   apt:
