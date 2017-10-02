@@ -52,9 +52,9 @@ var loadContacts = function(err, contacts) {
 };
 
 var normalizeLng = function(lng){
-  if (lng>180)
+  if (lng > 180)
    return 180;
-  else if (lng<=180)
+  else if (lng < -180)
    return -180;
   else
     return lng;
