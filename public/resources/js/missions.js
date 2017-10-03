@@ -5,15 +5,6 @@ function openMissionPopup(id) {
   });
 }
 
-var normalizeLng = function(lng) {
-  if (lng > 180)
-   return 180;
-  else if (lng < -180)
-   return -180;
-  else
-    return lng;
-};
-
 // Load Missions to missions table tab
 var loadMissions = function(err, missions) {
   if (err) {
@@ -52,10 +43,10 @@ var loadMissions = function(err, missions) {
 var getMissions = function(term) {
 
   var url='/api/missions?geoformat=geojson' +(term ? ('&search='+term) :'')
-  var lngmin = normalizeLng(eventsMap.getBounds().getSouthWest().lng);
-  var latmin = eventsMap.getBounds().getSouthWest().lat;
-  var lngmax = normalizeLng(eventsMap.getBounds().getNorthEast().lng);
-  var latmax = eventsMap.getBounds().getNorthEast().lat;
+  var lngmin = eventsMap.getBounds().getSouthWest().wrap().lng;
+  var latmin = eventsMap.getBounds().getSouthWest().wrap().lat;
+  var lngmax = eventsMap.getBounds().getNorthEast().wrap().lng;
+  var latmax = eventsMap.getBounds().getNorthEast().wrap().lat;
   url = url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
   $.getJSON(
     url,
