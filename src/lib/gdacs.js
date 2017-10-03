@@ -26,7 +26,6 @@ const GDACS = () =>
           let event = result.rss.channel[0].item[i];
           //console.log(event);
           if (event["georss:point"]) {
-            console.log(event);
             // define a feature
             let feature = {
               type: "Feature",
@@ -47,7 +46,6 @@ const GDACS = () =>
             feature.properties["summary"] = event.description[0].trim();
 
             // push feature to feature collection
-            console.log(feature)
             features.push(feature);
 
           }
