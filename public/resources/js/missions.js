@@ -61,7 +61,8 @@ var getMissions = function(term) {
     url,
     function(data) {
       loadMissions(null, data.result.features);
-      missionsLayer.eachLayer(function(layer){
+      mapContacts(data.result);
+      missionsLayer.eachLayer(function(layer) {
         layer.on('mouseover',function(e){$('#mrow'+layer.feature.properties.id).addClass('isHovered');});
         layer.on('mouseout',function(e){$('#mrow'+layer.feature.properties.id).removeClass('isHovered');});
       });
