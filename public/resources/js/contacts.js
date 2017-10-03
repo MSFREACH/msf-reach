@@ -3,7 +3,6 @@ function openContactPopup(id)
   contactsLayer.eachLayer(function(layer){
     if (layer.feature.properties.id == id)
      layer.openPopup();
-
   });
 }
 
@@ -75,6 +74,8 @@ var getContacts = function(term){
     contactsLayer.eachLayer(function(layer){
       layer.on('mouseover',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
       layer.on('mouseout',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+      layer.on('touchend',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
     });
 
   }).fail(function(err){
