@@ -8,7 +8,7 @@ import { cacheResponse, jwtCheck } from '../../../lib/util';
 import {GeoRSS} from '../../../lib/pdc-georss.js';
 import { USGSGeoRSS } from "../../../lib/usgs-georss.js";
 import { TSRMain } from "../../../lib/tsr.js";
-import { GDACS } from "../../../lib/gdacs.js";
+import { GDACS } from "../../../lib/gdacs-georss.js";
 
 // Import validation dependencies
 import Joi from 'joi';
