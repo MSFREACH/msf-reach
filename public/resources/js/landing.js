@@ -133,8 +133,8 @@ function onEachFeature(feature, layer) {
   * Function to get reports for an event
   * @param {Number} eventId - UniqueId of event
   **/
-  var getHazards = function(callback){
-    $.getJSON('/api/hazards/', function( data ){
+  var getPDCHazards = function(callback){
+    $.getJSON('/api/hazards/pdc', function( data ){
       callback(data.result);
     });
   };
