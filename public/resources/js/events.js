@@ -375,7 +375,7 @@ var mapMissions = function(missions ){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  var missionsLayer = L.geoJSON(missions, {
+  missionsLayer = L.geoJSON(missions, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: missionIcon});
     },
