@@ -25,7 +25,8 @@ var loadMissions = function(err, missions) {
 
     $.each(missions, function(key, value) {
       $("#missionsTable").append(
-        "<tr><td><a data-toggle='modal' data-target='#missionModal' href='#' onclick='onMissionLinkClick(" +
+        "<tr id='mrow"+value.properties.id+"' class='cursorPointer' onclick='openMissionPopup("+value.properties.id+")'>"
+        +"<td><a data-toggle='modal' data-target='#missionModal' href='#' onclick='onMissionLinkClick(" +
           value.properties.id +
           ")' class='contact-link btn btn-sm btn-primary' title='Quick View'><i class='glyphicon glyphicon-eye-open'></i></a></td><td>" +
           value.properties.properties.name +
@@ -60,6 +61,10 @@ var getMissions = function(term) {
     url,
     function(data) {
       loadMissions(null, data.result.features);
+      missionsLayer.eachLayer(function(layer){
+        layer.on('mouseover',function(e){$('#mrow'+layer.feature.properties.id).addClass('isHovered');});
+        layer.on('mouseout',function(e){$('#mrow'+layer.feature.properties.id).removeClass('isHovered');});
+      });
     }
   ).fail(function(err) {
     loadMissions(err.responseText, null);
