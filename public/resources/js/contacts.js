@@ -2,7 +2,9 @@ function openContactPopup(id)
 {
   contactsLayer.eachLayer(function(layer){
     if (layer.feature.properties.id == id)
-     layer.openPopup(eventsMap.center);
+    if (markerClusters.hasLayer(layer))
+      markerClusters.zoomToShowLayer(layer);
+   layer.openPopup(eventsMap.center);
   });
 }
 

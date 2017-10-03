@@ -14,6 +14,7 @@ var currentEventId;
 var eventReportLink;
 var currentEventProperties;
 var contactsLayer;
+var markerClusters;
 var missionsLayer;
 var eventsMap;
 
@@ -309,8 +310,10 @@ var mapContacts = function(contacts){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  if (contactsLayer)
-    eventsMap.removeLayer(contactsLayer);
+  if (markerClusters)
+    eventsMap.removeLayer(markerClusters);
+
+  markerClusters = L.markerClusterGroup();
 
   contactsLayer = L.geoJSON(contacts, {
     pointToLayer: function (feature, latlng) {
@@ -318,7 +321,13 @@ var mapContacts = function(contacts){
     },
     onEachFeature: onEachFeature
   });
-  contactsLayer.addTo(eventsMap);
+
+
+  markerClusters.addLayer(contactsLayer);
+
+//  map.addLayer(markerClusters);
+
+  markerClusters.addTo(eventsMap);
   //commenting out for now as it keeps adding layers
   //layerControl.addOverlay(contactsLayer, 'Contacts');
 
