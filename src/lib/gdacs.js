@@ -20,7 +20,7 @@ const GDACS = () =>
     rp(options)
       .then(function(result) {
         let title = result.rss.channel.title;
-        console.log(result.rss.channel[0]);
+
         let features = []; // store for features
         for (let i = 0; i < result.rss.channel[0].item.length; i++) {
           let event = result.rss.channel[0].item[i];
