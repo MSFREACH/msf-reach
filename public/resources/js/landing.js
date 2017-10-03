@@ -12,6 +12,12 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
 {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+var PDCHazardsLayer;
+var TSRHazardsLayer;
+var USGSHazardsLayer;
+var GDACSHazardsLayer;
+var PTWCHazardsLayer;
+
 /**
 * Function to get all events from the API
 * @param {Function} callback - Function to call once data returned
@@ -93,6 +99,8 @@ function onEachFeature(feature, layer) {
 */
 var mapAllEvents = function(err, events){
 
+  console.log(L.version);
+
   var eventsLayer = L.geoJSON(events, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: L.icon({
@@ -141,7 +149,7 @@ var mapPDCHazards = function(hazards){
     layer.bindPopup(popupContent);
   }
 
-  var PDCHazardsLayer = L.geoJSON(hazards, {
+  PDCHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: PDCHazardIcon(feature.properties.summary)});
     },
@@ -164,7 +172,7 @@ var mapTSRHazards = function(hazards){
     layer.bindPopup(popupContent);
   }
 
-  var TSRHazardsLayer = L.geoJSON(hazards, {
+  TSRHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, L.icon({
         iconUrl: '/resources/images/icons/event_types/typhoon.svg',
@@ -190,7 +198,7 @@ var mapPTWCHazards = function(hazards){
     layer.bindPopup(popupContent);
   }
 
-  var PTWCHazardsLayer = L.geoJSON(hazards, {
+  PTWCHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, L.icon({
         iconUrl: '/resources/images/icons/event_types/tsunami.svg',
@@ -257,7 +265,7 @@ var mapGDACSHazards = function(hazards){
     layer.bindPopup(popupContent);
   }
 
-  var GDACSHazardsLayer = L.geoJSON(hazards, {
+  GDACSHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: GDACSHazardIcon(feature.properties)});
     },
@@ -280,7 +288,7 @@ var mapUSGSHazards = function(hazards){
     layer.bindPopup(popupContent);
   }
 
-  var USGSHazardsLayer = L.geoJSON(hazards, {
+  USGSHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, L.icon({
         iconUrl: '/resources/images/icons/event_types/earthquake.svg',
@@ -297,12 +305,14 @@ var mapUSGSHazards = function(hazards){
 
 function openHazardPopup(id)
 {
+  console.log(id);
 
   switch(id.split('-',1)[0]) {
     case "USGS":
     USGSHazardsLayer.eachLayer(function(layer){
-      if (layer.feature.properties.id == id)
+      if (layer.feature.properties.id === id)
       layer.openPopup();
+      console.log("DB" + layer.feature.properties.id);
       layer.on('mouseover',function(e){$('#rssdiv'+layer.feature.properties.id).addClass('isHovered');});
       layer.on('mouseout',function(e){$('#rssdiv'+layer.feature.properties.id).removeClass('isHovered');});
       layer.on('touchstart',function(e){$('#rssdiv'+layer.feature.properties.id).addClass('isHovered');});
@@ -343,10 +353,10 @@ function openHazardPopup(id)
     GDACSHazardsLayer.eachLayer(function(layer){
       if (layer.feature.properties.id == id)
       layer.openPopup();
-      layer.on('mouseover',function(e){$('#rssdiv'+layer.feature.properties.id).addClass('isHovered');});
-      layer.on('mouseout',function(e){$('#rssdiv'+layer.feature.properties.id).removeClass('isHovered');});
-      layer.on('touchstart',function(e){$('#rssdiv'+layer.feature.properties.id).addClass('isHovered');});
-      layer.on('touchend',function(e){$('#rssdiv'+layer.feature.properties.id).removeClass('isHovered');});
+      layer.on('mouseover',function(e){$('#rssdiv'+sanitiseId(layer.feature.properties.id)).addClass('isHovered');});
+      layer.on('mouseout',function(e){$('#rssdiv'+sanitiseId(layer.feature.properties.id)).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$('#rssdiv'+sanitiseId(layer.feature.properties.id)).addClass('isHovered');});
+      layer.on('touchend',function(e){$('#rssdiv'+sanitiseId(layer.feature.properties.id)).removeClass('isHovered');});
     });
     break;
     default:
@@ -387,9 +397,8 @@ var tableFeeds = function(feeds) {
   for(var i = 0; i <= feeds.features.length; i++) {
     var feature = feeds.features[i];
     if (feature) {
-      console.log(feature.properties.id);
       $('#rssFeeds').append(
-        "<div id='rssdiv'"+feature.properties.id+"' class='list-group-item' onclick='openHazardPopup('"+feature.properties.id+"')>" +
+        '<div id="rssdiv'+feature.properties.id+'" class="list-group-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
         'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
         'Updated: ' + feature.properties.updated + '<br>' +
         'Summary: ' + feature.properties.summary.trim() + '<br>' +
