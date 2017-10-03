@@ -12,7 +12,7 @@ var loadContacts = function(err, contacts) {
     alert("Error loading contacts: " + err);
   } else {
     $("#contactsContainer").html(
-      '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Email</th><th>Mobile</th><th>Speciality</th></tr></thead><tbody>'
+      '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Email</th><th>Mobile</th><th>Affiliation</th><th>Speciality</th></tr></thead><tbody>'
     );
 
     $.each(contacts, function(key, value) {
@@ -38,6 +38,11 @@ var loadContacts = function(err, contacts) {
           (typeof value.properties.properties.cell === "undefined"
             ? ""
             : value.properties.properties.cell) +
+          "</td><td>" +
+          +
+          (typeof value.properties.properties.type === "undefined"
+            ? ""
+            : value.properties.properties.type) +
           "</td><td>" +
           (typeof value.properties.properties.speciality === "undefined"
             ? ""
