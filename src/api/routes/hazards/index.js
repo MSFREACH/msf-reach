@@ -8,6 +8,7 @@ import { cacheResponse, jwtCheck } from '../../../lib/util';
 import {GeoRSS} from '../../../lib/pdc-georss.js';
 import { USGSGeoRSS } from "../../../lib/usgs-georss.js";
 import { TSRMain } from "../../../lib/tsr.js";
+import { GDACS } from "../../../lib/gdacs.js";
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -55,6 +56,20 @@ export default ({ logger }) => {
                 next(err);
             })
     );
+
+		api.get('/gdacs', jwtCheck, cacheResponse('10 minutes'),
+				(req, res, next) => GDACS()
+						.then((events) => {
+								res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
+						})
+						.catch((err) => {
+								/* istanbul ignore next */
+								logger.error(err);
+								/* istanbul ignore next */
+								next(err);
+						})
+		);
+
 
 	return api;
 };
