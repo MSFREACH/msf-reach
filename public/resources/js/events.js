@@ -327,7 +327,7 @@ var mapContacts = function(contacts){
 /**
 * Function to get contacts
 **/
-var getContacts = function(callback){
+var initGetContacts = function(callback){
   $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
   });
@@ -336,7 +336,7 @@ var getContacts = function(callback){
 /**
 * Function to get missions
 **/
-var getMissions = function(callback){
+var initGetMissions = function(callback){
   $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
   });
@@ -393,8 +393,8 @@ currentEventId = getQueryVariable("eventId");
 if (currentEventId !== false && currentEventId != ''){
   getEvent(currentEventId, printEventProperties);
   getReports(currentEventId, mapReports);
-  //getContacts(mapContacts);
-  getMissions(mapMissions);
+  //initGetContacts(mapContacts);
+  //initGetMissions(mapMissions);
 } else {
   // Catch condition where no event specified, print to screen
   printEventProperties('No event ID specified', null);
