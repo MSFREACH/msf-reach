@@ -3,7 +3,7 @@ import Promise from "bluebird";
 import { parseString } from "xml2js";
 import rp from "request-promise";
 
-const USGSGeoRSS = () =>
+const USGS = () =>
   new Promise((resolve, reject) => {
     var options = {
       uri:
@@ -54,4 +54,4 @@ const USGSGeoRSS = () =>
       });
   });
 
-module.exports = { USGSGeoRSS };
+module.exports = { USGS };

@@ -346,4 +346,5 @@ function onEachFeature(feature, layer) {
   getFeeds("/api/hazards/usgs", mapFeeds);
   getFeeds("/api/hazards/tsr", mapFeeds);
   getFeeds("/api/hazards/gdacs", mapFeeds);
+  getFeeds("/api/hazards/ptwc", mapFeeds);
   getPDCHazards(mapFeeds);
