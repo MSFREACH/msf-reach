@@ -41,8 +41,7 @@ var printEventProperties = function(err, eventProperties){
   // Add to Twitter search "AI"
   $(document).ready(function(){
     if (currentEventProperties) {
-
-      $('#searchTerm').val((feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type).replace('_',' '));
+      $('#searchTerm').val((currentEventProperties.metadata.sub_type != '' ? currentEventProperties.metadata.sub_type : currentEventProperties.metadata.type).replace('_',' '));
     }
     $('#btnSearchTwitter').trigger('click');
 
