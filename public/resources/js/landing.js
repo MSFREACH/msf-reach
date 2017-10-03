@@ -339,11 +339,11 @@ function onEachFeature(feature, layer) {
   var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(landingMap);
 
   getAllEvents(mapAllEvents);
-  getHazards(mapHazards);
+  getPDCHazards(mapHazards);
   getMissions(mapMissions);
   getContacts(mapContacts);
 
   getFeeds("/api/hazards/usgs", mapFeeds);
   getFeeds("/api/hazards/tsr", mapFeeds);
   getFeeds("/api/hazards/gdacs", mapFeeds);
-  getHazards(mapFeeds);
+  getPDCHazards(mapFeeds);
