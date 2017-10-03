@@ -5,7 +5,7 @@ import { parseString } from "xml2js";
 import rp from "request-promise";
 import { parseDms } from "dms-conversion";
 
-const TSRMain = () =>
+const TSR = () =>
   new Promise((resolve, reject) => {
     let HOST = "http://www.tropicalstormrisk.com/tracker/dynamic";
     var options = {
@@ -18,7 +18,7 @@ const TSRMain = () =>
     rp(options)
       .then(function($) {
         let features = []; // store for features
-        
+
         var tr = $('table.wide tbody tr');
         if (tr.length >= 3) {
           let updated = $(tr[1]).find('th').eq(0).text().trim();
@@ -31,7 +31,7 @@ const TSRMain = () =>
             let currentDataCoords = dmsStrings.map(parseDms);
             let currentDataWind = $(tr[i]).find('td').eq(5).text().trim();
             let currentDataCat = $(tr[i]).find('td').eq(6).text().trim();
-            
+
             // define a feature
             let feature = {
               type: "Feature",
@@ -50,10 +50,10 @@ const TSRMain = () =>
             feature.properties["summary"] = "Wind: " + currentDataWind + " Category: " + currentDataCat;
 
             // push feature to feature collection
-            features.push(feature);          
+            features.push(feature);
           }
         }
-       
+
         // return GeoJSON
         resolve({ type: "FeatureCollection", features: features });
       })
