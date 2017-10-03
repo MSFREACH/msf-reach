@@ -42,7 +42,7 @@ $(function(){
 			$('#newEventModal').modal('toggle');
 		}
 		else {
-
+			var sub_type = $("#inputDisasterType").val() || $("#inputDiseaseType").val()  || $("#inputOther").val();
 			var body = {
 				"status": "active",
 				"type": $('#selectType').val(),
@@ -50,8 +50,8 @@ $(function(){
 				"location": latlng,
 				"metadata":{
 					"user": localStorage.getItem("username"),
-					"name": $("#inputName").val(),
-					"sub_type": $("#inputDisasterType").val() || $("#inputDiseaseType").val()  || $("#inputOther").val(),
+					"name": (sub_type != '' ? +sub_type : $('#selectType').val() ) + "_" + $("#inputEvDateTime").val(),
+					"sub_type": sub_type,
 					"event_datetime": $("#inputEvDateTime").val(),
 					"event_status": $("#inputEvStatus").val(),
 					"incharge_name": $("#inputInChargeName").val(),

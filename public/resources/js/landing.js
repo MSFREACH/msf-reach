@@ -53,10 +53,13 @@ function onEachFeature(feature, layer) {
     statusStr = 'Status: ' + feature.properties.status + '<br>';
   }
 
-  var popupContent = "<strong><a href='events/?eventId=" + feature.properties.id +
+  var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
+
+  var popupContent = "<img src='/resources/images/icons/event_types/"+type+".svg' width='40'>" +
+    "<strong><a href='events/?eventId=" + feature.properties.id +
     "'>Event " + feature.properties.id +"</a></strong>" + "<BR>" +
     "Created: " + feature.properties.created + "<BR>" +
-    "Type: " + feature.properties.type + "<br>" +
+    "Type: " + type.replace('_',' ') + "<br>" +
     statusStr +
     notificationStr +
     totalPopulationStr +
@@ -211,10 +214,10 @@ function onEachFeature(feature, layer) {
         $('#rssFeeds').append(
           '<div class="list-group-item">' +
           'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
-          'Updated: ' + feature.properties.updated + '<br>' +        
+          'Updated: ' + feature.properties.updated + '<br>' +
           'Summary: ' + feature.properties.summary.trim() + '<br>' +
           '</div>'
-        );      
+        );
       }
     }
   };
@@ -247,7 +250,7 @@ function onEachFeature(feature, layer) {
 
     // MSF Icons
     var missionIcon = L.icon({
-      iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
+      iconUrl: '/resources/images/icons/event_types/historical.svg',
 
       iconSize:     [50, 50], // size of the icon
       opacity: 0.8

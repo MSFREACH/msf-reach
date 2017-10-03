@@ -41,7 +41,8 @@ var printEventProperties = function(err, eventProperties){
   // Add to Twitter search "AI"
   $(document).ready(function(){
     if (currentEventProperties) {
-      $('#searchTerm').val(currentEventProperties.metadata.name);
+
+      $('#searchTerm').val((feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type).replace('_',' '));
     }
     $('#btnSearchTwitter').trigger('click');
 
@@ -367,7 +368,7 @@ var mapMissions = function(missions ){
 
   // MSF Icons
   var missionIcon = L.icon({
-    iconUrl: '/resources/images/icons/event_types/HISTORICAL-43.svg',
+    iconUrl: '/resources/images/icons/event_types/historical.svg',
 
     iconSize:     [50, 50], // size of the icon
     opacity: 0.8
