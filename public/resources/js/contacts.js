@@ -39,7 +39,6 @@ var loadContacts = function(err, contacts) {
             ? ""
             : value.properties.properties.cell) +
           "</td><td>" +
-          +
           (typeof value.properties.properties.type === "undefined"
             ? ""
             : value.properties.properties.type) +
