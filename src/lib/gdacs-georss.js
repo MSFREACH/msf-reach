@@ -40,9 +40,7 @@ const GDACS = () =>
             // extract properties
             feature.properties["title"] = event.title[0];
             feature.properties["link"] = event.link[0];
-            feature.properties["id"] = event["gdacs:eventid"][0];
-            feature.properties["fromdate"] = event["gdacs:fromdate"][0];
-            feature.properties["todate"] = event["gdacs:todate"][0];
+            feature.properties["updated"] = event.pubDate[0];
             feature.properties["summary"] = event.description[0].trim();
 
             // push feature to feature collection
