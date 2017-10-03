@@ -207,22 +207,24 @@
                         <label>Nationality 2:</label>
                         <span class="nationality2"></span>
                     </div>
-                    <div class="bg-success">MSF details</div>
-                    <div class="form-group">
-                        <label>OC:</label>
-                        <span class="OC"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Speciality:</label>
-                        <span class="speciality"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Employment status:</label>
-                        <span class="employment"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Position:</label>
-                        <span class="position"></span>
+                    <div id="msf_details">
+                      <div class="bg-success">MSF details</div>
+                        <div class="form-group">
+                            <label>OC:</label>
+                            <span class="OC"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Speciality:</label>
+                            <span class="speciality"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Employment status:</label>
+                            <span class="employment"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Position:</label>
+                            <span class="position"></span>
+                        </div>
                     </div>
                     <div class="bg-success">Social media</div>
                     <div class="form-group">
@@ -509,6 +511,11 @@
             }
             $("span." + key).html(value);
           });
+          if (contact.result.properties.type.toUpperCase().includes("MSF")) {
+            $("#msf_details").show();
+          } else {
+            $("#msf_details").hide();
+          }
         });
       };
     </script>
