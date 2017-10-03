@@ -2,6 +2,14 @@ import Promise from "bluebird";
 
 import { parseString } from "xml2js";
 import rp from "request-promise";
+import cheerio from "cheerio";
+
+var tidySummary = function(summary) {
+  var $=cheerio.load(summary);
+  return "<br>Time: " + $('dt').next().html() + " (" +
+    $('dt').next().next().html() + ")<br>" +
+    "Depth: " + $('dt').next().next().next().next().next().next().html();
+}
 
 const USGS = () =>
   new Promise((resolve, reject) => {
@@ -40,7 +48,7 @@ const USGS = () =>
             feature.properties["link"] = event.link[0]["$"]["href"];
             feature.properties["id"] = "USGS-"+event.id[0];
             feature.properties["updated"] = event.updated[0];
-            feature.properties["summary"] = event.summary[0]._.trim();
+            feature.properties["summary"] = tidySummary(event.summary[0]._.trim());
 
             // push feature to feature collection
             features.push(feature);

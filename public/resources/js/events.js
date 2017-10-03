@@ -323,7 +323,7 @@ var mapContacts = function(contacts){
 
   contactsLayer.addTo(eventsMap);
 
-  layerControl.addOverlay(ContactsLayer, 'Contacts');
+  // broken layerControl.addOverlay(ContactsLayer, 'Contacts');
 
 };
 
@@ -385,7 +385,7 @@ var mapMissions = function(missions ){
     onEachFeature: onEachFeature
   });
 
-  layerControl.addOverlay(missionsLayer, 'Missions');
+  // broken layerControl.addOverlay(missionsLayer, 'Missions');
 
   missionsLayer.addTo(eventsMap);
 };
