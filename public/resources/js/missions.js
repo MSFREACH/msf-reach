@@ -65,6 +65,8 @@ var getMissions = function(term) {
       missionsLayer.eachLayer(function(layer) {
         layer.on('mouseover',function(e){$('#mrow'+layer.feature.properties.id).addClass('isHovered');});
         layer.on('mouseout',function(e){$('#mrow'+layer.feature.properties.id).removeClass('isHovered');});
+        layer.on('touchstart',function(e){$('#mrow'+layer.feature.properties.id).addClass('isHovered');});
+        layer.on('touchend',function(e){$('#mrow'+layer.feature.properties.id).removeClass('isHovered');});
       });
     }
   ).fail(function(err) {
