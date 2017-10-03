@@ -12,8 +12,6 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
 {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
-var TYPEICONS={'conflict':'CONFLICT-47.svg', 'epidemiological':'EPIDEMIC-44.svg' , 'search_and_rescue':'SEARCH_AND_RESCUE-48.svg', 'displacement':'DISPLACEMENT-46.svg','malnutrition':'MALNUTRITION-45.svg' };
-
 /**
 * Function to get all events from the API
 * @param {Function} callback - Function to call once data returned
@@ -89,24 +87,6 @@ function onEachFeature(feature, layer) {
   layer.bindPopup(popupContent);
 }
 
-  // MSF Icons
-  function  getEventIcon(typeKey) {
-    var iconFile='msf_icon.png';
-    var iconSize=39;
-    if (TYPEICONS[typeKey]) {
-      iconFile='icons/event_types/'+TYPEICONS[typeKey];
-      iconSize=78;
-    }
-
-    return L.icon({
-      iconUrl: ('/resources/images/'+iconFile),
-
-      iconSize:     [iconSize, iconSize], // size of the icon
-      //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-      //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-  }
-
   /**
   * Function to print a table of events
   * @param {Object} events - GeoJSON Object containing event details
@@ -118,6 +98,8 @@ function onEachFeature(feature, layer) {
         return L.marker(latlng, {icon: L.icon({
           iconUrl: '/resources/images/icons/event_types/open_event.svg',
           iconSize:     [50, 50], // size of the icon
+          iconAnchor: [25, 50],
+          popupAnchor: [0, -40]
           //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
           //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
         })});
@@ -140,10 +122,10 @@ function onEachFeature(feature, layer) {
   };
 
   /**
-  * Function to map from hazard summary to hazard icon
+  * Function to map from PDC hazard summary to PDC hazard icon
   * @param {String} hazardSummary - hazard summary
   **/
-  var hazardIcon = function(hazardSummary) {
+  var PDCHazardIcon = function(hazardSummary) {
     var iconUrl = '/resources/images/hazards/';
     iconUrl += hazardSummary.split(' ')[0].toLowerCase() + '_' +
       hazardSummary.split(' ')[1].toLowerCase().replace(/(\(|\))/g,'') +
@@ -151,7 +133,7 @@ function onEachFeature(feature, layer) {
 
     return L.icon({
       "iconUrl": iconUrl,
-      iconSize:     [39, 39], // size of the icon
+      iconSize:     [39, 39] // size of the icon
       //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
       //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
@@ -159,26 +141,210 @@ function onEachFeature(feature, layer) {
   };
 
   /**
-  * Function to add hazards to map
-  * @param {Object} hazards - GeoJson FeatureCollection containing hazard points
+  * Function to add PDC hazards to map
+  * @param {Object} hazards - GeoJson FeatureCollection containing PDC hazard points
   **/
-  var mapHazards = function(hazards){
+  var mapPDCHazards = function(hazards){
     function onEachFeature(feature, layer) {
       var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
 
       layer.bindPopup(popupContent);
     }
 
-    var hazardsLayer = L.geoJSON(hazards, {
+    var PDCHazardsLayer = L.geoJSON(hazards, {
       pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: hazardIcon(feature.properties.summary)});
+        return L.marker(latlng, {icon: PDCHazardIcon(feature.properties.summary)});
       },
       onEachFeature: onEachFeature
     });
-    hazardsLayer.addTo(landingMap);
-    layerControl.addOverlay(hazardsLayer, 'PDC Hazards');
+
+    PDCHazardsLayer.addTo(landingMap);
+    layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'Hazards');
 
   };
+
+  /*
+  * Function to add TSR hazards to map
+  * @param {Object} hazards - GeoJson FeatureCollection containing TSR hazard points
+  **/
+  var mapTSRHazards = function(hazards){
+    function onEachFeature(feature, layer) {
+      var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
+
+      layer.bindPopup(popupContent);
+    }
+
+    var TSRHazardsLayer = L.geoJSON(hazards, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, L.icon({
+          iconUrl: '/resources/images/icons/event_types/typhoon.svg',
+          iconSize: [39, 39]
+        }));
+      },
+      onEachFeature: onEachFeature
+    });
+
+    TSRHazardsLayer.addTo(landingMap);
+    layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'Hazards');
+
+  };
+
+  /*
+  * Function to add PTWC hazards to map
+  * @param {Object} hazards - GeoJson FeatureCollection containing PTWC hazard points
+  **/
+  var mapPTWCHazards = function(hazards){
+    function onEachFeature(feature, layer) {
+      var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
+
+      layer.bindPopup(popupContent);
+    }
+
+    var PTWCHazardsLayer = L.geoJSON(hazards, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, L.icon({
+          iconUrl: '/resources/images/icons/event_types/tsunami.svg',
+          iconSize: [39, 39]
+        }));
+      },
+      onEachFeature: onEachFeature
+    });
+
+    PTWCHazardsLayer.addTo(landingMap);
+    layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'Hazards');
+
+  };
+
+  /**
+  * Function to map from GDACS hazard summary to GDACS hazard icon
+  * @param {String} hazardSummary - hazard summary
+  **/
+  var GDACSHazardIcon = function(GDACSProperties) {
+    var iconUrl = '/resources/images/hazards/';
+
+    switch(GDACSProperties.type) {
+      case "EQ":
+        iconUrl += 'earthquake_';
+        break;
+      case "TC":
+        iconUrl += 'cyclone_';
+        break;
+      default:
+        console.log("error in GDACS data");
+    }
+    switch(GDACSProperties.level) {
+      case "green":
+        iconUrl += 'advisory.svg';
+        break;
+      case "yellow":
+        iconUrl += 'watch.svg';
+        break;
+      case "red":
+        iconUrl += 'warning.svg';
+        break;
+      default:
+        console.log("error in GDACS data");
+    }
+
+
+    return L.icon({
+      "iconUrl": iconUrl,
+      iconSize:     [39, 39] // size of the icon
+      //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+      //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+    });
+
+  };
+
+  /*
+  * Function to add GDACS hazards to map
+  * @param {Object} hazards - GeoJson FeatureCollection containing GDACS hazard points
+  **/
+  var mapGDACSHazards = function(hazards){
+    function onEachFeature(feature, layer) {
+      var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
+
+      layer.bindPopup(popupContent);
+    }
+
+    var GDACSHazardsLayer = L.geoJSON(hazards, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, {icon: GDACSHazardIcon(feature.properties)});
+      },
+      onEachFeature: onEachFeature
+    });
+
+    GDACSHazardsLayer.addTo(landingMap);
+    layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'Hazards');
+
+  };
+
+  /*
+  * Function to add USGS hazards to map
+  * @param {Object} hazards - GeoJson FeatureCollection containing USGS hazard points
+  **/
+  var mapUSGSHazards = function(hazards){
+    function onEachFeature(feature, layer) {
+      var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
+
+      layer.bindPopup(popupContent);
+    }
+
+    var USGSHazardsLayer = L.geoJSON(hazards, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, L.icon({
+          iconUrl: '/resources/images/icons/event_types/earthquake.svg',
+          iconSize: [39, 39]
+        }));
+      },
+      onEachFeature: onEachFeature
+    });
+
+    USGSHazardsLayer.addTo(landingMap);
+    layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'Hazards');
+
+  };
+
+  function openHazardPopup(id)
+  {
+
+      switch(id.split('-',1)[0]) {
+        case "USGS":
+          USGSHazardsLayer.eachLayer(function(layer){
+            if (layer.feature.properties.id == id)
+             layer.openPopup();
+          });
+          break;
+        case "PDC":
+          PDCHazardsLayer.eachLayer(function(layer){
+            if (layer.feature.properties.id == id)
+             layer.openPopup();
+          });
+          break;
+        case "TSR":
+          TSRHazardsLayer.eachLayer(function(layer){
+            if (layer.feature.properties.id == id)
+             layer.openPopup();
+          });
+          break;
+        case "PTWC":
+          PTWCHazardsLayer.eachLayer(function(layer){
+            if (layer.feature.properties.id == id)
+             layer.openPopup();
+          });
+          break;
+        case "GDACS":
+          GDACSHazardsLayer.eachLayer(function(layer){
+            if (layer.feature.properties.id == id)
+             layer.openPopup();
+          });
+          break;
+        default:
+          console.log("Hazards layer not found");
+
+      }
+  };
+
 
   /**
   * Function to get contacts
@@ -207,12 +373,12 @@ function onEachFeature(feature, layer) {
     });
   };
 
-  var mapFeeds = function(feeds) {
+  var tableFeeds = function(feeds) {
     for(var i = 0; i <= feeds.features.length; i++) {
       var feature = feeds.features[i];
       if (feature) {
         $('#rssFeeds').append(
-          '<div class="list-group-item">' +
+          '<div class="list-group-item" onclick="openHazardPopup('+feature.properties.id+')">' +
           'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
           'Updated: ' + feature.properties.updated + '<br>' +
           'Summary: ' + feature.properties.summary.trim() + '<br>' +
@@ -253,9 +419,9 @@ function onEachFeature(feature, layer) {
       iconUrl: '/resources/images/icons/event_types/historical.svg',
 
       iconSize:     [50, 50], // size of the icon
-      opacity: 0.8
-      //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-      //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+      opacity: 0.8,
+      iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
+      popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
     var missionsLayer = L.geoJSON(missions, {
@@ -334,17 +500,29 @@ function onEachFeature(feature, layer) {
     "Satellite" : mapboxSatellite
   };
 
+  var groupedOverlays = {
+    "Hazards": {},
+  };
+
+  var baseLayers = {};
+
+  var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
   var overlayMaps = {};
 
-  var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(landingMap);
+  var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, groupOptions).addTo(landingMap);
 
   getAllEvents(mapAllEvents);
-  getPDCHazards(mapHazards);
+  getPDCHazards(mapPDCHazards);
+  getFeeds("/api/hazards/tsr",mapTSRHazards);
+//  getFeeds("/api/hazards/usgs",mapUSGSHazards);
+  getFeeds("/api/hazards/gdacs",mapGDACSHazards);
+//  getFeeds("/api/hazards/ptwc",mapPTWCHazards);
   getMissions(mapMissions);
   getContacts(mapContacts);
 
-  getFeeds("/api/hazards/usgs", mapFeeds);
-  getFeeds("/api/hazards/tsr", mapFeeds);
-  getFeeds("/api/hazards/gdacs", mapFeeds);
-  getFeeds("/api/hazards/ptwc", mapFeeds);
-  getPDCHazards(mapFeeds);
+  getFeeds("/api/hazards/usgs", tableFeeds);
+  getFeeds("/api/hazards/tsr", tableFeeds);
+  getFeeds("/api/hazards/gdacs", tableFeeds);
+  getFeeds("/api/hazards/ptwc", tableFeeds);
+  getPDCHazards(tableFeeds);

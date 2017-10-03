@@ -45,7 +45,7 @@ const TSR = () =>
             feature.properties["title"] = "Storm - " + storm + " in " + basin;
             let url = ($(tr[i]).find('td').eq(0).find('a').attr('href')).split('./');
             feature.properties["link"] = HOST + '/' + url[1];
-            feature.properties["id"] = url[1].split('.')[0];
+            feature.properties["id"] = "TSR-"+url[1].split('.')[0];
             feature.properties["updated"] = (new Date(updated)).toISOString();
             feature.properties["summary"] = "Wind: " + currentDataWind + " Category: " + currentDataCat;
 
