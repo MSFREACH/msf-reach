@@ -15,6 +15,7 @@ var eventReportLink;
 var currentEventProperties;
 var contactsLayer;
 var missionsLayer;
+var eventsMap;
 
 var zoomToEvent = function(latlng) {
   eventsMap.setView(latlng, 12);
@@ -272,7 +273,7 @@ var mapReports = function(reports){
   layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
 
   if (points.length > 0){
-    eventsMap.fitBounds(points);
+    eventsMap.fitBounds(points, {padding: [50,50]});
   }
 
 };

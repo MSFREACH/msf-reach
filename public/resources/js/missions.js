@@ -1,7 +1,7 @@
 function openMissionPopup(id) {
   missionsLayer.eachLayer(function(layer){
     if (layer.feature.properties.id == id)
-     layer.openPopup();
+     layer.openPopup(eventsMap.center);
   });
 }
 
