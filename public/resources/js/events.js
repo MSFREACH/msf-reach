@@ -14,6 +14,7 @@ var currentEventId;
 var eventReportLink;
 var currentEventProperties;
 var contactsLayer;
+var missionsLayer;
 
 var zoomToEvent = function(latlng) {
   eventsMap.setView(latlng, 12);
