@@ -33,7 +33,7 @@ const PDC = () => new Promise((resolve, reject) => {
             // extract properties
             feature.properties["title"] = event.title[0];
             feature.properties["link"] = event.link[0]['$']['href'];
-            feature.properties["id"] = event.id[0];
+            feature.properties["id"] = "PDC-"+event.id[0];
             feature.properties["updated"] = event.updated[0];
             feature.properties["summary"] = event.summary[0];
             // push feature to feature collection

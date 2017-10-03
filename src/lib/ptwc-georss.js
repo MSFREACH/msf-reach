@@ -41,6 +41,7 @@ const PTWC = () =>
             feature.properties["title"] = event.title[0];
             feature.properties["link"] = event.link[0];
             feature.properties["updated"] = event.pubDate[0];
+            feature.properties["id"] = "PTWC-" + event.guid[0]._;
             feature.properties["summary"] = "Tsunami warning";
 
             // push feature to feature collection

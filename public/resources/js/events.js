@@ -284,6 +284,7 @@ var mapReports = function(reports){
 **/
 var mapContacts = function(contacts){
 
+
   function onEachFeature(feature, layer) {
 
     var popupContent = '';
@@ -318,9 +319,11 @@ var mapContacts = function(contacts){
     },
     onEachFeature: onEachFeature
   });
+
+
   contactsLayer.addTo(eventsMap);
-  //commenting out for now as it keeps adding layers
-  //layerControl.addOverlay(contactsLayer, 'Contacts');
+
+  layerControl.addOverlay(ContactsLayer, 'Contacts');
 
 };
 
@@ -370,9 +373,9 @@ var mapMissions = function(missions ){
     iconUrl: '/resources/images/icons/event_types/historical.svg',
 
     iconSize:     [50, 50], // size of the icon
-    opacity: 0.8
-    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+    opacity: 0.8,
+    iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
   });
 
   missionsLayer = L.geoJSON(missions, {
@@ -381,8 +384,10 @@ var mapMissions = function(missions ){
     },
     onEachFeature: onEachFeature
   });
+
+  layerControl.addOverlay(missionsLayer, 'Missions');
+
   missionsLayer.addTo(eventsMap);
-  layerControl.addOverlay(missionsLayer, 'Mission Histories');
 };
 
 

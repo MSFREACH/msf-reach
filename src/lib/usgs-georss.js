@@ -38,7 +38,7 @@ const USGS = () =>
             // extract properties
             feature.properties["title"] = "Earthquake - " + event.title[0];
             feature.properties["link"] = event.link[0]["$"]["href"];
-            feature.properties["id"] = event.id[0];
+            feature.properties["id"] = "USGS-"+event.id[0];
             feature.properties["updated"] = event.updated[0];
             feature.properties["summary"] = event.summary[0]._.trim();
 
