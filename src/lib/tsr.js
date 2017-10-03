@@ -62,4 +62,4 @@ const TSR = () =>
       });
   });
 
-module.exports = { TSRMain };
+module.exports = { TSR };
