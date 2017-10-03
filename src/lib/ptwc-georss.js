@@ -3,7 +3,7 @@ import Promise from "bluebird";
 import { parseString } from "xml2js";
 import rp from "request-promise";
 
-const GDACS = () =>
+const PTWC = () =>
   new Promise((resolve, reject) => {
     var options = {
       uri: "http://ptwc.weather.gov/feeds/ptwc_rss_pacific.xml",
@@ -56,4 +56,4 @@ const GDACS = () =>
       });
   });
 
-module.exports = { GDACS };
+module.exports = { PTWC };
