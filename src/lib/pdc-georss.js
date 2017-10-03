@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 import {parseString} from 'xml2js';
 import http from 'http';
 
-const GeoRSS = () => new Promise((resolve, reject) => {
+const PDC = () => new Promise((resolve, reject) => {
   // GET PDC feed
   http.get({
     host: 'd2mxabrykbl1km.cloudfront.net',
@@ -49,4 +49,4 @@ const GeoRSS = () => new Promise((resolve, reject) => {
 
 })
 
-module.exports = {GeoRSS}
+module.exports = {PDC}
