@@ -48,6 +48,12 @@ $(function () {
 
  $('.form-navigation [id=createContact]').click(function(){
    navigateTo($sections.length - 1);
- })
+ });
+
+ $('#inputContactAff').change(function(){
+   console.log(this.value);
+   $('#divOtherAff').toggle(!this.value);
+   $('#divMSFFields').toggle(this.value == "Current MSF Staff");
+ });
 
 });
