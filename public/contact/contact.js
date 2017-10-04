@@ -1,7 +1,7 @@
 var doItOnce=true;
 $(function () {
   var $sections = $('.form-section');
-
+  var MAPSECTIONINDEX = 3;
   function navigateTo(index) {
     // Mark the current section with the class 'current'
     $sections
@@ -13,7 +13,7 @@ $(function () {
     var atTheEnd = index >= $sections.length - 2;
     $('.form-navigation .next').toggle(!atTheEnd);
     $('.form-navigation [id=createContact]').toggle(index ==  $sections.length - 2 );
-    if (index == 2 && doItOnce)
+    if (index == MAPSECTIONINDEX && doItOnce)
      {
        newContactMap.invalidateSize();
        newContactMap.locate({setView: true, maxZoom: 16});
@@ -34,7 +34,7 @@ $(function () {
   // Next button goes forward iff current block validates
   $('.form-navigation .next').on('click',function() {
       var cInd=curIndex();
-      if ((cInd==2)&&((!latlng)||(!$('#mapAddress').val())))
+      if ((cInd==MAPSECTIONINDEX)&&((!latlng)||(!$('#mapAddress').val())))
        {
          alert("Please enter an address to proceed.");
          return;

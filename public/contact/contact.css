@@ -96,6 +96,16 @@ html,body {
   }
 }
 
+.section-container{
+  height:90%;
+  position:relative;
+  overflow:scroll;
+  margin-bottom:5px;
+  margin-top:20px;
+  margin-left:10px;
+  margin-right:10px;
+}
+
 .form-section {
     display: none;
     height:100%;
