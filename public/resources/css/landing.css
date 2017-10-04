@@ -38,3 +38,10 @@ html, body { height: 100% }
 .isHovered{
   background-color: #f5f5f5;
 }
+
+.rss-item{
+  cursor: pointer;
+}
+.rss-item:hover{
+    background-color: #f5f5f5;
+}
