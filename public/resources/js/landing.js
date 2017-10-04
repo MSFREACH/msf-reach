@@ -313,10 +313,11 @@ function openHazardPopup(id)
       if (layer.feature.properties.id === id)
       layer.openPopup();
       console.log("DB" + layer.feature.properties.id);
-      layer.on('mouseover',function(e){$('#rssdiv'+layer.feature.properties.id).addClass('isHovered');});
-      layer.on('mouseout',function(e){$('#rssdiv'+layer.feature.properties.id).removeClass('isHovered');});
-      layer.on('touchstart',function(e){$('#rssdiv'+layer.feature.properties.id).addClass('isHovered');});
-      layer.on('touchend',function(e){$('#rssdiv'+layer.feature.properties.id).removeClass('isHovered');});
+      var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
+      layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
+      layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
+      layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
     });
     break;
     case "PDC":
