@@ -403,7 +403,7 @@ var tableFeeds = function(feeds) {
     var feature = feeds.features[i];
     if (feature) {
       $('#rssFeeds').append(
-        '<div id="rssdiv'+feature.properties.id+'" class="list-group-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
+        '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
         'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
         'Updated: ' + feature.properties.updated + '<br>' +
         'Summary: ' + feature.properties.summary.trim() + '<br>' +
