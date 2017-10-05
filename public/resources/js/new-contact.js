@@ -36,19 +36,19 @@ newContactMap.on('click', function(e) {
 });
 
 function postContact() {
-	var contName=$("#inputContactFirstName").val()+' '+$("#inputContactLastName").val()+' '+$("#inputContactOtherName").val();
+	var contName=($("#inputContactFirstName").val() || '')+' '+($("#inputContactLastName").val() || '')+' '+($("#inputContactOtherName").val() || '');
 	var body = {
 		"location":latlng,
 		"properties":{
 			"address": $('#mapAddress').val(),
-			"title": $("#inputContactTitle").val(),
+			"title": $("#inputContactTitle").val() || '',
 			"gender": $("#inputGender").val(),
 			"name": contName.trim(),
 			"speciality": $("#inputSpeciality").val() || '',
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
-			"OC": $("#inputContactOC").val(),
-			"employment": $("#inputContactMSFEmploy").val(),
-			"position": $("#inputContactMSFPosition").val(),
+			"OC": $("#inputContactOC").val() || '',
+			"employment": $("#inputContactMSFEmploy").val() || '',
+			"position": $("#inputContactMSFPosition").val() || '',
 			"dob":$("#datepicker").val(),
 			"cell":$("#inputContactCell").val() || '',
 			"home":$("#inputContactHome").val() || '',

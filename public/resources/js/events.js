@@ -289,13 +289,20 @@ var mapContacts = function(contacts){
 
     var popupContent = '';
 
+    var speciality = '';
+    if (typeof(feature.properties.properties.type) !== 'undefined' && feature.properties.properties.type.toUpperCase().includes('MSF')) {
+      speciality = '<br>speciality: ' +  (typeof(feature.properties.properties.speciality) === 'undefined'
+        ? ''
+        : feature.properties.properties.speciality);
+    }
+
     if (feature.properties && feature.properties.properties) {
       popupContent =
       'name: '+(typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name +
         '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
         '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
         '<br>affiliation: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-        '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+        speciality;
     }
 
     layer.bindPopup(popupContent);
