@@ -50,7 +50,7 @@ $(function(){
 				"location": latlng,
 				"metadata":{
 					"user": localStorage.getItem("username"),
-					"name": (sub_type != '' ? +sub_type : $('#selectType').val() ) + "_" + $("#inputEvDateTime").val(),
+					"name": (sub_type != '' ? sub_type : $('#selectType').val() ) + "_" + $("#inputEvDateTime").val(),
 					"sub_type": sub_type,
 					"event_datetime": $("#inputEvDateTime").val(),
 					"event_status": $("#inputEvStatus").val(),
