@@ -492,3 +492,7 @@ $('#btnSaveEdits').click(function(e){
     alert(err);
   });
 });
+
+var onEditEvent = function() {
+  $( "#eventModalBody" ).load( "/events/edit.html" );
+}

@@ -14,6 +14,8 @@
 
     <!-- Bootstrap -->
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/lib/bootstrap/plugins/datetimepicker/bootstrap-datetimepicker.min.css">
+    <link href="/resources/css/flexText.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -37,6 +39,9 @@
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
 
+    <!-- country selector -->
+    <link rel="stylesheet" href="/resources/css/countrySelect.min.css">
+
     <style type="text/css">
     .page-header {
         margin-top: 20px;
@@ -50,6 +55,7 @@
 
     dl dt, .form-group label {
         text-transform: uppercase;
+        font-size: 13px;
     }
 
     .bg-success {
@@ -78,13 +84,14 @@
     </div>
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">Edit Event</h4>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" id="eventModalBody">
+            <!-- WARNING: Contents on this modal will be replace with public/events/edit.html -->
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h3 class="panel-title">Name</h3>
@@ -270,6 +277,9 @@
           <div class="modal-body" id="missionModalBody">
             [modal content here]
           </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>          
         </div>
       </div>
     </div>
@@ -366,7 +376,7 @@
                   </div>
               </div>
           </div>
-              <button class="btn btn-primary" data-toggle="modal" data-target="#editModal">Edit</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="onEditEvent()">Edit</button>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">Archive</button>
         </div>
@@ -423,13 +433,22 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/lib/lodash.min.js"></script>
     <script src="/lib/async/async.min.js"></script>
+    <script src="/lib/moment.min.js"></script>
     <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/bootstrap/plugins/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="/lib/jquery/jquery.flexText.min.js"></script>
     <!-- Cookies -->
     <script src="/lib/cookie/js.cookie-2.1.4.min.js"></script>
     <!--Twitter-->
     <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+    <script src="/lib/countrySelect.min.js"></script>
+
+    <!-- VueJs + plug-ins -->
+    <script src="/lib/vue/vue.min.js"></script>
+    <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
 
     <!-- Get query parameter from URL -->
     <!-- Ask the server for reports from specific event -->
