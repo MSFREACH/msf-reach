@@ -16,6 +16,17 @@ var loadContacts = function(err, contacts) {
     );
 
     $.each(contacts, function(key, value) {
+
+      var speciality = '';
+      if (typeof(value.properties.properties.type) !== 'undefined' && value.properties.properties.type.toUpperCase().includes('MSF')) {
+
+        speciality = (typeof(value.properties.properties.speciality) === 'undefined'
+          ? ''
+          : value.properties.properties.speciality);
+
+      }
+
+
       // console.log(key, value);
       $("#contactsTable").append(
         "<tr id='crow"+value.properties.id+"' class='cursorPointer' onclick='openContactPopup("+value.properties.id+")'><td><a data-toggle='modal' data-target='#contactDetailsModal' href='#' onclick='onContactLinkClick(" +
@@ -42,10 +53,8 @@ var loadContacts = function(err, contacts) {
           (typeof value.properties.properties.type === "undefined"
             ? ""
             : value.properties.properties.type) +
-          "</td><td>" +
-          (typeof value.properties.properties.speciality === "undefined"
-            ? ""
-            : value.properties.properties.speciality) +
+          "</td><td>" + speciality +
+
           "</td></tr>"
       );
     });
