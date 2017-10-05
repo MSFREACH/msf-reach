@@ -21,8 +21,11 @@ dd.padding-bottom {
   <div class="row">
     <div class="col-sm-5">
       <div class="row">
-        <div class="col-sm-12">[map here]</div>
         <div class="col-sm-12">
+          <dl>
+            <dt>Precise location of the emergency</dt>
+            <dd></dd>
+          </dl>
           <dl>
             <dt>Event Name</dt>
             <dd>
@@ -418,12 +421,12 @@ dd.padding-bottom {
         <div class="panel panel-default">
           <div class="panel-heading" role="tab" id="headingFive">
             <h4 class="panel-title">
-              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                 MSF Resources
               </a>
             </h4>
           </div>
-          <div id="collapseFive" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFive">
+          <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
             <ul class="list-group">
               <li class="list-group-item">
                 <dl>
@@ -565,22 +568,30 @@ dd.padding-bottom {
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingSix">
           <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
               Reflection and comments
             </a>
           </h4>
         </div>
-        <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-          <div class="panel-body">
-            <dl>
-              <dt>Practical Details / Recommendations</dt>
-              <dd></dd>
-            </dl>
-            <dl>
-              <dt>Reflection / Comments on intervention</dt>
-              <dd></dd>
-            </dl>
-          </div>
+        <div id="collapseSix" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSix">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <dl>
+                <dt>Practical Details / Recommendations</dt>
+                <dd>
+                  <textarea v-model.trim="event.metadata.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control"></textarea>
+                </dd>
+              </dl>
+            </li>
+            <li class="list-group-item">
+              <dl>
+                <dt>Reflection / Comments on intervention</dt>
+                <dd>
+                  <textarea v-model.trim="event.metadata.msf_ref_com_reflection_comments" placeholder="Description" class="form-control"></textarea>
+                </dd>
+              </dl>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -618,6 +629,10 @@ Vue.filter('relaceUnderscore', function(value) {
   return value.replace(/_/g, " ");
 });
 
+/**
+ * Default event needed to make it reactive
+ * @type {Object}
+ */
 var defaultEvent = {
   id: null,
   status: null,
@@ -705,6 +720,11 @@ var defaultEvent = {
     msf_resource_institutional_donors: null,
     /* MSF Resources >> */
 
+    /* << Reflection and comments */
+    msf_ref_com_practical_details_recomm: null,
+    msf_ref_com_reflection_comments: null,
+    /* Reflection and comments >> */
+
     capacity: null,
     user_edit: null,
     deployment: null,
@@ -731,7 +751,7 @@ var emergencies = [
   { value: "displacement", text: "Displacement" },
   { value: "malnutrition", text: "Malnutrition" },
   { value: "search_and_rescue", text: "Search and Rescue" },
-  { value: "others", text: "Others" }
+  { value: "other_emergencies", text: "Others" }
 ];
 
 var emergenciesWithTypes = [{
@@ -743,7 +763,7 @@ var emergenciesWithTypes = [{
     { value: "flood", text: "Flood" },
     { value: "tsunami", text: "Tsunami" },
     { value: "drought", text: "Drought" },
-    { value: "others", text: "Others" }
+    { value: "other_natural_disaster", text: "Others" }
   ]
 }, {
   emergency: "Disease outbreak",
@@ -755,7 +775,7 @@ var emergenciesWithTypes = [{
     { value: "measles", text: "Measles" },
     { value: "meningococcal_meningitis", text: "Meningococcal Meningitis" },
     { value: "yellow_fever", text: "Yellow Fever" },
-    { value: "others", text: "Others" },
+    { value: "other_disease_outbreak", text: "Others" },
   ]
 }];
 
