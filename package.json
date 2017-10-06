@@ -39,7 +39,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "api-error-handler": "^1.0.0",
-    "apicache": "^1.1.0",
+    "apicache": "^0.10.0",
     "aws-sdk": "^2.128.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
