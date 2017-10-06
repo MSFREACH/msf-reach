@@ -148,11 +148,13 @@ var printEventProperties = function(err, eventProperties){
 * @returns {String} err - Error message if any, else none
 * @returns {Object} eventProperties - Event properties unless error
 */
+var currentEventGeometry = null;
 var getEvent = function(eventId, callback){
   $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Zoom to location
     zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]]);
     // Print output to page
+    currentEventGeometry = data.result.features[0].geometry;
     callback(null, data.result.features[0].properties);
   }).fail(function(err) {
     // Catch condition where no data returned
@@ -494,5 +496,5 @@ $('#btnSaveEdits').click(function(e){
 });
 
 var onEditEvent = function() {
-  $( "#eventModalBody" ).load( "/events/edit.html" );
+  $( "#eventModalContent" ).load( "/events/edit.html" );
 }
