@@ -1,0 +1,910 @@
+<style type="text/css">
+.category-of-emergency,
+.type-of-programmes,
+.operational-centers {
+  padding-left: 15px;
+}
+
+.type-of-emergency {
+  padding-left: 30px;
+}
+
+dd.padding-bottom {
+  padding-bottom: 5px;
+}
+
+.flex-text-wrap pre {
+  padding: 5px;
+}
+</style>
+<section id="editMissionVue">
+  <div class="row">
+    <div class="col-sm-5">
+      <div class="row">
+        <div class="col-sm-12">
+          <dl>
+            <dt>Precise location of the emergency</dt>
+            <dd></dd>
+          </dl>
+          <dl>
+            <dt>Event Name</dt>
+            <dd>
+              <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" />
+            </dd>
+          </dl>
+          <dl>
+            <dt>Open Date of event</dt>
+            <dd>{{ event.metadata.event_datetime | formatFullDate }}</dd>
+          </dl>
+          <dl>
+            <dt>Status</dt>
+            <dd class="padding-bottom">
+              <select v-model="event.metadata.event_status" class="form-control">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+              </select>
+            </dd>
+            <dd>
+              <date-picker v-model="event.metadata.event_status_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Date on status update"></date-picker>
+            </dd>
+          </dl>
+          <dl>
+            <dt>Type of Emergency (nature)</dt>
+            <dd>
+              <!-- emergencies -->
+              <div v-for="item in emergencies" class="category-of-emergency">
+                <label>
+                  <input type="checkbox" :value="item.value" v-model="event.metadata.type_of_emergency" /> {{ item.text }}
+                </label>
+              </div>
+              <div v-for="item in emergenciesWithTypes">
+                <strong class="category-of-emergency">{{item.emergency}}</strong>
+                <div v-for="type in item.types" class="type-of-emergency">
+                  <label>
+                    <input type="checkbox" :value="type.value" v-model="event.metadata.type_of_emergency" /> {{ type.text }}
+                  </label>
+                </div>
+              </div>
+            </dd>
+          </dl>
+          <dl>
+            <dt>Date and hours (local time) of the disaster</dt>
+            <dd>
+              <date-picker v-model="event.metadata.event_local_time"></date-picker>
+            </dd>
+          </dl>
+          <dl>
+            <dt>Mission Contact Person</dt>
+            <dd class="padding-bottom">
+              <input type="text" class="form-control" v-model="event.metadata.mission_contact_person.position" placeholder="Position" />
+            </dd>
+            <dd class="padding-bottom">
+              <input type="text" class="form-control" v-model="event.metadata.mission_contact_person.name" placeholder="Name" />
+            </dd>
+            <dd class="padding-bottom">
+              <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+            </dd>
+            <dd class="padding-bottom">
+              <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+            </dd>
+          </dl>
+          <dl>
+            <dt>Main results of the explo-event</dt>
+            <dd>
+              <textarea v-model.trim="event.metadata.mission_results" placeholder="Main results" class="form-control"></textarea>
+            </dd>
+          </dl>
+          <dl>
+            <dt>Analysis of severity</dt>
+            <dd class="padding-bottom">
+              <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
+            </dd>
+            <dd class="padding-bottom">
+              <input type="range" min="1" max="10" step="1" v-model="event.metadata.severity_scale" class="pull-right" style="width: 75%" />
+              <span class="pull-left">Scale: {{event.metadata.severity_scale}}</span>
+            </dd>
+          </dl>
+          <div class="clearfix">&nbsp;</div>
+          <dl>
+            <dt>Security information</dt>
+            <dd>
+              <textarea v-model.trim="event.metadata.security_details" placeholder="Security details" class="form-control"></textarea>
+            </dd>
+          </dl>
+          <dl>
+            <dt>ID link - SharePoint</dt>
+            <dd>
+              <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint link" />
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-7">
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                MSF Response
+              </a>
+            </h4>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>MSF response / type of programmes</dt>
+                  <dd>
+                    <div v-for="item in msfTypeOfProgrammes" class="type-of-programmes">
+                      <label>
+                        <input type="checkbox" :value="item.value" v-model="event.metadata.msf_response_types_of_programmes" /> {{ item.text }}
+                      </label>
+                    </div>
+                  </dd>
+                  <dd>
+                    <textarea v-model="event.metadata.msf_response" placeholder="MSF response" class="form-control"></textarea>
+                    <div class="clearfix" style="padding-top: 5px;"></div>
+                    <input type="range" min="1" max="10" step="1" v-model="event.metadata.msf_response_scale" class="pull-right" style="width: 75%" />
+                    <span class="pull-left">Scale: {{event.metadata.msf_response_scale}}</span>
+                  </dd>
+                </dl>
+                <div class="clearfix"></div>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Start Date of the MSF response</dt>
+                  <dd>
+                    <date-picker v-model="event.metadata.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>End Date of the MSF response</dt>
+                  <dd>
+                    <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Location of MSF response</dt>
+                  <dd>[map here]</dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Operational Center</dt>
+                  <dd>
+                    <div v-for="item in msfOperationalCenters" class="operational-centers">
+                      <label>
+                        <input type="checkbox" :value="item" v-model="event.metadata.msf_response_operational_centers" /> {{ item }}
+                      </label>
+                    </div>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-sm-5">
+                    <dl>
+                      <dt>Medical material:</dt>
+                      <dd>
+                        <div v-for="item in msfOperationalCenters" class="operational-centers">
+                          <label>
+                            <input type="checkbox" :value="item" v-model="event.metadata.msf_response_medical_material" /> {{ item }}
+                          </label>
+                        </div>
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="col-sm-3">
+                    <dl>
+                      <dt>Total</dt>
+                      <dd>
+                        <input type="number" v-model.number="event.metadata.msf_response_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="col-sm-4">
+                    <dl>
+                      <dt>Date of arrival</dt>
+                      <dd>
+                        <date-picker v-model="event.metadata.msf_response_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-sm-5">
+                    <dl>
+                      <dt>Non Medical material:</dt>
+                      <dd>
+                        <div v-for="item in msfOperationalCenters" class="operational-centers">
+                          <label>
+                            <input type="checkbox" :value="item" v-model="event.metadata.msf_response_non_medical_material" /> {{ item }}
+                          </label>
+                        </div>
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="col-sm-3">
+                    <dl>
+                      <dt>Total</dt>
+                      <dd>
+                        <input type="number" v-model.number="event.metadata.msf_response_non_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="col-sm-4">
+                    <dl>
+                      <dt>Date of arrival</dt>
+                      <dd>
+                        <date-picker v-model="event.metadata.msf_response_non_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingTwo">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                External Capacity
+              </a>
+            </h4>
+          </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>Analysis of capacity on the ground</dt>
+                  <dd>
+                    <label>
+                      <input type="radio" value="medical" v-model="event.metadata.ext_capacity_type_in_ground" /> Medical
+                    </label>
+                    <label>
+                      <input type="radio" value="non_medical" v-model="event.metadata.ext_capacity_type_in_ground" /> Non-Medical
+                    </label>
+                  </dd>
+                  <dd class="padding-bottom">
+                    <textarea v-model.trim="event.metadata.ext_capacity_by_government" placeholder="Government capacity" class="form-control"></textarea>
+                  </dd>
+                  <dd class="padding-bottom">
+                    <textarea v-model.trim="event.metadata.ext_capacity_by_humanitarian" placeholder="Humanitarian" class="form-control"></textarea>
+                  </dd>
+                  <dd class="padding-bottom">
+                    <textarea v-model.trim="event.metadata.ext_capacity_action_plan" placeholder="Action plan" class="form-control"></textarea>
+                  </dd>
+                  <dd class="padding-bottom">
+                    <input type="text" v-model="event.metadata.ext_capacity_who" class="form-control" placeholder="Who" />
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <header>OTHER ORGANIZATIONS, PARTNERS INVOLVED</header>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>NGO</th>
+                          <th>Deployment</th>
+                          <th>Arrival</th>
+                          <th>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in event.metadata.ext_other_organizations">
+                          <td>
+                            <input type="text" class="form-control" v-model="item.name" />
+                          </td>
+                          <td>
+                            <input type="text" class="form-control" v-model.number="item.deployment" />
+                          </td>
+                          <td>
+                            <date-picker v-model="item.arrival_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-xs btn-danger" v-on:click="removeOtherOrg(index)">X</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="4">
+                            <button type="button" class="btn btn-xs btn-succes" v-on:click="addOtherOrg">Add more organization</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Key Figures
+              </a>
+            </h4>
+          </div>
+          <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>Figures</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div v-if="event.metadata.keyMSFFigures.length === 0">
+                          <div class="well">No MSF Figure yet.</div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div v-for="(item, index) in event.metadata.keyMSFFigures">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <button class="btn btn-xs btn-danger" @click="removeMSFfigure(item, index)">X</button>
+                            </div>
+                            <div class="col-sm-10">
+                              <input type="range" min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
+                            </div>
+                            <div class="col-sm-12">
+                              <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
+                              <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                                <input type="text" v-model="item.description" class="form-control" placeholder="Please Specify" />
+                              </div>
+                            </div>
+                          </div>
+                          <hr/>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div v-for="(item, index) in keyMSFFigures">
+                          <a href="#" @click="addSelectedMSFfigures(item)"><i class="glyphicon glyphicon-ok" /> {{ item | relaceUnderscore }}</a>
+                        </div>
+                      </div>
+                    </div>
+                  </dd>
+                  <dd>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Population in total for zone impacted</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <input type="number" class="form-control" v-model.number="event.metadata.population_total" v-on:change="calculatePercentagePeopleAffected" placeholder="Total population" />
+                      </div>
+                      <div class="col-sm-8">
+                        <textarea v-model.trim="event.metadata.population_total_description" placeholder="Description" class="form-control"></textarea>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Population affected</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.population_affected" v-on:change="calculatePercentagePeopleAffected" placeholder="Affected population" />
+                      </div>
+                      <div class="col-sm-8">
+                        <textarea v-model.trim="event.metadata.population_affected_description" placeholder="Description" class="form-control"></textarea>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Percentage of people affected</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-xs-4">
+                        <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.percentage_population_affected" placeholder="Affected population" />
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingFour">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                MSF Resources
+              </a>
+            </h4>
+          </div>
+          <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>Staffs list _ Human resources supply</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_resource_staff_list" placeholder="Contact(s)" class="form-control"></textarea>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Exapt</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_resource_staff_exapt" placeholder="Contact(s)" class="form-control"></textarea>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>National staff</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item hidden">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <dl>
+                      <dt>When were they hired by MSF?</dt>
+                      <dd>
+                        <date-picker v-model="event.metadata.msf_resource_hired_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Hired date"></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="col-sm-6">
+                    <dl>
+                      <dt>When do they arrive on the ground?</dt>
+                      <dd>
+                        <date-picker v-model="event.metadata.msf_resource_arrive_to_ground" :config="{format: 'YYYY-MM-DD'}" placeholder="Arrive to ground date"></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+                <dl>
+                  <dt>Category</dt>
+                  <dd>
+                    <select v-model="event.metadata.msf_resource_category" class="form-control">
+                      <option disabled value="">Please select one</option>
+                      <option v-for="item in msfResourceCategories" :value="item">{{ item | relaceUnderscore }}</option>
+                    </select>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Name</dt>
+                  <dd></dd>
+                </dl>
+                <dl>
+                  <dt>Function</dt>
+                  <dd></dd>
+                </dl>
+                <dl>
+                  <dt>Contact number</dt>
+                  <dd></dd>
+                </dl>
+                <dl>
+                  <dt>Comments/Evaluation</dt>
+                  <dd></dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Visa requirement</dt>
+                  <dd>
+                    <label>Nationality</label>
+                    <input type="text" class="form-control input-sm" id="nationality1" @change="updateSelectedCountry" v-model="event.metadata.msf_resource_visa_requirement.name">
+                  </dd>
+                  <dd>
+                    <label>Required:</label>
+                    <label>
+                      <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="yes"> Yes
+                    </label>
+                    <label>
+                      <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="no"> No
+                    </label>
+                  </dd>
+                  <dd>
+                    <label>Description:</label>
+                    <textarea v-model.trim="event.metadata.msf_resource_visa_requirement.description" placeholder="Specify" class="form-control"></textarea>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Budget</dt>
+                  <dd>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Amount</th>
+                          <th>From who</th>
+                          <th>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in event.metadata.msf_resource_budget">
+                          <td>
+                            <input type="text" class="form-control" v-model="item.amount" />
+                          </td>
+                          <td>
+                            <input type="text" class="form-control" v-model.number="item.from_who" />
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-xs btn-danger" v-on:click="removeResourceBudget(index)">X</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="4">
+                            <button type="button" class="btn btn-xs btn-succes" v-on:click="addResourceBudget">Add more budget</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Institutional Donors</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_resource_institutional_donors" placeholder="Donors" class="form-control"></textarea>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingFive">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                Reflection and comments
+              </a>
+            </h4>
+          </div>
+          <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>Practical Details / Recommendations</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control"></textarea>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Reflection / Comments on intervention</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_ref_com_reflection_comments" placeholder="Description" class="form-control"></textarea>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+<script type="text/javascript">
+Vue.component("date-picker", VueBootstrapDatetimePicker.default);
+
+Vue.filter('formatDateOnly', function(value) {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD');
+  }
+});
+
+Vue.filter('formatFullDate', function(value) {
+  if (value) {
+    return moment(value).format('LLL');
+  } else {
+    return "N/A";
+  }
+});
+
+Vue.filter('formatedNumber', function(value) {
+  return value.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+});
+
+Vue.filter('relaceUnderscore', function(value) {
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  value = capitalizeFirstLetter(value);
+  value = value.replace(/__/g, "-");
+  return value.replace(/_/g, " ");
+});
+
+/**
+ * Default event needed to make it reactive
+ * @type {Object}
+ */
+var defaultEvent = {
+  id: null,
+  status: null,
+  type: null,
+  created: null,
+  reportkey: null,
+  metadata: {
+    /* << Basic Info */
+    name: null,
+    user: null,
+    event_status: "",
+    event_status_date: null,
+    event_datetime: null,
+    event_datetime_closed: null,
+    event_local_time: null,
+    type_of_emergency: [], // Type of Emergency (nature)
+    mission_contact_person: {
+      position: null,
+      name: null,
+      arrival_time: null,
+      departure_time: null,
+    },
+    mission_results: null,
+    severity: null,
+    severity_scale: 1,
+    security_details: null,
+    sharepoint_link: null,
+    /* Basic Info >> */
+
+    /* << MSF Response */
+    msf_response_types_of_programmes: [],
+    msf_response: null,
+    msf_response_scale: 1,
+    start_date_msf_response: null,
+    end_date_msf_response: null,
+    total_days_msf_response: 1, // Total days of activities
+    msf_response_operational_centers: [],
+    msf_response_medical_material: [],
+    msf_response_medical_material_total: 0,
+    msf_response_medical_material_date_arrival: null,
+    msf_response_non_medical_material: [],
+    msf_response_non_medical_material_total: 0,
+    msf_response_non_medical_material_date_arrival: null,
+    /* MSF Response >> */
+
+    /* << External Capacity */
+    ext_capacity_type_in_ground: null,
+    ext_capacity_by_government: null,
+    ext_capacity_by_humanitarian: null,
+    ext_capacity_action_plan: null,
+    ext_capacity_who: null,
+    ext_other_organizations: [{
+      name: null,
+      deployment: 0,
+      arrival_date: null,
+    }],
+    /* External Capacity >> */
+
+    /* << Key Figures */
+    keyMSFFigures: [],
+    population_total: 0,
+    population_total_description: null,
+    population_affected: 0,
+    population_affected_description: null,
+    percentage_population_affected: 0,
+    /* Key Figures >> */
+
+    /* << MSF Resources */
+    msf_resource_staff_list: null,
+    msf_resource_staff_exapt: null,
+    msf_resource_staff_national: null,
+    msf_resource_category: "",
+    msf_resource_visa_requirement: {
+      nationality: {
+        "iso2": "xx",
+        "name": null
+      },
+      is_required: "yes",
+      description: null,
+    },
+    msf_resource_budget: [{
+      amount: 0,
+      from_who: null,
+    }],
+    msf_resource_institutional_donors: null,
+    /* MSF Resources >> */
+
+    /* << Reflection and comments */
+    msf_ref_com_practical_details_recomm: null,
+    msf_ref_com_reflection_comments: null,
+    /* Reflection and comments >> */
+
+    capacity: null,
+    user_edit: null,
+    deployment: null,
+    other_orgs: null,
+    notification: null,
+    incharge_name: null,
+    medicalMaterials: null,
+    incharge_position: null,
+    operational_center: null,
+    exploratory_details: null,
+    nonMedicalMaterials: null,
+  }
+}
+
+var statuses = [
+  { value: "monitoring", text: 'Monitoring' },
+  { value: "exploration", text: "Exploration" },
+  { value: "ongoing", text: "Ongoing Intervention (MSF activity)" },
+  { value: "complete", text: "Complete" }
+];
+
+var emergencies = [
+  { value: "armed_conflict", text: "Armed Conflict" },
+  { value: "displacement", text: "Displacement" },
+  { value: "malnutrition", text: "Malnutrition" },
+  { value: "search_and_rescue", text: "Search and Rescue" },
+  { value: "other_emergencies", text: "Others" }
+];
+
+var emergenciesWithTypes = [{
+  emergency: "Natural disaster",
+  types: [
+    { value: "earthquake", text: "Earthquake" },
+    { value: "volcano", text: "Volcano" },
+    { value: "typhoon", text: "Typhoon" },
+    { value: "flood", text: "Flood" },
+    { value: "tsunami", text: "Tsunami" },
+    { value: "drought", text: "Drought" },
+    { value: "other_natural_disaster", text: "Others" }
+  ]
+}, {
+  emergency: "Disease outbreak",
+  types: [
+    { value: "cholera", text: "Cholera" },
+    { value: "ebola", text: "Ebola" },
+    { value: "dengue", text: "Dengue" },
+    { value: "malaria", text: "Malaria" },
+    { value: "measles", text: "Measles" },
+    { value: "meningococcal_meningitis", text: "Meningococcal Meningitis" },
+    { value: "yellow_fever", text: "Yellow Fever" },
+    { value: "other_disease_outbreak", text: "Others" },
+  ]
+}];
+
+var msfTypeOfProgrammes = [
+  { value: "primary_health_care", text: "Primary Health Care" },
+  { value: "secondary_health_care", text: "Secondary Health Care" },
+  { value: "tertiary_or_specialized_health_care", text: "Tertiary or specialized Health Care" },
+  { value: "nfi", text: "nfi" },
+  { value: "vaccination", text: "Vaccination" },
+  { value: "therapeutic_feeding", text: "Therapeutic Feeding" },
+  { value: "food_distribution", text: "Food Distribution" },
+  { value: "shelter", text: "Shelter" },
+  { value: "WAT-SAN", text: "WAT-SAN" },
+  { value: "mental_health", text: "Mental Health" },
+  { value: "sexual_reproductive_health", text: "Sexual Reproductive Health" },
+  { value: "others", text: "Others" },
+];
+
+var msfOperationalCenters = [
+  "OCA", "OCBA", "OCG", "OCB", "OCP"
+];
+
+var keyMSFFigures = [
+  "outpatient_cases",
+  "inpatient_cases",
+  "malaria_cases",
+  "ITFC",
+  "births_including_ceasarean_sections",
+  "major_surgical_interventions",
+  "SGBV_cases",
+  "individual_mental_health_consultations",
+  "group_counseling_or_mental_health_sessions",
+  "cholera_cases",
+  "measles_or_others_(be_specific)_vaccinations",
+  "measles_cases",
+  "meningitis_vaccinations",
+  "migrants_and_refugees_rescued_and_assisted_at_sea",
+  "dengue_cases",
+  "NFI_kits_distributed",
+  "shelter_kits_distributed",
+  "others",
+];
+
+var msfResourceCategories = [
+  "logistics",
+  "supply",
+  "medical_or_para__medical",
+  "watsan",
+  "admin_HR_fin",
+  "mental_health",
+  "others"
+];
+
+var vm = new Vue({
+  el: "#editMissionVue",
+  data: {
+    statuses: statuses,
+    emergencies: emergencies,
+    emergenciesWithTypes: emergenciesWithTypes,
+    msfTypeOfProgrammes: msfTypeOfProgrammes,
+    msfOperationalCenters: msfOperationalCenters,
+    keyMSFFigures: keyMSFFigures,
+    msfResourceCategories: msfResourceCategories,
+    event: $.extend(true, defaultEvent, currentEventProperties),
+    currentEvent: currentEventProperties
+  },
+  mounted: function() {
+    console.log("Vue already mounted.");
+    $('textarea').flexText();
+    this.calculatePercentagePeopleAffected();
+
+    var countryParams = {
+      "defaultCountry": "xx",
+      "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
+    };
+    $("#nationality1").countrySelect(countryParams);
+
+    $('.flag-dropdown').bind('click', function(e) {
+      var country = $("#nationality1").countrySelect("getSelectedCountryData");
+      console.log("country", country.name)
+      Vue.set(vm.event.metadata, 'msf_resource_visa_requirement', country);
+    });
+  },
+  methods: {
+    submitMissionData() {
+      console.log("Mission", this.event);
+    },
+    addOtherOrg() {
+      this.event.metadata.ext_other_organizations.push({
+        name: null,
+        deployment: 0,
+        arrival_date: null,
+      });
+    },
+    removeOtherOrg(index) {
+      this.event.metadata.ext_other_organizations.splice(index, 1);
+    },
+    calculatePercentagePeopleAffected() {
+      var percentage = (this.event.metadata.population_affected / this.event.metadata.population_total) * 100;
+      this.event.metadata.percentage_population_affected = percentage.toFixed(2);
+    },
+    updateFigureValue(item, i) {
+      this.event.metadata.keyMSFFigures[i].value = Math.pow(10, item.range);
+    },
+    addSelectedMSFfigures(item) {
+      var newItem = { value: 0, range: 0, category: item, description: null };
+      if (!_.find(this.event.metadata.keyMSFFigures, { category: item })) {
+        this.event.metadata.keyMSFFigures.push(newItem);
+        var index = this.keyMSFFigures.indexOf(item);
+        if (index > -1) {
+          this.keyMSFFigures.splice(index, 1);
+        }
+      }
+    },
+    removeMSFfigure(item, index) {
+      this.keyMSFFigures.push(item.category);
+      this.event.metadata.keyMSFFigures.splice(index, 1);
+    },
+    updateSelectedCountry() {
+      this.event.metadata.msf_resource_visa_requirement.nationality = $("#nationality1").countrySelect("getSelectedCountryData");
+    },
+    removeResourceBudget(index) {
+      this.event.metadata.msf_resource_budget.splice(index, 1);
+    },
+    addResourceBudget() {
+      this.event.metadata.msf_resource_budget.push({
+        amount: 0,
+        from_who: null,
+      });
+    }
+  },
+});
+</script>
