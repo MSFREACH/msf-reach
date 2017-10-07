@@ -240,29 +240,41 @@ textarea.valid:focus {
           <div class="panel-heading" role="tab" id="headingSix">
             <h4 class="panel-title">
               <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                Status
+                End Date of the MSF response
               </a>
             </h4>
           </div>
           <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <dl>
+                      <dt>Status</dt>
+                      <dd>
+                        <select v-model="event.metadata.event_status" class="form-control" required>
+                          <option disabled value="">Please select one</option>
+                          <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                        </select>
+                      </dd>
+                      <dd>
+                        <div class="clearfix">&nbsp;</div>
+                        <date-picker v-model="event.metadata.event_status_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Date on status update" required></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="col-sm-6">
+                    <dl>
+                      <dt>End Date of the MSF response</dt>
+                      <dd>
+                        <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+            </ul>
             <div class="panel-body">
-              <div class="row">
-                <div class="col-sm-12">
-                  <dl>
-                    <dt>Status</dt>
-                  </dl>
-                </div>
-                <div class="col-sm-6">
-                  <select v-model="event.metadata.event_status" class="form-control" required>
-                    <option disabled value="">Please select one</option>
-                    <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
-                  </select>
-                </div>
-                <div class="col-sm-6">
-                  <date-picker v-model="event.metadata.event_status_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Date on status update" required></date-picker>
-                </div>
-              </div>
-              <div class="clearfix">&nbsp;</div>
               <a href="#" class="btn btn-success pull-left previous">Previous</a>
               <button type="submit" class="btn btn-danger pull-right">Archive Event</button>
             </div>
@@ -313,6 +325,10 @@ var vm = new Vue({
   mounted: function() {
     console.log("Vue already mounted.");
 
+    this.event.metadata.end_date_msf_response = moment().format("YYYY-DD-MM");
+    this.event.metadata.event_status  = "complete";
+    this.event.metadata.event_status_date  = moment().format("YYYY-DD-MM");
+
     $('.previous').click(function(e) {
       e.preventDefault();
       var section = $(this).closest('.panel-collapse.collapse');
@@ -344,7 +360,12 @@ var vm = new Vue({
     var v = jQuery("#archiveEventForm").validate({
       submitHandler: function(form) {
         var metadata = vm.event.metadata;
-        metadata = _.extend(metadata, { managingOC: vm.event.metadata.msf_response_operational_centers.toString() });
+        metadata = _.extend(metadata, {
+          type: vm.event.type,
+          managingOC: vm.event.metadata.operational_center,
+          startDate: moment(vm.event.created).format("YYYY-DD-MM"),
+          finishDate: moment().format('YYYY-DD-MM'),
+        });
 
         var body = {
           status: "inactive",

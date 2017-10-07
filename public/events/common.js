@@ -16,7 +16,7 @@ var defaultEvent = {
 
     /* << Basic Info */
     name: null,
-    region: null,
+    region: "",
     startDate: null,
     finishDate: null,
     user: null,
@@ -26,6 +26,7 @@ var defaultEvent = {
     event_datetime_closed: null,
     event_local_time: null,
     type_of_emergency: [], // Type of Emergency (nature)
+    sub_type: null,
     incharge_position: null, // mission_contact_person.position
     incharge_name: null, // mission_contact_person.name
     mission_contact_person: {
@@ -66,11 +67,7 @@ var defaultEvent = {
     ext_capacity_by_humanitarian: null,
     ext_capacity_action_plan: null,
     ext_capacity_who: null,
-    ext_other_organizations: [{
-      name: null,
-      deployment: null,
-      arrival_date: null
-    }],
+    ext_other_organizations: [],
     other_orgs: null, // TODO: set to ext_other_organizations.name on edit
     deployment: null, // TODO: set to ext_other_organizations.deployment on edit
     /* External Capacity >> */

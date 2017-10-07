@@ -655,13 +655,17 @@ Vue.filter('formatedNumber', function(value) {
 });
 
 Vue.filter('relaceUnderscore', function(value) {
+  return replaceUnderscore(value);
+});
+
+var replaceUnderscore = function(value) {
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
   value = capitalizeFirstLetter(value);
   value = value.replace(/__/g, "-");
   return value.replace(/_/g, " ");
-});
+}
 
 var vm = new Vue({
   el: "#editEventVue",
@@ -678,6 +682,20 @@ var vm = new Vue({
   },
   mounted: function() {
     console.log("Vue already mounted.");
+
+    if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
+      var optCenter = this.event.metadata.operational_center;
+      this.event.metadata.msf_response_operational_centers.push(optCenter);
+    }
+
+    if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
+      this.event.metadata.ext_other_organizations.push({
+        name: this.event.metadata.other_orgs,
+        deployment: this.event.metadata.deployment,
+        arrival_date: null
+      });
+    }
+
     $('textarea').flexText();
     this.calculatePercentagePeopleAffected();
 
@@ -754,9 +772,19 @@ var vm = new Vue({
   },
   methods: {
     submitEventData() {
+      var metadata = this.event.metadata;
+      var subType = replaceUnderscore(this.event.metadata.type_of_emergency.toString());
+      metadata = _.extend(metadata, {
+        operational_center: this.event.metadata.msf_response_operational_centers.toString(),
+        sub_type: subType
+      });
       var body = {
         status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-        metadata: this.event.metadata,
+        metadata: metadata,
+        location: {
+          lat: currentEventGeometry.coordinates[1],
+          lng: currentEventGeometry.coordinates[0],
+        }
       }
       $.ajax({
         type: "PUT",
