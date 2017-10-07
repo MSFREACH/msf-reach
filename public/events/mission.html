@@ -328,7 +328,7 @@ var replaceUnderscore = function(value) {
 var vm = new Vue({
   el: "#missionDetailsVue",
   data: {
-    mission: missionData
+    mission: $.extend(true, defaultEvent, missionData)
   },
   mounted: function() {
     console.log("Vue already mounted.");
