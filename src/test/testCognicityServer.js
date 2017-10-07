@@ -183,7 +183,11 @@ describe('Cognicity Server Testing Harness', function() {
               "status":"inactive",
               "metadata":{
                 "updated_by":"integrated tester"
-              }
+              },
+              "location":{
+                "lat":45,
+                "lng":140
+              },
             })
             .expect(200)
             .expect('Content-Type', /json/)
