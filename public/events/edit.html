@@ -779,11 +779,7 @@ var vm = new Vue({
       });
       var body = {
         status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-        metadata: metadata,
-        location: {
-          lat: currentEventGeometry.coordinates[1],
-          lng: currentEventGeometry.coordinates[0],
-        }
+        metadata: metadata
       }
       $.ajax({
         type: "PUT",
