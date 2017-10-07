@@ -67,7 +67,8 @@
     <!-- Archive Modal -->
     <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content" id="archiveEventModalContent">
+          <!-- Warning this will be replace by /public/events/archive.html -->
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
@@ -378,7 +379,7 @@
           </div>
               <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="onEditEvent()">Edit</button>
               <!-- Button trigger modal -->
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal">Archive</button>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Archive</button>
         </div>
           <div id="tweets" class="tab-pane fade">
             <div class="row">
@@ -439,6 +440,7 @@
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="/lib/bootstrap/plugins/datetimepicker/bootstrap-datetimepicker.min.js"></script>
     <script src="/lib/jquery/jquery.flexText.min.js"></script>
+    <script src="/lib/jquery/jquery.validate.js"></script>
     <!-- Cookies -->
     <script src="/lib/cookie/js.cookie-2.1.4.min.js"></script>
     <!--Twitter-->

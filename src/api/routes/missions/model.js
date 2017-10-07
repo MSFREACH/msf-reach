@@ -52,5 +52,21 @@ export default (config, db, logger) => ({
 			.timeout(config.PGTIMEOUT)
 			.then(data => resolve(data))
 			.catch(err => reject(err));
-		})
+		}),
+        createMission: (body) => new Promise((resolve, reject) => {
+            // Setup query
+            let query = `INSERT INTO ${config.TABLE_MISSIONS}
+                    (properties, the_geom)
+                    VALUES ($1, ST_SetSRID(ST_Point($2,$3),4326))
+                    RETURNING id, properties, the_geom`;
+
+            // Setup values
+            let values = [body.metadata, body.location.lng, body.location.lat]
+
+            // Execute
+            logger.debug(query, values);
+            db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+              .then((data) => resolve({ id: data.id, metadata: body.metadata, the_geom: data.the_geom }))
+              .catch((err) => reject(err));
+        }),        
 	});

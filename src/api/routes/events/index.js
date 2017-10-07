@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 // Import our data model
 import events from './model';
+import missions from './../missions/model';
 
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
@@ -86,18 +87,35 @@ export default ({ config, db, logger }) => {
 			params: { id: Joi.number().integer().min(1).required() } ,
 			body: Joi.object().keys({
 				status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
-				metadata: Joi.object().required()
+				metadata: Joi.object().required(),
+				location: Joi.object().keys({
+					lat: Joi.number().min(-90).max(90).required(),
+					lng: Joi.number().min(-180).max(180).required()
+				}),
 			})
 		}),
 		(req, res, next) => {
 			events(config, db, logger).updateEvent(req.params.id, req.body)
-			.then((data) => handleGeoResponse(data, req, res, next))
-				.catch((err) => {
-					/* istanbul ignore next */
-					logger.error(err);
-					/* istanbul ignore next */
-					next(err);
-				})
+			.then((data) => {
+				if (req.body.status === "inactive") {
+					missions(config, db, logger).createMission(req.body)
+						.then((data) => handleGeoResponse(data, req, res, next))
+						.catch((err) => {
+							/* istanbul ignore next */
+							logger.error(err);
+							/* istanbul ignore next */
+							next(err);
+						});
+				} else {				
+					handleGeoResponse(data, req, res, next);
+				}
+			})
+			.catch((err) => {
+				/* istanbul ignore next */
+				logger.error(err);
+				/* istanbul ignore next */
+				next(err);
+			});
 		}
 	);
 
