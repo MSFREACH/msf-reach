@@ -498,3 +498,7 @@ $('#btnSaveEdits').click(function(e){
 var onEditEvent = function() {
   $( "#eventModalContent" ).load( "/events/edit.html" );
 }
+
+var onArchiveEvent = function() {
+  $( "#archiveEventModalContent" ).load( "/events/archive.html" );
+}
