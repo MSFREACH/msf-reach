@@ -67,27 +67,13 @@ var getMissions = function(term) {
 };
 
 var missionData = {};
+var missionCoordinates = {};
 var onMissionLinkClick = function(id) {
-  async.waterfall([
-    function(callback) {
-      // Load Mission Details template to BT Modal 1st
-      $( "#missionModalBody" ).load( "/resources/tpl/missions/details.html" );
-      callback();
-    },
-    function(callback) {
-      $.getJSON("/api/missions/" + id, function(data) {
-        missionData = data.result ? data.result.properties : {};
-        _(missionData).forIn(function(value, key) {
-          console.log("Key:", key, "Value:", value);
-          // if (key === "nationality1" || key === "nationality2") {
-          //   value = value.name;
-          // }
-          $("span.event-" + key).html(value);
-        });
-        callback();
-      });
-    }
-  ]);
+  $.getJSON("/api/missions/" + id, function(data) {
+    missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
+    missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
+    $( "#missionModalBody" ).load( "/events/mission.html" );
+  });  
 };
 
 //Create a throttled version
