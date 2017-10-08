@@ -29,6 +29,64 @@ clipboard.on('error', function(e) {
   console.log(e);
 });
 
+var labels = {
+  "exploratory_details": "Exploratory details",
+  "operational_center": "Operational Center",
+  "other_orgs": "Other organisations",
+  "capacity": "Capacity",
+  "deployment": "Deployment details",
+  "name": "Event name",
+  "region": "Region",
+  "incharge_position": "In charge position",
+  "incharge_name": "In charge name",
+  "sharepoint_link": "SharePoint link",
+  "msf_response_scale": "MSF response scale",
+  "msf_response_medical_material_total": "Number of medical supplies",
+  "msf_response_non_medical_material_total": "Number of non-medical supplies",
+  "ext_capacity_who": "Ext capacity on the ground (name)"
+};
+
+var unpackMetadata = function(metadata) {
+  var result = "";
+  for (var property in metadata) {
+    if(labels.hasOwnProperty(property)) {
+      result += '<dt>'+labels[property]+':</dt><dd>'+metadata[property]+'</dd>';
+    }
+  }
+  if (metadata.hasOwnProperty("percentage_population_affected")) {
+    if (metadata.percentage_population_affected!=='NaN') {
+      result += '<dt>percentage_population_affected: </dt><dd>'+metadata.percentage_population_affected+'</dd>';
+    }
+  }
+  if (metadata.hasOwnProperty("msf_resource_visa_requirement")) {
+    if (metadata.msf_resource_visa_requirement.is_required==='yes') {
+      result += '<dt>Visa requirement:</dt><dd>'+metadata.msf_resource_visa_requirement.name+'</dd>';
+    }
+  }
+  if (metadata.hasOwnProperty("msf_response_medical_material")) {
+    result += '<dt>Medical requirements:</dt><dd>';
+    for (var i =0; i < metadata.msf_response_medical_material.length; i++) {
+      result += metadata.msf_response_medical_material[i] + '<br>';
+    }
+    result += '</dd>';
+    result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
+    result += '<dt>Arrival of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_date_arrival.split('T')[0]+'</dd>';
+  }
+  if (metadata.hasOwnProperty("msf_response_non_medical_material")) {
+    result += '<dt>Medical requirements:</dt><dd>';
+    for (var i =0; i < metadata.msf_response_non_medical_material.length; i++) {
+      result += metadata.msf_response_non_medical_material[i] + '<br>';
+    }
+    result += '</dd>';
+    result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
+    result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
+  }
+  else {
+    result += "<dt>Medical Materials</dt><dd>"+eventProperties.metadata.nonMedicalMaterials+"</dd>";
+  }
+  return result;
+};
+
 /**
 * Function to print a list of event details to web page
 * @param {Object} eventProperties - Object containing event details
@@ -112,20 +170,13 @@ var printEventProperties = function(err, eventProperties){
      $('#eventBasicInfo').append('<dt>Latest nofitication: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
    }
    $("#eventBasicInfo").append("<dt>Person In charge </dt><dd>"+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+"</dd>");
-   $("#eventBasicInfo").append("<dt>Severity </dt><dd>"+eventProperties.metadata.severity+"</dd>");
+   $("#eventBasicInfo").append("<dt>Severity </dt><dd>"+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + String(eventProperties.metadata.severity_scale) + '<br>' : '')+ eventProperties.metadata.severity+"</dd>");
    $("#eventBasicInfo").append("<dt>Sharepoint Link </dt><dd>"+eventProperties.metadata.sharepoint_link+"</dd>");
 
+    var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
-    $("#eventExtra").append("<dt>Exploratory details</dt><dd>"+eventProperties.metadata.exploratory_details+"</dd>");
-    $("#eventExtra").append("<dt>Operational Center</dt><dd>"+eventProperties.metadata.operational_center+"</dd>");
-    $("#eventExtra").append("<dt>Other organisations</dt><dd>"+eventProperties.metadata.other_orgs+"</dd>");
-    $("#eventExtra").append("<dt>Deployment details</dt><dd>"+eventProperties.metadata.deployment+"</dd>");
-    $("#eventExtra").append("<dt>Capacity </dt><dd>"+eventProperties.metadata.capacity+"</dd>");
-    $("#eventExtra").append("<dt>Medical Materials</dt><dd>"+eventProperties.metadata.medicalMaterials+"</dd>");
-    $("#eventExtra").append("<dt>Nonmedical Materials </dt><dd>"+eventProperties.metadata.nonMedicalMaterials+"</dd>");
-    $("#eventExtra").append("<dt>Total population</dt><dd>"+eventProperties.metadata.population_total+"</dd>");
-    $("#eventExtra").append("<dt>Affected population</dt><dd>"+eventProperties.metadata.population_affected+"</dd>");
+    $("#eventExtra").append(extra_metadata);
 
   }
   if (currentEventProperties) {
@@ -293,9 +344,8 @@ var mapContacts = function(contacts){
 
     var speciality = '';
     if (typeof(feature.properties.properties.type) !== 'undefined' && feature.properties.properties.type.toUpperCase().includes('MSF')) {
-      speciality = '<br>speciality: ' +  (typeof(feature.properties.properties.speciality) === 'undefined'
-        ? ''
-        : feature.properties.properties.speciality);
+      speciality = '<br>speciality: ' +  (typeof(feature.properties.properties.speciality) === 'undefined' ?
+        '' : feature.properties.properties.speciality);
     }
 
     if (feature.properties && feature.properties.properties) {
@@ -497,8 +547,8 @@ $('#btnSaveEdits').click(function(e){
 
 var onEditEvent = function() {
   $( "#eventModalContent" ).load( "/events/edit.html" );
-}
+};
 
 var onArchiveEvent = function() {
   $( "#archiveEventModalContent" ).load( "/events/archive.html" );
-}
+};

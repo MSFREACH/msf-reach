@@ -170,6 +170,9 @@ var msfTypeOfProgrammes = [
 
 var msfOperationalCenters = ["OCA", "OCBA", "OCG", "OCB", "OCP"];
 
+var msfMedicalMaterials = ["dengue kits", "NFI kits"];
+var msfNonMedicalMaterials = ["tents", "water"];
+
 var keyMSFFigures = [
   "outpatient_cases",
   "inpatient_cases",

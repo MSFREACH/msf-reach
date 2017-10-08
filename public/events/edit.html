@@ -221,7 +221,7 @@ dd.padding-bottom {
                       <dl>
                         <dt>Medical material:</dt>
                         <dd>
-                          <div v-for="item in msfOperationalCenters" class="operational-centers">
+                          <div v-for="item in msfMedicalMaterials" class="operational-centers">
                             <label>
                               <input type="checkbox" :value="item" v-model="event.metadata.msf_response_medical_material" /> {{ item }}
                             </label>
@@ -253,7 +253,7 @@ dd.padding-bottom {
                       <dl>
                         <dt>Non Medical material:</dt>
                         <dd>
-                          <div v-for="item in msfOperationalCenters" class="operational-centers">
+                          <div v-for="item in msfNonMedicalMaterials" class="operational-centers">
                             <label>
                               <input type="checkbox" :value="item" v-model="event.metadata.msf_response_non_medical_material" /> {{ item }}
                             </label>
