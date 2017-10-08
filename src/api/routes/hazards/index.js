@@ -10,6 +10,7 @@ import { USGS } from "../../../lib/usgs-georss.js";
 import { TSR } from "../../../lib/tsr.js";
 import { GDACS } from "../../../lib/gdacs-georss.js";
 import { PTWC } from "../../../lib/ptwc-georss.js";
+import { avalanche } from "../../../lib/avalanche.js";
 
 
 // Import validation dependencies
@@ -74,6 +75,19 @@ export default ({ logger }) => {
 
 		api.get('/ptwc', jwtCheck, cacheResponse('10 minutes'),
 				(req, res, next) => PTWC()
+						.then((events) => {
+								res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
+						})
+						.catch((err) => {
+								/* istanbul ignore next */
+								logger.error(err);
+								/* istanbul ignore next */
+								next(err);
+						})
+		);
+
+		api.get('/avalanche', jwtCheck, cacheResponse('10 minutes'),
+				(req, res, next) => avalanche()
 						.then((events) => {
 								res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
 						})

@@ -17,6 +17,7 @@ var TSRHazardsLayer;
 var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
+var avalancheHazardsLayer;
 
 /**
 * Function to get all events from the API
@@ -213,6 +214,29 @@ var mapPTWCHazards = function(hazards){
 
 };
 
+var mapAvalancheHazards = function(hazards){
+  function onEachFeature(feature, layer) {
+    var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
+
+    layer.bindPopup(popupContent);
+  }
+
+  avalancheHazardsLayer = L.geoJSON(hazards, {
+    pointToLayer: function (feature, latlng) {
+      console.log(latlng);
+      return L.marker(latlng, L.icon({
+        iconUrl: '/resources/images/icons/event_types/earthquake.svg',
+        iconSize: [39, 39]
+      }));
+    },
+    onEachFeature: onEachFeature
+  });
+
+  avalancheHazardsLayer.addTo(landingMap);
+  layerControl.addOverlay(avalancheHazardsLayer, '- avalanche', 'Hazards');
+
+};
+
 /**
 * Function to map from GDACS hazard summary to GDACS hazard icon
 * @param {String} hazardSummary - hazard summary
@@ -355,6 +379,16 @@ function openHazardPopup(id)
     break;
     case "GDACS":
     GDACSHazardsLayer.eachLayer(function(layer){
+      if (layer.feature.properties.id == id)
+      layer.openPopup();
+      var selector='[id="rssdiv'+sanitiseId(layer.feature.properties.id)+'"]';
+      layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
+      layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
+      layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
+    });
+    case "avalanche":
+    avalancheHazardsLayer.eachLayer(function(layer){
       if (layer.feature.properties.id == id)
       layer.openPopup();
       var selector='[id="rssdiv'+sanitiseId(layer.feature.properties.id)+'"]';
@@ -543,6 +577,7 @@ getFeeds("/api/hazards/tsr",mapTSRHazards);
 getFeeds("/api/hazards/usgs",mapUSGSHazards);
 getFeeds("/api/hazards/gdacs",mapGDACSHazards);
 getFeeds("/api/hazards/ptwc",mapPTWCHazards);
+getFeeds("/api/hazards/avalanche", mapAvalancheHazards);
 getMissions(mapMissions);
 getContacts(mapContacts);
 
@@ -551,3 +586,4 @@ getFeeds("/api/hazards/usgs", tableFeeds);
 getFeeds("/api/hazards/tsr", tableFeeds);
 getFeeds("/api/hazards/gdacs", tableFeeds);
 getFeeds("/api/hazards/ptwc", tableFeeds);
+getFeeds("/api/hazards/avalanche", tableFeeds);
