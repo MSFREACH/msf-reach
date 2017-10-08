@@ -57,7 +57,7 @@ dd.padding-bottom {
             <dl>
               <dt>Region</dt>
               <dd>
-                <input id="eventName" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
+                <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
               </dd>
             </dl>
             <dl>
@@ -77,7 +77,7 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Type of Emergency (nature)</dt>
+              <dt>Emergency details (nature)</dt>
               <dd>
                 <!-- emergencies -->
                 <div v-for="item in emergencies" class="category-of-emergency">
