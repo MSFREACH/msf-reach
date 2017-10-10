@@ -105,8 +105,15 @@
             </div>
             <div id="info" class="tab-pane fade">
               <div class="list-group">
-                  <a href="https://www.youtube.com/watch?v=LQRrPJdYOcs" target="_blank" class="list-group-item list-group-item-action">Watch how-to video</a>
-                  <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action">Partnership and confidentiality</a>
+                  <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
+                  <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
+                    <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
+                  </div>
+                  <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
+                  <div class="list-group-item list-group-item-action" style="display:none;" id="tic_video" >
+                    <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/-Kfodflm3M8?autoplay=0"></iframe>
+                  </div>
+                  <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action"><i>&bull;</i> Partnership and confidentiality</a>
               </div>
             </div>
 

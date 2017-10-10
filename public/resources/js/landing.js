@@ -551,3 +551,17 @@ getFeeds("/api/hazards/usgs", tableFeeds);
 getFeeds("/api/hazards/tsr", tableFeeds);
 getFeeds("/api/hazards/gdacs", tableFeeds);
 getFeeds("/api/hazards/ptwc", tableFeeds);
+
+var displayVideo = function(video) {
+
+    var video_div = document.getElementById(video+"_video");
+    var icon = document.getElementById(video+"_icon");
+    if (video_div.style.display === 'none') {
+        video_div.style.display = 'block';
+        icon.innerHTML='&darr;';
+    } else {
+        video_div.style.display = 'none';
+        icon.innerHTML='&uarr;';
+    }
+
+}
