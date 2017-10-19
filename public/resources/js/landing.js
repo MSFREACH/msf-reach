@@ -143,17 +143,12 @@ var PDCHazardIcon = function(hazardSummary) {
 * @param {Object} hazards - GeoJson FeatureCollection containing PDC hazard points
 **/
 var mapPDCHazards = function(hazards){
-  function onEachFeature(feature, layer) {
-    var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
-
-    layer.bindPopup(popupContent);
-  }
 
   PDCHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: PDCHazardIcon(feature.properties.summary)});
     },
-    onEachFeature: onEachFeature
+    onEachFeature: hazardFeature
   });
 
   PDCHazardsLayer.addTo(landingMap);
@@ -165,12 +160,14 @@ var mapPDCHazards = function(hazards){
 * Function to add TSR hazards to map
 * @param {Object} hazards - GeoJson FeatureCollection containing TSR hazard points
 **/
-var mapTSRHazards = function(hazards){
-  function onEachFeature(feature, layer) {
-    var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
 
-    layer.bindPopup(popupContent);
-  }
+var hazardFeature = function(feature, layer) {
+  var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR>Source: "+ feature.properties.source + "<BR>Summary: "+ feature.properties.summary +"<BR>Updated: " + feature.properties.updated;
+
+  layer.bindPopup(popupContent);
+}
+
+var mapTSRHazards = function(hazards){
 
   TSRHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
@@ -179,7 +176,7 @@ var mapTSRHazards = function(hazards){
         iconSize: [39, 39]
       }));
     },
-    onEachFeature: onEachFeature
+    onEachFeature: hazardFeature
   });
 
   TSRHazardsLayer.addTo(landingMap);
@@ -192,12 +189,6 @@ var mapTSRHazards = function(hazards){
 * @param {Object} hazards - GeoJson FeatureCollection containing PTWC hazard points
 **/
 var mapPTWCHazards = function(hazards){
-  function onEachFeature(feature, layer) {
-    var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
-
-    layer.bindPopup(popupContent);
-  }
-
   PTWCHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, L.icon({
@@ -205,7 +196,7 @@ var mapPTWCHazards = function(hazards){
         iconSize: [39, 39]
       }));
     },
-    onEachFeature: onEachFeature
+    onEachFeature: hazardFeature
   });
 
   PTWCHazardsLayer.addTo(landingMap);
@@ -259,17 +250,11 @@ var GDACSHazardIcon = function(GDACSProperties) {
 * @param {Object} hazards - GeoJson FeatureCollection containing GDACS hazard points
 **/
 var mapGDACSHazards = function(hazards){
-  function onEachFeature(feature, layer) {
-    var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
-
-    layer.bindPopup(popupContent);
-  }
-
   GDACSHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: GDACSHazardIcon(feature.properties)});
     },
-    onEachFeature: onEachFeature
+    onEachFeature: hazardFeature
   });
 
   GDACSHazardsLayer.addTo(landingMap);
@@ -282,11 +267,6 @@ var mapGDACSHazards = function(hazards){
 * @param {Object} hazards - GeoJson FeatureCollection containing USGS hazard points
 **/
 var mapUSGSHazards = function(hazards){
-  function onEachFeature(feature, layer) {
-    var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
-
-    layer.bindPopup(popupContent);
-  }
 
   USGSHazardsLayer = L.geoJSON(hazards, {
     pointToLayer: function (feature, latlng) {
@@ -295,7 +275,7 @@ var mapUSGSHazards = function(hazards){
         iconSize: [39, 39]
       }));
     },
-    onEachFeature: onEachFeature
+    onEachFeature: hazardFeature
   });
 
   USGSHazardsLayer.addTo(landingMap);
@@ -405,6 +385,7 @@ var tableFeeds = function(feeds) {
       $('#rssFeeds').append(
         '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
         'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
+        'Source: ' + feature.properties.source + '<br>' +
         'Updated: ' + feature.properties.updated + '<br>' +
         'Summary: ' + feature.properties.summary.trim() + '<br>' +
         '</div>'

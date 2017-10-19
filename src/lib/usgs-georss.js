@@ -44,6 +44,7 @@ const USGS = () =>
             feature.geometry.coordinates.push(JSON.parse(coords[1]));
             feature.geometry.coordinates.push(JSON.parse(coords[0]));
             // extract properties
+            feature.properties["source"] = "United States Geological Survey";
             feature.properties["title"] = "Earthquake - " + event.title[0];
             feature.properties["link"] = event.link[0]["$"]["href"];
             feature.properties["id"] = "USGS-"+event.id[0];

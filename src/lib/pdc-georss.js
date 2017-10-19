@@ -31,6 +31,7 @@ const PDC = () => new Promise((resolve, reject) => {
             feature.geometry.coordinates.push(JSON.parse(coords[1]));
             feature.geometry.coordinates.push(JSON.parse(coords[0]));
             // extract properties
+            feature.properties["source"] = "Pacific Disaster Center";
             feature.properties["title"] = event.title[0];
             feature.properties["link"] = event.link[0]['$']['href'];
             feature.properties["id"] = "PDC-"+event.id[0];
