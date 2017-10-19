@@ -233,7 +233,7 @@ var GDACSHazardIcon = function(GDACSProperties) {
     iconUrl += 'warning.svg';
     break;
     default:
-    console.log("error in GDACS data");
+    iconUrl += 'advisory.svg'; // reviewme
   }
 
 
@@ -486,7 +486,7 @@ var mapContacts = function(contacts ){
 
 
 // Create map
-var landingMap = L.map('landingMap').setView([-6.8, 108.7], 7);
+var landingMap = L.map('landingMap').setView([20, 110], 4);
 
 var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
 	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
