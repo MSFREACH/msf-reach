@@ -467,14 +467,15 @@ if (currentEventId !== false && currentEventId != ''){
 // Create map
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
 
-// Add some base tiles
-var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2lgdo3x000b2rmrv6iiii38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2xnZXJvcyIsImEiOiJjajBodHJjdGYwM21sMndwNHk2cGxxajRnIn0.nrw2cFsVqjA2bclnKs-9mw', {
-  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-  subdomains: 'abcd',
-  minZoom: 0,
-  maxZoom: 18,
-  ext: 'png'
+// add terrain tiles
+var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 18,
+	ext: 'png'
 });
+
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2lds8kl00042smtdpniowm2/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2xnZXJvcyIsImEiOiJjajBodHJjdGYwM21sMndwNHk2cGxxajRnIn0.nrw2cFsVqjA2bclnKs-9mw', {
@@ -482,7 +483,7 @@ var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2l
 }).addTo(eventsMap);
 
 var baseMaps = {
-  "Terrain": mapboxTerrain,
+  "Terrain": stamenTerrain,
   "Satellite" : mapboxSatellite
 };
 
@@ -490,11 +491,9 @@ var groupedOverlays = {
   "Reports": {},
 };
 
-var baseLayers = {};
-
 var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
-var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, groupOptions).addTo(eventsMap);
+var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(eventsMap);
 
 // Archive support
 $('#btnArchive').click(function(e){
