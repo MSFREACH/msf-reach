@@ -38,6 +38,7 @@ const GDACS = () =>
             feature.geometry.coordinates.push(JSON.parse(coords[1]));
             feature.geometry.coordinates.push(JSON.parse(coords[0]));
             // extract properties
+            feature.properties["source"] = "Global Disaster Alert and Coordination System";
             feature.properties["title"] = event.title[0];
             feature.properties["link"] = event.link[0];
             feature.properties["updated"] = event.pubDate[0];
