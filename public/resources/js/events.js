@@ -82,7 +82,9 @@ var unpackMetadata = function(metadata) {
     result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
   }
   else {
-    result += "<dt>Medical Materials</dt><dd>"+eventProperties.metadata.nonMedicalMaterials+"</dd>";
+    if (metadata.hasOwnProperty("nonMedicalMaterials")) {
+      result += "<dt>Medical Materials</dt><dd>"+metadata.nonMedicalMaterials+"</dd>";
+    }
   }
   return result;
 };
