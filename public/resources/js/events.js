@@ -256,28 +256,28 @@ var mapReports = function(reports){
   const accessIcon = L.icon({
     iconUrl: '/resources/images/icons/reports/access_icon.svg',
     iconSize:     [60, 60], // size of the icon
-    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
   const securityIcon = L.icon({
     iconUrl: '/resources/images/icons/reports/security_icon.svg',
     iconSize:     [60, 60], // size of the icon
-    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
   const contactsIcon = L.icon({
     iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
     iconSize:     [60, 60], // size of the icon
-    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
   const needsIcon = L.icon({
     iconUrl: '/resources/images/icons/reports/needs_icon.svg',
     iconSize:     [60, 60], // size of the icon
-    iconAnchor:   [30, -30], // point of the icon which will correspond to marker's location
+    iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
