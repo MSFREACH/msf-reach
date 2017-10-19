@@ -1,25 +1,24 @@
 import Promise from 'bluebird';
 
 import {parseString} from 'xml2js';
-import http from 'http';
+import rp from "request-promise";
 
 const PDC = () => new Promise((resolve, reject) => {
-  // GET PDC feed
-  http.get({
-    host: 'd2mxabrykbl1km.cloudfront.net',
-    path: '/feed.xml'
-  }, function(response){
-    // Append to body object
-    let body = '';
-    response.on('data', function(d){
-      body += d;
-    });
-    // Pass completed response to
-    response.on('end', function(){
-      parseString(body, function(err, result){
 
-        if (err) reject(err); // handle errors
+    var options = {
+      uri: "http://d2mxabrykbl1km.cloudfront.net/feed.xml",
+      transform: function(body) {
+        return new Promise(resolve => {
+          parseString(body, function(err, result) {
+            if (err) result(err); // handle errors
+            resolve(result);
+          });
+        });
+      }
+    };
 
+    rp(options)
+      .then(function(result) {
         let features = []; // store for features
         for (let i = 0; i < result.feed.entry.length; i++){
           let event = result.feed.entry[i];
@@ -43,11 +42,9 @@ const PDC = () => new Promise((resolve, reject) => {
         }
         // return GeoJSON
         resolve({"type":"FeatureCollection","features":features});
+      }).catch(function(err) {
+        console.log("Error", err);
       });
-    })
-  })
+    });
 
-
-})
-
-module.exports = {PDC}
+module.exports = { PDC };
