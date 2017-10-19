@@ -170,6 +170,8 @@ var printEventProperties = function(err, eventProperties){
    $("#eventBasicInfo").append("<dt>Event Status: </dt><dd>"+eventProperties.metadata.event_status+"</dd>");
    if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification !== '') {
      $('#eventBasicInfo').append('<dt>Latest nofitication: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
+   } else {
+     $('#eventBasicInfo').append('<dt>Latest nofitication: </dt><dd>(none)</dd>');
    }
    $("#eventBasicInfo").append("<dt>Person In charge </dt><dd>"+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+"</dd>");
    $("#eventBasicInfo").append("<dt>Severity </dt><dd>"+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + String(eventProperties.metadata.severity_scale) + '<br>' : '')+ eventProperties.metadata.severity+"</dd>");

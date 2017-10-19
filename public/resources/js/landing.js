@@ -50,6 +50,8 @@ function onEachFeature(feature, layer) {
   var statusStr = '';
   if(typeof(feature.properties.metadata.notification)!=='undefined') {
     notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
+  } else {
+    notificationStr = 'Latest notification: (none)<br>';
   }
   if(typeof(feature.properties.metadata.event_status)!=='undefined') {
     statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
@@ -410,6 +412,8 @@ var mapMissions = function(missions ){
       popupContent += feature.properties.properties.name + '<BR>';
       if (typeof(feature.properties.properties.notification) !== 'undefined'){
         popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+      } else {
+        popupContent += 'Latest notification: (none)<BR>';
       }
       popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
       popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
