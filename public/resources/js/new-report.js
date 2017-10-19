@@ -21,8 +21,6 @@ var baseMaps = {
 	"Satellite" : mapboxSatellite
 };
 
-var overlayMaps = {};
-
 var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'topright'}).addTo(newReportMap);
 
 var marker;
