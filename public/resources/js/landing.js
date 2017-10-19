@@ -59,9 +59,10 @@ function onEachFeature(feature, layer) {
 
   var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
 
-  var popupContent = "<img src='/resources/images/icons/event_types/"+type+".svg' width='40'>" +
-  "<strong><a href='events/?eventId=" + feature.properties.id +
-  "'>Event " + feature.properties.id +"</a></strong>" + "<BR>" +
+  var popupContent = "<a href='/events/?eventId=" + feature.properties.id +
+  "'><img src='/resources/images/icons/event_types/"+type+".svg' width='40'></a>" +
+  "<strong><a href='/events/?eventId=" + feature.properties.id +
+  "'>" + feature.properties.metadata.name +"</a></strong>" + "<BR>" +
   "Created: " + feature.properties.created + "<BR>" +
   "Type: " + type.replace('_',' ') + "<br>" +
   statusStr +
