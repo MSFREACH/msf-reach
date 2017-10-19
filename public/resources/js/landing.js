@@ -233,7 +233,7 @@ var GDACSHazardIcon = function(GDACSProperties) {
     iconUrl += 'warning.svg';
     break;
     default:
-    iconUrl += 'advisory.svg'; // reviewme
+    iconUrl += 'advisory.svg'; // reviewme fixme
   }
 
 
