@@ -145,8 +145,17 @@ var printEventProperties = function(err, eventProperties){
 
   // Add to Twitter search "AI"
   $(document).ready(function(){
+    var searchTerm = '';
     if (currentEventProperties) {
-      $('#searchTerm').val((currentEventProperties.metadata.sub_type != '' ? currentEventProperties.metadata.sub_type : currentEventProperties.metadata.type).replace('_',' '));
+      if (currentEventProperties.metadata.name.includes('_')) {
+        elements = currentEventProperties.metadata.name.split('_');
+        for (var i = 0; i < elements.length-1; i++) {
+          searchTerm += elements[i] + ' ';
+        }
+      } else {
+        searchTerm = currentEventProperties.metadata.name;
+      }
+      $('#searchTerm').val(searchTerm);
     }
     $('#btnSearchTwitter').trigger('click');
 
