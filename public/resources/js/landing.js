@@ -34,75 +34,74 @@ var getAllEvents = function(callback){
   });
 };
 
-// Add popups
-function onEachFeature(feature, layer) {
-  var affectedPopulationStr = '';
-  if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
-    affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
-  }
-
-  var totalPopulationStr = '';
-  if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
-    totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
-  }
-
-  var notificationStr = '';
-  var statusStr = '';
-  if(typeof(feature.properties.metadata.notification)!=='undefined') {
-    notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
-  } else {
-    notificationStr = 'Latest notification: (none)<br>';
-  }
-  if(typeof(feature.properties.metadata.event_status)!=='undefined') {
-    statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
-  } else {
-    statusStr = 'Status: ' + feature.properties.status + '<br>';
-  }
-
-  var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-
-  var popupContent = "<a href='/events/?eventId=" + feature.properties.id +
-  "'><img src='/resources/images/icons/event_types/"+type+".svg' width='40'></a>" +
-  "<strong><a href='/events/?eventId=" + feature.properties.id +
-  "'>" + feature.properties.metadata.name +"</a></strong>" + "<BR>" +
-  "Created: " + feature.properties.created + "<BR>" +
-  "Type: " + type.replace('_',' ') + "<br>" +
-  statusStr +
-  notificationStr +
-  totalPopulationStr +
-  affectedPopulationStr;
-
-
-  if (popupContent.endsWith('<br>')) {
-    popupContent.substr(0,popupContent.length-4);
-  }
-
-  $('#eventProperties').append(
-    '<div class="list-group-item">' +
-    'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-    'Created: ' + feature.properties.created + '<br>' +
-    'Type: ' + feature.properties.type + '<br>' +
-    statusStr +
-    notificationStr +
-    totalPopulationStr +
-    affectedPopulationStr +
-    '</div>'
-  );
-
-  if (feature.properties && feature.properties.popupContent) {
-    popupContent += feature.properties.popupContent;
-  }
-
-  layer.bindPopup(popupContent);
-}
-
 /**
 * Function to print a table of events
 * @param {Object} events - GeoJSON Object containing event details
 */
 var mapAllEvents = function(err, events){
 
-  console.log(L.version);
+  // Add popups
+  function onEachFeature(feature, layer) {
+    var affectedPopulationStr = '';
+    if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
+      affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
+    }
+
+    var totalPopulationStr = '';
+    if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
+      totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
+    }
+
+    var notificationStr = '';
+    var statusStr = '';
+    if(typeof(feature.properties.metadata.notification)!=='undefined') {
+      notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
+    } else {
+      notificationStr = 'Latest notification: (none)<br>';
+    }
+    if(typeof(feature.properties.metadata.event_status)!=='undefined') {
+      statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
+    } else {
+      statusStr = 'Status: ' + feature.properties.status + '<br>';
+    }
+
+    var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
+
+    var popupContent = "<a href='/events/?eventId=" + feature.properties.id +
+    "'><img src='/resources/images/icons/event_types/"+type+".svg' width='40'></a>" +
+    "<strong><a href='/events/?eventId=" + feature.properties.id +
+    "'>" + feature.properties.metadata.name +"</a></strong>" + "<BR>" +
+    "Created: " + feature.properties.created + "<BR>" +
+    "Type: " + type.replace('_',' ') + "<br>" +
+    statusStr +
+    notificationStr +
+    totalPopulationStr +
+    affectedPopulationStr;
+
+
+    if (popupContent.endsWith('<br>')) {
+      popupContent.substr(0,popupContent.length-4);
+    }
+
+    $('#eventProperties').append(
+      '<div class="list-group-item">' +
+      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+      'Created: ' + feature.properties.created + '<br>' +
+      'Type: ' + feature.properties.type + '<br>' +
+      statusStr +
+      notificationStr +
+      totalPopulationStr +
+      affectedPopulationStr +
+      '</div>'
+    );
+
+    if (feature.properties && feature.properties.popupContent) {
+      popupContent += feature.properties.popupContent;
+    }
+
+    layer.bindPopup(popupContent);
+  }
+
 
   var eventsLayer = L.geoJSON(events, {
     pointToLayer: function (feature, latlng) {
@@ -398,6 +397,51 @@ var tableFeeds = function(feeds) {
 };
 
 /**
+* Function to return an icon for mission in popupContent
+* @param {String} type - type of disaster
+**/
+var missionPopupIcon = function(missionType) {
+  var type = missionType.toLowerCase();
+  var html = '<img src="/resources/images/icons/event_types/';
+  if (type.includes("conflict")) {
+    html += 'conflict'
+  } else if (type.includes('displacement')) {
+    html += 'displacement';
+  } else if (type.includes('drought')) {
+    html += 'fire';
+  } else if (type.includes('earthquake')) {
+    html += 'earthquake';
+  } else if (type.includes('epidemic') || type.includes('disease')) {
+    html += 'epidemic';
+  } else if (type.includes('fire')) {
+    html += 'fire';
+  } else if (type.includes('flood')) {
+    html += 'flood';
+  } else if (type.includes('historic')) {
+    html += 'historical';
+  } else if (type.includes('industrial')) {
+    html += 'industrial_disaster';
+  } else if (type.includes('landslide')) {
+    html += 'landslide';
+  } else if (type.includes('malnutrition')) {
+    html += 'malnutrition';
+  } else if (type.includes('search')) {
+    html += 'search_and_rescue';
+  } else if (type.includes('tsunami')) {
+    html += 'tsunami';
+  } else if (type.includes('typhoon') || type.includes('hurricane') || type.includes('cyclone')) {
+    html += 'typhoon';
+  } else if (type.includes('volcano')) {
+    html += 'volcano';
+  } else {
+    return missionType + '<br>'; // just return text in this case
+  }
+  html += '.svg" width="40">';
+
+  return html;
+}
+
+/**
 * Function to add missions to map
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
@@ -408,7 +452,7 @@ var mapMissions = function(missions ){
     var popupContent = '';
 
     if (feature.properties && feature.properties.properties) {
-      popupContent += feature.properties.properties.type + '<BR>';
+      popupContent += missionPopupIcon(feature.properties.properties.type);
       popupContent += feature.properties.properties.name + '<BR>';
       if (typeof(feature.properties.properties.notification) !== 'undefined'){
         popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';

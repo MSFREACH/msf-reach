@@ -90,6 +90,51 @@ var unpackMetadata = function(metadata) {
 };
 
 /**
+* Function to return an icon for mission in popupContent
+* @param {String} type - type of disaster
+**/
+var missionPopupIcon = function(missionType) {
+  var type = missionType.toLowerCase();
+  var html = '<img src="/resources/images/icons/event_types/';
+  if (type.includes("conflict")) {
+    html += 'conflict'
+  } else if (type.includes('displacement')) {
+    html += 'displacement';
+  } else if (type.includes('drought')) {
+    html += 'fire';
+  } else if (type.includes('earthquake')) {
+    html += 'earthquake';
+  } else if (type.includes('epidemic') || type.includes('disease')) {
+    html += 'epidemic';
+  } else if (type.includes('fire')) {
+    html += 'fire';
+  } else if (type.includes('flood')) {
+    html += 'flood';
+  } else if (type.includes('historic')) {
+    html += 'historical';
+  } else if (type.includes('industrial')) {
+    html += 'industrial_disaster';
+  } else if (type.includes('landslide')) {
+    html += 'landslide';
+  } else if (type.includes('malnutrition')) {
+    html += 'malnutrition';
+  } else if (type.includes('search')) {
+    html += 'search_and_rescue';
+  } else if (type.includes('tsunami')) {
+    html += 'tsunami';
+  } else if (type.includes('typhoon') || type.includes('hurricane') || type.includes('cyclone')) {
+    html += 'typhoon';
+  } else if (type.includes('volcano')) {
+    html += 'volcano';
+  } else {
+    return missionType + '<br>'; // just return text in this case
+  }
+  html += '.svg" width="40">';
+
+  return html;
+}
+
+/**
 * Function to print a list of event details to web page
 * @param {Object} eventProperties - Object containing event details
 */
@@ -419,7 +464,7 @@ var mapMissions = function(missions ){
     var popupContent = '';
 
     if (feature.properties && feature.properties.properties) {
-      popupContent += feature.properties.properties.type + '<BR>';
+      popupContent += missionPopupIcon(feature.properties.properties.type);
       popupContent += feature.properties.properties.name + '<BR>';
       popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
       popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
