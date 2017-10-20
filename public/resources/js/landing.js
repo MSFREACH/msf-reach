@@ -517,6 +517,23 @@ var mapContacts = function(contacts ){
     layer.bindPopup(popupContent);
   }
 
+  // function returns list of msf staff contacts if msf is true, else other contacts
+  function msfContact(contacts, msf) {
+
+    var newFC = {features: []};
+    for(var i = 0; i < contacts.features.length; i++) {
+      console.log(contacts.features[i]);
+      if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
+        if (msf) {
+          newFC.features.push(contacts.features[i]);
+        }
+      } else if (!msf) {
+        newFC.features.push(contacts.features[i]);
+      }
+    }
+    return newFC;
+  }
+
   // MSF Icons
   var contactIcon = L.icon({
     iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
@@ -526,14 +543,23 @@ var mapContacts = function(contacts ){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  var contactsLayer = L.geoJSON(contacts, {
+  var MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: contactIcon});
     },
     onEachFeature: onEachFeature
   });
-  //contactsLayer.addTo(landingMap);
-  layerControl.addOverlay(contactsLayer, 'Contacts');
+
+  var nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: contactIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+
+  MSFContactsLayer.addTo(landingMap);
+  layerControl.addOverlay(MSFContactsLayer, '- MSF Staff', 'Contacts');
+  layerControl.addOverlay(nonMSFContactsLayer, '- other contacts', 'Contacts');
 
 };
 
@@ -561,6 +587,7 @@ var baseMaps = {
 
 var groupedOverlays = {
   "Hazards": {},
+  "Contacts": {}
 };
 
 var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
