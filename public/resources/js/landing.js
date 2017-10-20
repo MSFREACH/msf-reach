@@ -65,10 +65,15 @@ var mapAllEvents = function(err, events){
       statusStr = 'Status: ' + feature.properties.status + '<br>';
     }
 
+
     var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
+    var icon_name = type;
+    if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+      icon_name = 'epidemic';
+    }
 
     var popupContent = "<a href='/events/?eventId=" + feature.properties.id +
-    "'><img src='/resources/images/icons/event_types/"+type+".svg' width='40'></a>" +
+    "'><img src='/resources/images/icons/event_types/"+icon_name+".svg' width='40'></a>" +
     "<strong><a href='/events/?eventId=" + feature.properties.id +
     "'>" + feature.properties.metadata.name +"</a></strong>" + "<BR>" +
     "Created: " + feature.properties.created + "<BR>" +
