@@ -402,19 +402,15 @@ var mapContacts = function(contacts){
 
     var popupContent = '';
 
-    var speciality = '';
-    if (typeof(feature.properties.properties.type) !== 'undefined' && feature.properties.properties.type.toUpperCase().includes('MSF')) {
-      speciality = '<br>speciality: ' +  (typeof(feature.properties.properties.speciality) === 'undefined' ?
-        '' : feature.properties.properties.speciality);
-    }
-
     if (feature.properties && feature.properties.properties) {
-      popupContent =
-      'name: '+(typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name +
-        '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-        '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-        '<br>affiliation: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-        speciality;
+      popupContent = 'name: <a href="#" onclick="onContactLinkClick(' +
+        feature.properties.id +
+        ')" data-toggle="modal" data-target="#contactDetailsModal">' +
+      (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
+      '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+      '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+      '<br>type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
     }
 
     layer.bindPopup(popupContent);
@@ -476,8 +472,17 @@ var mapMissions = function(missions ){
     var popupContent = '';
 
     if (feature.properties && feature.properties.properties) {
-      popupContent += missionPopupIcon(feature.properties.properties.type);
-      popupContent += feature.properties.properties.name + '<BR>';
+      popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+        feature.properties.id +
+        ')">' + missionPopupIcon(feature.properties.properties.type) + '</a>';
+      popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+        feature.properties.id +
+        ')">' + feature.properties.properties.name + '</a><br>';
+      if (typeof(feature.properties.properties.notification) !== 'undefined'){
+        popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+      } else {
+        popupContent += 'Latest notification: (none)<BR>';
+      }
       popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
       popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
       popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
