@@ -15,6 +15,8 @@ var eventReportLink;
 var currentEventProperties;
 var contactsLayer;
 var missionsLayer;
+var missionsLayerControlSetUp = false;
+var contactsLayerControlSetUp = false;
 var eventsMap;
 
 var zoomToEvent = function(latlng) {
@@ -427,8 +429,11 @@ var mapContacts = function(contacts){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  if (contactsLayer)
+  if (contactsLayer) {
     eventsMap.removeLayer(contactsLayer);
+    layerControl.removeLayer(contactsLayer);
+  }
+
 
   contactsLayer = L.geoJSON(contacts, {
     pointToLayer: function (feature, latlng) {
@@ -437,10 +442,8 @@ var mapContacts = function(contacts){
     onEachFeature: onEachFeature
   });
 
-
   contactsLayer.addTo(eventsMap);
-
-  // broken layerControl.addOverlay(ContactsLayer, 'Contacts');
+  layerControl.addOverlay(contactsLayer, 'Contacts');
 
 };
 
@@ -495,6 +498,11 @@ var mapMissions = function(missions ){
     popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
   });
 
+  if (missionsLayer) {
+    eventsMap.removeLayer(missionsLayer);
+    layerControl.removeLayer(missionsLayer);
+  }
+
   missionsLayer = L.geoJSON(missions, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: missionIcon});
@@ -502,8 +510,7 @@ var mapMissions = function(missions ){
     onEachFeature: onEachFeature
   });
 
-  // broken layerControl.addOverlay(missionsLayer, 'Missions');
-
+  layerControl.addOverlay(missionsLayer, 'Missions');
   missionsLayer.addTo(eventsMap);
 };
 

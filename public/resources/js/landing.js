@@ -17,8 +17,6 @@ var TSRHazardsLayer;
 var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
-
-var eventsMapSetUp = false;
 var eventsLayer;
 
 /**
@@ -124,14 +122,9 @@ var mapAllEvents = function(err, events){
     onEachFeature: onEachFeature
   });
 
-
   eventsLayer.addTo(landingMap);
-  if (!eventsMapSetUp) {
-    layerControl.addOverlay(eventsLayer, 'Current Events');
-    eventsMapSetUp = true;
-  }
+  layerControl.addOverlay(eventsLayer, 'Current Events');
 
-  console.log('called events map');
 };
 
 /**
@@ -606,6 +599,8 @@ var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptio
 getAllEvents(mapAllEvents);
 
 setInterval(function() {
+  landingMap.removeLayer(eventsLayer);
+  layerControl.removeLayer(eventsLayer);
   eventsLayer.clearLayers();
   $('#eventProperties').empty();
   getAllEvents(mapAllEvents);
