@@ -19,6 +19,8 @@ export default (config, db, logger) => ({
 			WHERE ($1 IS NULL OR (
 				properties ->> 'name' ILIKE $1
 				OR properties ->> 'cell' ILIKE $1
+				OR properties ->> 'type' ILIKE $1
+				OR properties ->> 'speciality' ILIKE $1
 				OR properties ->> 'email' ILIKE $1)) AND
 				($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
 			ORDER BY id`;
