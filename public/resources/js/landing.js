@@ -18,6 +18,9 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
+var eventsMapSetUp = false;
+var eventsLayer;
+
 /**
 * Function to get all events from the API
 * @param {Function} callback - Function to call once data returned
@@ -35,7 +38,7 @@ var getAllEvents = function(callback){
 };
 
 /**
-* Function to print a table of events
+* Function to map and print a table of events
 * @param {Object} events - GeoJSON Object containing event details
 */
 var mapAllEvents = function(err, events){
@@ -107,8 +110,7 @@ var mapAllEvents = function(err, events){
     layer.bindPopup(popupContent);
   }
 
-
-  var eventsLayer = L.geoJSON(events, {
+  eventsLayer = L.geoJSON(events, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: L.icon({
         iconUrl: '/resources/images/icons/event_types/open_event.svg',
@@ -121,9 +123,15 @@ var mapAllEvents = function(err, events){
     },
     onEachFeature: onEachFeature
   });
-  eventsLayer.addTo(landingMap);
-  layerControl.addOverlay(eventsLayer, 'Current Events');
 
+
+  eventsLayer.addTo(landingMap);
+  if (!eventsMapSetUp) {
+    layerControl.addOverlay(eventsLayer, 'Current Events');
+    eventsMapSetUp = true;
+  }
+
+  console.log('called events map');
 };
 
 /**
@@ -292,14 +300,13 @@ var mapUSGSHazards = function(hazards){
 
 function openHazardPopup(id)
 {
-  console.log(id);
 
   switch(id.split('-',1)[0]) {
     case "USGS":
     USGSHazardsLayer.eachLayer(function(layer){
       if (layer.feature.properties.id === id)
       layer.openPopup();
-      console.log("DB" + layer.feature.properties.id);
+
       var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
       layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
       layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -522,7 +529,7 @@ var mapContacts = function(contacts ){
 
     var newFC = {features: []};
     for(var i = 0; i < contacts.features.length; i++) {
-      console.log(contacts.features[i]);
+
       if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
         if (msf) {
           newFC.features.push(contacts.features[i]);
@@ -597,6 +604,14 @@ var overlayMaps = {};
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(landingMap);
 
 getAllEvents(mapAllEvents);
+
+setInterval(function() {
+  eventsLayer.clearLayers();
+  $('#eventProperties').empty();
+  getAllEvents(mapAllEvents);
+  console.log('timer expired');
+},180000);
+
 getFeeds("/api/hazards/pdc",mapPDCHazards);
 getFeeds("/api/hazards/tsr",mapTSRHazards);
 getFeeds("/api/hazards/usgs",mapUSGSHazards);
