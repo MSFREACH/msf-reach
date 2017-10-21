@@ -455,7 +455,6 @@ var mapMissions = function(missions ){
   function onEachFeature(feature, layer) {
 
     var popupContent = '';
-    console.log(feature);
 
     if (feature.properties && feature.properties.properties) {
       popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
