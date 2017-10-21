@@ -173,7 +173,7 @@ var hazardFeature = function(feature, layer) {
   var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR>Source: "+ feature.properties.source + "<BR>Summary: "+ feature.properties.summary +"<BR>Updated: " + feature.properties.updated;
 
   layer.bindPopup(popupContent);
-}
+};
 
 var mapTSRHazards = function(hazards){
 
@@ -355,7 +355,7 @@ function openHazardPopup(id)
     console.log("Hazards layer not found");
 
   }
-};
+}
 
 
 /**
@@ -409,7 +409,7 @@ var missionPopupIcon = function(missionType) {
   var type = missionType.toLowerCase();
   var html = '<img src="/resources/images/icons/event_types/';
   if (type.includes("conflict")) {
-    html += 'conflict'
+    html += 'conflict';
   } else if (type.includes('displacement')) {
     html += 'displacement';
   } else if (type.includes('drought')) {
@@ -444,7 +444,7 @@ var missionPopupIcon = function(missionType) {
   html += '.svg" width="40">';
 
   return html;
-}
+};
 
 /**
 * Function to add missions to map
@@ -455,10 +455,15 @@ var mapMissions = function(missions ){
   function onEachFeature(feature, layer) {
 
     var popupContent = '';
+    console.log(feature);
 
     if (feature.properties && feature.properties.properties) {
-      popupContent += missionPopupIcon(feature.properties.properties.type);
-      popupContent += feature.properties.properties.name + '<BR>';
+      popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+        feature.properties.id +
+        ')">' + missionPopupIcon(feature.properties.properties.type) + '</a>';
+      popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+        feature.properties.id +
+        ')">' + feature.properties.properties.name + '</a><br>';
       if (typeof(feature.properties.properties.notification) !== 'undefined'){
         popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
       } else {
@@ -506,8 +511,10 @@ var mapContacts = function(contacts ){
     var popupContent = '';
 
     if (feature.properties && feature.properties.properties) {
-      popupContent =
-      'name: '+(typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name +
+      popupContent = 'name: <a href="#" onclick="onContactLinkClick(' +
+        feature.properties.id +
+        ')" data-toggle="modal" data-target="#contactDetailsModal">' +
+      (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
       '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
       '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
       '<br>type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
@@ -561,6 +568,39 @@ var mapContacts = function(contacts ){
   layerControl.addOverlay(MSFContactsLayer, '- MSF Staff', 'Contacts');
   layerControl.addOverlay(nonMSFContactsLayer, '- other contacts', 'Contacts');
 
+};
+
+var onMissionLinkClick = function(id) {
+  $.getJSON("/api/missions/" + id, function(data) {
+    missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
+    missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
+    $( "#missionModalBody" ).load( "/events/mission.html" );
+  });
+};
+
+var onContactLinkClick = function(id) {
+  $('#contactDetailsModal').on('shown.bs.modal');
+  getContact(id);
+};
+
+var contactInfo = {};
+var getContact = function(id) {
+  console.log(id);
+  $.getJSON("/api/contacts/" + id, function(contact) {
+    contactInfo = contact.result ? contact.result.properties : {};
+    _(contact.result.properties).forIn(function(value, key) {
+      // console.log("Key:", key, "Value", value);
+      if (key === "nationality1" || key === "nationality2") {
+        value = value.name;
+      }
+      $("span." + key).html(value);
+    });
+    if (contact.result.properties.type.toUpperCase().includes("MSF")) {
+      $("#msf_details").show();
+    } else {
+      $("#msf_details").hide();
+    }
+  });
 };
 
 
@@ -633,4 +673,4 @@ var displayVideo = function(video) {
         icon.innerHTML='&uarr;';
     }
 
-}
+};
