@@ -2,6 +2,7 @@ var doItOnce=true;
 $(function () {
   var $sections = $('.form-section');
   var MAPSECTIONINDEX = 3;
+  var CONTACTDETAILSINDEX =4;
   function navigateTo(index) {
     // Mark the current section with the class 'current'
     $sections
@@ -33,14 +34,32 @@ $(function () {
 
   // Next button goes forward iff current block validates
   $('.form-navigation .next').on('click',function() {
-      var cInd=curIndex();
-      if ((cInd==MAPSECTIONINDEX)&&((!latlng)||(!$('#mapAddress').val())))
+    var cInd=curIndex();
+    if (cInd==MAPSECTIONINDEX)
+    {
+      if (!latlng)
+      {
+        alert("Please enter an address/location to proceed.");
+        return;
+      }
+      if ((!$('#mapAddress').val()) && (!(confirm('You have not entered a street address; would you like to proceed anyway ? '))))
+         return;
+    }
+     else if (cInd == CONTACTDETAILSINDEX)
+     {
+       if ((!$('#inputContactCell').val()) && (!$('#inputContactWork').val()) && (!$('#inputContactHome').val()) )
        {
-         alert("Please enter an address to proceed.");
+         alert("Please enter a phone number to proceed.");
          return;
        }
+       if ((!$('#inputContactEmail').val())&&(!$('#inputContactEmail2').val()) )
+       {
+         alert("Please enter an email address to proceed.");
+         return;
+       }
+     }
 
-      navigateTo(cInd + 1);
+    navigateTo(cInd + 1);
   });
 
   navigateTo(0); // Start at the beginning
