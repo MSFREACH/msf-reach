@@ -63,6 +63,7 @@ var getMissions = function(term) {
     }
   ).fail(function(err) {
     console.log(err);
+    handleUnAuthorized(err);
     loadMissions(err.responseText, null);
   });
 };

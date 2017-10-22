@@ -31,6 +31,7 @@ var getAllEvents = function(callback){
     callback(null, data.result);
   }).fail(function(err) {
     // Catch condition where no data returned
+    handleUnAuthorized(err);
     callback(err.responseText, null);
   });
 };
@@ -364,6 +365,8 @@ function openHazardPopup(id)
 var getContacts = function(callback){
   $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err){
+    handleUnAuthorized(err);
   });
 };
 
@@ -373,6 +376,8 @@ var getContacts = function(callback){
 var getMissions = function(callback){
   $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err){
+    handleUnAuthorized(err);
   });
 };
 
@@ -574,6 +579,8 @@ var onMissionLinkClick = function(id) {
     missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
     missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
     $( "#missionModalBody" ).load( "/events/mission.html" );
+  }).fail(function(err){
+    handleUnAuthorized(err);
   });
 };
 
@@ -599,6 +606,8 @@ var getContact = function(id) {
     } else {
       $("#msf_details").hide();
     }
+  }).fail(function(err){
+    handleUnAuthorized(err);
   });
 };
 
