@@ -83,7 +83,6 @@ var getContacts = function(term){
     });
 
   }).fail(function(err){
-    handleUnAuthorized(err);
     loadContacts(err.responseText, null);
   });
 };
