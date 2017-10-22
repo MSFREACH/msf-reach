@@ -34,6 +34,14 @@ newEventMap.on('click', function(e) {
 	marker = L.marker(e.latlng).addTo(newEventMap);
 });
 $(function(){
+	$( "#inputEvDateTime" ).datepicker({
+       changeMonth: true,
+       changeYear: true,
+ 			dateFormat: 'yy-mm-dd',
+ 			yearRange: '1900:' + new Date().getFullYear()
+     });
+
+
 	$('#createEvent').on('click', function (e) {
 
 		if (latlng === null){
@@ -103,13 +111,7 @@ $(function(){
 		$('#extraTab').tab('show');
 	});
 
-	$("#inputEvDateTime").val((new Date()).toISOString());
 
-/*
-	$("#inputEvDateTime").change(function(){
-		$("#inputName").val($("#selectType".replace('_',' ')).val()+" "+$("#inputEvDateTime").val());
-	});
-*/
 	$('#selectType').change(function(){
 		$('#divNaturalDisaster').toggle(this.value == "natural_hazard");
 		if (this.value != "natural_hazard")
