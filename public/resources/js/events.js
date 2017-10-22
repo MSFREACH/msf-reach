@@ -300,7 +300,7 @@ var mapReports = function(reports){
       popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
       popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
       popupContent += 'Reporter: ' + feature.properties.content["username/alias"] + '<BR>';
-      popupContent += 'Opened: ' + feature.properties.event_datetime + '<BR>';
+      popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
       if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
         popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
       }
