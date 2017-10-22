@@ -269,6 +269,7 @@ var getEvent = function(eventId, callback){
     callback(null, data.result.features[0].properties);
   }).fail(function(err) {
     // Catch condition where no data returned
+    handleUnAuthorized(err);
     callback(err.responseText, null);
   });
 };
@@ -280,6 +281,8 @@ var getEvent = function(eventId, callback){
 var getReports = function(eventId, callback){
   $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err){
+    handleUnAuthorized(err);
   });
 };
 
@@ -449,6 +452,8 @@ var mapContacts = function(contacts){
 var initGetContacts = function(callback){
   $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err){
+    handleUnAuthorized(err);
   });
 };
 
@@ -458,6 +463,8 @@ var initGetContacts = function(callback){
 var initGetMissions = function(callback){
   $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err){
+    handleUnAuthorized(err);
   });
 };
 
