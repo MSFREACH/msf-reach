@@ -78,7 +78,7 @@ var mapAllEvents = function(err, events){
     "'><img src='/resources/images/icons/event_types/"+icon_name+".svg' width='40'></a>" +
     "<strong><a href='/events/?eventId=" + feature.properties.id +
     "'>" + feature.properties.metadata.name +"</a></strong>" + "<BR>" +
-    "Created: " + feature.properties.created + "<BR>" +
+    "Opened: " + (feature.properties.metadata.event_datetime || feature.properties.created) + "<BR>" +
     "Type: " + type.replace('_',' ') + "<br>" +
     statusStr +
     notificationStr +
@@ -93,7 +93,7 @@ var mapAllEvents = function(err, events){
     $('#eventProperties').append(
       '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Created: ' + feature.properties.created + '<br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<br>' +
       'Type: ' + feature.properties.type + '<br>' +
       statusStr +
       notificationStr +
