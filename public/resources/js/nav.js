@@ -12,7 +12,6 @@ var handleUnAuthorized= function (errorObject)
   if (errorObject.responseJSON.status == 401)
    {
      alert("It seems you have been logged out of the system. You will be redirected to login page.");
-     window.location.reload(true);
+     location.href="/";
    }
-
 }
