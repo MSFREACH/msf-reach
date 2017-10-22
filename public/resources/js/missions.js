@@ -62,6 +62,7 @@ var getMissions = function(term) {
       });
     }
   ).fail(function(err) {
+    console.log(err);
     loadMissions(err.responseText, null);
   });
 };
@@ -73,7 +74,7 @@ var onMissionLinkClick = function(id) {
     missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
     missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
     $( "#missionModalBody" ).load( "/events/mission.html" );
-  });  
+  });
 };
 
 //Create a throttled version
