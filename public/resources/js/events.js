@@ -173,15 +173,14 @@ var printEventProperties = function(err, eventProperties){
   if (err){
     $('#eventProperties').append(err);
   } else {
-    // Loop through properties and create a HTML list
     var propertiesTable = "";
     propertiesTable += '<table class="table">';
-    $.each( eventProperties, function( key, val ) {
-      if (EVENT_PROPERTIES.indexOf(key) > -1 ){
-        propertiesTable += "<tr id='" + key + "'><td>" + key.charAt(0).toUpperCase()+key.slice(1) + "</td><td>" +
-        val + "</td><td></td></tr>" ;
-      }
-    });
+    ['id', 'status', 'type', 'created'];
+    propertiesTable += "<tr><td>Name</td><td>"+eventProperties.metadata.name+"</td></tr>";
+    propertiesTable += "<tr><td>Status</td><td>"+eventProperties.status+"</td></tr>";
+    propertiesTable += "<tr><td>Type</td><td>"+eventProperties.type+"</td></tr>";
+    propertiesTable += "<tr><td>Opened</td><td>"+(eventProperties.metadata.event_datetime || eventProperties.created)+"</td></tr>";
+
     // Create unique link to this event
     var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
     // Create unique report link for this event
