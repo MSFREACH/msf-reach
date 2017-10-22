@@ -159,3 +159,9 @@ html,body {
   color: #fff;
   background-color:#555555;
 }
+
+.footnote{
+  color:#ccc;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
