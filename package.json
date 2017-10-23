@@ -1,6 +1,6 @@
 {
   "name": "msf-reach",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Web server for CogniCity MSF",
   "main": "dist",
   "scripts": {
