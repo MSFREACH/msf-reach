@@ -794,7 +794,7 @@ var vm = new Vue({
         contentType: 'application/json'
       }).done(function(data, textStatus, req) {
         window.location.href = '/events/?eventId=' + currentEventId;
-      }.fail(function(err) {
+      }).fail(function(err) {
         if (err.responseText.includes('expired')) {
           alert("session expired");
         } else {

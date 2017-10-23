@@ -601,7 +601,7 @@ $('#btnArchive').click(function(e){
     contentType: 'application/json'
   }).done(function( data, textStatus, req ){
     window.location.href = '/';
-  }.fail(function(err) {
+  }).fail(function(err) {
     if (err.responseText.includes('expired')) {
       alert("session expired");
     } else {
@@ -634,7 +634,7 @@ $('#btnSaveEdits').click(function(e){
   }).done(function( data, textStatus, req ){
     //$('#editModal').modal('toggle'); // toggling doesn't refresh data on page.
     window.location.href = '/events/?eventId=' + currentEventId;
-  }.fail(function(err) {
+  }).fail(function(err) {
     if (err.responseText.includes('expired')) {
       alert("session expired");
     } else {
