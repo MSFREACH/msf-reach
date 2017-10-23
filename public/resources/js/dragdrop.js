@@ -37,7 +37,7 @@ function dropSaveTweet(ev) {
     contentType: 'application/json'
   }).done(function( data, textStatus, req ){
     console.log('save tweet on server');
-  }.fail(function(err) {
+  }).fail(function(err) {
     if (err.responseText.includes('expired')) {
       alert("session expired");
     } else {
