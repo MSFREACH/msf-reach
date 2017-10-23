@@ -21,8 +21,12 @@ var getTweets = function(searchString) {
   console.log(searchString);
   $.getJSON('/api/twitter/?searchString=' + searchString, function (data){
     loadTweets(null, data.result);
-  }).fail(function(err){
-    loadTweets(err.responseText, null);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      loadTweets(err.responseText, null);
+    }
   });
 };
 

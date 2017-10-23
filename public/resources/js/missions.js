@@ -60,9 +60,12 @@ var getMissions = function(term) {
         layer.on('touchstart',function(e){$('#mrow'+layer.feature.properties.id).addClass('isHovered');});
         layer.on('touchend',function(e){$('#mrow'+layer.feature.properties.id).removeClass('isHovered');});
       });
+    }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      loadMissions(err.responseText, null);
     }
-  ).fail(function(err) {
-    loadMissions(err.responseText, null);
   });
 };
 
@@ -73,7 +76,13 @@ var onMissionLinkClick = function(id) {
     missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
     missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
     $( "#missionModalBody" ).load( "/events/mission.html" );
-  });  
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
+  });
 };
 
 //Create a throttled version

@@ -99,6 +99,9 @@ $(function(){
 				var eventId = data.result.objects.output.geometries[0].properties.id;
 				window.location.href = '/events/?eventId='+eventId;
 			}).fail(function (reqm, textStatus, err){
+			if (reqm.responseText.includes('expired')) {
+				alert("session expired");
+			} else {
 				$('#newEventModalTitle').html('<h4>Error creating event</h4>');
 				$('#newEventModalContent').html('<p>' + err +'.</p>');
 				$('#newEventModal').modal('toggle');

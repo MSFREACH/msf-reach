@@ -30,8 +30,11 @@ var getAllEvents = function(callback){
     // Print output to page
     callback(null, data.result);
   }).fail(function(err) {
-    // Catch condition where no data returned
-    callback(err.responseText, null);
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      callback(err.responseText, null);
+    }
   });
 };
 
@@ -364,6 +367,12 @@ function openHazardPopup(id)
 var getContacts = function(callback){
   $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 };
 
@@ -373,6 +382,12 @@ var getContacts = function(callback){
 var getMissions = function(callback){
   $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 };
 
@@ -382,6 +397,12 @@ var getMissions = function(callback){
 var getFeeds = function(url, callback) {
   $.getJSON(url, function( data ){
     callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 };
 
@@ -574,6 +595,12 @@ var onMissionLinkClick = function(id) {
     missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
     missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
     $( "#missionModalBody" ).load( "/events/mission.html" );
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 };
 
@@ -598,6 +625,12 @@ var getContact = function(id) {
       $("#msf_details").show();
     } else {
       $("#msf_details").hide();
+    }
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
     }
   });
 };
