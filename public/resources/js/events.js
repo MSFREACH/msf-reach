@@ -267,8 +267,12 @@ var getEvent = function(eventId, callback){
     currentEventGeometry = data.result.features[0].geometry;
     callback(null, data.result.features[0].properties);
   }).fail(function(err) {
-    // Catch condition where no data returned
-    callback(err.responseText, null);
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      // Catch condition where no data returned
+      callback(err.responseText, null);
+    }
   });
 };
 
@@ -279,6 +283,12 @@ var getEvent = function(eventId, callback){
 var getReports = function(eventId, callback){
   $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 };
 
@@ -448,6 +458,12 @@ var mapContacts = function(contacts){
 var initGetContacts = function(callback){
   $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 };
 
@@ -457,6 +473,12 @@ var initGetContacts = function(callback){
 var initGetMissions = function(callback){
   $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
     callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 };
 
@@ -579,8 +601,12 @@ $('#btnArchive').click(function(e){
     contentType: 'application/json'
   }).done(function( data, textStatus, req ){
     window.location.href = '/';
-  }).fail(function (reqm, textStatus, err){
-    alert(err);
+  }.fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 });
 
@@ -608,8 +634,12 @@ $('#btnSaveEdits').click(function(e){
   }).done(function( data, textStatus, req ){
     //$('#editModal').modal('toggle'); // toggling doesn't refresh data on page.
     window.location.href = '/events/?eventId=' + currentEventId;
-  }).fail(function (reqm, textStatus, err){
-    alert(err);
+  }.fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
   });
 });
 

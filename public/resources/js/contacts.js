@@ -83,7 +83,12 @@ var getContacts = function(term){
     });
 
   }).fail(function(err){
-    loadContacts(err.responseText, null);
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      // Catch condition where no data returned
+      loadContacts(err.responseText, null);
+    }
   });
 };
 

@@ -379,8 +379,12 @@ var vm = new Vue({
         }).done(function(data, textStatus, req) {
           console.log("data", data);
           window.location.href = '/';
-        }).fail(function(reqm, textStatus, err) {
-          alert(err);
+        }).fail(function(err) {
+          if (err.responseText.includes('expired')) {
+            alert("session expired");
+          } else {
+            alert('error: '+ err.responseText);
+          }
         });
       }
     });

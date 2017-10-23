@@ -794,8 +794,12 @@ var vm = new Vue({
         contentType: 'application/json'
       }).done(function(data, textStatus, req) {
         window.location.href = '/events/?eventId=' + currentEventId;
-      }).fail(function(reqm, textStatus, err) {
-        alert(err);
+      }.fail(function(err) {
+        if (err.responseText.includes('expired')) {
+          alert("session expired");
+        } else {
+          alert('error: '+ err.responseText);
+        }
       });
     },
     addOtherOrg() {
