@@ -105,7 +105,7 @@ $(function(){
 				$('#newEventModalTitle').html('<h4>Error creating event</h4>');
 				$('#newEventModalContent').html('<p>' + err +'.</p>');
 				$('#newEventModal').modal('toggle');
-			});
+			}});
 		}
 	});
 
