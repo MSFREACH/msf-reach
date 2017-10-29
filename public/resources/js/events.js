@@ -438,7 +438,15 @@ var mapContacts = function(contacts){
   if (markerClusters)
     eventsMap.removeLayer(markerClusters);
 
-  markerClusters = L.markerClusterGroup();
+  markerClusters = L.markerClusterGroup({
+    maxClusterRadius:50,
+    iconCreateFunction: function(cluster) {
+      var childCount = cluster.getChildCount();
+
+      return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf' , iconSize: new L.Point(40, 40) });
+
+     }
+  });
 
   if (contactsLayer) {
     eventsMap.removeLayer(contactsLayer);
