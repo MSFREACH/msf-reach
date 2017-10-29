@@ -2,6 +2,7 @@ function openMissionPopup(id) {
   missionsLayer.eachLayer(function(layer){
     if (layer.feature.properties.id == id)
      layer.openPopup(eventsMap.center);
+
   });
 }
 
@@ -11,7 +12,7 @@ var loadMissions = function(err, missions) {
     alert("Error loading missions: " + err);
   } else {
     $("#missionsContainer").html(
-      '<table class="table table-striped" id="missionsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Region</th><th>Start</th><th>End</th><th>Severity</th><th>Capacity</th></tr></thead><tbody>'
+      '<table class="table table-hover" id="missionsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Region</th><th>Start</th><th>End</th><th>Severity</th><th>Capacity</th></tr></thead><tbody>'
     );
 
     $.each(missions, function(key, value) {
@@ -59,34 +60,29 @@ var getMissions = function(term) {
         layer.on('touchstart',function(e){$('#mrow'+layer.feature.properties.id).addClass('isHovered');});
         layer.on('touchend',function(e){$('#mrow'+layer.feature.properties.id).removeClass('isHovered');});
       });
+    }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      loadMissions(err.responseText, null);
     }
-  ).fail(function(err) {
-    loadMissions(err.responseText, null);
   });
 };
 
 var missionData = {};
+var missionCoordinates = {};
 var onMissionLinkClick = function(id) {
-  async.waterfall([
-    function(callback) {
-      // Load Mission Details template to BT Modal 1st
-      $( "#missionModalBody" ).load( "/resources/tpl/missions/details.html" );
-      callback();
-    },
-    function(callback) {
-      $.getJSON("/api/missions/" + id, function(data) {
-        missionData = data.result ? data.result.properties : {};
-        _(missionData).forIn(function(value, key) {
-          console.log("Key:", key, "Value:", value);
-          // if (key === "nationality1" || key === "nationality2") {
-          //   value = value.name;
-          // }
-          $("span.event-" + key).html(value);
-        });
-        callback();
-      });
+  $.getJSON("/api/missions/" + id, function(data) {
+    missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
+    missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
+    $( "#missionModalBody" ).load( "/events/mission.html" );
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
     }
-  ]);
+  });
 };
 
 //Create a throttled version

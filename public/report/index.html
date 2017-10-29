@@ -44,7 +44,7 @@
            <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
           </div>
           <div class="form-section">
-            <h4>Please select your location on the map:</h4>
+            <h4>Please select the location of your information on the map:</h4>
             <div class="form-group">
               <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
             </div>
@@ -84,10 +84,14 @@
                 <h4>Thank you for your report!</h4>
                 <br>
                 <p>Your information has been successfully sent to MSF-HK. We greatly appreciate your participation and value the information you provided.</p>
-                <button onclick="newReport()" class="btn btn-msf">Submit new report</button>
+                <button onclick="newReport()" class="btn btn-msf">Submit new report</button><br><br>
+                <button onclick="newContact()" class="btn btn-msf">Submit contact details</button>
                 <script>
                   function newReport() {
                     location.reload();
+                  }
+                  function newContact() {
+                    location.replace('https://msf-reach.org/contact/');
                   }
                 </script>
                <br>
@@ -110,6 +114,7 @@
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
+<script type="text/javascript" src="/resources/js/common.js"></script>
 
 <!-- Get query parameter from URL -->
 <!-- Ask the server for reports from specific event -->

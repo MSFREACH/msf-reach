@@ -1,0 +1,850 @@
+<style type="text/css">
+.category-of-emergency,
+.type-of-programmes,
+.operational-centers {
+  padding-left: 15px;
+}
+
+.type-of-emergency {
+  padding-left: 30px;
+}
+
+dd.padding-bottom {
+  padding-bottom: 5px;
+}
+
+.flex-text-wrap pre {
+  padding: 5px;
+}
+</style>
+<section id="editEventVue">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Edit Event</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-5">
+        <div class="row">
+          <div class="col-sm-12">
+            <dl>
+              <dt>Event Name</dt>
+              <dd>
+                <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" />
+              </dd>
+            </dl>
+            <dl>
+              <dt>Latest notification</dt>
+              <dd>
+                <input type="text" class="form-control" v-model="event.metadata.notification"></date-picker>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Precise location of the emergency</dt>
+              <dd>
+                <div id="eventMap" style="width: 100%; height: 380px;"></div>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Event Type</dt>
+              <dd>
+                <select class="form-control" v-model="event.type">
+                  <!--Supplement an id here instead of using 'name'-->
+                  <option value="conflict">Armed conflict</option>
+                  <option value="natural_hazard">Natural disaster </option>
+                  <option value="epidemiological">Disease outbreak </option>
+                  <option value="search_and_rescue">Search and rescue</option>
+                  <option value="displacement">Displacement</option>
+                  <option value="malnutrition">Malnutrition</option>
+                  <option value="other">Other</option>
+                </select>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Region</dt>
+              <dd>
+                <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
+              </dd>
+            </dl>
+            <dl>
+              <dt>Open Date of event</dt>
+              <dd>{{ event.metadata.event_datetime | formatFullDate }}</dd>
+            </dl>
+            <dl>
+              <dt>Status</dt>
+              <dd class="padding-bottom">
+                <select v-model="event.metadata.event_status" class="form-control">
+                  <option disabled value="">Please select one</option>
+                  <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                </select>
+              </dd>
+              <dd>
+                <date-picker v-model="event.metadata.event_status_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Date on status update"></date-picker>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Emergency details (nature)</dt>
+              <dd>
+                <!-- emergencies -->
+                <div v-for="item in emergencies" class="category-of-emergency">
+                  <label>
+                    <input type="checkbox" :value="item.value" v-model="event.metadata.type_of_emergency" /> {{ item.text }}
+                  </label>
+                </div>
+                <div v-for="item in emergenciesWithTypes">
+                  <strong class="category-of-emergency">{{item.emergency}}</strong>
+                  <div v-for="type in item.types" class="type-of-emergency">
+                    <label>
+                      <input type="checkbox" :value="type.value" v-model="event.metadata.type_of_emergency" /> {{ type.text }}
+                    </label>
+                  </div>
+                </div>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Date and hours (local time) of the disaster</dt>
+              <dd>
+                <date-picker v-model="event.metadata.event_local_time"></date-picker>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Mission Contact Person</dt>
+              <dd class="padding-bottom">
+                <input type="text" class="form-control" v-model="event.metadata.incharge_position" placeholder="Position" />
+              </dd>
+              <dd class="padding-bottom">
+                <input type="text" class="form-control" v-model="event.metadata.incharge_name" placeholder="Name" />
+              </dd>
+              <dd class="padding-bottom">
+                <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+              </dd>
+              <dd class="padding-bottom">
+                <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Main results of the explo-event</dt>
+              <dd>
+                <textarea v-model.trim="event.metadata.exploratory_details" placeholder="Main results" class="form-control"></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Analysis of severity</dt>
+              <dd class="padding-bottom">
+                <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
+              </dd>
+              <dd class="padding-bottom">
+                <input type="range" min="1" max="10" step="1" v-model="event.metadata.severity_scale" class="pull-right" style="width: 75%" />
+                <span class="pull-left">Scale: {{event.metadata.severity_scale}}</span>
+              </dd>
+            </dl>
+            <div class="clearfix">&nbsp;</div>
+            <dl>
+              <dt>Security information</dt>
+              <dd>
+                <textarea v-model.trim="event.metadata.security_details" placeholder="Security details" class="form-control"></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>ID link - SharePoint</dt>
+              <dd>
+                <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint link" />
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-7">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" href="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                  MSF Response
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOne1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <dl>
+                    <dt>MSF response / type of programmes</dt>
+                    <dd>
+                      <div v-for="item in msfTypeOfProgrammes" class="type-of-programmes">
+                        <label>
+                          <input type="checkbox" :value="item.value" v-model="event.metadata.msf_response_types_of_programmes" /> {{ item.text }}
+                        </label>
+                      </div>
+                    </dd>
+                    <dd>
+                      <textarea v-model="event.metadata.msf_response" placeholder="MSF response" class="form-control"></textarea>
+                      <div class="clearfix" style="padding-top: 5px;"></div>
+                      <input type="range" min="1" max="10" step="1" v-model="event.metadata.msf_response_scale" class="pull-right" style="width: 75%" />
+                      <span class="pull-left">Scale: {{event.metadata.msf_response_scale}}</span>
+                    </dd>
+                  </dl>
+                  <div class="clearfix"></div>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Start Date of the MSF response</dt>
+                    <dd>
+                      <date-picker v-model="event.metadata.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>End Date of the MSF response</dt>
+                    <dd>
+                      <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Location of MSF response</dt>
+                    <dd>
+                      <div id="msfResponseMap" style="width: 100%; height: 380px;"></div>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Operational Center</dt>
+                    <dd>
+                      <div v-for="item in msfOperationalCenters" class="operational-centers">
+                        <label>
+                          <input type="checkbox" :value="item" v-model="event.metadata.msf_response_operational_centers" /> {{ item }}
+                        </label>
+                      </div>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <dl>
+                        <dt>Medical material:</dt>
+                        <dd>
+                          <div v-for="item in msfMedicalMaterials" class="operational-centers">
+                            <label>
+                              <input type="checkbox" :value="item" v-model="event.metadata.msf_response_medical_material" /> {{ item }}
+                            </label>
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                    <div class="col-sm-3">
+                      <dl>
+                        <dt>Total</dt>
+                        <dd>
+                          <input type="number" v-model.number="event.metadata.msf_response_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                        </dd>
+                      </dl>
+                    </div>
+                    <div class="col-sm-4">
+                      <dl>
+                        <dt>Date of arrival</dt>
+                        <dd>
+                          <date-picker v-model="event.metadata.msf_response_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <dl>
+                        <dt>Non Medical material:</dt>
+                        <dd>
+                          <div v-for="item in msfNonMedicalMaterials" class="operational-centers">
+                            <label>
+                              <input type="checkbox" :value="item" v-model="event.metadata.msf_response_non_medical_material" /> {{ item }}
+                            </label>
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                    <div class="col-sm-3">
+                      <dl>
+                        <dt>Total</dt>
+                        <dd>
+                          <input type="number" v-model.number="event.metadata.msf_response_non_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                        </dd>
+                      </dl>
+                    </div>
+                    <div class="col-sm-4">
+                      <dl>
+                        <dt>Date of arrival</dt>
+                        <dd>
+                          <date-picker v-model="event.metadata.msf_response_non_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse"  href="#collapseTwo1" aria-expanded="false" aria-controls="collapseTwo1">
+                  External Capacity
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTwo1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Analysis of capacity on the ground</dt>
+                    <dd>
+                      <label>
+                        <input type="radio" value="medical" v-model="event.metadata.ext_capacity_type_in_ground" /> Medical
+                      </label>
+                      <label>
+                        <input type="radio" value="non_medical" v-model="event.metadata.ext_capacity_type_in_ground" /> Non-Medical
+                      </label>
+                    </dd>
+                    <dd class="padding-bottom">
+                      <textarea v-model.trim="event.metadata.capacity" placeholder="Government capacity" class="form-control"></textarea>
+                    </dd>
+                    <dd class="padding-bottom">
+                      <textarea v-model.trim="event.metadata.ext_capacity_by_humanitarian" placeholder="Humanitarian" class="form-control"></textarea>
+                    </dd>
+                    <dd class="padding-bottom">
+                      <textarea v-model.trim="event.metadata.ext_capacity_action_plan" placeholder="Action plan" class="form-control"></textarea>
+                    </dd>
+                    <dd class="padding-bottom">
+                      <input type="text" v-model="event.metadata.ext_capacity_who" class="form-control" placeholder="Who" />
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <header>OTHER ORGANIZATIONS, PARTNERS INVOLVED</header>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>NGO</th>
+                            <th>Deployment</th>
+                            <th>Arrival</th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(item, index) in event.metadata.ext_other_organizations">
+                            <td>
+                              <input type="text" class="form-control" v-model="item.name" />
+                            </td>
+                            <td>
+                              <input type="text" class="form-control" v-model.number="item.deployment" />
+                            </td>
+                            <td>
+                              <date-picker v-model="item.arrival_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                            </td>
+                            <td>
+                              <button type="button" class="btn btn-xs btn-danger" v-on:click="removeOtherOrg(index)">X</button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="4">
+                              <button type="button" class="btn btn-xs btn-succes" v-on:click="addOtherOrg">Add more organization</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThree">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse"  href="#collapseThree1" aria-expanded="false" aria-controls="collapseThree1">
+                  Key Figures
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Figures</dt>
+                    <dd>
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div v-if="event.metadata.keyMSFFigures.length === 0">
+                            <div class="well">No MSF Figure yet.</div>
+                          </div>
+                          <div class="clearfix">&nbsp;</div>
+                          <div v-for="(item, index) in event.metadata.keyMSFFigures">
+                            <div class="row">
+                              <div class="col-sm-2">
+                                <button class="btn btn-xs btn-danger" @click="removeMSFfigure(item, index)">X</button>
+                              </div>
+                              <div class="col-sm-10">
+                                <input type="range" min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
+                              </div>
+                              <div class="col-sm-12">
+                                <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
+                                <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                                  <input type="text" v-model="item.description" class="form-control" placeholder="Please Specify" />
+                                </div>
+                              </div>
+                            </div>
+                            <hr/>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div v-for="(item, index) in keyMSFFigures">
+                            <a href="#" @click="addSelectedMSFfigures(item)"><i class="glyphicon glyphicon-ok" /> {{ item | relaceUnderscore }}</a>
+                          </div>
+                        </div>
+                      </div>
+                    </dd>
+                    <dd>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Population in total for zone impacted</dt>
+                    <dd>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <input type="number" class="form-control" v-model.number="event.metadata.population_total" v-on:change="calculatePercentagePeopleAffected" placeholder="Total population" />
+                        </div>
+                        <div class="col-sm-8">
+                          <textarea v-model.trim="event.metadata.population_total_description" placeholder="Description" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </dd>
+                  </dl>
+                  <dl>
+                    <dt>Population affected</dt>
+                    <dd>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.population_affected" v-on:change="calculatePercentagePeopleAffected" placeholder="Affected population" />
+                        </div>
+                        <div class="col-sm-8">
+                          <textarea v-model.trim="event.metadata.population_affected_description" placeholder="Description" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </dd>
+                  </dl>
+                  <dl>
+                    <dt>Percentage of people affected</dt>
+                    <dd>
+                      <div class="row">
+                        <div class="col-xs-4">
+                          <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.percentage_population_affected" placeholder="Affected population" />
+                        </div>
+                      </div>
+                    </dd>
+                  </dl>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFour">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse"  href="#collapseFour1" aria-expanded="false" aria-controls="collapseFour1">
+                  MSF Resources
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFour1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Staffs list _ Human resources supply</dt>
+                    <dd>
+                      <textarea v-model.trim="event.metadata.msf_resource_staff_list" placeholder="Contact(s)" class="form-control"></textarea>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Exapt</dt>
+                    <dd>
+                      <textarea v-model.trim="event.metadata.msf_resource_staff_exapt" placeholder="Contact(s)" class="form-control"></textarea>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>National staff</dt>
+                    <dd>
+                      <textarea v-model.trim="event.metadata.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item hidden">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <dl>
+                        <dt>When were they hired by MSF?</dt>
+                        <dd>
+                          <date-picker v-model="event.metadata.msf_resource_hired_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Hired date"></date-picker>
+                        </dd>
+                      </dl>
+                    </div>
+                    <div class="col-sm-6">
+                      <dl>
+                        <dt>When do they arrive on the ground?</dt>
+                        <dd>
+                          <date-picker v-model="event.metadata.msf_resource_arrive_to_ground" :config="{format: 'YYYY-MM-DD'}" placeholder="Arrive to ground date"></date-picker>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                  <dl>
+                    <dt>Category</dt>
+                    <dd>
+                      <select v-model="event.metadata.msf_resource_category" class="form-control">
+                        <option disabled value="">Please select one</option>
+                        <option v-for="item in msfResourceCategories" :value="item">{{ item | relaceUnderscore }}</option>
+                      </select>
+                    </dd>
+                  </dl>
+                  <dl>
+                    <dt>Name</dt>
+                    <dd></dd>
+                  </dl>
+                  <dl>
+                    <dt>Function</dt>
+                    <dd></dd>
+                  </dl>
+                  <dl>
+                    <dt>Contact number</dt>
+                    <dd></dd>
+                  </dl>
+                  <dl>
+                    <dt>Comments/Evaluation</dt>
+                    <dd></dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Visa requirement</dt>
+                    <dd>
+                      <label>Nationality</label>
+                      <input type="text" class="form-control input-sm" id="nationality1" @change="updateSelectedCountry" v-model="event.metadata.msf_resource_visa_requirement.name">
+                    </dd>
+                    <dd>
+                      <label>Required:</label>
+                      <label>
+                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="yes"> Yes
+                      </label>
+                      <label>
+                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="no"> No
+                      </label>
+                    </dd>
+                    <dd>
+                      <label>Description:</label>
+                      <textarea v-model.trim="event.metadata.msf_resource_visa_requirement.description" placeholder="Specify" class="form-control"></textarea>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Budget</dt>
+                    <dd>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Amount</th>
+                            <th>From who</th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(item, index) in event.metadata.msf_resource_budget">
+                            <td>
+                              <input type="text" class="form-control" v-model="item.amount" />
+                            </td>
+                            <td>
+                              <input type="text" class="form-control" v-model.number="item.from_who" />
+                            </td>
+                            <td>
+                              <button type="button" class="btn btn-xs btn-danger" v-on:click="removeResourceBudget(index)">X</button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="4">
+                              <button type="button" class="btn btn-xs btn-succes" v-on:click="addResourceBudget">Add more budget</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Institutional Donors</dt>
+                    <dd>
+                      <textarea v-model.trim="event.metadata.msf_resource_institutional_donors" placeholder="Donors" class="form-control"></textarea>
+                    </dd>
+                  </dl>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFive">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse"  href="#collapseFive1" aria-expanded="false" aria-controls="collapseFive1">
+                  Reflection and comments
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFive1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Practical Details / Recommendations</dt>
+                    <dd>
+                      <textarea v-model.trim="event.metadata.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control"></textarea>
+                    </dd>
+                  </dl>
+                </li>
+                <li class="list-group-item">
+                  <dl>
+                    <dt>Reflection / Comments on intervention</dt>
+                    <dd>
+                      <textarea v-model.trim="event.metadata.msf_ref_com_reflection_comments" placeholder="Description" class="form-control"></textarea>
+                    </dd>
+                  </dl>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" @click="submitEventData">Save Edits</button>
+  </div>
+</section>
+<script type="text/javascript">
+Vue.component("date-picker", VueBootstrapDatetimePicker.default);
+
+Vue.filter('formatDateOnly', function(value) {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD');
+  }
+});
+
+Vue.filter('formatFullDate', function(value) {
+  if (value) {
+    return moment(value).format('LLL');
+  } else {
+    return "N/A";
+  }
+});
+
+Vue.filter('formatedNumber', function(value) {
+  return value.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+});
+
+Vue.filter('relaceUnderscore', function(value) {
+  return replaceUnderscore(value);
+});
+
+var replaceUnderscore = function(value) {
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  value = capitalizeFirstLetter(value);
+  value = value.replace(/__/g, "-");
+  return value.replace(/_/g, " ");
+}
+
+var vm = new Vue({
+  el: "#editEventVue",
+  data: {
+    statuses: statuses,
+    emergencies: emergencies,
+    emergenciesWithTypes: emergenciesWithTypes,
+    msfTypeOfProgrammes: msfTypeOfProgrammes,
+    msfOperationalCenters: msfOperationalCenters,
+    keyMSFFigures: keyMSFFigures,
+    msfResourceCategories: msfResourceCategories,
+    event: $.extend(true, defaultEvent, currentEventProperties),
+    currentEventGeometry: currentEventGeometry,
+  },
+  mounted: function() {
+    console.log("Vue already mounted.");
+
+    if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
+      var optCenter = this.event.metadata.operational_center;
+      this.event.metadata.msf_response_operational_centers.push(optCenter);
+    }
+
+    if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
+      this.event.metadata.ext_other_organizations.push({
+        name: this.event.metadata.other_orgs,
+        deployment: this.event.metadata.deployment,
+        arrival_date: null
+      });
+    }
+
+    $('textarea').flexText();
+    this.calculatePercentagePeopleAffected();
+
+    var countryParams = {
+      "defaultCountry": "xx",
+      "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
+    };
+    $("#nationality1").countrySelect(countryParams);
+
+    $('.flag-dropdown').bind('click', function(e) {
+      var country = $("#nationality1").countrySelect("getSelectedCountryData");
+      console.log("country", country.name)
+      Vue.set(vm.event.metadata, 'msf_resource_visa_requirement', country);
+    });
+
+    this.$nextTick(function() {
+      var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
+      var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
+
+      /** << eventMap */
+      var eventMap = L.map('eventMap').setView(eventDefaultLatLng, 13);
+      L.tileLayer(eventDefaultLayer, {
+        minZoom: 0,
+        maxZoom: 18,
+        attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+        id: 'mapbox.streets'
+      }).addTo(eventMap);
+
+      var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
+
+      /*
+      var latlng = null;
+      eventMap.on('click', function(e) {
+        if (eventMarker) {
+          eventMap.removeLayer(eventMarker);
+        }
+        latlng = e.latlng;
+        Vue.set(vm.currentEventGeometry, 'coordinates', [latlng.lng, latlng.lat]);
+        eventMarker = L.marker(e.latlng).addTo(eventMap);
+      });
+      */
+      /** eventMap >> */
+
+      /** << msfResponseMap */
+      var msfResponseMarkerLatLng = eventDefaultLatLng;
+      if (!_.isEmpty(this.event.metadata.msf_response_location.coordinates)) {
+        msfResponseMarkerLatLng = [this.event.metadata.msf_response_location.coordinates[1], this.event.metadata.msf_response_location.coordinates[0]];
+      }
+
+      var msfResponseMap = L.map('msfResponseMap').setView(msfResponseMarkerLatLng, 13);
+      L.tileLayer(eventDefaultLayer, {
+        attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+        id: 'mapbox.streets'
+      }).addTo(msfResponseMap);
+
+      var msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap);
+
+      var msflatlng = null;
+      msfResponseMap.on('click', function(e) {
+        if (msfResponseMarker) {
+          msfResponseMap.removeLayer(msfResponseMarker);
+        }
+        msflatlng = e.latlng;
+        Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lng, msflatlng.lat]);
+        msfResponseMarker = L.marker(e.latlng).addTo(msfResponseMap);
+      });
+      /** msfResponseMap >> */
+
+      setTimeout(function() {
+        eventMap.invalidateSize();
+        msfResponseMap.invalidateSize();
+      }, 300);
+    });
+  },
+  methods: {
+    submitEventData() {
+      var metadata = this.event.metadata;
+      var subType = replaceUnderscore(this.event.metadata.type_of_emergency.toString());
+      metadata = _.extend(metadata, {
+        operational_center: this.event.metadata.msf_response_operational_centers.toString(),
+        sub_type: subType
+      });
+      var body = {
+        status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+        metadata: metadata
+      }
+      $.ajax({
+        type: "PUT",
+        url: "/api/events/" + currentEventId,
+        data: JSON.stringify(body),
+        contentType: 'application/json'
+      }).done(function(data, textStatus, req) {
+        window.location.href = '/events/?eventId=' + currentEventId;
+      }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+          alert("session expired");
+        } else {
+          alert('error: '+ err.responseText);
+        }
+      });
+    },
+    addOtherOrg() {
+      this.event.metadata.ext_other_organizations.push({
+        name: null,
+        deployment: 0,
+        arrival_date: null,
+      });
+    },
+    removeOtherOrg(index) {
+      this.event.metadata.ext_other_organizations.splice(index, 1);
+    },
+    calculatePercentagePeopleAffected() {
+      var percentage = (this.event.metadata.population_affected / this.event.metadata.population_total) * 100;
+      this.event.metadata.percentage_population_affected = percentage.toFixed(2);
+    },
+    updateFigureValue(item, i) {
+      this.event.metadata.keyMSFFigures[i].value = Math.pow(10, item.range);
+    },
+    addSelectedMSFfigures(item) {
+      var newItem = { value: 0, range: 0, category: item, description: null };
+      if (!_.find(this.event.metadata.keyMSFFigures, { category: item })) {
+        this.event.metadata.keyMSFFigures.push(newItem);
+        var index = this.keyMSFFigures.indexOf(item);
+        if (index > -1) {
+          this.keyMSFFigures.splice(index, 1);
+        }
+      }
+    },
+    removeMSFfigure(item, index) {
+      this.keyMSFFigures.push(item.category);
+      this.event.metadata.keyMSFFigures.splice(index, 1);
+    },
+    updateSelectedCountry() {
+      this.event.metadata.msf_resource_visa_requirement.nationality = $("#nationality1").countrySelect("getSelectedCountryData");
+    },
+    removeResourceBudget(index) {
+      this.event.metadata.msf_resource_budget.splice(index, 1);
+    },
+    addResourceBudget() {
+      this.event.metadata.msf_resource_budget.push({
+        amount: 0,
+        from_who: null,
+      });
+    }
+  },
+});
+</script>

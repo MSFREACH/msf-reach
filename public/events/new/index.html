@@ -15,6 +15,9 @@
     <!-- Bootstrap -->
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- jqueryui css -->
+    <link rel="stylesheet" href="/resources/css/jquery-ui-1.12.1.min.css">
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -30,6 +33,8 @@
 
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
+
+
 
   </head>
   <body>
@@ -86,7 +91,7 @@
       <div id="eventProperties">
         <ul class="nav nav-tabs">
           <li role="presentation" class="active"><a id="basicTab" data-toggle="tab" href="#basic">Basic Information</a></li>
-          <li role="presentation" ><a id="extraTab" data-toggle="tab" href="#extra">Extra details</a></li>
+          <!--<li role="presentation" ><a id="extraTab" data-toggle="tab" href="#extra">Extra details</a></li>-->
         </ul>
         <div class="tab-content">
           <div id="basic" class="tab-pane fade in active">
@@ -133,8 +138,8 @@
                    <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
                  </div>
                  <div class="form-group">
-                    <label for="inputEvDateTime">Date/time of Event</label>
-                    <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYYMMDD hh:mm:ss" >
+                    <label for="inputEvDateTime">Date of Event</label>
+                    <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD" >
                  </div>
                  <div class="form-group" >
                    <label for="inputEvStatus">Status</label>
@@ -165,7 +170,8 @@
                      <textarea class="form-control" rows="1" id="inputSecurity" placeholder="Security details ..." required></textarea>
                  </div>
 
-              <button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>
+              <!--<button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>-->
+                <button type="button" id="createEvent" class="btn btn-msf">Create</button>
               </div>
             </div>
 
@@ -232,6 +238,7 @@
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
     <!-- Cookies -->

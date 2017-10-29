@@ -1,0 +1,425 @@
+<style type="text/css">
+.category-of-emergency,
+.type-of-programmes,
+.operational-centers {
+  padding-left: 15px;
+}
+
+.type-of-emergency {
+  padding-left: 30px;
+}
+
+dd.padding-bottom {
+  padding-bottom: 5px;
+}
+
+.flex-text-wrap pre {
+  padding: 5px;
+}
+
+select.error,
+input.error,
+textarea.error {
+  border-color: red;
+  background: #FDD;
+}
+
+select.error:focus,
+input.error:focus,
+textarea.error:focus {
+  outline-color: #F99;
+}
+
+select.valid,
+input.valid,
+textarea.valid {
+  border-color: #5A5;
+  background: #EFE;
+}
+
+select.valid:focus,
+input.valid:focus,
+textarea.valid:focus {
+  outline-color: #8E8;
+}
+</style>
+<section id="archiveEventVue">
+  <form ref="archiveEventForm" method="put" id="archiveEventForm">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+    </div>
+    <div class="modal-body">
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+              <a data-parent="#accordion" href="#collapseThree2" aria-expanded="true" aria-controls="collapseThree2">
+                Key Figures
+              </a>
+            </h4>
+          </div>
+          <div id="collapseThree2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>Figures</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div v-if="event.metadata.keyMSFFigures.length === 0">
+                          <div class="well">No MSF Figure yet.</div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div v-for="(item, index) in event.metadata.keyMSFFigures">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <button class="btn btn-xs btn-danger" @click="removeMSFfigure(item, index)">X</button>
+                            </div>
+                            <div class="col-sm-10">
+                              <input type="range" min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
+                            </div>
+                            <div class="col-sm-12">
+                              <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
+                              <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                                <input type="text" v-model="item.description" class="form-control" placeholder="Please Specify" />
+                              </div>
+                            </div>
+                          </div>
+                          <hr/>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div v-for="(item, index) in keyMSFFigures">
+                          <a href="#" @click="addSelectedMSFfigures(item)"><i class="glyphicon glyphicon-ok" /> {{ item | relaceUnderscore }}</a>
+                        </div>
+                      </div>
+                    </div>
+                  </dd>
+                  <dd>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Population in total for zone impacted</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <input type="number" class="form-control" v-model.number="event.metadata.population_total" v-on:change="calculatePercentagePeopleAffected" placeholder="Total population" required/>
+                      </div>
+                      <div class="col-sm-8">
+                        <textarea v-model.trim="event.metadata.population_total_description" placeholder="Description" class="form-control" required></textarea>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Population affected</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.population_affected" v-on:change="calculatePercentagePeopleAffected" placeholder="Affected population" required />
+                      </div>
+                      <div class="col-sm-8">
+                        <textarea v-model.trim="event.metadata.population_affected_description" placeholder="Description" class="form-control" required></textarea>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Percentage of people affected</dt>
+                  <dd>
+                    <div class="row">
+                      <div class="col-xs-4">
+                        <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.percentage_population_affected" placeholder="Affected population" required/>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+            <div class="panel-body">
+              <a href="#" class="btn btn-success pull-right continue">Continue</a>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingFour">
+            <h4 class="panel-title">
+
+                MSF Resources
+
+            </h4>
+          </div>
+          <div id="collapseFour2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>Budget</dt>
+                  <dd>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Amount</th>
+                          <th>From who</th>
+                          <th>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in event.metadata.msf_resource_budget">
+                          <td>
+                            <input type="text" class="form-control" v-model="item.amount" required />
+                          </td>
+                          <td>
+                            <input type="text" class="form-control" v-model.number="item.from_who" required />
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-xs btn-danger" v-on:click="removeResourceBudget(index)">X</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="4">
+                            <button type="button" class="btn btn-xs btn-succes" v-on:click="addResourceBudget">Add more budget</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Institutional Donors</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_resource_institutional_donors" placeholder="Donors" class="form-control" required></textarea>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+            <div class="panel-body">
+              <a href="#" class="btn btn-success pull-left previous">Previous</a>
+              <a href="#" class="btn btn-success pull-right continue">Continue</a>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingFive">
+            <h4 class="panel-title">
+                Reflection and comments
+            </h4>
+          </div>
+          <div id="collapseFive2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <dl>
+                  <dt>Practical Details / Recommendations</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control" required></textarea>
+                  </dd>
+                </dl>
+              </li>
+              <li class="list-group-item">
+                <dl>
+                  <dt>Reflection / Comments on intervention</dt>
+                  <dd>
+                    <textarea v-model.trim="event.metadata.msf_ref_com_reflection_comments" placeholder="Description" class="form-control" required></textarea>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+            <div class="panel-body">
+              <a href="#" class="btn btn-success pull-left previous">Previous</a>
+              <a href="#" class="btn btn-success pull-right continue">Continue</a>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="headingSix">
+            <h4 class="panel-title">
+                End Date of the MSF response
+            </h4>
+          </div>
+          <div id="collapseSix2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <dl>
+                      <dt>Status</dt>
+                      <dd>
+                        <select v-model="event.metadata.event_status" class="form-control" required>
+                          <option disabled value="">Please select one</option>
+                          <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                        </select>
+                      </dd>
+                      <dd>
+                        <div class="clearfix">&nbsp;</div>
+                        <date-picker v-model="event.metadata.event_status_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Date on status update" required></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="col-sm-6">
+                    <dl>
+                      <dt>End Date of the MSF response</dt>
+                      <dd>
+                        <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div class="panel-body">
+              <a href="#" class="btn btn-success pull-left previous">Previous</a>
+              <button type="submit" class="btn btn-danger pull-right">Archive Event</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>
+<script type="text/javascript">
+Vue.component("date-picker", VueBootstrapDatetimePicker.default);
+
+Vue.filter('formatDateOnly', function(value) {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD');
+  }
+});
+
+Vue.filter('formatFullDate', function(value) {
+  if (value) {
+    return moment(value).format('LLL');
+  } else {
+    return "N/A";
+  }
+});
+
+Vue.filter('formatedNumber', function(value) {
+  return value.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+});
+
+Vue.filter('relaceUnderscore', function(value) {
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  value = capitalizeFirstLetter(value);
+  value = value.replace(/__/g, "-");
+  return value.replace(/_/g, " ");
+});
+
+var vm = new Vue({
+  el: "#archiveEventVue",
+  data: {
+    statuses: statuses,
+    keyMSFFigures: keyMSFFigures,
+    event: $.extend(true, defaultEvent, currentEventProperties),
+    currentEventGeometry: currentEventGeometry,
+  },
+  mounted: function() {
+    console.log("Vue already mounted.");
+
+    this.event.metadata.end_date_msf_response = moment().format("YYYY-DD-MM");
+    this.event.metadata.event_status  = "complete";
+    this.event.metadata.event_status_date  = moment().format("YYYY-DD-MM");
+
+    $('.previous').click(function(e) {
+      e.preventDefault();
+      var section = $(this).closest('.panel-collapse.collapse');
+
+      section.collapse('toggle');
+      // find and uncollapse previous section:
+      section.parents('.panel').prev().find('.panel-collapse.collapse').collapse('toggle');
+    });
+
+    $('.continue').click(function(e) {
+      e.preventDefault();
+      var sectionValid = true,
+        section = $(this).closest('.panel-collapse.collapse');
+      // check if fields of this section are valid:
+      $.each(section.find('input, select, textarea'), function() {
+        if (!$(this).valid()) {
+          sectionValid = false;
+        }
+      });
+      // toggle sections if fields are valid / show error if they're not:
+      if (sectionValid) {
+        // collapse current section:
+        section.collapse('toggle');
+        // find and uncollapse next section:
+        section.parents('.panel').next().find('.panel-collapse.collapse').collapse('toggle');
+      }
+    });
+
+    var v = jQuery("#archiveEventForm").validate({
+      submitHandler: function(form) {
+        var metadata = vm.event.metadata;
+        metadata = _.extend(metadata, {
+          type: vm.event.type,
+          managingOC: vm.event.metadata.operational_center,
+          startDate: moment(vm.event.created).format("YYYY-DD-MM"),
+          finishDate: moment().format('YYYY-DD-MM'),
+        });
+
+        var body = {
+          status: "inactive",
+          metadata: metadata,
+          location: {
+            lat: currentEventGeometry.coordinates[1],
+            lng: currentEventGeometry.coordinates[0],
+          }
+        }
+        $.ajax({
+          type: "PUT",
+          url: "/api/events/" + currentEventId,
+          data: JSON.stringify(body),
+          contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+          console.log("data", data);
+          window.location.href = '/';
+        }).fail(function(err) {
+          if (err.responseText.includes('expired')) {
+            alert("session expired");
+          } else {
+            alert('error: '+ err.responseText);
+          }
+        });
+      }
+    });
+  },
+  methods: {
+    calculatePercentagePeopleAffected() {
+      var percentage = (this.event.metadata.population_affected / this.event.metadata.population_total) * 100;
+      this.event.metadata.percentage_population_affected = percentage.toFixed(2);
+    },
+    updateFigureValue(item, i) {
+      this.event.metadata.keyMSFFigures[i].value = Math.pow(10, item.range);
+    },
+    addSelectedMSFfigures(item) {
+      var newItem = { value: 0, range: 0, category: item, description: null };
+      if (!_.find(this.event.metadata.keyMSFFigures, { category: item })) {
+        this.event.metadata.keyMSFFigures.push(newItem);
+        var index = this.keyMSFFigures.indexOf(item);
+        if (index > -1) {
+          this.keyMSFFigures.splice(index, 1);
+        }
+      }
+    },
+    removeMSFfigure(item, index) {
+      this.keyMSFFigures.push(item.category);
+      this.event.metadata.keyMSFFigures.splice(index, 1);
+    },
+    removeResourceBudget(index) {
+      this.event.metadata.msf_resource_budget.splice(index, 1);
+    },
+    addResourceBudget() {
+      this.event.metadata.msf_resource_budget.push({
+        amount: 0,
+        from_who: null,
+      });
+    }
+  }
+});
+</script>

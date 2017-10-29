@@ -12,7 +12,12 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
 {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
-var TYPEICONS={'conflict':'CONFLICT-47.svg', 'epidemiological':'EPIDEMIC-44.svg' , 'search_and_rescue':'SEARCH_AND_RESCUE-48.svg', 'displacement':'DISPLACEMENT-46.svg','malnutrition':'MALNUTRITION-45.svg' };
+var PDCHazardsLayer;
+var TSRHazardsLayer;
+var USGSHazardsLayer;
+var GDACSHazardsLayer;
+var PTWCHazardsLayer;
+var eventsLayer;
 
 /**
 * Function to get all events from the API
@@ -25,40 +30,57 @@ var getAllEvents = function(callback){
     // Print output to page
     callback(null, data.result);
   }).fail(function(err) {
-    // Catch condition where no data returned
-    callback(err.responseText, null);
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      callback(err.responseText, null);
+    }
   });
 };
 
-// Add popups
-function onEachFeature(feature, layer) {
-  var affectedPopulationStr = '';
-  if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
-    affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
-  }
+/**
+* Function to map and print a table of events
+* @param {Object} events - GeoJSON Object containing event details
+*/
+var mapAllEvents = function(err, events){
 
-  var totalPopulationStr = '';
-  if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
-    totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
-  }
+  // Add popups
+  function onEachFeature(feature, layer) {
+    var affectedPopulationStr = '';
+    if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
+      affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
+    }
 
-  var notificationStr = '';
-  var statusStr = '';
-  if(typeof(feature.properties.metadata.notification)!=='undefined') {
-    notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
-  }
-  if(typeof(feature.properties.metadata.event_status)!=='undefined') {
-    statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
-  } else {
-    statusStr = 'Status: ' + feature.properties.status + '<br>';
-  }
+    var totalPopulationStr = '';
+    if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
+      totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
+    }
 
-  var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
+    var notificationStr = '';
+    var statusStr = '';
+    if(typeof(feature.properties.metadata.notification)!=='undefined') {
+      notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
+    } else {
+      notificationStr = 'Latest notification: (none)<br>';
+    }
+    if(typeof(feature.properties.metadata.event_status)!=='undefined') {
+      statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
+    } else {
+      statusStr = 'Status: ' + feature.properties.status + '<br>';
+    }
 
-  var popupContent = "<img src='/resources/images/icons/event_types/"+type+".svg' width='40'>" +
-    "<strong><a href='events/?eventId=" + feature.properties.id +
-    "'>Event " + feature.properties.id +"</a></strong>" + "<BR>" +
-    "Created: " + feature.properties.created + "<BR>" +
+
+    var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
+    var icon_name = type;
+    if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+      icon_name = 'epidemic';
+    }
+
+    var popupContent = "<a href='/events/?eventId=" + feature.properties.id +
+    "'><img src='/resources/images/icons/event_types/"+icon_name+".svg' width='40'></a>" +
+    "<strong><a href='/events/?eventId=" + feature.properties.id +
+    "'>" + feature.properties.metadata.name +"</a></strong>" + "<BR>" +
+    "Opened: " + (feature.properties.metadata.event_datetime || feature.properties.created) + "<BR>" +
     "Type: " + type.replace('_',' ') + "<br>" +
     statusStr +
     notificationStr +
@@ -66,285 +88,621 @@ function onEachFeature(feature, layer) {
     affectedPopulationStr;
 
 
-  if (popupContent.endsWith('<br>')) {
-    popupContent.substr(0,popupContent.length-4);
+    if (popupContent.endsWith('<br>')) {
+      popupContent.substr(0,popupContent.length-4);
+    }
+
+    $('#eventProperties').append(
+      '<div class="list-group-item">' +
+      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<br>' +
+      'Type: ' + feature.properties.type + '<br>' +
+      statusStr +
+      notificationStr +
+      totalPopulationStr +
+      affectedPopulationStr +
+      '</div>'
+    );
+
+    if (feature.properties && feature.properties.popupContent) {
+      popupContent += feature.properties.popupContent;
+    }
+
+    layer.bindPopup(popupContent);
   }
 
-  $('#eventProperties').append(
-    '<div class="list-group-item">' +
-    'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-    'Created: ' + feature.properties.created + '<br>' +
-    'Type: ' + feature.properties.type + '<br>' +
-    statusStr +
-    notificationStr +
-    totalPopulationStr +
-    affectedPopulationStr +
-    '</div>'
-  );
-
-  if (feature.properties && feature.properties.popupContent) {
-    popupContent += feature.properties.popupContent;
-  }
-
-  layer.bindPopup(popupContent);
-}
-
-  // MSF Icons
-  function  getEventIcon(typeKey) {
-    var iconFile='msf_icon.png';
-    var iconSize=39;
-    if (TYPEICONS[typeKey]) {
-      iconFile='icons/event_types/'+TYPEICONS[typeKey];
-      iconSize=78;
-    }
-
-    return L.icon({
-      iconUrl: ('/resources/images/'+iconFile),
-
-      iconSize:     [iconSize, iconSize], // size of the icon
-      //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-      //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-  }
-
-  /**
-  * Function to print a table of events
-  * @param {Object} events - GeoJSON Object containing event details
-  */
-  var mapAllEvents = function(err, events){
-
-    var eventsLayer = L.geoJSON(events, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: L.icon({
-          iconUrl: '/resources/images/icons/event_types/open_event.svg',
-          iconSize:     [50, 50], // size of the icon
-          //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-          //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-        })});
-      },
-      onEachFeature: onEachFeature
-    });
-    eventsLayer.addTo(landingMap);
-    layerControl.addOverlay(eventsLayer, 'Current Events');
-
-  };
-
-  /**
-  * Function to get reports for an event
-  * @param {Number} eventId - UniqueId of event
-  **/
-  var getPDCHazards = function(callback){
-    $.getJSON('/api/hazards/pdc', function( data ){
-      callback(data.result);
-    });
-  };
-
-  /**
-  * Function to map from hazard summary to hazard icon
-  * @param {String} hazardSummary - hazard summary
-  **/
-  var hazardIcon = function(hazardSummary) {
-    var iconUrl = '/resources/images/hazards/';
-    iconUrl += hazardSummary.split(' ')[0].toLowerCase() + '_' +
-      hazardSummary.split(' ')[1].toLowerCase().replace(/(\(|\))/g,'') +
-      '.svg';
-
-    return L.icon({
-      "iconUrl": iconUrl,
-      iconSize:     [39, 39], // size of the icon
-      //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-      //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-  };
-
-  /**
-  * Function to add hazards to map
-  * @param {Object} hazards - GeoJson FeatureCollection containing hazard points
-  **/
-  var mapHazards = function(hazards){
-    function onEachFeature(feature, layer) {
-      var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR><BR>"+ feature.properties.summary +"<BR><BR>" + feature.properties.updated +"<BR>" + feature.properties.id;
-
-      layer.bindPopup(popupContent);
-    }
-
-    var hazardsLayer = L.geoJSON(hazards, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: hazardIcon(feature.properties.summary)});
-      },
-      onEachFeature: onEachFeature
-    });
-    hazardsLayer.addTo(landingMap);
-    layerControl.addOverlay(hazardsLayer, 'PDC Hazards');
-
-  };
-
-  /**
-  * Function to get contacts
-  **/
-  var getContacts = function(callback){
-    $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
-      callback(data.result);
-    });
-  };
-
-  /**
-  * Function to get missions
-  **/
-  var getMissions = function(callback){
-    $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
-      callback(data.result);
-    });
-  };
-
-  /**
-    * Function to get feeds
-    **/
-  var getFeeds = function(url, callback) {
-    $.getJSON(url, function( data ){
-      callback(data.result);
-    });
-  };
-
-  var mapFeeds = function(feeds) {
-    for(var i = 0; i <= feeds.features.length; i++) {
-      var feature = feeds.features[i];
-      if (feature) {
-        $('#rssFeeds').append(
-          '<div class="list-group-item">' +
-          'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
-          'Updated: ' + feature.properties.updated + '<br>' +
-          'Summary: ' + feature.properties.summary.trim() + '<br>' +
-          '</div>'
-        );
-      }
-    }
-  };
-
-  /**
-  * Function to add missions to map
-  * @param {Object} missions - GeoJson FeatureCollection containing mission points
-  **/
-  var mapMissions = function(missions ){
-
-    function onEachFeature(feature, layer) {
-
-      var popupContent = '';
-
-      if (feature.properties && feature.properties.properties) {
-        popupContent += feature.properties.properties.type + '<BR>';
-        popupContent += feature.properties.properties.name + '<BR>';
-        if (typeof(feature.properties.properties.notification) !== 'undefined'){
-          popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
-        }
-        popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
-        popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
-        popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
-        popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
-        popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
-      }
-
-      layer.bindPopup(popupContent);
-    }
-
-    // MSF Icons
-    var missionIcon = L.icon({
-      iconUrl: '/resources/images/icons/event_types/historical.svg',
-
-      iconSize:     [50, 50], // size of the icon
-      opacity: 0.8
-      //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-      //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    var missionsLayer = L.geoJSON(missions, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: missionIcon});
-      },
-      onEachFeature: onEachFeature
-    });
-    missionsLayer.addTo(landingMap);
-    layerControl.addOverlay(missionsLayer, 'Mission Histories');
-  };
-
-
-  /**
-  * Function to add contacts to map
-  * @param {Object} contacts - GeoJson FeatureCollection containing contact points
-  **/
-  var mapContacts = function(contacts ){
-
-    function onEachFeature(feature, layer) {
-
-      var popupContent = '';
-
-      if (feature.properties && feature.properties.properties) {
-        popupContent =
-        'name: '+(typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name +
-          '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-          '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-          '<br>type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-          '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
-      }
-
-      layer.bindPopup(popupContent);
-    }
-
-    // MSF Icons
-    var contactIcon = L.icon({
-      iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
-
-      iconSize:     [36, 36], // size of the icon
-      //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-      //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    var contactsLayer = L.geoJSON(contacts, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {icon: contactIcon});
-      },
-      onEachFeature: onEachFeature
-    });
-    //contactsLayer.addTo(landingMap);
-    layerControl.addOverlay(contactsLayer, 'Contacts');
-
-  };
-
-
-  // Create map
-  var landingMap = L.map('landingMap').setView([-6.8, 108.7], 7);
-
-  // Add some base tiles
-  var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2lgdo3x000b2rmrv6iiii38/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2xnZXJvcyIsImEiOiJjajBodHJjdGYwM21sMndwNHk2cGxxajRnIn0.nrw2cFsVqjA2bclnKs-9mw', {
-    attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 18,
-    ext: 'png'
+  eventsLayer = L.geoJSON(events, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: L.icon({
+        iconUrl: '/resources/images/icons/event_types/open_event.svg',
+        iconSize:     [50, 50], // size of the icon
+        iconAnchor: [25, 50],
+        popupAnchor: [0, -40]
+        //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+      })});
+    },
+    onEachFeature: onEachFeature
   });
 
-  // Add some satellite tiles
-  var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2lds8kl00042smtdpniowm2/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2xnZXJvcyIsImEiOiJjajBodHJjdGYwM21sMndwNHk2cGxxajRnIn0.nrw2cFsVqjA2bclnKs-9mw', {
-    attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-  }).addTo(landingMap);
+  eventsLayer.addTo(landingMap);
+  layerControl.addOverlay(eventsLayer, 'Current Events');
 
-  var baseMaps = {
-    "Terrain": mapboxTerrain,
-    "Satellite" : mapboxSatellite
-  };
+};
 
-  var overlayMaps = {};
+/**
+* Function to map from PDC hazard summary to PDC hazard icon
+* @param {String} hazardSummary - hazard summary
+**/
+var PDCHazardIcon = function(hazardSummary) {
+  var iconUrl = '/resources/images/hazards/';
+  iconUrl += hazardSummary.split(' ')[0].toLowerCase() + '_' +
+  hazardSummary.split(' ')[1].toLowerCase().replace(/(\(|\))/g,'') +
+  '.svg';
 
-  var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(landingMap);
+  return L.icon({
+    "iconUrl": iconUrl,
+    iconSize:     [39, 39] // size of the icon
+    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
 
+};
+
+/**
+* Function to add PDC hazards to map
+* @param {Object} hazards - GeoJson FeatureCollection containing PDC hazard points
+**/
+var mapPDCHazards = function(hazards){
+
+  PDCHazardsLayer = L.geoJSON(hazards, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: PDCHazardIcon(feature.properties.summary)});
+    },
+    onEachFeature: hazardFeature
+  });
+
+  PDCHazardsLayer.addTo(landingMap);
+  layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'Hazards');
+
+};
+
+/*
+* Function to add TSR hazards to map
+* @param {Object} hazards - GeoJson FeatureCollection containing TSR hazard points
+**/
+
+var hazardFeature = function(feature, layer) {
+  var popupContent = "<strong><a href='"+feature.properties.link+"' target=_blank>" + feature.properties.title +"</a></strong>" + "<BR>Source: "+ feature.properties.source + "<BR>Summary: "+ feature.properties.summary +"<BR>Updated: " + feature.properties.updated;
+
+  layer.bindPopup(popupContent);
+};
+
+var mapTSRHazards = function(hazards){
+
+  TSRHazardsLayer = L.geoJSON(hazards, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, L.icon({
+        iconUrl: '/resources/images/icons/event_types/typhoon.svg',
+        iconSize: [39, 39]
+      }));
+    },
+    onEachFeature: hazardFeature
+  });
+
+  TSRHazardsLayer.addTo(landingMap);
+  layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'Hazards');
+
+};
+
+/*
+* Function to add PTWC hazards to map
+* @param {Object} hazards - GeoJson FeatureCollection containing PTWC hazard points
+**/
+var mapPTWCHazards = function(hazards){
+  PTWCHazardsLayer = L.geoJSON(hazards, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, L.icon({
+        iconUrl: '/resources/images/icons/event_types/tsunami.svg',
+        iconSize: [39, 39]
+      }));
+    },
+    onEachFeature: hazardFeature
+  });
+
+  PTWCHazardsLayer.addTo(landingMap);
+  layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'Hazards');
+
+};
+
+/**
+* Function to map from GDACS hazard summary to GDACS hazard icon
+* @param {String} hazardSummary - hazard summary
+**/
+var GDACSHazardIcon = function(GDACSProperties) {
+  var iconUrl = '/resources/images/hazards/';
+
+  switch(GDACSProperties.type) {
+    case "EQ":
+    iconUrl += 'earthquake_';
+    break;
+    case "TC":
+    iconUrl += 'cyclone_';
+    break;
+    default:
+    console.log("error in GDACS data");
+  }
+  switch(GDACSProperties.level) {
+    case "green":
+    iconUrl += 'advisory.svg';
+    break;
+    case "yellow":
+    iconUrl += 'watch.svg';
+    break;
+    case "red":
+    iconUrl += 'warning.svg';
+    break;
+    default:
+    iconUrl += 'advisory.svg'; // reviewme fixme
+  }
+
+
+  return L.icon({
+    "iconUrl": iconUrl,
+    iconSize:     [39, 39] // size of the icon
+    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
+
+};
+
+/*
+* Function to add GDACS hazards to map
+* @param {Object} hazards - GeoJson FeatureCollection containing GDACS hazard points
+**/
+var mapGDACSHazards = function(hazards){
+  GDACSHazardsLayer = L.geoJSON(hazards, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: GDACSHazardIcon(feature.properties)});
+    },
+    onEachFeature: hazardFeature
+  });
+
+  GDACSHazardsLayer.addTo(landingMap);
+  layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'Hazards');
+
+};
+
+/*
+* Function to add USGS hazards to map
+* @param {Object} hazards - GeoJson FeatureCollection containing USGS hazard points
+**/
+var mapUSGSHazards = function(hazards){
+
+  USGSHazardsLayer = L.geoJSON(hazards, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, L.icon({
+        iconUrl: '/resources/images/icons/event_types/earthquake.svg',
+        iconSize: [39, 39]
+      }));
+    },
+    onEachFeature: hazardFeature
+  });
+
+  USGSHazardsLayer.addTo(landingMap);
+  layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'Hazards');
+
+};
+
+function openHazardPopup(id)
+{
+
+  switch(id.split('-',1)[0]) {
+    case "USGS":
+    USGSHazardsLayer.eachLayer(function(layer){
+      if (layer.feature.properties.id === id)
+      layer.openPopup();
+
+      var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
+      layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
+      layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
+      layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
+    });
+    break;
+    case "PDC":
+    PDCHazardsLayer.eachLayer(function(layer){
+      if (layer.feature.properties.id == id)
+      layer.openPopup();
+      var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
+      layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
+      layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
+      layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
+    });
+    break;
+    case "TSR":
+    TSRHazardsLayer.eachLayer(function(layer){
+      if (layer.feature.properties.id == id)
+      layer.openPopup();
+      var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
+      layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
+      layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
+      layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
+    });
+    break;
+    case "PTWC":
+    PTWCHazardsLayer.eachLayer(function(layer){
+      if (layer.feature.properties.id == id)
+      layer.openPopup();
+      var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
+      layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
+      layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
+      layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
+    });
+    break;
+    case "GDACS":
+    GDACSHazardsLayer.eachLayer(function(layer){
+      if (layer.feature.properties.id == id)
+      layer.openPopup();
+      var selector='[id="rssdiv'+sanitiseId(layer.feature.properties.id)+'"]';
+      layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
+      layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
+      layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
+      layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
+    });
+    break;
+    default:
+    console.log("Hazards layer not found");
+
+  }
+}
+
+
+/**
+* Function to get contacts
+**/
+var getContacts = function(callback){
+  $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
+    callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
+  });
+};
+
+/**
+* Function to get missions
+**/
+var getMissions = function(callback){
+  $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
+    callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
+  });
+};
+
+/**
+* Function to get feeds
+**/
+var getFeeds = function(url, callback) {
+  $.getJSON(url, function( data ){
+    callback(data.result);
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
+  });
+};
+
+var tableFeeds = function(feeds) {
+  for(var i = 0; i <= feeds.features.length; i++) {
+    var feature = feeds.features[i];
+    if (feature) {
+      $('#rssFeeds').append(
+        '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
+        'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
+        'Source: ' + feature.properties.source + '<br>' +
+        'Updated: ' + feature.properties.updated + '<br>' +
+        'Summary: ' + feature.properties.summary.trim() + '<br>' +
+        '</div>'
+      );
+    }
+  }
+};
+
+/**
+* Function to return an icon for mission in popupContent
+* @param {String} type - type of disaster
+**/
+var missionPopupIcon = function(missionType) {
+  var type = missionType.toLowerCase();
+  var html = '<img src="/resources/images/icons/event_types/';
+  if (type.includes("conflict")) {
+    html += 'conflict';
+  } else if (type.includes('displacement')) {
+    html += 'displacement';
+  } else if (type.includes('drought')) {
+    html += 'fire';
+  } else if (type.includes('earthquake')) {
+    html += 'earthquake';
+  } else if (type.includes('epidemic') || type.includes('disease')) {
+    html += 'epidemic';
+  } else if (type.includes('fire')) {
+    html += 'fire';
+  } else if (type.includes('flood')) {
+    html += 'flood';
+  } else if (type.includes('historic')) {
+    html += 'historical';
+  } else if (type.includes('industrial')) {
+    html += 'industrial_disaster';
+  } else if (type.includes('landslide')) {
+    html += 'landslide';
+  } else if (type.includes('malnutrition')) {
+    html += 'malnutrition';
+  } else if (type.includes('search')) {
+    html += 'search_and_rescue';
+  } else if (type.includes('tsunami')) {
+    html += 'tsunami';
+  } else if (type.includes('typhoon') || type.includes('hurricane') || type.includes('cyclone')) {
+    html += 'typhoon';
+  } else if (type.includes('volcano')) {
+    html += 'volcano';
+  } else {
+    return missionType + '<br>'; // just return text in this case
+  }
+  html += '.svg" width="40">';
+
+  return html;
+};
+
+/**
+* Function to add missions to map
+* @param {Object} missions - GeoJson FeatureCollection containing mission points
+**/
+var mapMissions = function(missions ){
+
+  function onEachFeature(feature, layer) {
+
+    var popupContent = '';
+
+    if (feature.properties && feature.properties.properties) {
+      popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+        feature.properties.id +
+        ')">' + missionPopupIcon(feature.properties.properties.type) + '</a>';
+      popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+        feature.properties.id +
+        ')">' + feature.properties.properties.name + '</a><br>';
+      if (typeof(feature.properties.properties.notification) !== 'undefined'){
+        popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+      } else {
+        popupContent += 'Latest notification: (none)<BR>';
+      }
+      popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
+      popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
+      popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
+      popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
+      popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
+    }
+
+    layer.bindPopup(popupContent);
+  }
+
+  // MSF Icons
+  var missionIcon = L.icon({
+    iconUrl: '/resources/images/icons/event_types/historical.svg',
+
+    iconSize:     [50, 50], // size of the icon
+    opacity: 0.8,
+    iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
+  });
+
+  var missionsLayer = L.geoJSON(missions, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: missionIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+  missionsLayer.addTo(landingMap);
+  layerControl.addOverlay(missionsLayer, 'Mission Histories');
+};
+
+
+/**
+* Function to add contacts to map
+* @param {Object} contacts - GeoJson FeatureCollection containing contact points
+**/
+var mapContacts = function(contacts ){
+
+  function onEachFeature(feature, layer) {
+
+    var popupContent = '';
+
+    if (feature.properties && feature.properties.properties) {
+      popupContent = 'name: <a href="#" onclick="onContactLinkClick(' +
+        feature.properties.id +
+        ')" data-toggle="modal" data-target="#contactDetailsModal">' +
+      (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
+      '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+      '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+      '<br>type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+    }
+
+    layer.bindPopup(popupContent);
+  }
+
+  // function returns list of msf staff contacts if msf is true, else other contacts
+  function msfContact(contacts, msf) {
+
+    var newFC = {features: []};
+    for(var i = 0; i < contacts.features.length; i++) {
+
+      if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
+        if (msf) {
+          newFC.features.push(contacts.features[i]);
+        }
+      } else if (!msf) {
+        newFC.features.push(contacts.features[i]);
+      }
+    }
+    return newFC;
+  }
+
+  // MSF Icons
+  var contactIcon = L.icon({
+    iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
+
+    iconSize:     [36, 36], // size of the icon
+    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+  });
+
+  var MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: contactIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+
+  var nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, {icon: contactIcon});
+    },
+    onEachFeature: onEachFeature
+  });
+
+  MSFContactsLayer.addTo(landingMap);
+  layerControl.addOverlay(MSFContactsLayer, '- MSF Staff', 'Contacts');
+  layerControl.addOverlay(nonMSFContactsLayer, '- other contacts', 'Contacts');
+
+};
+
+var onMissionLinkClick = function(id) {
+  $.getJSON("/api/missions/" + id, function(data) {
+    missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
+    missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
+    $( "#missionModalBody" ).load( "/events/mission.html" );
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
+  });
+};
+
+var onContactLinkClick = function(id) {
+  $('#contactDetailsModal').on('shown.bs.modal');
+  getContact(id);
+};
+
+var contactInfo = {};
+var getContact = function(id) {
+  console.log(id);
+  $.getJSON("/api/contacts/" + id, function(contact) {
+    contactInfo = contact.result ? contact.result.properties : {};
+    _(contact.result.properties).forIn(function(value, key) {
+      // console.log("Key:", key, "Value", value);
+      if (key === "nationality1" || key === "nationality2") {
+        value = value.name;
+      }
+      $("span." + key).html(value);
+    });
+    if (contact.result.properties.type.toUpperCase().includes("MSF")) {
+      $("#msf_details").show();
+    } else {
+      $("#msf_details").hide();
+    }
+  }).fail(function(err) {
+    if (err.responseText.includes('expired')) {
+      alert("session expired");
+    } else {
+      alert('error: '+ err.responseText);
+    }
+  });
+};
+
+
+// Create map
+var landingMap = L.map('landingMap').setView([20, 110], 4);
+
+var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 18,
+	ext: 'png'
+});
+
+// Add some satellite tiles
+var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2lds8kl00042smtdpniowm2/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2xnZXJvcyIsImEiOiJjajBodHJjdGYwM21sMndwNHk2cGxxajRnIn0.nrw2cFsVqjA2bclnKs-9mw', {
+  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+}).addTo(landingMap);
+
+var baseMaps = {
+  "Terrain": stamenTerrain,
+  "Satellite" : mapboxSatellite
+};
+
+var groupedOverlays = {
+  "Hazards": {},
+  "Contacts": {}
+};
+
+var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+var overlayMaps = {};
+
+var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(landingMap);
+
+getAllEvents(mapAllEvents);
+
+setInterval(function() {
+  landingMap.removeLayer(eventsLayer);
+  layerControl.removeLayer(eventsLayer);
+  eventsLayer.clearLayers();
+  $('#eventProperties').empty();
   getAllEvents(mapAllEvents);
-  getPDCHazards(mapHazards);
-  getMissions(mapMissions);
-  getContacts(mapContacts);
+  console.log('timer expired');
+},180000);
 
-  getFeeds("/api/hazards/usgs", mapFeeds);
-  getFeeds("/api/hazards/tsr", mapFeeds);
-  getFeeds("/api/hazards/gdacs", mapFeeds);
-  getFeeds("/api/hazards/ptwc", mapFeeds);
-  getPDCHazards(mapFeeds);
+getFeeds("/api/hazards/pdc",mapPDCHazards);
+getFeeds("/api/hazards/tsr",mapTSRHazards);
+getFeeds("/api/hazards/usgs",mapUSGSHazards);
+getFeeds("/api/hazards/gdacs",mapGDACSHazards);
+getFeeds("/api/hazards/ptwc",mapPTWCHazards);
+getMissions(mapMissions);
+getContacts(mapContacts);
+
+getFeeds("/api/hazards/pdc", tableFeeds);
+getFeeds("/api/hazards/usgs", tableFeeds);
+getFeeds("/api/hazards/tsr", tableFeeds);
+getFeeds("/api/hazards/gdacs", tableFeeds);
+getFeeds("/api/hazards/ptwc", tableFeeds);
+
+var displayVideo = function(video) {
+
+    var video_div = document.getElementById(video+"_video");
+    var icon = document.getElementById(video+"_icon");
+    if (video_div.style.display === 'none') {
+        video_div.style.display = 'block';
+        icon.innerHTML='&darr;';
+    } else {
+        video_div.style.display = 'none';
+        icon.innerHTML='&uarr;';
+    }
+
+};

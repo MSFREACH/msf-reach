@@ -34,6 +34,14 @@ newEventMap.on('click', function(e) {
 	marker = L.marker(e.latlng).addTo(newEventMap);
 });
 $(function(){
+	$( "#inputEvDateTime" ).datepicker({
+       changeMonth: true,
+       changeYear: true,
+ 			dateFormat: 'yy-mm-dd',
+ 			yearRange: '1900:' + new Date().getFullYear()
+     });
+
+
 	$('#createEvent').on('click', function (e) {
 
 		if (latlng === null){
@@ -50,7 +58,7 @@ $(function(){
 				"location": latlng,
 				"metadata":{
 					"user": localStorage.getItem("username"),
-					"name": (sub_type != '' ? +sub_type : $('#selectType').val() ) + "_" + $("#inputEvDateTime").val(),
+					"name": (sub_type != '' ? sub_type : $('#selectType').val() ) + "_" + $("#inputEvDateTime").val(),
 					"sub_type": sub_type,
 					"event_datetime": $("#inputEvDateTime").val(),
 					"event_status": $("#inputEvStatus").val(),
@@ -91,10 +99,13 @@ $(function(){
 				var eventId = data.result.objects.output.geometries[0].properties.id;
 				window.location.href = '/events/?eventId='+eventId;
 			}).fail(function (reqm, textStatus, err){
+			if (reqm.responseText.includes('expired')) {
+				alert("session expired");
+			} else {
 				$('#newEventModalTitle').html('<h4>Error creating event</h4>');
 				$('#newEventModalContent').html('<p>' + err +'.</p>');
 				$('#newEventModal').modal('toggle');
-			});
+			}});
 		}
 	});
 
@@ -103,13 +114,7 @@ $(function(){
 		$('#extraTab').tab('show');
 	});
 
-	$("#inputEvDateTime").val((new Date()).toISOString());
 
-/*
-	$("#inputEvDateTime").change(function(){
-		$("#inputName").val($("#selectType".replace('_',' ')).val()+" "+$("#inputEvDateTime").val());
-	});
-*/
 	$('#selectType').change(function(){
 		$('#divNaturalDisaster').toggle(this.value == "natural_hazard");
 		if (this.value != "natural_hazard")

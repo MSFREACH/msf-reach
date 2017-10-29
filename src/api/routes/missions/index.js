@@ -49,9 +49,7 @@ export default ({ config, db, logger }) => {
             }
         }),
         (req, res, next) => missions(config, db, logger).byId(req.params.id)
-            .then((data) => {
-                res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: data });
-            })
+            .then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
                 logger.error(err);

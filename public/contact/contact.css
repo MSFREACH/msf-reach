@@ -96,6 +96,16 @@ html,body {
   }
 }
 
+.section-container{
+  height:90%;
+  position:relative;
+  overflow:scroll;
+  margin-bottom:5px;
+  margin-top:20px;
+  margin-left:10px;
+  margin-right:10px;
+}
+
 .form-section {
     display: none;
     height:100%;
@@ -148,4 +158,10 @@ html,body {
 .btn-msf:hover , .btn-msf:focus{
   color: #fff;
   background-color:#555555;
+}
+
+.footnote{
+  color:#ccc;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
