@@ -14,7 +14,7 @@ var currentEventId;
 var eventReportLink;
 var currentEventProperties;
 var contactsLayer;
-var markerClusters;
+var contactsClusters;
 var missionsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
@@ -435,10 +435,13 @@ var mapContacts = function(contacts){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  if (markerClusters)
-    eventsMap.removeLayer(markerClusters);
+  if (contactsClusters)
+    {
+      eventsMap.removeLayer(contactsClusters);
+      layerControl.removeLayer(contactsClusters);
+    }
 
-  markerClusters = L.markerClusterGroup({
+  contactsClusters = L.markerClusterGroup({
     maxClusterRadius:50,
     iconCreateFunction: function(cluster) {
       var childCount = cluster.getChildCount();
@@ -448,10 +451,6 @@ var mapContacts = function(contacts){
      }
   });
 
-  if (contactsLayer) {
-    eventsMap.removeLayer(contactsLayer);
-    layerControl.removeLayer(contactsLayer);
-  }
 
   contactsLayer = L.geoJSON(contacts, {
     pointToLayer: function (feature, latlng) {
@@ -462,11 +461,11 @@ var mapContacts = function(contacts){
 
 
 
-  markerClusters.addLayer(contactsLayer);
+  contactsClusters.addLayer(contactsLayer);
 
-  markerClusters.addTo(eventsMap);
+  contactsClusters.addTo(eventsMap);
 
-  layerControl.addOverlay(contactsLayer, 'Contacts');
+  layerControl.addOverlay(contactsClusters, 'Contacts');
 
 
 };
