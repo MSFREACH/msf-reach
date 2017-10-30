@@ -1,10 +1,14 @@
 function openMissionPopup(id) {
   missionsLayer.eachLayer(function(layer){
     if (layer.feature.properties.id == id)
-     layer.openPopup(eventsMap.center);
-
+    {
+      if (missionsClusters.hasLayer(layer))
+        missionsClusters.zoomToShowLayer(layer);
+      layer.openPopup(eventsMap.center);
+    }
   });
 }
+
 
 // Load Missions to missions table tab
 var loadMissions = function(err, missions) {
