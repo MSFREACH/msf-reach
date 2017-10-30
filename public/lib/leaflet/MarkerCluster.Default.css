@@ -1,5 +1,8 @@
-.marker-cluster-msf {
+.marker-cluster-msf-contacts {
 	background-color: rgba(237,28,36,0.6);
+}
+.marker-cluster-msf-missions{
+	background-color: rgba(204, 204, 204, 0.6);
 }
 
 .marker-cluster-small {
