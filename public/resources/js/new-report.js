@@ -9,12 +9,12 @@ var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terra
 	minZoom: 0,
 	maxZoom: 18,
 	ext: 'png'
-});
+}).addTo(newReportMap);
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
 	attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-}).addTo(newReportMap);
+});
 
 var baseMaps = {
 	"Terrain": stamenTerrain,
