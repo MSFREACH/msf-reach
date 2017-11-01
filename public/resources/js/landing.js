@@ -616,9 +616,6 @@ var getContact = function(id) {
     contactInfo = contact.result ? contact.result.properties : {};
     _(contact.result.properties).forIn(function(value, key) {
       // console.log("Key:", key, "Value", value);
-      if (key === "nationality1" || key === "nationality2") {
-        value = value.name;
-      }
       $("span." + key).html(value);
     });
     if (contact.result.properties.type.toUpperCase().includes("MSF")) {
