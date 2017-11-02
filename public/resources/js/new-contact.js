@@ -1,5 +1,5 @@
 // Create map
-var newContactMap = L.map('map').setView([-6.8, 108.7], 7);
+var newContactMap = L.map('map').setView([20, 110], 4);
 var autocompleteMap=newContactMap;
 
 newContactMap.locate({setView: true, maxZoom: 16});
