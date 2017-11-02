@@ -1,5 +1,5 @@
 // Create map
-var newEventMap = L.map('map').setView([-6.8, 108.7], 7);
+var newEventMap = L.map('map').setView([20, 110], 4);
 var autocompleteMap=newEventMap;
 
 // Add some base tiles
