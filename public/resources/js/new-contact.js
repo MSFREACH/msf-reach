@@ -37,6 +37,12 @@ newContactMap.on('click', function(e) {
 
 function postContact() {
 	var contName=($("#inputContactFirstName").val() || '')+' '+($("#inputContactLastName").val() || '')+' '+($("#inputContactOtherName").val() || '');
+	var affiliationName = '';
+	if $("#inputContactAff").val() === 'Current MSF Staff' {
+		affiliationName = 'MSF';
+	} else {
+		affiliationName = $('#inputAffName').val() || '';
+	}
 	var body = {
 		"location":latlng,
 		"properties":{
@@ -46,7 +52,7 @@ function postContact() {
 			"name": contName.trim(),
 			"speciality": $("#inputSpeciality").val() || '',
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
-			"affiliationName":$('#inputAffName').val() || '',
+			"affiliationName": affiliationName,
 			"OC": $("#inputContactOC").val() || '',
 			"employment": $("#inputContactMSFEmploy").val() || '',
 			"position": $("#inputContactMSFPosition").val() || '',
