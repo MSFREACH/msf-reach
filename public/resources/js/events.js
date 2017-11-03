@@ -72,7 +72,9 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
-    result += '<dt>Arrival of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_date_arrival.split('T')[0]+'</dd>';
+    if (metadata.hasOwnProperty('msf_response_medical_material_date_arrival') {
+      result += '<dt>Arrival of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_date_arrival.split('T')[0]+'</dd>';
+    }
   }
   if (metadata.hasOwnProperty("msf_response_non_medical_material")) {
     result += '<dt>Medical requirements:</dt><dd>';
@@ -81,7 +83,9 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
-    result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
+    if metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') {
+      result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
+    }
   }
   else {
     if (metadata.hasOwnProperty("nonMedicalMaterials")) {
