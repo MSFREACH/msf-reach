@@ -77,9 +77,9 @@ $(function () {
  });
 
  $('#inputContactAff').change(function(){
-   console.log(this.value);
    $('#divOtherAff').toggle(!this.value);
    $('#divMSFFields').toggle(this.value == "Current MSF Staff");
+   $('#divAffName').toggle(this.value != "Current MSF Staff");
  });
 
 });
