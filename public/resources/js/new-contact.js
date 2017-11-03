@@ -46,6 +46,7 @@ function postContact() {
 			"name": contName.trim(),
 			"speciality": $("#inputSpeciality").val() || '',
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
+			"affiliationName":$('#inputAffName').val() || '',
 			"OC": $("#inputContactOC").val() || '',
 			"employment": $("#inputContactMSFEmploy").val() || '',
 			"position": $("#inputContactMSFPosition").val() || '',
