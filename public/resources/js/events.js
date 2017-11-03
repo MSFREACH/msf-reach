@@ -99,7 +99,7 @@ var missionPopupIcon = function(missionType) {
   var type = missionType.toLowerCase();
   var html = '<img src="/resources/images/icons/event_types/';
   if (type.includes("conflict")) {
-    html += 'conflict'
+    html += 'conflict';
   } else if (type.includes('displacement')) {
     html += 'displacement';
   } else if (type.includes('drought')) {
@@ -134,7 +134,7 @@ var missionPopupIcon = function(missionType) {
   html += '.svg" width="40">';
 
   return html;
-}
+};
 
 /**
 * Function to print a list of event details to web page
@@ -175,7 +175,7 @@ var printEventProperties = function(err, eventProperties){
   } else {
     var propertiesTable = "";
     propertiesTable += '<table class="table">';
-    ['id', 'status', 'type', 'created'];
+    //['id', 'status', 'type', 'created'];
     propertiesTable += "<tr><td>Name</td><td>"+eventProperties.metadata.name+"</td></tr>";
     propertiesTable += "<tr><td>Status</td><td>"+eventProperties.status+"</td></tr>";
     propertiesTable += "<tr><td>Type</td><td>"+eventProperties.type+"</td></tr>";
