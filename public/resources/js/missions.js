@@ -47,7 +47,7 @@ var loadMissions = function(err, missions) {
 // Perform GET call to get Missions
 var getMissions = function(term) {
 
-  var url='/api/missions?geoformat=geojson' +(term ? ('&search='+term) :'')
+  var url='/api/missions?geoformat=geojson' +(term ? ('&search='+term) :'');
   var lngmin = eventsMap.getBounds().getSouthWest().wrap().lng;
   var latmin = eventsMap.getBounds().getSouthWest().wrap().lat;
   var lngmax = eventsMap.getBounds().getNorthEast().wrap().lng;

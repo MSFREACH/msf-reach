@@ -74,7 +74,9 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
-    result += '<dt>Arrival of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_date_arrival.split('T')[0]+'</dd>';
+    if (metadata.hasOwnProperty('msf_response_medical_material_date_arrival')) {
+      result += '<dt>Arrival of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_date_arrival.split('T')[0]+'</dd>';
+    }
   }
   if (metadata.hasOwnProperty("msf_response_non_medical_material")) {
     result += '<dt>Medical requirements:</dt><dd>';
@@ -83,7 +85,9 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
-    result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
+    if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival')) {
+      result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
+    }
   }
   else {
     if (metadata.hasOwnProperty("nonMedicalMaterials")) {
@@ -101,7 +105,7 @@ var missionPopupIcon = function(missionType) {
   var type = missionType.toLowerCase();
   var html = '<img src="/resources/images/icons/event_types/';
   if (type.includes("conflict")) {
-    html += 'conflict'
+    html += 'conflict';
   } else if (type.includes('displacement')) {
     html += 'displacement';
   } else if (type.includes('drought')) {
@@ -136,7 +140,7 @@ var missionPopupIcon = function(missionType) {
   html += '.svg" width="40">';
 
   return html;
-}
+};
 
 /**
 * Function to print a list of event details to web page
@@ -177,7 +181,7 @@ var printEventProperties = function(err, eventProperties){
   } else {
     var propertiesTable = "";
     propertiesTable += '<table class="table">';
-    ['id', 'status', 'type', 'created'];
+    //['id', 'status', 'type', 'created'];
     propertiesTable += "<tr><td>Name</td><td>"+eventProperties.metadata.name+"</td></tr>";
     propertiesTable += "<tr><td>Status</td><td>"+eventProperties.status+"</td></tr>";
     propertiesTable += "<tr><td>Type</td><td>"+eventProperties.type+"</td></tr>";
@@ -226,9 +230,9 @@ var printEventProperties = function(err, eventProperties){
    $("#eventBasicInfo").append("<dt>Sub Type: </dt><dd>"+eventProperties.metadata.sub_type+"</dd>");
    $("#eventBasicInfo").append("<dt>Event Status: </dt><dd>"+eventProperties.metadata.event_status+"</dd>");
    if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification !== '') {
-     $('#eventBasicInfo').append('<dt>Latest nofitication: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
+     $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
    } else {
-     $('#eventBasicInfo').append('<dt>Latest nofitication: </dt><dd>(none)</dd>');
+     $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
    }
    $("#eventBasicInfo").append("<dt>Person In charge </dt><dd>"+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+"</dd>");
    $("#eventBasicInfo").append("<dt>Severity </dt><dd>"+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + String(eventProperties.metadata.severity_scale) + '<br>' : '')+ eventProperties.metadata.severity+"</dd>");
@@ -420,7 +424,8 @@ var mapContacts = function(contacts){
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
       '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
       '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-      '<br>type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>affliation type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      (typeof(feature.properties.properties.affiliationName)==='undefined' ? '' : '<br>affiliation name:' + feature.properties.properties.affiliationName) +
       '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
     }
 
@@ -603,13 +608,13 @@ var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terra
 	minZoom: 0,
 	maxZoom: 18,
 	ext: 'png'
-});
+}).addTo(eventsMap);
 
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2lds8kl00042smtdpniowm2/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2xnZXJvcyIsImEiOiJjajBodHJjdGYwM21sMndwNHk2cGxxajRnIn0.nrw2cFsVqjA2bclnKs-9mw', {
   attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-}).addTo(eventsMap);
+});
 
 var baseMaps = {
   "Terrain": stamenTerrain,

@@ -1,6 +1,7 @@
 var doItOnce=true;
 $(function () {
   var $sections = $('.form-section');
+  var NAMESECTIONINDEX = 1;
   var MAPSECTIONINDEX = 3;
   var CONTACTDETAILSINDEX =4;
   function navigateTo(index) {
@@ -35,6 +36,12 @@ $(function () {
   // Next button goes forward iff current block validates
   $('.form-navigation .next').on('click',function() {
     var cInd=curIndex();
+    if (cInd==NAMESECTIONINDEX) {
+      if (!$('#inputContactFirstName').val() || !$('#inputContactLastName').val()) {
+        alert("Please enter your name to continue");
+        return;
+      }
+    }
     if (cInd==MAPSECTIONINDEX)
     {
       if (!latlng)
@@ -70,9 +77,9 @@ $(function () {
  });
 
  $('#inputContactAff').change(function(){
-   console.log(this.value);
    $('#divOtherAff').toggle(!this.value);
    $('#divMSFFields').toggle(this.value == "Current MSF Staff");
+   $('#divAffName').toggle(this.value != "Current MSF Staff");
  });
 
 });

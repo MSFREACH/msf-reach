@@ -537,7 +537,8 @@ var mapContacts = function(contacts ){
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
       '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
       '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-      '<br>type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>affliation type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      (typeof(feature.properties.properties.affiliationName)==='undefined' ? '' : '<br>affiliation name:' + feature.properties.properties.affiliationName) +
       '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
     }
 
@@ -616,9 +617,6 @@ var getContact = function(id) {
     contactInfo = contact.result ? contact.result.properties : {};
     _(contact.result.properties).forIn(function(value, key) {
       // console.log("Key:", key, "Value", value);
-      if (key === "nationality1" || key === "nationality2") {
-        value = value.name;
-      }
       $("span." + key).html(value);
     });
     if (contact.result.properties.type.toUpperCase().includes("MSF")) {
@@ -645,12 +643,12 @@ var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terra
 	minZoom: 0,
 	maxZoom: 18,
 	ext: 'png'
-});
+}).addTo(landingMap);
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/clgeros/cj2lds8kl00042smtdpniowm2/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2xnZXJvcyIsImEiOiJjajBodHJjdGYwM21sMndwNHk2cGxxajRnIn0.nrw2cFsVqjA2bclnKs-9mw', {
   attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-}).addTo(landingMap);
+});
 
 var baseMaps = {
   "Terrain": stamenTerrain,

@@ -69,7 +69,7 @@ var loadContacts = function(err, contacts) {
 
 // Perform GET call to get contacts
 var getContacts = function(term){
-  var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'')
+  var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
   var lngmin= eventsMap.getBounds().getSouthWest().wrap().lng;
   var latmin= eventsMap.getBounds().getSouthWest().wrap().lat;
   var lngmax= eventsMap.getBounds().getNorthEast().wrap().lng;

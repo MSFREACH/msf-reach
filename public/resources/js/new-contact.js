@@ -1,5 +1,5 @@
 // Create map
-var newContactMap = L.map('map').setView([-6.8, 108.7], 7);
+var newContactMap = L.map('map').setView([20, 110], 4);
 var autocompleteMap=newContactMap;
 
 newContactMap.locate({setView: true, maxZoom: 16});
@@ -10,12 +10,12 @@ var stamenTerrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terra
 	minZoom: 0,
 	maxZoom: 18,
 	ext: 'png'
-});
+}).addTo(newContactMap);
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
 	attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-}).addTo(newContactMap);
+});
 
 var baseMaps = {
 	"Terrain": stamenTerrain,
@@ -37,6 +37,12 @@ newContactMap.on('click', function(e) {
 
 function postContact() {
 	var contName=($("#inputContactFirstName").val() || '')+' '+($("#inputContactLastName").val() || '')+' '+($("#inputContactOtherName").val() || '');
+	var affiliationName = '';
+	if $("#inputContactAff").val() === 'Current MSF Staff' {
+		affiliationName = 'MSF';
+	} else {
+		affiliationName = $('#inputAffName').val() || '';
+	}
 	var body = {
 		"location":latlng,
 		"properties":{
@@ -46,6 +52,7 @@ function postContact() {
 			"name": contName.trim(),
 			"speciality": $("#inputSpeciality").val() || '',
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
+			"affiliationName": affiliationName,
 			"OC": $("#inputContactOC").val() || '',
 			"employment": $("#inputContactMSFEmploy").val() || '',
 			"position": $("#inputContactMSFPosition").val() || '',
@@ -61,8 +68,6 @@ function postContact() {
 			"Facebook": $("#inputFacebook").val() || '',
 			"Skype": $("#inputSkype").val() || '',
 			"Instagram": $("#inputInstagram").val() || '',
-			"nationality1": $("#nationality1").countrySelect("getSelectedCountryData"),
-			"nationality2": $("#nationality2").countrySelect("getSelectedCountryData") || ''
 		}
 	};
 	//console.log(body);
@@ -91,13 +96,6 @@ $( function() {
 	 				$('#datepicker').text(dateText);
 				}
     });
-	var countryParams = {
-		"defaultCountry": "xx",
-	  "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
-	};
-	$("#nationality1").countrySelect(countryParams);
-	$("#nationality2").countrySelect(countryParams);
-
 });
 
 $('#createContact').on('click', function (e) {
