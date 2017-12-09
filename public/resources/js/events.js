@@ -6,7 +6,7 @@
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
-var WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
+var WEB_HOST = 'https://dev.msf-reach.org/'; // Change to host for prod
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 // Globals
