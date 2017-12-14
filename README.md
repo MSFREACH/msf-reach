@@ -6,6 +6,8 @@ Data server and web content for CogniCity MSF, built with NodeJS to provide JSON
 
 [![Coverage Status](https://coveralls.io/repos/github/usergroupcoop/cognicity_msf-server/badge.svg?branch=master)](https://coveralls.io/github/usergroupcoop/cognicity_msf-server?branch=master)
 
+[![Coverage Status](https://coveralls.io/repos/github/usergroupcoop/cognicity_msf-server/badge.svg?branch=master)](https://coveralls.io/github/usergroupcoop/cognicity_msf-server?branch=master)
+
 ### Dependencies
 - see package.json, or run
 ```sh
