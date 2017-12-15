@@ -64,7 +64,7 @@ export default (config, db, logger) => ({
 			RETURNING id, report_key, uuid, the_geom`;
 
 			// Setup values
-		let values = [ body.status, body.type, body.created, reportKey, body.metadata, body.location.lng, body.location.lat ]
+		let values = [ body.status, body.type, body.created, reportKey, body.metadata, body.location.lng, body.location.lat ];
 
 		// Execute
 		logger.debug(query, values);
@@ -88,7 +88,7 @@ export default (config, db, logger) => ({
 			RETURNING type, created, report_key, metadata, uuid, the_geom`;
 
 		// Setup values
-		let values = [ body.status, body.metadata, id ]
+		let values = [ body.status, body.metadata, id ];
 
 		// Execute
 		logger.debug(query, values);

@@ -1,4 +1,4 @@
-// Testing for CogniCity MSF Server
+// Testing for MSF REACH Server
 // Unit tests run together against live app, and database
 // Data is passed between tests for form integration tests
 
@@ -39,12 +39,12 @@ describe('Cognicity Server Testing Harness', function() {
   let report_id = 0;
 
  it('Server fails if database connection not possible', function(done){
-   let config = {}
+   let config = {};
    init(config, initializeDb, routes, logger)
     .catch((err) => {
       console.log(err);
       done();
-    })
+    });
  });
  it('Server starts', function(done){
   init(config, initializeDb, routes, logger).then((app) => {
@@ -113,7 +113,7 @@ describe('Cognicity Server Testing Harness', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res){
               if (err === null){
-                test.fail('No error returned' + ' ' + JSON.stringify(res))
+                test.fail('No error returned' + ' ' + JSON.stringify(res));
               }
               else {
                 done();
@@ -148,7 +148,7 @@ describe('Cognicity Server Testing Harness', function() {
               else {
                   eventId = res.body.result.objects.output.geometries[0].properties.id;
                   reportKey = res.body.result.objects.output.geometries[0].properties.reportkey;
-                  done()
+                  done();
               }
 
             });
@@ -196,7 +196,7 @@ describe('Cognicity Server Testing Harness', function() {
                 test.fail(err.message + ' ' + JSON.stringify(res));
               }
               else {
-                  done()
+                done();
               }
             });
         });
@@ -226,8 +226,8 @@ describe('Cognicity Server Testing Harness', function() {
               }
           });
         });
-    // End server test
-    return (done())
+      // End server test
+      return (done());
     });
 
     // Report endpoint
@@ -257,8 +257,8 @@ describe('Cognicity Server Testing Harness', function() {
                 test.fail(err.message + ' ' + JSON.stringify(res));
               }
               else {
-                  report_id = res.body.result.objects.output.geometries[0].properties.id;
-                  done()
+                report_id = res.body.result.objects.output.geometries[0].properties.id;
+                done();
               }
             });
         });
@@ -288,7 +288,7 @@ describe('Cognicity Server Testing Harness', function() {
                   test.fail(err.message + ' ' + JSON.stringify(res));
                 }
                 else {
-                    done()
+                  done();
                 }
               });
           });
@@ -331,7 +331,7 @@ describe('Cognicity Server Testing Harness', function() {
                   test.fail(err.message + ' ' + JSON.stringify(res));
                 }
                 else {
-                    done()
+                  done();
                 }
               });
           });

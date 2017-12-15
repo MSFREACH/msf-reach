@@ -62,7 +62,7 @@ export default (config, db, logger) => ({
 			RETURNING id, event_id, status, created, report_key, content, the_geom`;
 
 			// Setup values
-		let values = [ body.eventId, body.status, body.created, body.reportkey, body.content, body.location.lng, body.location.lat ]
+		let values = [ body.eventId, body.status, body.created, body.reportkey, body.content, body.location.lng, body.location.lat ];
 
 		// Execute
 		logger.debug(query, values);
@@ -86,7 +86,7 @@ export default (config, db, logger) => ({
 			RETURNING event_id, created, report_key, content, the_geom`;
 
 		// Setup values
-		let values = [ body.status, body.content, id ]
+		let values = [ body.status, body.content, id ];
 
 		// Execute
 		logger.debug(query, values);

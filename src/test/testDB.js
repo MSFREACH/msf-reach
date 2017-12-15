@@ -8,12 +8,12 @@ describe('Test CogniCity Server Database Module', function() {
    // Try and connect to the db
    let config = {};
    let logger = {};
-   logger.error =function(err){
+   logger.error = function(err){
      console.log(err);
-   }
-   logger.debug =function(err){
+   };
+   logger.debug = function(err){
      console.log(err);
-   }
+   };
    initializeDb(config, logger)
     .then((db) => {
       test.value(db).is(null);
