@@ -4,7 +4,7 @@ Data server and web content for CogniCity MSF, built with NodeJS to provide JSON
 
 [![Build Status](https://travis-ci.org/MSFREACH/msf-reach.svg?branch=master)](https://travis-ci.org/MSFREACH/msf-reach)
 
-[![Coverage Status](https://coveralls.io/repos/github/usergroupcoop/cognicity_msf-server/badge.svg?branch=master)](https://coveralls.io/github/usergroupcoop/cognicity_msf-server?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/MSFREACH/msf-reach/badge.svg?branch=master)](https://coveralls.io/github/MSFREACH/msf-reach?branch=master)
 
 ### Dependencies
 - see package.json, or run

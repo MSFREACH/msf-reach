@@ -8,13 +8,16 @@
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
 var WEB_HOST = 'https://dev.msf-reach.org/'; // Change to host for prod
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
+var MAX_RADIUS= 0.1;
 
 // Globals
 var currentEventId;
 var eventReportLink;
 var currentEventProperties;
 var contactsLayer;
+var contactsClusters;
 var missionsLayer;
+var missionsClusters;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap;
@@ -439,10 +442,21 @@ var mapContacts = function(contacts){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  if (contactsLayer) {
-    eventsMap.removeLayer(contactsLayer);
-    layerControl.removeLayer(contactsLayer);
-  }
+  if (contactsClusters)
+    {
+      eventsMap.removeLayer(contactsClusters);
+      layerControl.removeLayer(contactsClusters);
+    }
+
+  contactsClusters = L.markerClusterGroup({
+    maxClusterRadius:MAX_RADIUS,
+    iconCreateFunction: function(cluster) {
+      var childCount = cluster.getChildCount();
+
+      return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+
+     }
+  });
 
 
   contactsLayer = L.geoJSON(contacts, {
@@ -452,8 +466,14 @@ var mapContacts = function(contacts){
     onEachFeature: onEachFeature
   });
 
-  contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, 'Contacts');
+
+
+  contactsClusters.addLayer(contactsLayer);
+
+  contactsClusters.addTo(eventsMap);
+
+  layerControl.addOverlay(contactsClusters, 'Contacts');
+
 
 };
 
@@ -529,10 +549,24 @@ var mapMissions = function(missions ){
     popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
   });
 
-  if (missionsLayer) {
-    eventsMap.removeLayer(missionsLayer);
-    layerControl.removeLayer(missionsLayer);
-  }
+
+  if (missionsClusters)
+    {
+      eventsMap.removeLayer(missionsClusters);
+      layerControl.removeLayer(missionsClusters);
+    }
+
+  missionsClusters = L.markerClusterGroup({
+    maxClusterRadius:MAX_RADIUS,
+    iconCreateFunction: function(cluster) {
+      var childCount = cluster.getChildCount();
+
+      return new L.DivIcon({ html: '<div><span style="color:black;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+
+     }
+  });
+
+
 
   missionsLayer = L.geoJSON(missions, {
     pointToLayer: function (feature, latlng) {
@@ -541,8 +575,13 @@ var mapMissions = function(missions ){
     onEachFeature: onEachFeature
   });
 
-  layerControl.addOverlay(missionsLayer, 'Missions');
-  missionsLayer.addTo(eventsMap);
+
+  missionsClusters.addLayer(missionsLayer);
+
+  missionsClusters.addTo(eventsMap);
+
+  layerControl.addOverlay(missionsClusters, 'Missions');
+
 };
 
 
