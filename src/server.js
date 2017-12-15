@@ -35,19 +35,25 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 	};
 
 	// Setup express logger
-	app.use(morgan('combined', { stream : winstonStream }));
+	app.use(morgan('combined', { stream: winstonStream }));
 
 	// Compress responses if required but only if caching is disabled
-	config.COMPRESS && !config.CACHE && app.use(compression());
+	if (config.COMPRESS && !config.CACHE) {
+		app.use(compression());
+	}
 
 	// Provide CORS support (not required if behind API gateway)
-	config.CORS && app.use(cors({ exposedHeaders: config.CORS_HEADERS }));
+	if (config.CORS) {
+		app.use(cors({ exposedHeaders: config.CORS_HEADERS }));
+	}
 
 	// Provide response time header in response
-	config.RESPONSE_TIME && app.use(responseTime());
+	if (config.RESPONSE_TIME) {
+		app.use(responseTime());
+	}
 
 	// Parse body messages into json
-	app.use(bodyParser.json({ limit : config.BODY_LIMIT }));
+	app.use(bodyParser.json({ limit: config.BODY_LIMIT }));
 
 	// Redirect http to https
 	app.use(function redirectHTTP(req, res, next) {
@@ -65,8 +71,8 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 			//app.use(cookieParser()); // Enable cookies
 			// Mount the routes
 			app.use('/login', express.static(config.STATIC_AUTH_PATH));
-			app.use('/report', express.static(config.STATIC_REPORT_PATH))
-			app.use('/contact', express.static(config.STATIC_CONTACT_PATH))
+			app.use('/report', express.static(config.STATIC_REPORT_PATH));
+			app.use('/contact', express.static(config.STATIC_CONTACT_PATH));
 			app.use('/lib', express.static(config.STATIC_LIB_PATH)); // Allow resources to be shared with un-authed path
 			app.use('/resources', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
 
@@ -76,11 +82,11 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
 
 			// Set jetCheck on root. All paths below this will also have JWT checks applied.
-			app.use('/', [jwtCheck, express.static(config.STATIC_PATH)], function(err, req, res, next){
-				if (err.name === 'UnauthorizedError'){
+			app.use('/', [jwtCheck, express.static(config.STATIC_PATH)], function(err, req, res, next) {
+				if (err.name === 'UnauthorizedError') {
 					res.redirect('/login');
 				}
-				else if (err){
+				else if (err) {
 					next(err);
 				}
 			});
@@ -95,8 +101,8 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
 			// We cannot continue without a DB, reject
 			reject(err);
-		})
-})
+		});
+});
 
 // Export the init function for use externally (e.g. in tests)
 module.exports = { init };

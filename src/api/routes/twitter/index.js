@@ -25,11 +25,11 @@ export default ({ logger }) => {
 			.then((data) => {
 				let promiseArray = [];
 				for (var i = 0; i < data.statuses.length; i++) {
-					promiseArray.push(embedTweet(data.statuses[i].id_str, 'https://twitter.com/'+data.statuses[i].user.screen_name+'/status/'+data.statuses[i].id_str))
+					promiseArray.push(embedTweet(data.statuses[i].id_str, 'https://twitter.com/'+data.statuses[i].user.screen_name+'/status/'+data.statuses[i].id_str));
 				}
 				Promise.all(promiseArray).then(function(resultArray) {
 					res.status(200).json({statusCode: 200, result:resultArray});
-				})
+				});
 					//.then((result) => res.status(200).json({ statusCode: 200, result: result }))
 
 			})

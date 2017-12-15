@@ -1,12 +1,12 @@
 import Promise from 'bluebird';
 
 import {parseString} from 'xml2js';
-import rp from "request-promise";
+import rp from 'request-promise';
 
 const PDC = () => new Promise((resolve, reject) => {
 
     var options = {
-      uri: "http://d2mxabrykbl1km.cloudfront.net/feed.xml",
+      uri: 'http://d2mxabrykbl1km.cloudfront.net/feed.xml',
       transform: function(body) {
         return new Promise(resolve => {
           parseString(body, function(err, result) {
@@ -30,12 +30,12 @@ const PDC = () => new Promise((resolve, reject) => {
             feature.geometry.coordinates.push(JSON.parse(coords[1]));
             feature.geometry.coordinates.push(JSON.parse(coords[0]));
             // extract properties
-            feature.properties["source"] = "Pacific Disaster Center";
-            feature.properties["title"] = event.title[0];
-            feature.properties["link"] = event.link[0]['$']['href'];
-            feature.properties["id"] = "PDC-"+event.id[0];
-            feature.properties["updated"] = event.updated[0];
-            feature.properties["summary"] = event.summary[0];
+            feature.properties.source = "Pacific Disaster Center";
+            feature.properties.title = event.title[0];
+            feature.properties.link = event.link[0].$.href;
+            feature.properties.id = "PDC-"+event.id[0];
+            feature.properties.updated = event.updated[0];
+            feature.properties.summary = event.summary[0];
             // push feature to feature collection
             features.push(feature);
           }
