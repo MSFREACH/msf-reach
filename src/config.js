@@ -1,4 +1,4 @@
-require('dotenv').config({silent:true})
+require('dotenv').config({silent: true});
 
 export default {
   AUTH: process.env.AUTH === 'true' || false,
@@ -59,4 +59,4 @@ export default {
   TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
   TWITTER_ACCESS_KEY: process.env.TWITTER_ACCESS_KEY,
   TWITTER_ACCESS_SECRET: process.env.TWITTER_ACCESS_SECRET
-}
+};

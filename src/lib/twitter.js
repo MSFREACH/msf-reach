@@ -20,8 +20,8 @@ const client = new Twitter({
 });
 
 const searchTwitter = (queryTerm) => new Promise((resolve, reject) => {
-  client.get('search/tweets', {q: queryTerm+" -from:petabencana", geocode:'-5,120,3000km'}, function(error, tweets, response) {
-   if (error) reject (error+': '+response);
+  client.get('search/tweets', {q: queryTerm + ' -filter:retweets -from:petabencana', geocode: '-5,120,3000km'}, function(error, tweets, response) {
+   if (error) reject(error + ': ' + response);
    resolve(tweets);
  });
 });
@@ -39,4 +39,4 @@ const embedTweet = (tweetId, tweetURL) => new Promise((resolve, reject) => {
   });
 });
 
-module.exports = {searchTwitter, embedTweet}
+module.exports = {searchTwitter, embedTweet};

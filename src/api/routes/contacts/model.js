@@ -27,7 +27,7 @@ export default (config, db, logger) => ({
 
 		// Format search string for Postgres
 		let text = (!search) ? null : '%'+search+'%'	;
-		let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax)
+		let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
 		let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
 
 		// Execute
@@ -64,7 +64,7 @@ export default (config, db, logger) => ({
 			RETURNING id, properties, the_geom`;
 
 			// Setup values
-		let values = [ body.properties, body.location.lng, body.location.lat ]
+		let values = [ body.properties, body.location.lng, body.location.lat ];
 
 		// Execute
 		logger.debug(query, values);

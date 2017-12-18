@@ -22,9 +22,9 @@ logger.level = config.LOG_LEVEL;
 
 // Check that log file directory can be written to
 try {
-	config.LOG_DIR !== '' && fs.accessSync(config.LOG_DIR, fs.W_OK);
+	if (config.LOG_DIR !== '') fs.accessSync(config.LOG_DIR, fs.W_OK);
 	logger.info(`Logging to ${config.LOG_DIR !== '' ? config.LOG_DIR : 'current working directory' }`);
-} catch(e) {
+} catch (e) {
 	// If we cannot write to the desired directory then log in the current directory
 	logger.info(`Cannot log to '${config.LOG_DIR}', logging to current working directory instead`);
 	config.LOG_DIR = '';
@@ -37,7 +37,7 @@ logger.add(logger.transports.File, {
 	maxsize: config.LOG_MAX_FILE_SIZE, // Max size of each file
 	maxFiles: config.LOG_MAX_FILES, // Max number of files
 	level: config.LOG_LEVEL // Level of log messages
-})
+});
 
 // If we are not in development and console logging has not been requested then remove it
 if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
@@ -48,7 +48,7 @@ if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
 const exitWithStatus = (status) => {
 	logger.info(`Exiting with status ${status}`);
 	setTimeout(() => process.exit(status), 500);
-}
+};
 
 // Catch kill and interrupt signals and log a clean exit status
 process

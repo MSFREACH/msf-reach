@@ -6,7 +6,7 @@
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
-var WEB_HOST = 'https://msf-reach.org/'; // Change to host for prod
+var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var MAX_RADIUS= 0.1;
 
@@ -75,8 +75,8 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
-    if (metadata.hasOwnProperty('msf_response_medical_material_date_arrival')) {
-      result += '<dt>Arrival of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_date_arrival.split('T')[0]+'</dd>';
+    if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
+      result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
     }
   }
   if (metadata.hasOwnProperty("msf_response_non_medical_material")) {
@@ -86,7 +86,7 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
-    if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival')) {
+    if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
       result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
     }
   }

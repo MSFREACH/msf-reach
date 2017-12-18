@@ -22,8 +22,8 @@ export default (config, db, logger) => ({
 			ORDER BY id`;
 
 			// Format search string for Postgres
-			let text = (!search) ? null : '%'+search+'%'	;
-			let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax)
+			let text = (!search) ? null : '%'+search+'%';
+			let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
 			let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
 
 			// Execute
@@ -31,7 +31,7 @@ export default (config, db, logger) => ({
 			.then((data) => resolve(data))
 			.catch((err) => reject(err));
 		}),
-		
+
 		/**
 		* Return mission specified by ID
 		* @param {integer} id ID of mission
@@ -61,12 +61,12 @@ export default (config, db, logger) => ({
                     RETURNING id, properties, the_geom`;
 
             // Setup values
-            let values = [body.metadata, body.location.lng, body.location.lat]
+            let values = [body.metadata, body.location.lng, body.location.lat];
 
             // Execute
             logger.debug(query, values);
             db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
               .then((data) => resolve({ id: data.id, metadata: body.metadata, the_geom: data.the_geom }))
               .catch((err) => reject(err));
-        }),        
+        }),
 	});
