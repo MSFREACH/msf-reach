@@ -13,7 +13,8 @@ apicache.options({ debug: config.LOG_LEVEL === 'debug', statusCodes: { include: 
 let cache = apicache.middleware;
 
 // Cache response if enabled
-const cacheResponse = (duration) => cache(duration, config.CACHE);
+console.log(config.CACHE);
+const cacheResponse = (duration) => cache(duration, ((config.CACHE && config.CACHE==true) ? (req, res) => (res.statusCode === 200):(req,res) => false));
 
 // Configure our JWT checker
 const jwtCheck = config.AUTH ? expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
