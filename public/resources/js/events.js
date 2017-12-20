@@ -22,6 +22,9 @@ var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap;
 
+var firstContactsLoad = true;
+var firstMissionsLoad = true;
+
 var zoomToEvent = function(latlng) {
   eventsMap.setView(latlng, 12);
 };
@@ -411,8 +414,7 @@ var mapReports = function(reports){
 * Function to add contacts to map
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
-var mapContacts = function(contacts){
-
+var mapContacts = function(contacts) {
 
   function onEachFeature(feature, layer) {
 
@@ -442,6 +444,8 @@ var mapContacts = function(contacts){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
+  var contactsLayerOn = eventsMap.hasLayer(contactsClusters);
+
   if (contactsClusters)
     {
       eventsMap.removeLayer(contactsClusters);
@@ -466,14 +470,13 @@ var mapContacts = function(contacts){
     onEachFeature: onEachFeature
   });
 
-
-
   contactsClusters.addLayer(contactsLayer);
 
-  contactsClusters.addTo(eventsMap);
-
+  if (contactsLayerOn || firstContactsLoad) {
+    contactsClusters.addTo(eventsMap);
+    firstContactsLoad = false;
+  }
   layerControl.addOverlay(contactsClusters, 'Contacts');
-
 
 };
 
@@ -549,6 +552,8 @@ var mapMissions = function(missions ){
     popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
   });
 
+  var missionsLayerOn = eventsMap.hasLayer(missionsClusters);
+  console.log( "ML ON " + missionsLayerOn);
 
   if (missionsClusters)
     {
@@ -567,7 +572,6 @@ var mapMissions = function(missions ){
   });
 
 
-
   missionsLayer = L.geoJSON(missions, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, {icon: missionIcon});
@@ -578,7 +582,11 @@ var mapMissions = function(missions ){
 
   missionsClusters.addLayer(missionsLayer);
 
-  missionsClusters.addTo(eventsMap);
+  if (missionsLayerOn || firstMissionsLoad ) {
+    missionsClusters.addTo(eventsMap);
+    firstMissionsLoad = false;
+  }
+
 
   layerControl.addOverlay(missionsClusters, 'Missions');
 
