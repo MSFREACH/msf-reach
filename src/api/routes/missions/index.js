@@ -10,9 +10,6 @@ import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
 import Joi from 'joi';
 import validate from 'celebrate';
 
-// Import ID generator
-import shortid from 'shortid';
-
 export default ({ config, db, logger }) => {
     let api = Router();
 

@@ -1,6 +1,4 @@
-const request = require('request');
 import config from '../config';
-console.log(config);
 var Promise = require("bluebird");
 const AWS = require('aws-sdk');
 const lambda = new AWS.Lambda({apiVersion: '2015-03-31', region: 'us-east-1'});

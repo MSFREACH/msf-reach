@@ -136,6 +136,7 @@ describe('Cognicity Server Testing Harness', function() {
                   'lng': 140
                 },
                 'metadata': {
+                  'name': 'Iran_earthquake_2017',
                   'user': 'integrated tester'
                 }
             })
