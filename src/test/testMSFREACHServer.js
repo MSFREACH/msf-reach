@@ -183,7 +183,8 @@ describe('Cognicity Server Testing Harness', function() {
             .send({
               'status': 'inactive',
               'metadata': {
-                'updated_by': 'integrated tester'
+                'updated_by': 'integrated tester',
+                'name': 'Iran_earthquake_2017'
               },
               'location': {
                 'lat': 45,
