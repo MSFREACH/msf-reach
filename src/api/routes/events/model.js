@@ -60,8 +60,8 @@ export default (config, db, logger) => ({
 
 		// Setup query
 		let query = `INSERT INTO ${config.TABLE_EVENTS}
-			(status, type, created, report_key, metadata, the_geom)
-			VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_Point($6,$7),4326))
+			(status, type, created, metadata, the_geom)
+			VALUES ($1, $2, $3, $4, ST_SetSRID(ST_Point($5,$6),4326))
 			RETURNING id, report_key, the_geom`;
 
 			// Setup values
