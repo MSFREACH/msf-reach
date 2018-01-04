@@ -4,7 +4,7 @@ import Promise from 'bluebird';
 const pgp = require('pg-promise')({
   // Initialization Options
   promiseLib: Promise // Use bluebird for enhanced Promises
-}) ;
+});
 
 export default (config, logger) => new Promise((resolve, reject) => {
 

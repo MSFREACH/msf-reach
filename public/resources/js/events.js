@@ -6,18 +6,24 @@
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
-var WEB_HOST = 'https://dev.msf-reach.org/'; // Change to host for prod
+var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
+var MAX_RADIUS= 0.1;
 
 // Globals
 var currentEventId;
 var eventReportLink;
 var currentEventProperties;
 var contactsLayer;
+var contactsClusters;
 var missionsLayer;
+var missionsClusters;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap;
+
+var firstContactsLoad = true;
+var firstMissionsLoad = true;
 
 var zoomToEvent = function(latlng) {
   eventsMap.setView(latlng, 12);
@@ -72,8 +78,8 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
-    if (metadata.hasOwnProperty('msf_response_medical_material_date_arrival')) {
-      result += '<dt>Arrival of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_date_arrival.split('T')[0]+'</dd>';
+    if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
+      result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
     }
   }
   if (metadata.hasOwnProperty("msf_response_non_medical_material")) {
@@ -83,7 +89,7 @@ var unpackMetadata = function(metadata) {
     }
     result += '</dd>';
     result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
-    if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival')) {
+    if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
       result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
     }
   }
@@ -408,8 +414,7 @@ var mapReports = function(reports){
 * Function to add contacts to map
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
-var mapContacts = function(contacts){
-
+var mapContacts = function(contacts) {
 
   function onEachFeature(feature, layer) {
 
@@ -439,10 +444,23 @@ var mapContacts = function(contacts){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
   });
 
-  if (contactsLayer) {
-    eventsMap.removeLayer(contactsLayer);
-    layerControl.removeLayer(contactsLayer);
-  }
+  var contactsLayerOn = eventsMap.hasLayer(contactsClusters);
+
+  if (contactsClusters)
+    {
+      eventsMap.removeLayer(contactsClusters);
+      layerControl.removeLayer(contactsClusters);
+    }
+
+  contactsClusters = L.markerClusterGroup({
+    maxClusterRadius:MAX_RADIUS,
+    iconCreateFunction: function(cluster) {
+      var childCount = cluster.getChildCount();
+
+      return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+
+     }
+  });
 
 
   contactsLayer = L.geoJSON(contacts, {
@@ -452,8 +470,13 @@ var mapContacts = function(contacts){
     onEachFeature: onEachFeature
   });
 
-  contactsLayer.addTo(eventsMap);
-  layerControl.addOverlay(contactsLayer, 'Contacts');
+  contactsClusters.addLayer(contactsLayer);
+
+  if (contactsLayerOn || firstContactsLoad) {
+    contactsClusters.addTo(eventsMap);
+    firstContactsLoad = false;
+  }
+  layerControl.addOverlay(contactsClusters, 'Contacts');
 
 };
 
@@ -529,10 +552,25 @@ var mapMissions = function(missions ){
     popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
   });
 
-  if (missionsLayer) {
-    eventsMap.removeLayer(missionsLayer);
-    layerControl.removeLayer(missionsLayer);
-  }
+  var missionsLayerOn = eventsMap.hasLayer(missionsClusters);
+  console.log( "ML ON " + missionsLayerOn);
+
+  if (missionsClusters)
+    {
+      eventsMap.removeLayer(missionsClusters);
+      layerControl.removeLayer(missionsClusters);
+    }
+
+  missionsClusters = L.markerClusterGroup({
+    maxClusterRadius:MAX_RADIUS,
+    iconCreateFunction: function(cluster) {
+      var childCount = cluster.getChildCount();
+
+      return new L.DivIcon({ html: '<div><span style="color:black;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+
+     }
+  });
+
 
   missionsLayer = L.geoJSON(missions, {
     pointToLayer: function (feature, latlng) {
@@ -541,8 +579,17 @@ var mapMissions = function(missions ){
     onEachFeature: onEachFeature
   });
 
-  layerControl.addOverlay(missionsLayer, 'Missions');
-  missionsLayer.addTo(eventsMap);
+
+  missionsClusters.addLayer(missionsLayer);
+
+  if (missionsLayerOn || firstMissionsLoad ) {
+    missionsClusters.addTo(eventsMap);
+    firstMissionsLoad = false;
+  }
+
+
+  layerControl.addOverlay(missionsClusters, 'Missions');
+
 };
 
 

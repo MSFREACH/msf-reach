@@ -72,7 +72,7 @@ export default ({ config, db, logger }) => {
 					logger.error(err);
 					/* istanbul ignore next */
 					next(err);
-				})
+				});
 		}
 	);
 
@@ -93,7 +93,7 @@ export default ({ config, db, logger }) => {
 					logger.error(err);
 					/* istanbul ignore next */
 					next(err);
-				})
+				});
 		}
 	);
 

@@ -1,4 +1,4 @@
-require('dotenv').config({silent:true})
+require('dotenv').config({silent: true});
 
 export default {
   AUTH: process.env.AUTH === 'true' || false,
@@ -40,6 +40,8 @@ export default {
   LOG_MAX_FILES: process.env.LOG_MAX_FILES || 10,
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: process.env.PORT || 8001,
+  BOT_HANDLER_ARN: process.env.BOT_HANDLER_ARN || '',
+  BASE_URL: process.env.BASE_URL || 'http://localhost:8001/',
   REDIRECT_HTTP: process.env.REDIRECT_HTTP === 'true' || false,
   RESPONSE_TIME: process.env.RESPONSE_TIME === 'true' || false,
   SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
@@ -59,4 +61,4 @@ export default {
   TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
   TWITTER_ACCESS_KEY: process.env.TWITTER_ACCESS_KEY,
   TWITTER_ACCESS_SECRET: process.env.TWITTER_ACCESS_SECRET
-}
+};

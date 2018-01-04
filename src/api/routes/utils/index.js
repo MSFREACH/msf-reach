@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
+import { cacheResponse } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';

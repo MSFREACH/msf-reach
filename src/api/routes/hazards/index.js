@@ -1,20 +1,15 @@
-import Promise from 'bluebird';
-
 import { Router } from 'express';
 
 // Import any required utility functions
 import { cacheResponse, jwtCheck } from '../../../lib/util';
 
 import { PDC } from '../../../lib/pdc-georss.js';
-import { USGS } from "../../../lib/usgs-georss.js";
-import { TSR } from "../../../lib/tsr.js";
-import { GDACS } from "../../../lib/gdacs-georss.js";
-import { PTWC } from "../../../lib/ptwc-georss.js";
+import { USGS } from '../../../lib/usgs-georss.js';
+import { TSR } from '../../../lib/tsr.js';
+import { GDACS } from '../../../lib/gdacs-georss.js';
+import { PTWC } from '../../../lib/ptwc-georss.js';
 
 
-// Import validation dependencies
-import Joi from 'joi';
-import validate from 'celebrate';
 
 export default ({ logger }) => {
 	let api = Router();
