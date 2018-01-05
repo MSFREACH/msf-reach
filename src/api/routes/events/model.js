@@ -9,8 +9,6 @@ import request from 'request';
 
 import { addChatbotItem } from '../../../lib/chatbot.js';
 
-import { geocode } from '../../../lib/geocoder.js';
-
 export default (config, db, logger) => ({
 
 	/**
@@ -78,7 +76,7 @@ export default (config, db, logger) => ({
 			request('https://maps.googleapis.com/maps/api/geocode/json?latlng='+String(body.location.lat)+','+String(body.location.lng)+'&key='+config.GOOGLE_API_KEY, function (error, response, response_body) {
 				body.metadata.country = 'unknown';
 				if (error) {
-					console.log('err ' + err );
+					console.log('err ' + error );
 					console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
 					body.metadata.country = 'unknown'
 				} else {
