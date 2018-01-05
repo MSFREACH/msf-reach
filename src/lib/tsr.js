@@ -1,7 +1,6 @@
 import Promise from 'bluebird';
 
 import cheerio from 'cheerio';
-import { parseString } from 'xml2js';
 import rp from 'request-promise';
 import { parseDms } from 'dms-conversion';
 
