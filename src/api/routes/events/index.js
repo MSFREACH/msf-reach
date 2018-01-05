@@ -11,10 +11,6 @@ import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
 import Joi from 'joi';
 import validate from 'celebrate';
 
-// Import ID generator
-import shortid from 'shortid';
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ._');
-
 export default ({ config, db, logger }) => {
 	let api = Router();
 
@@ -69,8 +65,7 @@ export default ({ config, db, logger }) => {
 			})
 		}),
 		(req, res, next) => {
-			let reportKey = shortid.generate();
-			events(config, db, logger).createEvent(reportKey, req.body)
+			events(config, db, logger).createEvent(req.body)
 			.then((data) => handleGeoResponse(data, req, res, next))
 				.catch((err) => {
 					/* istanbul ignore next */
