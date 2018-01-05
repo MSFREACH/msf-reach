@@ -5,7 +5,11 @@
 // Import promise support
 import Promise from 'bluebird';
 
+import request from 'request';
+
 import { addChatbotItem } from '../../../lib/chatbot.js';
+
+import { geocode } from '../../../lib/geocoder.js';
 
 export default (config, db, logger) => ({
 
@@ -69,10 +73,39 @@ export default (config, db, logger) => ({
 
 		// Execute
 		logger.debug(query, values);
-		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => addChatbotItem(data,data.id,body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key))
-			.then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
-			.catch((err) => reject(err));
+
+		if (config.GOOGLE_API_KEY) {
+			request('https://maps.googleapis.com/maps/api/geocode/json?latlng='+String(body.location.lat)+','+String(body.location.lng)+'&key='+config.GOOGLE_API_KEY, function (error, response, response_body) {
+				body.metadata.country = 'unknown';
+				if (error) {
+					console.log('err ' + err );
+					console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+					body.metadata.country = 'unknown'
+				} else {
+					console.log('got here');
+					body.metadata.country = 'unknown';
+					let geocoded = JSON.parse(response_body);
+					console.log(geocoded.results[0].address_components);
+					for (let i = 0; i < geocoded.results[0].address_components.length; i++ ) {
+						if (geocoded.results[0].address_components[i].types.indexOf('country') > -1) {
+							body.metadata.country=geocoded.results[0].address_components[i].long_name;
+						}
+					}
+				}
+				db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+					.then((data) => addChatbotItem(data,data.id,body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key))
+					.then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+					.catch((err) => reject(err));
+
+			});
+
+		} else {
+
+			db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+				.then((data) => addChatbotItem(data,data.id,body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key))
+				.then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+				.catch((err) => reject(err));
+		}
 	}),
 
 	/**

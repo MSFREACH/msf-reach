@@ -167,6 +167,9 @@ var printEventProperties = function(err, eventProperties){
       } else {
         searchTerm = currentEventProperties.metadata.name;
       }
+      if (currentEventProperties.metadata.hasOwnProperty('country')) {
+        searchTerm += currentEventProperties.metadata.country;
+      }
       $('#searchTerm').val(searchTerm);
     }
     $('#btnSearchTwitter').trigger('click');
