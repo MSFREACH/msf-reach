@@ -190,6 +190,7 @@ var printEventProperties = function(err, eventProperties){
     propertiesTable += '<table class="table">';
     //['id', 'status', 'type', 'created'];
     propertiesTable += "<tr><td>Name</td><td>"+eventProperties.metadata.name+"</td></tr>";
+    propertiesTable += "<tr><td>Country</td><td>"+eventProperties.metadata.country+"</td></tr>";    
     propertiesTable += "<tr><td>Status</td><td>"+eventProperties.status+"</td></tr>";
     propertiesTable += "<tr><td>Type</td><td>"+eventProperties.type+"</td></tr>";
     propertiesTable += "<tr><td>Opened</td><td>"+(eventProperties.metadata.event_datetime || eventProperties.created)+"</td></tr>";
@@ -234,6 +235,7 @@ var printEventProperties = function(err, eventProperties){
     $("#eventSecurityDetails").append(eventProperties.metadata.security_details);
 
    $("#eventBasicInfo").append("<dt>Name: </dt><dd>"+eventProperties.metadata.name+"</dd>");
+   $("#eventBasicInfo").append("<dt>Country: </dt><dd>"+eventProperties.metadata.country+"</dd>");
    $("#eventBasicInfo").append("<dt>Sub Type: </dt><dd>"+eventProperties.metadata.sub_type+"</dd>");
    $("#eventBasicInfo").append("<dt>Event Status: </dt><dd>"+eventProperties.metadata.event_status+"</dd>");
    if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification !== '') {
