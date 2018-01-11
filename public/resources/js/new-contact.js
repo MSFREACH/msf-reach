@@ -46,10 +46,11 @@ function postContact() {
 		"properties":{
 			"address": $('#mapAddress').val(),
 			"title": $("#inputContactTitle").val() || '',
+			"otherNames": $("#inputContactOtherName") || '',
 			"gender": $("#inputGender").val(),
 			"name": contName.trim(),
 			"speciality": $("#inputSpeciality").val() || '',
-			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val() ,
+			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val(),
 			"affiliationName": affiliationName,
 			"OC": $("#inputContactOC").val() || '',
 			"employment": $("#inputContactMSFEmploy").val() || '',
@@ -58,14 +59,16 @@ function postContact() {
 			"cell":$("#inputContactCell").val() || '',
 			"home":$("#inputContactHome").val() || '',
 			"work":$("#inputContactWork").val() || '',
+			"web": $("#inputContactWeb").val() || '',
+			"fax":$("#inputContactFax").val() || '',
 			"email":$("#inputContactEmail").val(),
 			"email2": $("#inputContactEmail2").val() || '',
 			"WhatsApp": $("#inputWhatsApp").val() || '',
-			"Twitter": $("#inputTwitter").val() || '',
-			"Telegram": $("#inputTelegram").val() || '',
 			"Facebook": $("#inputFacebook").val() || '',
-			"Skype": $("#inputSkype").val() || '',
+			"Twitter": $("#inputTwitter").val() || '',
 			"Instagram": $("#inputInstagram").val() || '',
+			"Telegram": $("#inputTelegram").val() || '',
+			"Skype": $("#inputSkype").val() || '',
 		}
 	};
 	//console.log(body);
