@@ -45,9 +45,9 @@ function postContact() {
 		"location":latlng,
 		"properties":{
 			"address": $('#mapAddress').val(),
-			"title": $("#inputContactTitle").val() || '',
+			"title": $("#inputContactTitle").val() || $('#inputContactOtherTitle').val(),
 			"otherNames": $("#inputContactOtherName") || '',
-			"gender": $("#inputGender").val(),
+			"gender": $("#inputGender").val() || $('#inputContactOtherGender').val(),
 			"name": contName.trim(),
 			"speciality": $("#inputSpeciality").val() || '',
 			"type":$("#inputContactAff").val() || $("#inputContactOtherAff").val(),

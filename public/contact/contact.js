@@ -76,6 +76,14 @@ $(function () {
    navigateTo($sections.length - 1);
  });
 
+ $('#inputContactTitle').change(function(){
+   $('#divOtherTitle').toggle(!this.value);
+ });
+
+ $('#inputGender').change(function(){
+   $('#divOtherGender').toggle(!this.value);
+ });
+
  $('#inputContactAff').change(function(){
    $('#divOtherAff').toggle(!this.value);
    $('#divMSFFields').toggle(this.value == "Current MSF Staff");
