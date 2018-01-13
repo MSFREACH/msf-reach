@@ -71,7 +71,7 @@ function postContact() {
 			"Skype": $("#inputSkype").val() || '',
 		}
 	};
-	//console.log(body);
+
 	$.ajax({
 		type: "POST",
 		url: "/api/contacts",
