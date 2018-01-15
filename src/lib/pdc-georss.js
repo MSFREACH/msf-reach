@@ -43,7 +43,7 @@ const PDC = () => new Promise((resolve, reject) => {
             // return GeoJSON
             resolve({'type':'FeatureCollection','features':features});
         }).catch(function(err) {
-            console.log('Error', err);
+            reject(err);
         });
 });
 

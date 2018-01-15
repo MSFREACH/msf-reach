@@ -1,3 +1,4 @@
+/* eslint no-console: off */
 // Import Unit.js
 const test = require('unit.js');
 

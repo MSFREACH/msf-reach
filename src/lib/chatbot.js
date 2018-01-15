@@ -34,11 +34,11 @@ module.exports.addChatbotItem = (data,id,keywords,reportUrl) => new Promise((res
     if (config.BOT_HANDLER_ARN) {
         lambda.invoke(addParams, function(err, data) {
             if (err) {
-                console.log(err);
+                reject(err);
             }
             else lambda.invoke(buildParams, function(err, data) {
                 if (err) {
-                    console.log(err);
+                    reject(err);
                 }
             });
         });

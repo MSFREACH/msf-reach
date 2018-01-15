@@ -58,7 +58,7 @@ const TSR = () =>
                 resolve({ type: 'FeatureCollection', features: features });
             })
             .catch(function(err) {
-                console.log('Error', err);
+                reject(err);
             });
     });
 

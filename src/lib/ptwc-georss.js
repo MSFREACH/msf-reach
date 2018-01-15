@@ -54,7 +54,7 @@ const PTWC = () =>
                 resolve({ type: 'FeatureCollection', title: title, features: features });
             })
             .catch(function(err) {
-                console.log('Error', err);
+                reject(err);
             });
     });
 

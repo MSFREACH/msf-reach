@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 function allowDrop(ev) {
     ev.preventDefault();
 }
@@ -13,9 +15,7 @@ function drag(ev) {
 function dropSaveTweet(ev) {
     ev.preventDefault();
     var tweetDivId = ev.dataTransfer.getData('tweetDivId');
-    console.log(eventReportLink);
     var tweetEventReportLink = eventReportLink.replace('&', '%26');
-    console.log('make put request for save tweet:'+tweetDivId+JSON.stringify(currentEventProperties));
     $('#savedTweets').prepend(document.getElementById(tweetDivId));
     $('#'+tweetDivId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+tweetDivId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
 
@@ -25,7 +25,6 @@ function dropSaveTweet(ev) {
     else {
         currentEventProperties.metadata.saved_tweets = [{'tweetId':tweetDivId, 'html':tweetIdHTMLMap[tweetDivId]}];
     }
-    console.log(currentEventProperties.metadata.saved_tweets);
     var body = {
         'status':'active',
         'metadata':{'saved_tweets':currentEventProperties.metadata.saved_tweets}
@@ -36,7 +35,7 @@ function dropSaveTweet(ev) {
         data: JSON.stringify(body),
         contentType: 'application/json'
     }).done(function( data, textStatus, req ){
-        console.log('save tweet on server');
+        // console.log('save tweet on server');
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');

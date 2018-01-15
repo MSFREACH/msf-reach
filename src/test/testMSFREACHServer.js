@@ -42,7 +42,7 @@ describe('Cognicity Server Testing Harness', function() {
         let config = {};
         init(config, initializeDb, routes, logger)
             .catch((err) => {
-                console.log(err);
+                console.log(err); // eslint-disable-line no-console
                 done();
             });
     });

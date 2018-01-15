@@ -1,4 +1,4 @@
-
+/*eslint no-unused-vars: off*/
 
 function initGoogle()
 {
@@ -26,7 +26,7 @@ function initGoogle()
         var foundLatLng=place.geometry.location.toJSON();
 
         var addrDetailLevel=place.address_components.length;
-        console.log(addrDetailLevel);
+
         if (autocompleteMap)
         {
             autocompleteMap.setView([foundLatLng.lat, foundLatLng.lng],(addrDetailLevel > 3) ? 17 : 7);

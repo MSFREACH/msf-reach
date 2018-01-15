@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 function openContactPopup(id)
 {
     contactsLayer.eachLayer(function(layer){
