@@ -80,7 +80,7 @@ export default ({ config, db, logger }) => {
 	);
 
 	// Update a contact record in the database
-	api.post('/:id', jwtCheck,
+	api.patch('/:id', jwtCheck,
 		validate({
 			params: { id: Joi.number().integer().min(1).required() } ,
 			body: Joi.object().keys({

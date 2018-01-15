@@ -59,8 +59,8 @@ export default (config, db, logger) => ({
 
 		// Setup query
 		let query = `INSERT INTO ${config.TABLE_CONTACTS}
-			(properties, the_geom)
-			VALUES ($1, ST_SetSRID(ST_Point($2,$3),4326))
+			(created_at, properties, the_geom)
+			VALUES (now(), $1, ST_SetSRID(ST_Point($2,$3),4326))
 			RETURNING id, properties, the_geom`;
 
 			// Setup values
@@ -82,9 +82,10 @@ export default (config, db, logger) => ({
 
 		// Setup query
 		let query = `UPDATE ${config.TABLE_CONTACTS}
-			SET properties = properties || $1
+			SET properties = properties || $1, updated_at = now()
 			WHERE id = $2
-			RETURNING  properties, the_geom`;
+			RETURNING  created_at, updated_at, last_email_sent_at, properties,
+			the_geom`;
 
 		// Setup values
 		let values = [ body.properties, id ];
@@ -92,8 +93,35 @@ export default (config, db, logger) => ({
 		// Execute
 		logger.debug(query, values);
 		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: String(id), properties:data.properties, the_geom:data.the_geom }))
+			.then((data) => resolve({ id: String(id), created_at:data.created_at,
+				updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
+				properties:data.properties, the_geom:data.the_geom }))
 			.catch((err) => reject(err));
+	}),
+
+	/**
+	 * Set a contact's last email sent value to now
+	 * @param {integer} id ID of contact
+	 */
+	setLastEmailTime: (id) => new Promise((resolve, reject) => {
+
+		// Setup query
+		let query = `UPDATE ${config.TABLE_CONTACTS}
+			SET last_email_sent_at = now()
+			WHERE id = $1
+			RETURNING  created_at, updated_at, last_email_sent_at, properties,
+			the_geom`;
+
+		// Setup values
+		let values = [ id ];
+
+		// Execute
+		logger.debug(query, values);
+		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+		.then((data) => resolve({ id: String(id), created_at:data.created_at,
+			updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
+			properties:data.properties, the_geom:data.the_geom }))
+		.catch((err) => reject(err));
 	})
 
 
