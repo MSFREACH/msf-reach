@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 /**
 * Events page script
 * @file public/resources/js/events.js
@@ -20,22 +22,17 @@ var missionsLayer;
 var missionsClusters;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
-var eventsMap;
+var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
+
 
 var zoomToEvent = function(latlng) {
     eventsMap.setView(latlng, 12);
 };
 
 var clipboard = new Clipboard('.btn');
-clipboard.on('success', function(e) {
-    console.log(e);
-});
-clipboard.on('error', function(e) {
-    console.log(e);
-});
 
 var labels = {
     'exploratory_details': 'Exploratory details',
@@ -84,7 +81,7 @@ var unpackMetadata = function(metadata) {
     }
     if (metadata.hasOwnProperty('msf_response_non_medical_material')) {
         result += '<dt>Medical requirements:</dt><dd>';
-        for (var i =0; i < metadata.msf_response_non_medical_material.length; i++) {
+        for (var i =0; i < metadata.msf_response_non_medical_material.length; i++) { // eslint-disable-line no-redeclare
             result += metadata.msf_response_non_medical_material[i] + '<br>';
         }
         result += '</dd>';
@@ -190,7 +187,7 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<table class="table">';
         //['id', 'status', 'type', 'created'];
         propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
-        propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';    
+        propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
         propertiesTable += '<tr><td>Status</td><td>'+eventProperties.status+'</td></tr>';
         propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+'</td></tr>';
         propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created)+'</td></tr>';
@@ -229,7 +226,6 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '</table>';
         $('#eventProperties').html(propertiesTable);
 
-        console.log(eventProperties);
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
         $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
@@ -256,7 +252,6 @@ var printEventProperties = function(err, eventProperties){
     if (currentEventProperties) {
         if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
             $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
-                console.log(value.html);
                 $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
                 var tweetEventReportLink = eventReportLink.replace('&', '%26');
                 $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
@@ -558,7 +553,6 @@ var mapMissions = function(missions ){
     });
 
     var missionsLayerOn = eventsMap.hasLayer(missionsClusters);
-    console.log( 'ML ON ' + missionsLayerOn);
 
     if (missionsClusters)
     {
@@ -611,9 +605,6 @@ if (currentEventId !== false && currentEventId != ''){
     // Catch condition where no event specified, print to screen
     printEventProperties('No event ID specified', null);
 }
-
-// Create map
-var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {

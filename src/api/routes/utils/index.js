@@ -15,7 +15,7 @@ import {S3} from 'aws-sdk';
 const uuidv4 = require('uuid/v4');
 
 
-export default ({ config, db, logger }) => {
+export default ({ config, db, logger }) => { //eslint-disable-line no-unused-vars
     let api = Router();
 
     let s3= new S3(
@@ -54,12 +54,7 @@ export default ({ config, db, logger }) => {
             }
         });
 
-    }
-    );
-
-
-
-
+    });
 
     return api;
 };

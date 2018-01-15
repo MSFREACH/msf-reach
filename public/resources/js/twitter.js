@@ -18,7 +18,6 @@ var loadTweets = function(err, tweets) {
 
 // Perform GET call to get tweets
 var getTweets = function(searchString) {
-    console.log(searchString);
     $.getJSON('/api/twitter/?searchString=' + searchString, function (data){
         loadTweets(null, data.result);
     }).fail(function(err) {
@@ -31,7 +30,7 @@ var getTweets = function(searchString) {
 };
 
 // Search Twitter
-$('#btnSearchTwitter').click(function(e){
+$('#btnSearchTwitter').click(function() { 
     if ($('#searchTerm').val() !== '') {
         var search = $('#searchTerm').val();
         getTweets(search);

@@ -32,11 +32,11 @@ module.exports.addChatbotItem = (data,id,keywords,reportUrl) => new Promise((res
         Payload: JSON.stringify({'Command':'BUILD'})
     };
     if (config.BOT_HANDLER_ARN) {
-        lambda.invoke(addParams, function(err, data) {
+        lambda.invoke(addParams, function(err, data) { // eslint-disable-line no-unused-vars
             if (err) {
                 reject(err);
             }
-            else lambda.invoke(buildParams, function(err, data) {
+            else lambda.invoke(buildParams, function(err, data) { // eslint-disable-line no-unused-vars
                 if (err) {
                     reject(err);
                 }

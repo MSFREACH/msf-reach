@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 // Create map
 var newEventMap = L.map('map').setView([20, 110], 4);
 var autocompleteMap=newEventMap;
@@ -35,8 +37,8 @@ $(function(){
     $( '#inputEvDateTime' ).datepicker({
         changeMonth: true,
         changeYear: true,
- 			dateFormat: 'yy-mm-dd',
- 			yearRange: '1900:' + new Date().getFullYear()
+        dateFormat: 'yy-mm-dd',
+        yearRange: '1900:' + new Date().getFullYear()
     });
 
 
@@ -87,7 +89,6 @@ $(function(){
 					*/
                 }
             };
-            console.log(body);
             $.ajax({
                 type: 'POST',
                 url: '/api/events',
@@ -108,15 +109,13 @@ $(function(){
     });
 
     $('#nextEventTab').on('click',function(){
-        console.log('hi');
         $('#extraTab').tab('show');
     });
 
 
     $('#selectType').change(function(){
         $('#divNaturalDisaster').toggle(this.value == 'natural_hazard');
-        if (this.value != 'natural_hazard')
-		  $('#inputDisasterType').val('');
+        if (this.value != 'natural_hazard') $('#inputDisasterType').val('');
 
         $('#divDisease').toggle(this.value == 'epidemiological');
         if (this.value != 'epidemiological')

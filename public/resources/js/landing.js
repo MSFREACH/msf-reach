@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 /**
 * Landing page script
 * @file public/resources/js/landing.js
@@ -6,7 +8,6 @@
 
 // Constants
 var GEOFORMAT='geojson';
-var HOSTNAME='http://localhost:8001/';
 var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
     {'epidemiological':'Disease outbreak'}, {'search_and_rescue':'Search and rescue'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
@@ -25,9 +26,9 @@ var PTWCHazardsLayer;
  */
 var colourSeverity = function(severity_scale) {
     switch(severity_scale) {
-    case('1'): return 'Severity: <font color="green">low</font>'; break;
-    case('2'): return 'Severity: <font color="orange">medium</font>'; break;
-    case('3'): return 'Severity: <font color="red">high</font>'; break;
+    case('1'): return 'Severity: <font color="green">low</font>';
+    case('2'): return 'Severity: <font color="orange">medium</font>';
+    case('3'): return 'Severity: <font color="red">high</font>';
     default: return 'Severity: <font color="red">high</font>';
     }
 };
@@ -107,7 +108,7 @@ var mapAllEvents = function(err, events){
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<BR>' +
     'Type: ' + type.replace('_',' ') + '<br>' +
     statusStr +
-    severityStr + 
+    severityStr +
     notificationStr +
     totalPopulationStr +
     affectedPopulationStr;
@@ -255,7 +256,7 @@ var GDACSHazardIcon = function(GDACSProperties) {
         iconUrl += 'cyclone_';
         break;
     default:
-        console.log('error in GDACS data');
+        console.log('error in GDACS data'); // eslint-disable-line no-console
     }
     switch(GDACSProperties.level) {
     case 'green':
@@ -380,7 +381,7 @@ function openHazardPopup(id)
         });
         break;
     default:
-        console.log('Hazards layer not found');
+        break;
 
     }
 }
@@ -637,7 +638,6 @@ var onContactLinkClick = function(id) {
 
 var contactInfo = {};
 var getContact = function(id) {
-    console.log(id);
     $.getJSON('/api/contacts/' + id, function(contact) {
         contactInfo = contact.result ? contact.result.properties : {};
         _(contact.result.properties).forIn(function(value, key) {
@@ -698,7 +698,6 @@ setInterval(function() {
     eventsLayer.clearLayers();
     $('#eventProperties').empty();
     getAllEvents(mapAllEvents);
-    console.log('timer expired');
 },180000);
 
 getFeeds('/api/hazards/pdc',mapPDCHazards);

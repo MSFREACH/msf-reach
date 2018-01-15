@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 // Create map
 var newContactMap = L.map('map').setView([20, 110], 4);
 var autocompleteMap=newContactMap;
@@ -81,9 +83,7 @@ function postContact() {
         $('#divProgress').html('Contact submitted!');
         $('#divSuccess').show(500);
     }).fail(function (req, textStatus, err){
-        $('#divProgress').html('An error occured');
-        console.log(err);
-        console.log(textStatus);
+        $('#divProgress').html('An error ' + err + 'occured');
     });
 }
 
@@ -94,7 +94,7 @@ $( function() {
         dateFormat: 'dd/mm/yy',
         yearRange: '1900:' + new Date().getFullYear(),
         onSelect: function(dateText, inst) {
-	 				$('#datepicker').text(dateText);
+            $('#datepicker').text(dateText);
         }
     });
 });

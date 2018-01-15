@@ -50,7 +50,6 @@ function dropRemoveTweet(ev) {
     var data = ev.dataTransfer.getData('text');
     var tweet = ev.dataTransfer.getData('tweet');
 
-    console.log('make put request for save tweet: '+tweet);
     ev.target.appendChild(document.getElementById(data));
 }
 

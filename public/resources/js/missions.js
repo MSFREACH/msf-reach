@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 function openMissionPopup(id) {
     missionsLayer.eachLayer(function(layer){
         if (layer.feature.properties.id == id)

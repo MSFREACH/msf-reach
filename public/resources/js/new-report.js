@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 // Create map
 var newReportMap = L.map('map').setView([20, 110], 4);
 var autocompleteMap=newReportMap;
@@ -57,8 +59,8 @@ function postReport(eventID,reportKey,imgLink) {
         $('#divSuccess').show(500);
     }).fail(function (req, textStatus, err){
         $('#divProgress').html('An error occured');
-        console.log(err);
-        console.log(textStatus);
+        console.log(err); // eslint-disable-line no-console
+        console.log(textStatus); // eslint-disable-line no-console
     });
 }
 
@@ -74,16 +76,7 @@ $('#createReport').on('click', function (e) {
 
     var imgLink='';
 
-
-
-    if (latlng === null){
-        //$('#newEventModalTitle').html('<h4>Missing event location</h4>');
-        //$('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>')
-        //$('#newEventModal').modal('toggle');
-        //alert("Please select a report location on the map first.");
-        console.log('new location supplied'); //why do we need this line ?
-    }
-    else {
+    if (latlng !== null ) {
         $('#divProgress').html('Submitting your report...');
         var files=document.getElementById('inputImageUpload').files;
 
@@ -100,8 +93,6 @@ $('#createReport').on('click', function (e) {
                 cache : false,
             })
                 .then(function(retData) {
-                    console.log('url received:');
-                    console.log(retData.url);
                     imgLink=retData.url;
                     return $.ajax({
                         url : retData.signedRequest,
@@ -113,14 +104,12 @@ $('#createReport').on('click', function (e) {
                         processData : false,
                     });
                 }).then(function(data,txt,jq){
-                    console.log('Upload successfull,submitting the report..');
+
                     postReport(eventId,reportKey,imgLink);
                 })
                 .fail(function(err){
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
-                    $('#divProgress').html('An error occured while uploading the photo.');
-                    console.error('error: ');
-                    console.log(err);
+                    $('#divProgress').html('An error ' + err + ' occured while uploading the photo.');
                 });
 
         }else {//no image just submit the report
