@@ -17,6 +17,21 @@ var TSRHazardsLayer;
 var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
+
+/**
+ * Function to color highlight severity_scale
+ * @param {String} severity_scale -
+ * @returns {String} html for severity_scale with color
+ */
+var colourSeverity = function(severity_scale) {
+  switch(severity_scale) {
+    case('1'): return 'Severity: <font color="green">low</font>'; break;
+    case('2'): return 'Severity: <font color="orange">medium</font>'; break;
+    case('3'): return 'Severity: <font color="red">high</font>'; break;
+    default: return 'Severity: <font color="red">high</font>'
+  }
+}
+
 var eventsLayer;
 
 /**
@@ -69,6 +84,15 @@ var mapAllEvents = function(err, events){
       statusStr = 'Status: ' + feature.properties.status + '<br>';
     }
 
+    var severityStr = '';
+
+    if (feature.properties.metadata.hasOwnProperty('severity')) {
+      severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+    }
+    if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
+      severityStr += colourSeverity(feature.properties.metadata.severity) + '<br>';
+    }
+
 
     var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
     var icon_name = type;
@@ -83,6 +107,7 @@ var mapAllEvents = function(err, events){
     "Opened: " + (feature.properties.metadata.event_datetime || feature.properties.created) + "<BR>" +
     "Type: " + type.replace('_',' ') + "<br>" +
     statusStr +
+    severityStr + 
     notificationStr +
     totalPopulationStr +
     affectedPopulationStr;
