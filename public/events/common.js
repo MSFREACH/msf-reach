@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 /**
  * Default event needed to make it reactive
  * @type {Object}
