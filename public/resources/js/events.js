@@ -361,6 +361,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "ACCESS");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: accessIcon});
     },
     onEachFeature: onEachFeature
@@ -373,6 +374,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "NEEDS");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: needsIcon});
     },
     onEachFeature: onEachFeature
@@ -385,6 +387,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "SECURITY");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: securityIcon});
     },
     onEachFeature: onEachFeature
@@ -397,6 +400,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "CONTACTS");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: contactsIcon});
     },
     onEachFeature: onEachFeature
