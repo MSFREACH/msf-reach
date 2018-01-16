@@ -355,63 +355,63 @@ var mapReports = function(reports){
         iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
 
-  });
+    });
 
-  var accessLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "ACCESS");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: accessIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  accessLayer.addTo(eventsMap);
-  layerControl.addOverlay(accessLayer, '- access', 'Reports');
+    var accessLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'ACCESS');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: accessIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    accessLayer.addTo(eventsMap);
+    layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
-  var needsLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "NEEDS");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: needsIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  needsLayer.addTo(eventsMap);
-  layerControl.addOverlay(needsLayer, '- needs', 'Reports');
+    var needsLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'NEEDS');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: needsIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    needsLayer.addTo(eventsMap);
+    layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
-  var securityLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "SECURITY");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: securityIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  securityLayer.addTo(eventsMap);
-  layerControl.addOverlay(securityLayer, '- security', 'Reports');
+    var securityLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'SECURITY');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: securityIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    securityLayer.addTo(eventsMap);
+    layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-  var reportLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "CONTACTS");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: contactsIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  reportLayer.addTo(eventsMap);
-  layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
+    var reportLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'CONTACTS');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: contactsIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    reportLayer.addTo(eventsMap);
+    layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
 
-  if (points.length > 0){
-    eventsMap.fitBounds(points, {padding: [50,50]});
-  }
+    if (points.length > 0){
+        eventsMap.fitBounds(points, {padding: [50,50]});
+    }
 
 };
 

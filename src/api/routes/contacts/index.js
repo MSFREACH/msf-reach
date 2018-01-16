@@ -79,25 +79,25 @@ export default ({ config, db, logger }) => {
         }
     );
 
-	// Update a contact record in the database
-	api.patch('/:id', jwtCheck,
-		validate({
-			params: { id: Joi.number().integer().min(1).required() } ,
-			body: Joi.object().keys({
-				properties: Joi.object().required()
-			})
-		}),
-		(req, res, next) => {
-			contacts(config, db, logger).updateContact(req.params.id, req.body)
-			.then((data) => handleGeoResponse(data, req, res, next))
-				.catch((err) => {
-					/* istanbul ignore next */
-					logger.error(err);
-					/* istanbul ignore next */
-					next(err);
-				});
-		}
-	);
+    // Update a contact record in the database
+    api.patch('/:id', jwtCheck,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                properties: Joi.object().required()
+            })
+        }),
+        (req, res, next) => {
+            contacts(config, db, logger).updateContact(req.params.id, req.body)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
 
     return api;
 };
