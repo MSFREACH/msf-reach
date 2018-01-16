@@ -14,28 +14,28 @@ export default ({ config, db, logger }) => {
     let api = Router();
 
     api.get('/', jwtCheck, cacheResponse('10 minutes'),
-      validate({
-        query: {
-          search: Joi.string().min(1),
-          latmin: Joi.number().min(-90).max(90),
-          lngmin: Joi.number().min(-180).max(180),
-          latmax: Joi.number().min(-90).max(90),
-          lngmax: Joi.number().min(-180).max(180),
-          geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
-        }
-      }),
-      (req, res, next) => missions(config, db, logger).all(req.query.search,{
-        xmin: req.query.lngmin,
-        ymin: req.query.latmin,
-        xmax: req.query.lngmax,
-        ymax: req.query.latmax
-      }).then((data) => handleGeoResponse(data, req, res, next))
-        .catch((err) => {
-          /* istanbul ignore next */
-          logger.error(err);
-          /* istanbul ignore next */
-          next(err);
-        })
+        validate({
+            query: {
+                search: Joi.string().min(1),
+                latmin: Joi.number().min(-90).max(90),
+                lngmin: Joi.number().min(-180).max(180),
+                latmax: Joi.number().min(-90).max(90),
+                lngmax: Joi.number().min(-180).max(180),
+                geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
+            }
+        }),
+        (req, res, next) => missions(config, db, logger).all(req.query.search,{
+            xmin: req.query.lngmin,
+            ymin: req.query.latmin,
+            xmax: req.query.lngmax,
+            ymax: req.query.latmax
+        }).then((data) => handleGeoResponse(data, req, res, next))
+            .catch((err) => {
+                /* istanbul ignore next */
+                logger.error(err);
+                /* istanbul ignore next */
+                next(err);
+            })
     );
 
     api.get('/:id',jwtCheck, cacheResponse('1 minute'),
