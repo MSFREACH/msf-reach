@@ -406,7 +406,9 @@ var mapReports = function(reports){
     },
     onEachFeature: onEachFeature
   });
-  reportLayer.addTo(eventsMap);
+  if (Cookies.get('Reports')==='on') {
+    reportLayer.addTo(eventsMap);
+  }
   layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
 
   if (points.length > 0){
@@ -478,7 +480,9 @@ var mapContacts = function(contacts) {
     contactsClusters.addLayer(contactsLayer);
 
     if (contactsLayerOn || firstContactsLoad) {
-        contactsClusters.addTo(eventsMap);
+        if (Cookies.get('Contacts')==='on') {
+          contactsClusters.addTo(eventsMap);
+        }
         firstContactsLoad = false;
     }
     layerControl.addOverlay(contactsClusters, 'Contacts');
@@ -587,7 +591,9 @@ var mapMissions = function(missions ){
     missionsClusters.addLayer(missionsLayer);
 
     if (missionsLayerOn || firstMissionsLoad ) {
-        missionsClusters.addTo(eventsMap);
+        if (Cookies.get('Missions')==='on') {
+          missionsClusters.addTo(eventsMap);
+        }
         firstMissionsLoad = false;
     }
 
@@ -700,3 +706,17 @@ var onEditEvent = function() {
 var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
 };
+
+eventsMap.on('overlayadd', function (layersControlEvent) {
+  Cookies.set(layersControlEvent.name,'on');
+});
+
+var ignoreFirstOverlayRemove = {};
+
+eventsMap.on('overlayremove', function (layersControlEvent) {
+  if (ignoreFirstOverlayRemove.hasOwnProperty(layersControlEvent.name)) {
+    Cookies.set(layersControlEvent.name,'off');
+  } else {
+    ignoreFirstOverlayRemove[layersControlEvent.name] = '';
+  }
+});
