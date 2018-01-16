@@ -24,9 +24,30 @@ var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
 
+var computerTriggered = false;
+
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
+// Set cookies if not set
+if (typeof(Cookies.get('- access')) === 'undefined') {
+  Cookies.set('- access','on'); // default
+}
+if (typeof(Cookies.get('- needs')) === 'undefined') {
+  Cookies.set('- needs','on'); // default
+}
+if (typeof(Cookies.get('- security')) === 'undefined') {
+  Cookies.set('- security','on'); // default
+}
+if (typeof(Cookies.get('- contacts')) === 'undefined') {
+  Cookies.set('- contacts','on'); // default
+}
+if (typeof(Cookies.get('Contacts')) === 'undefined') {
+  Cookies.set('Contacts','on'); // default
+}
+if (typeof(Cookies.get('Missions')) === 'undefined') {
+  Cookies.set('Contacts','on'); // default
+}
 
 var zoomToEvent = function(latlng) {
     eventsMap.setView(latlng, 12);
@@ -355,65 +376,71 @@ var mapReports = function(reports){
         iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
 
-  });
+    });
 
-  var accessLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "ACCESS");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: accessIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  accessLayer.addTo(eventsMap);
-  layerControl.addOverlay(accessLayer, '- access', 'Reports');
+    var accessLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'ACCESS');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: accessIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    if (Cookies.get('- access')==='on') {
+        accessLayer.addTo(eventsMap);
+    }
+    layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
-  var needsLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "NEEDS");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: needsIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  needsLayer.addTo(eventsMap);
-  layerControl.addOverlay(needsLayer, '- needs', 'Reports');
+    var needsLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'NEEDS');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: needsIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    if (Cookies.get('- needs')==='on') {
+        needsLayer.addTo(eventsMap);
+    }
+    layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
-  var securityLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "SECURITY");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: securityIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  securityLayer.addTo(eventsMap);
-  layerControl.addOverlay(securityLayer, '- security', 'Reports');
+    var securityLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'SECURITY');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: securityIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    if (Cookies.get('- security')==='on') {
+        securityLayer.addTo(eventsMap);
+    }
+    layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-  var reportLayer = L.geoJSON(reports, {
-    filter: function (feature) {
-      return (feature.properties.content.report_tag === "CONTACTS");
-    },
-    pointToLayer: function (feature, latlng) {
-      points.push([latlng.lat, latlng.lng]);
-      return L.marker(latlng, {icon: contactsIcon});
-    },
-    onEachFeature: onEachFeature
-  });
-  if (Cookies.get('Reports')==='on') {
-    reportLayer.addTo(eventsMap);
-  }
-  layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
+    var contactsLayer = L.geoJSON(reports, {
+        filter: function (feature) {
+            return (feature.properties.content.report_tag === 'CONTACTS');
+        },
+        pointToLayer: function (feature, latlng) {
+            points.push([latlng.lat, latlng.lng]);
+            return L.marker(latlng, {icon: contactsIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+    if (Cookies.get('- contacts')==='on') {
+        contactsLayer.addTo(eventsMap);
+    }
+    layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
 
-  if (points.length > 0){
-    eventsMap.fitBounds(points, {padding: [50,50]});
-  }
+    if (points.length > 0){
+        eventsMap.fitBounds(points, {padding: [50,50]});
+    }
 
 };
 
@@ -455,8 +482,10 @@ var mapContacts = function(contacts) {
 
     if (contactsClusters)
     {
+        computerTriggered=true;
         eventsMap.removeLayer(contactsClusters);
         layerControl.removeLayer(contactsClusters);
+        computerTriggered=false;
     }
 
     contactsClusters = L.markerClusterGroup({
@@ -481,7 +510,7 @@ var mapContacts = function(contacts) {
 
     if (contactsLayerOn || firstContactsLoad) {
         if (Cookies.get('Contacts')==='on') {
-          contactsClusters.addTo(eventsMap);
+            contactsClusters.addTo(eventsMap);
         }
         firstContactsLoad = false;
     }
@@ -565,8 +594,10 @@ var mapMissions = function(missions ){
 
     if (missionsClusters)
     {
+        computerTriggered=true;
         eventsMap.removeLayer(missionsClusters);
         layerControl.removeLayer(missionsClusters);
+        computerTriggered=false;
     }
 
     missionsClusters = L.markerClusterGroup({
@@ -592,7 +623,7 @@ var mapMissions = function(missions ){
 
     if (missionsLayerOn || firstMissionsLoad ) {
         if (Cookies.get('Missions')==='on') {
-          missionsClusters.addTo(eventsMap);
+            missionsClusters.addTo(eventsMap);
         }
         firstMissionsLoad = false;
     }
@@ -708,15 +739,14 @@ var onArchiveEvent = function() {
 };
 
 eventsMap.on('overlayadd', function (layersControlEvent) {
-  Cookies.set(layersControlEvent.name,'on');
+    if (!computerTriggered) {
+      Cookies.set(layersControlEvent.name,'on');
+    }
 });
 
-var ignoreFirstOverlayRemove = {};
 
 eventsMap.on('overlayremove', function (layersControlEvent) {
-  if (ignoreFirstOverlayRemove.hasOwnProperty(layersControlEvent.name)) {
-    Cookies.set(layersControlEvent.name,'off');
-  } else {
-    ignoreFirstOverlayRemove[layersControlEvent.name] = '';
-  }
+    if (!computerTriggered) {
+      Cookies.set(layersControlEvent.name,'off');
+    }
 });

@@ -19,6 +19,35 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
+// Set cookies if not set
+if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
+  Cookies.set('Mission Histories','on'); // default
+}
+if (typeof(Cookies.get('Current Events')) === 'undefined') {
+  Cookies.set('Current Events','on'); // default
+}
+if (typeof(Cookies.get('- PDC')) === 'undefined') {
+  Cookies.set('- PDC','on'); // default
+}
+if (typeof(Cookies.get('- TSR')) === 'undefined') {
+  Cookies.set('- TSR','on'); // default
+}
+if (typeof(Cookies.get('- PTWC')) === 'undefined') {
+  Cookies.set('- PTWC','on'); // default
+}
+if (typeof(Cookies.get('- GDACS')) === 'undefined') {
+  Cookies.set('- GDACS','on'); // default
+}
+if (typeof(Cookies.get('- USGS')) === 'undefined') {
+  Cookies.set('- USGS','on'); // default
+}
+if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
+  Cookies.set('- MSF Staff','on'); // default
+}
+if (typeof(Cookies.get('- other contacts')) === 'undefined') {
+  Cookies.set('- other contacts','off'); // default
+}
+
 /**
  * Function to color highlight severity_scale
  * @param {String} severity_scale -
@@ -151,7 +180,9 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    eventsLayer.addTo(landingMap);
+    if (Cookies.get('Current Events')==='on' || !Cookies.get('Current Events')) {
+        eventsLayer.addTo(landingMap);
+    }
     layerControl.addOverlay(eventsLayer, 'Current Events');
 
 };
@@ -188,7 +219,9 @@ var mapPDCHazards = function(hazards){
         onEachFeature: hazardFeature
     });
 
-    PDCHazardsLayer.addTo(landingMap);
+    if (Cookies.get('- PDC')==='on') {
+        PDCHazardsLayer.addTo(landingMap);
+    }
     layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'Hazards');
 
 };
@@ -216,7 +249,9 @@ var mapTSRHazards = function(hazards){
         onEachFeature: hazardFeature
     });
 
-    TSRHazardsLayer.addTo(landingMap);
+    if (Cookies.get('- TSR')==='on') {
+        TSRHazardsLayer.addTo(landingMap);
+    }
     layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'Hazards');
 
 };
@@ -236,7 +271,10 @@ var mapPTWCHazards = function(hazards){
         onEachFeature: hazardFeature
     });
 
-    PTWCHazardsLayer.addTo(landingMap);
+    if (Cookies.get('- PTWC')==='on') {
+        PTWCHazardsLayer.addTo(landingMap);
+    }
+
     layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'Hazards');
 
 };
@@ -294,7 +332,9 @@ var mapGDACSHazards = function(hazards){
         onEachFeature: hazardFeature
     });
 
-    GDACSHazardsLayer.addTo(landingMap);
+    if (Cookies.get('- GDACS')) {
+        GDACSHazardsLayer.addTo(landingMap);
+    }
     layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'Hazards');
 
 };
@@ -315,7 +355,9 @@ var mapUSGSHazards = function(hazards){
         onEachFeature: hazardFeature
     });
 
-    USGSHazardsLayer.addTo(landingMap);
+    if (Cookies.get('- USGS')) {
+        USGSHazardsLayer.addTo(landingMap);
+    }
     layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'Hazards');
 
 };
@@ -541,7 +583,10 @@ var mapMissions = function(missions ){
         },
         onEachFeature: onEachFeature
     });
-    missionsLayer.addTo(landingMap);
+
+    if (Cookies.get('Mission Histories')==='on') {
+        missionsLayer.addTo(landingMap);
+    }
     layerControl.addOverlay(missionsLayer, 'Mission Histories');
 };
 
@@ -611,7 +656,12 @@ var mapContacts = function(contacts ){
         onEachFeature: onEachFeature
     });
 
-    MSFContactsLayer.addTo(landingMap);
+    if (Cookies.get('- MSF Staff')==='on') {
+        MSFContactsLayer.addTo(landingMap);
+    }
+    if (Cookies.get('- other contacts')==='on') {
+        nonMSFContactsLayer.addTo(landingMap);
+    }
     layerControl.addOverlay(MSFContactsLayer, '- MSF Staff', 'Contacts');
     layerControl.addOverlay(nonMSFContactsLayer, '- other contacts', 'Contacts');
 
@@ -727,3 +777,11 @@ var displayVideo = function(video) {
     }
 
 };
+
+landingMap.on('overlayadd', function (layersControlEvent) {
+    Cookies.set(layersControlEvent.name,'on');
+});
+
+landingMap.on('overlayremove', function (layersControlEvent) {
+    Cookies.set(layersControlEvent.name,'off');
+});
