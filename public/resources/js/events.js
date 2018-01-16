@@ -8,7 +8,7 @@
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
-var MAX_RADIUS= 0.1;
+var MAX_RADIUS= 5;
 
 // Globals
 var currentEventId;
@@ -366,6 +366,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "ACCESS");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: accessIcon});
     },
     onEachFeature: onEachFeature
@@ -378,6 +379,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "NEEDS");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: needsIcon});
     },
     onEachFeature: onEachFeature
@@ -390,6 +392,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "SECURITY");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: securityIcon});
     },
     onEachFeature: onEachFeature
@@ -402,6 +405,7 @@ var mapReports = function(reports){
       return (feature.properties.content.report_tag === "CONTACTS");
     },
     pointToLayer: function (feature, latlng) {
+      points.push([latlng.lat, latlng.lng]);
       return L.marker(latlng, {icon: contactsIcon});
     },
     onEachFeature: onEachFeature
