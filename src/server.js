@@ -23,85 +23,85 @@ import { jwtCheck } from './lib/util';
 	**/
 const init = (config, initializeDb, routes, logger) => new Promise((resolve, reject) => {
 
-	// Create the server
-	let app = express();
-	app.server = http.createServer(app);
+    // Create the server
+    let app = express();
+    app.server = http.createServer(app);
 
-	// Winston stream function we can plug in to express so we can capture its logs along with our own
-	const winstonStream = {
-		write: function(message) {
-			logger.info(message.slice(0, -1));
-		}
-	};
+    // Winston stream function we can plug in to express so we can capture its logs along with our own
+    const winstonStream = {
+        write: function(message) {
+            logger.info(message.slice(0, -1));
+        }
+    };
 
-	// Setup express logger
-	app.use(morgan('combined', { stream: winstonStream }));
+    // Setup express logger
+    app.use(morgan('combined', { stream: winstonStream }));
 
-	// Compress responses if required but only if caching is disabled
-	if (config.COMPRESS && !config.CACHE) {
-		app.use(compression());
-	}
+    // Compress responses if required but only if caching is disabled
+    if (config.COMPRESS && !config.CACHE) {
+        app.use(compression());
+    }
 
-	// Provide CORS support (not required if behind API gateway)
-	if (config.CORS) {
-		app.use(cors({ exposedHeaders: config.CORS_HEADERS }));
-	}
+    // Provide CORS support (not required if behind API gateway)
+    if (config.CORS) {
+        app.use(cors({ exposedHeaders: config.CORS_HEADERS }));
+    }
 
-	// Provide response time header in response
-	if (config.RESPONSE_TIME) {
-		app.use(responseTime());
-	}
+    // Provide response time header in response
+    if (config.RESPONSE_TIME) {
+        app.use(responseTime());
+    }
 
-	// Parse body messages into json
-	app.use(bodyParser.json({ limit: config.BODY_LIMIT }));
+    // Parse body messages into json
+    app.use(bodyParser.json({ limit: config.BODY_LIMIT }));
 
-	// Redirect http to https
-	app.use(function redirectHTTP(req, res, next) {
-		if (config.REDIRECT_HTTP && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'].toLowerCase() === 'http') {
-			return res.redirect('https://' + req.headers.host + req.url);
-		}
-		next();
-	});
+    // Redirect http to https
+    app.use(function redirectHTTP(req, res, next) {
+        if (config.REDIRECT_HTTP && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'].toLowerCase() === 'http') {
+            return res.redirect('https://' + req.headers.host + req.url);
+        }
+        next();
+    });
 
-	// Try and connect to the db
-	initializeDb(config, logger)
-		.then((db) => {
-			// Log debug message
-			logger.debug('Successfully connected to DB');
-			//app.use(cookieParser()); // Enable cookies
-			// Mount the routes
-			app.use('/login', express.static(config.STATIC_AUTH_PATH));
-			app.use('/report', express.static(config.STATIC_REPORT_PATH));
-			app.use('/contact', express.static(config.STATIC_CONTACT_PATH));
-			app.use('/lib', express.static(config.STATIC_LIB_PATH)); // Allow resources to be shared with un-authed path
-			app.use('/resources', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
-
-
-			// Mount the API. authentication specified within routes
-			app.use('/api', routes({ config, db, logger }));
+    // Try and connect to the db
+    initializeDb(config, logger)
+        .then((db) => {
+            // Log debug message
+            logger.debug('Successfully connected to DB');
+            //app.use(cookieParser()); // Enable cookies
+            // Mount the routes
+            app.use('/login', express.static(config.STATIC_AUTH_PATH));
+            app.use('/report', express.static(config.STATIC_REPORT_PATH));
+            app.use('/contact', express.static(config.STATIC_CONTACT_PATH));
+            app.use('/lib', express.static(config.STATIC_LIB_PATH)); // Allow resources to be shared with un-authed path
+            app.use('/resources', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path
 
 
-			// Set jetCheck on root. All paths below this will also have JWT checks applied.
-			app.use('/', [jwtCheck, express.static(config.STATIC_PATH)], function(err, req, res, next) {
-				if (err.name === 'UnauthorizedError') {
-					res.redirect('/login');
-				}
-				else if (err) {
-					next(err);
-				}
-			});
+            // Mount the API. authentication specified within routes
+            app.use('/api', routes({ config, db, logger }));
 
-			// App is ready to go, resolve the promise
-			resolve(app);
 
-		})
-		.catch((err) => {
-			logger.error('DB Connection error: ' + err);
-			logger.error('Fatal error: Application shutting down');
+            // Set jetCheck on root. All paths below this will also have JWT checks applied.
+            app.use('/', [jwtCheck, express.static(config.STATIC_PATH)], function(err, req, res, next) {
+                if (err.name === 'UnauthorizedError') {
+                    res.redirect('/login');
+                }
+                else if (err) {
+                    next(err);
+                }
+            });
 
-			// We cannot continue without a DB, reject
-			reject(err);
-		});
+            // App is ready to go, resolve the promise
+            resolve(app);
+
+        })
+        .catch((err) => {
+            logger.error('DB Connection error: ' + err);
+            logger.error('Fatal error: Application shutting down');
+
+            // We cannot continue without a DB, reject
+            reject(err);
+        });
 });
 
 // Export the init function for use externally (e.g. in tests)
