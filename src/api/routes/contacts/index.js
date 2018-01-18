@@ -7,7 +7,9 @@ import contacts from './model';
 import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
 
 // Import validation dependencies
-import Joi from 'joi';
+import BaseJoi from 'joi';
+import Extension from 'joi-date-extensions';
+const Joi = BaseJoi.extend(Extension);
 import validate from 'celebrate';
 
 export default ({ config, db, logger }) => {
@@ -60,6 +62,7 @@ export default ({ config, db, logger }) => {
 	api.post('/',
 		validate({
 			body: Joi.object().keys({
+				// TODO - create a Joi validation schema for contact properties
 				properties: Joi.object().required(),
 				location: Joi.object().required().keys({
 					lat: Joi.number().min(-90).max(90).required(),
@@ -99,5 +102,24 @@ export default ({ config, db, logger }) => {
 		}
 	);
 
+	// Update a contact's last_email_sent_at record in the database
+	api.patch('/:id/emailtime', jwtCheck,
+		validate({
+			params: { id: Joi.number().integer().min(1).required() } ,
+			body: Joi.object().keys({
+ 				date: Joi.date().format('YYYY-MM-DDTHH:mm:ssZ').required()
+			})
+		}),
+		(req, res, next) => {
+			contacts(config, db, logger).setLastEmailTime(req.params.id, req.body)
+			.then((data) => handleGeoResponse(data, req, res, next))
+				.catch((err) => {
+					/* istanbul ignore next */
+					logger.error(err);
+					/* istanbul ignore next */
+					next(err);
+				});
+		}
+	);
 	return api;
 };
