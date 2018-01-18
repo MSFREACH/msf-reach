@@ -7,14 +7,14 @@ import Promise from 'bluebird';
 
 export default (config, db, logger) => ({
 
-	/**
+    /**
 	 * Return contacts
 	 * @function all - returns contacts, optionally filtered by string
 	 * @param {String} search - optional string search against name, email, cell
 	 */
-	all: (search,bounds) => new Promise((resolve, reject) => {
-		// Setup query
-		let query = `SELECT id, properties, the_geom
+    all: (search,bounds) => new Promise((resolve, reject) => {
+        // Setup query
+        let query = `SELECT id, properties, the_geom
 			FROM ${config.TABLE_CONTACTS}
 			WHERE ($1 IS NULL OR (
 				properties ->> 'name' ILIKE $1
@@ -25,76 +25,76 @@ export default (config, db, logger) => ({
 				($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
 			ORDER BY id`;
 
-		// Format search string for Postgres
-		let text = (!search) ? null : '%'+search+'%'	;
-		let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
-		let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
+        // Format search string for Postgres
+        let text = (!search) ? null : '%'+search+'%'	;
+        let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
+        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
 
-		// Execute
-		db.any(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve(data))
-			.catch((err) => reject(err));
-	}),
+        // Execute
+        db.any(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
+    }),
 
-	byId: (id) => new Promise((resolve, reject) => {
-		// Setup query
-		let query = `SELECT id, properties, the_geom
+    byId: (id) => new Promise((resolve, reject) => {
+        // Setup query
+        let query = `SELECT id, properties, the_geom
 			FROM ${config.TABLE_CONTACTS}
 			WHERE id = $1`;
 
-		// Format search string for Postgres
-		let values = [ id ];
+        // Format search string for Postgres
+        let values = [ id ];
 
-		// Execute
-		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve(data))
-			.catch((err) => reject(err));
-	}),
+        // Execute
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
+    }),
 
-	/**
+    /**
 	 * Create a new contact
 	 * @param {object} body Body of request with contact details
 	 */
-	createContact: (body) => new Promise((resolve, reject) => {
+    createContact: (body) => new Promise((resolve, reject) => {
 
-		// Setup query
-		let query = `INSERT INTO ${config.TABLE_CONTACTS}
+        // Setup query
+        let query = `INSERT INTO ${config.TABLE_CONTACTS}
 			(properties, the_geom)
 			VALUES ($1, ST_SetSRID(ST_Point($2,$3),4326))
 			RETURNING id, properties, the_geom`;
 
-			// Setup values
-		let values = [ body.properties, body.location.lng, body.location.lat ];
+        // Setup values
+        let values = [ body.properties, body.location.lng, body.location.lat ];
 
-		// Execute
-		logger.debug(query, values);
-		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: data.id, properties:data.properties, the_geom:data.the_geom }))
-			.catch((err) => reject(err));
-	}),
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: data.id, properties:data.properties, the_geom:data.the_geom }))
+            .catch((err) => reject(err));
+    }),
 
-	/**
+    /**
 	 * Update a contact
 	 * @param {integer} id ID of contact
 	 * @param {object} body Body of request with contact details
 	 */
-	updateContact: (id, body) => new Promise((resolve, reject) => {
+    updateContact: (id, body) => new Promise((resolve, reject) => {
 
-		// Setup query
-		let query = `UPDATE ${config.TABLE_CONTACTS}
+        // Setup query
+        let query = `UPDATE ${config.TABLE_CONTACTS}
 			SET properties = properties || $1
 			WHERE id = $2
 			RETURNING  properties, the_geom`;
 
-		// Setup values
-		let values = [ body.properties, id ];
+        // Setup values
+        let values = [ body.properties, id ];
 
-		// Execute
-		logger.debug(query, values);
-		db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-			.then((data) => resolve({ id: String(id), properties:data.properties, the_geom:data.the_geom }))
-			.catch((err) => reject(err));
-	})
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), properties:data.properties, the_geom:data.the_geom }))
+            .catch((err) => reject(err));
+    })
 
 
 });
