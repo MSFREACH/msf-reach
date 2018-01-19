@@ -1,8 +1,8 @@
-var USERNAME = localStorage.getItem("username");
+var USERNAME = localStorage.getItem('username');
 
 $('#username').append(USERNAME);
 
 $('#logout').click(function() {
-  Cookies.remove('jwt', {path: '/'} );
-  localStorage.removeItem("username");
+    Cookies.remove('jwt', {path: '/'} );
+    localStorage.removeItem('username');
 });

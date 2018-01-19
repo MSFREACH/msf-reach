@@ -12,21 +12,21 @@ import { PTWC } from '../../../lib/ptwc-georss.js';
 
 
 export default ({ logger }) => {
-	let api = Router();
+    let api = Router();
 
-	// Get a list of all reports
-	api.get('/pdc', jwtCheck, cacheResponse('10 minutes'),
-		(req, res, next) => PDC()
-			.then((events) => {
-				res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
-			})
-			.catch((err) => {
-				/* istanbul ignore next */
-				logger.error(err);
-				/* istanbul ignore next */
-				next(err);
-			})
-	);
+    // Get a list of all reports
+    api.get('/pdc', jwtCheck, cacheResponse('10 minutes'),
+        (req, res, next) => PDC()
+            .then((events) => {
+                res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
+            })
+            .catch((err) => {
+                /* istanbul ignore next */
+                logger.error(err);
+                /* istanbul ignore next */
+                next(err);
+            })
+    );
 
     api.get('/usgs', jwtCheck, cacheResponse('10 minutes'),
         (req, res, next) => USGS()
@@ -54,31 +54,31 @@ export default ({ logger }) => {
             })
     );
 
-		api.get('/gdacs', jwtCheck, cacheResponse('10 minutes'),
-				(req, res, next) => GDACS()
-						.then((events) => {
-								res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
-						})
-						.catch((err) => {
-								/* istanbul ignore next */
-								logger.error(err);
-								/* istanbul ignore next */
-								next(err);
-						})
-		);
+    api.get('/gdacs', jwtCheck, cacheResponse('10 minutes'),
+        (req, res, next) => GDACS()
+            .then((events) => {
+                res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
+            })
+            .catch((err) => {
+                /* istanbul ignore next */
+                logger.error(err);
+                /* istanbul ignore next */
+                next(err);
+            })
+    );
 
-		api.get('/ptwc', jwtCheck, cacheResponse('10 minutes'),
-				(req, res, next) => PTWC()
-						.then((events) => {
-								res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
-						})
-						.catch((err) => {
-								/* istanbul ignore next */
-								logger.error(err);
-								/* istanbul ignore next */
-								next(err);
-						})
-		);
+    api.get('/ptwc', jwtCheck, cacheResponse('10 minutes'),
+        (req, res, next) => PTWC()
+            .then((events) => {
+                res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
+            })
+            .catch((err) => {
+                /* istanbul ignore next */
+                logger.error(err);
+                /* istanbul ignore next */
+                next(err);
+            })
+    );
 
-		return api;
+    return api;
 };
