@@ -58,29 +58,29 @@ export default ({ config, db, logger }) => {
             })
     );
 
-	// Create a new contact record in the database
-	api.post('/',
-		validate({
-			body: Joi.object().keys({
-				// TODO - create a Joi validation schema for contact properties
-				properties: Joi.object().required(),
-				location: Joi.object().required().keys({
-					lat: Joi.number().min(-90).max(90).required(),
-					lng: Joi.number().min(-180).max(180).required()
-				})
-			})
-		}),
-		(req, res, next) => {
-			contacts(config, db, logger).createContact(req.body)
-			.then((data) => handleGeoResponse(data, req, res, next))
-				.catch((err) => {
-					/* istanbul ignore next */
-					logger.error(err);
-					/* istanbul ignore next */
-					next(err);
-				});
-		}
-	);
+    // Create a new contact record in the database
+    api.post('/',
+        validate({
+            body: Joi.object().keys({
+                // TODO - create a Joi validation schema for contact properties
+                properties: Joi.object().required(),
+                location: Joi.object().required().keys({
+                    lat: Joi.number().min(-90).max(90).required(),
+                    lng: Joi.number().min(-180).max(180).required()
+                })
+            })
+        }),
+        (req, res, next) => {
+            contacts(config, db, logger).createContact(req.body)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
 
     // Update a contact record in the database
     api.patch('/:id', jwtCheck,
@@ -102,24 +102,24 @@ export default ({ config, db, logger }) => {
         }
     );
 
-	// Update a contact's last_email_sent_at record in the database
-	api.patch('/:id/emailtime', jwtCheck,
-		validate({
-			params: { id: Joi.number().integer().min(1).required() } ,
-			body: Joi.object().keys({
- 				date: Joi.date().format('YYYY-MM-DDTHH:mm:ssZ').required()
-			})
-		}),
-		(req, res, next) => {
-			contacts(config, db, logger).setLastEmailTime(req.params.id, req.body)
-			.then((data) => handleGeoResponse(data, req, res, next))
-				.catch((err) => {
-					/* istanbul ignore next */
-					logger.error(err);
-					/* istanbul ignore next */
-					next(err);
-				});
-		}
-	);
-	return api;
+    // Update a contact's last_email_sent_at record in the database
+    api.patch('/:id/emailtime', jwtCheck,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                date: Joi.date().format('YYYY-MM-DDTHH:mm:ssZ').required()
+            })
+        }),
+        (req, res, next) => {
+            contacts(config, db, logger).setLastEmailTime(req.params.id, req.body)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+    return api;
 };
