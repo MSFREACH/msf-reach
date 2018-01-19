@@ -180,7 +180,7 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Current Events')==='on' || !Cookies.get('Current Events')) {
+    if (Cookies.get('Current Events')==='on') {
         eventsLayer.addTo(landingMap);
     }
     layerControl.addOverlay(eventsLayer, 'Current Events');
@@ -332,7 +332,7 @@ var mapGDACSHazards = function(hazards){
         onEachFeature: hazardFeature
     });
 
-    if (Cookies.get('- GDACS')) {
+    if (Cookies.get('- GDACS')==='on') {
         GDACSHazardsLayer.addTo(landingMap);
     }
     layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'Hazards');
@@ -355,7 +355,7 @@ var mapUSGSHazards = function(hazards){
         onEachFeature: hazardFeature
     });
 
-    if (Cookies.get('- USGS')) {
+    if (Cookies.get('- USGS')==='on') {
         USGSHazardsLayer.addTo(landingMap);
     }
     layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'Hazards');
