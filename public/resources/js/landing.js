@@ -45,7 +45,7 @@ if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
   Cookies.set('- MSF Staff','on'); // default
 }
 if (typeof(Cookies.get('- other contacts')) === 'undefined') {
-  Cookies.set('- other contacts','off'); // default
+  Cookies.set('- other contacts','on'); // default
 }
 
 /**
