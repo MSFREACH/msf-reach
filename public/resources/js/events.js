@@ -339,9 +339,9 @@ var mapReports = function(reports){
             popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
             if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
-                if (feature.properties.content.image_tags) {
-                  popupContent += "AI image tags: ";
-                  feature.properties.content.image_tags.forEach((item) => { popContent += item.Name + " "});
+                if (feature.properties.content.image_labels) {
+                  popupContent += "AI image labels: ";
+                  feature.properties.content.image_labels.forEach((item) => { popContent += item.Name + " "});
                   popupContent += "<BR>";
                 }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
