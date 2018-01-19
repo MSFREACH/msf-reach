@@ -58,7 +58,6 @@ export default ({ config, db, logger }) => {
             })
     );
 
-<<<<<<< HEAD
 	// Create a new contact record in the database
 	api.post('/',
 		validate({
