@@ -87,7 +87,7 @@ $('#createReport').on('click', function (e) {
             var photo=files[0];
             $.ajax({
                 url : '../api/utils/uploadurl',
-                data: 'filename='+eventId+'-'+imgFileName,// + '&mime=' + fileType,
+                data: 'filename='+imgFileName,// + '&mime=' + fileType,
                 type : 'GET',
                 dataType : 'json',
                 cache : false,
