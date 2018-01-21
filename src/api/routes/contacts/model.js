@@ -38,7 +38,7 @@ export default (config, db, logger) => ({
 
     byId: (id) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, properties, the_geom
+        let query = `SELECT id, created_at, updated_at, last_email_sent_at, properties, the_geom
      FROM ${config.TABLE_CONTACTS}
      WHERE id = $1`;
 
