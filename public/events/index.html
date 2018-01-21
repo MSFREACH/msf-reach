@@ -171,48 +171,48 @@
                         <span class="title"></span> <span class="last_email"></span>
                     </div>
                     <div class="bg-success">Personal Details</div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label>Name:</label>
                         <span class="title"></span> <span class="name"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Date of birth:</label>
                         <span class="dob"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label>Gender:</label>
                         <span class="gender"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Affiliation:</label>
                         <span class="type"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                       <label>Affiliation name:</label>
                       <span class="affiliationName"></span>
                     </div>
                     <div class="bg-success">Contact details</div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Mobile phone:</label>
                         <span class="cell"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Work phone:</label>
                         <span class="work"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Home phone:</label>
                         <span class="home"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Email:</label>
                         <span class="email"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Other email:</label>
                         <span class="email2"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Address:</label>
                         <span class="address"></span>
                     </div>
@@ -220,45 +220,45 @@
                 <div class="col-xs-6">
                     <div id="msf_details">
                       <div class="bg-success">MSF details</div>
-                        <div class="form-group">
+                        <div class="form-group"  style="display:none;">
                             <label>OC:</label>
                             <span class="OC"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group"  style="display:none;">
                             <label>Speciality:</label>
                             <span class="speciality"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group"  style="display:none;">
                             <label>Employment status:</label>
                             <span class="employment"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group"  style="display:none;">
                             <label>Position:</label>
                             <span class="position"></span>
                         </div>
                     </div>
                     <div class="bg-success">Social media</div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>WhatsApp:</label>
                         <span class="WhatsApp"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Twitter:</label>
                         <span class="Twitter"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Facebook:</label>
                         <span class="Facebook"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Telegram:</label>
                         <span class="Telegram"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Skype:</label>
                         <span class="Skype"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  style="display:none;">
                         <label>Instagram:</label>
                         <span class="Instagram"></span>
                     </div>
@@ -535,9 +535,12 @@
       var getContact = function(id) {
         $.getJSON("/api/contacts/" + id, function(contact) {
           contactInfo = contact.result ? contact.result.properties : {};
+          //$('#contactDetailsModal').find('div.form-group').hide();
           _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);
             $("span." + key).html(value);
+            $("span." + key).parent().toggle(!!(value));
+
           });
           if (contact.result.properties.type.toUpperCase().includes("MSF")) {
             $("#msf_details").show();
