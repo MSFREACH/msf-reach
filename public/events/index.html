@@ -532,10 +532,20 @@
       };
 
       var contactInfo = {};
+      var convertToLocaleDate= function (isoDate) {
+        if (isoDate)
+         return (new Date(isoDate)).toLocaleString();
+         else
+         return 'null';
+      }
       var getContact = function(id) {
         $.getJSON("/api/contacts/" + id, function(contact) {
           contactInfo = contact.result ? contact.result.properties : {};
           //$('#contactDetailsModal').find('div.form-group').hide();
+          $("span.filed").html(convertToLocaleDate(contact.result.created_at));
+          $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
+          $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
+
           _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);
             $("span." + key).html(value);
