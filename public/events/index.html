@@ -536,7 +536,7 @@
         if (isoDate)
          return (new Date(isoDate)).toLocaleString();
          else
-         return 'null';
+         return '';
       }
       var getContact = function(id) {
         $.getJSON("/api/contacts/" + id, function(contact) {
