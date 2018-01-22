@@ -21,31 +21,31 @@ var PTWCHazardsLayer;
 
 // Set cookies if not set
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
-  Cookies.set('Mission Histories','on'); // default
+    Cookies.set('Mission Histories','on'); // default
 }
 if (typeof(Cookies.get('Current Events')) === 'undefined') {
-  Cookies.set('Current Events','on'); // default
+    Cookies.set('Current Events','on'); // default
 }
 if (typeof(Cookies.get('- PDC')) === 'undefined') {
-  Cookies.set('- PDC','on'); // default
+    Cookies.set('- PDC','on'); // default
 }
 if (typeof(Cookies.get('- TSR')) === 'undefined') {
-  Cookies.set('- TSR','on'); // default
+    Cookies.set('- TSR','on'); // default
 }
 if (typeof(Cookies.get('- PTWC')) === 'undefined') {
-  Cookies.set('- PTWC','on'); // default
+    Cookies.set('- PTWC','on'); // default
 }
 if (typeof(Cookies.get('- GDACS')) === 'undefined') {
-  Cookies.set('- GDACS','on'); // default
+    Cookies.set('- GDACS','on'); // default
 }
 if (typeof(Cookies.get('- USGS')) === 'undefined') {
-  Cookies.set('- USGS','on'); // default
+    Cookies.set('- USGS','on'); // default
 }
 if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
-  Cookies.set('- MSF Staff','on'); // default
+    Cookies.set('- MSF Staff','on'); // default
 }
 if (typeof(Cookies.get('- other contacts')) === 'undefined') {
-  Cookies.set('- other contacts','on'); // default
+    Cookies.set('- other contacts','on'); // default
 }
 
 /**

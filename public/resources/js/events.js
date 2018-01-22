@@ -31,22 +31,22 @@ var firstMissionsLoad = true;
 
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
-  Cookies.set('- access','on'); // default
+    Cookies.set('- access','on'); // default
 }
 if (typeof(Cookies.get('- needs')) === 'undefined') {
-  Cookies.set('- needs','on'); // default
+    Cookies.set('- needs','on'); // default
 }
 if (typeof(Cookies.get('- security')) === 'undefined') {
-  Cookies.set('- security','on'); // default
+    Cookies.set('- security','on'); // default
 }
 if (typeof(Cookies.get('- contacts')) === 'undefined') {
-  Cookies.set('- contacts','on'); // default
+    Cookies.set('- contacts','on'); // default
 }
 if (typeof(Cookies.get('Contacts')) === 'undefined') {
-  Cookies.set('Contacts','on'); // default
+    Cookies.set('Contacts','on'); // default
 }
 if (typeof(Cookies.get('Missions')) === 'undefined') {
-  Cookies.set('Contacts','on'); // default
+    Cookies.set('Contacts','on'); // default
 }
 
 var zoomToEvent = function(latlng) {
@@ -340,9 +340,9 @@ var mapReports = function(reports){
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
             if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
                 if (feature.properties.content.image_labels) {
-                  popupContent += "AI image labels: ";
-                  feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + " "});
-                  popupContent += "<BR>";
+                    popupContent += 'AI image labels: ';
+                    feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ' ';});
+                    popupContent += '<BR>';
                 }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
             }
@@ -745,13 +745,13 @@ var onArchiveEvent = function() {
 
 eventsMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
-      Cookies.set(layersControlEvent.name,'on');
+        Cookies.set(layersControlEvent.name,'on');
     }
 });
 
 
 eventsMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
-      Cookies.set(layersControlEvent.name,'off');
+        Cookies.set(layersControlEvent.name,'off');
     }
 });

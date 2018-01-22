@@ -57,6 +57,7 @@
     "jwk-to-pem": "^1.2.6",
     "moment": "^2.20.0",
     "morgan": "^1.9.0",
+    "nodemailer": "^4.4.2",
     "pg-promise": "^7.3.2",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",

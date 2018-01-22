@@ -46,6 +46,8 @@ export default {
     REDIRECT_HTTP: process.env.REDIRECT_HTTP === 'true' || false,
     RESPONSE_TIME: process.env.RESPONSE_TIME === 'true' || false,
     SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
+    SMTP_USER: process.env.SMTP_USER || '',
+    SMTP_PASS: process.env.SMTP_PASS || '',
     STATIC_PATH: process.env.STATIC_PATH || 'public',
     STATIC_AUTH_PATH: process.env.STATIC_AUTH_PATH || 'public/login',
     STATIC_REPORT_PATH: process.env.STATIC_REPORT_PATH || 'public/report',
