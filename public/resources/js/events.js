@@ -24,9 +24,30 @@ var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
 
+var computerTriggered = false;
+
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
+// Set cookies if not set
+if (typeof(Cookies.get('- access')) === 'undefined') {
+  Cookies.set('- access','on'); // default
+}
+if (typeof(Cookies.get('- needs')) === 'undefined') {
+  Cookies.set('- needs','on'); // default
+}
+if (typeof(Cookies.get('- security')) === 'undefined') {
+  Cookies.set('- security','on'); // default
+}
+if (typeof(Cookies.get('- contacts')) === 'undefined') {
+  Cookies.set('- contacts','on'); // default
+}
+if (typeof(Cookies.get('Contacts')) === 'undefined') {
+  Cookies.set('Contacts','on'); // default
+}
+if (typeof(Cookies.get('Missions')) === 'undefined') {
+  Cookies.set('Contacts','on'); // default
+}
 
 var zoomToEvent = function(latlng) {
     eventsMap.setView(latlng, 12);
@@ -318,6 +339,11 @@ var mapReports = function(reports){
             popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
             if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
+                if (feature.properties.content.image_labels) {
+                  popupContent += "AI image labels: ";
+                  feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + " "});
+                  popupContent += "<BR>";
+                }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
             }
         }
@@ -367,7 +393,9 @@ var mapReports = function(reports){
         },
         onEachFeature: onEachFeature
     });
-    accessLayer.addTo(eventsMap);
+    if (Cookies.get('- access')==='on') {
+        accessLayer.addTo(eventsMap);
+    }
     layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
     var needsLayer = L.geoJSON(reports, {
@@ -380,7 +408,9 @@ var mapReports = function(reports){
         },
         onEachFeature: onEachFeature
     });
-    needsLayer.addTo(eventsMap);
+    if (Cookies.get('- needs')==='on') {
+        needsLayer.addTo(eventsMap);
+    }
     layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
     var securityLayer = L.geoJSON(reports, {
@@ -393,10 +423,12 @@ var mapReports = function(reports){
         },
         onEachFeature: onEachFeature
     });
-    securityLayer.addTo(eventsMap);
+    if (Cookies.get('- security')==='on') {
+        securityLayer.addTo(eventsMap);
+    }
     layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-    var reportLayer = L.geoJSON(reports, {
+    var contactsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'CONTACTS');
         },
@@ -406,8 +438,10 @@ var mapReports = function(reports){
         },
         onEachFeature: onEachFeature
     });
-    reportLayer.addTo(eventsMap);
-    layerControl.addOverlay(reportLayer, '- contacts', 'Reports');
+    if (Cookies.get('- contacts')==='on') {
+        contactsLayer.addTo(eventsMap);
+    }
+    layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
 
     if (points.length > 0){
         eventsMap.fitBounds(points, {padding: [50,50]});
@@ -453,8 +487,10 @@ var mapContacts = function(contacts) {
 
     if (contactsClusters)
     {
+        computerTriggered=true;
         eventsMap.removeLayer(contactsClusters);
         layerControl.removeLayer(contactsClusters);
+        computerTriggered=false;
     }
 
     contactsClusters = L.markerClusterGroup({
@@ -478,7 +514,9 @@ var mapContacts = function(contacts) {
     contactsClusters.addLayer(contactsLayer);
 
     if (contactsLayerOn || firstContactsLoad) {
-        contactsClusters.addTo(eventsMap);
+        if (Cookies.get('Contacts')==='on') {
+            contactsClusters.addTo(eventsMap);
+        }
         firstContactsLoad = false;
     }
     layerControl.addOverlay(contactsClusters, 'Contacts');
@@ -561,8 +599,10 @@ var mapMissions = function(missions ){
 
     if (missionsClusters)
     {
+        computerTriggered=true;
         eventsMap.removeLayer(missionsClusters);
         layerControl.removeLayer(missionsClusters);
+        computerTriggered=false;
     }
 
     missionsClusters = L.markerClusterGroup({
@@ -587,7 +627,9 @@ var mapMissions = function(missions ){
     missionsClusters.addLayer(missionsLayer);
 
     if (missionsLayerOn || firstMissionsLoad ) {
-        missionsClusters.addTo(eventsMap);
+        if (Cookies.get('Missions')==='on') {
+            missionsClusters.addTo(eventsMap);
+        }
         firstMissionsLoad = false;
     }
 
@@ -700,3 +742,16 @@ var onEditEvent = function() {
 var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
 };
+
+eventsMap.on('overlayadd', function (layersControlEvent) {
+    if (!computerTriggered) {
+      Cookies.set(layersControlEvent.name,'on');
+    }
+});
+
+
+eventsMap.on('overlayremove', function (layersControlEvent) {
+    if (!computerTriggered) {
+      Cookies.set(layersControlEvent.name,'off');
+    }
+});

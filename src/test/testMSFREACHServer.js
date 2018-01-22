@@ -371,6 +371,87 @@ describe('Cognicity Server Testing Harness', function() {
                             }
                         });
                 });
+
+                // Can get PDC hazards
+                it('Get all PDC hazards', function(done) {
+                    test.httpAgent(app)
+                        .get('/api/hazards/pdc')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
+                // Can get TSR hazards
+                it('Get all TSR hazards', function(done) {
+                    test.httpAgent(app)
+                        .get('/api/hazards/tsr')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
+                // Can get USGS hazards
+                it('Get all USGS hazards', function(done) {
+                    test.httpAgent(app)
+                        .get('/api/hazards/usgs')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
+                // Can get GDACS hazards
+                it('Get all GDACS hazards', function(done) {
+                    test.httpAgent(app)
+                        .get('/api/hazards/gdacs')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
+                // Can get PTWC hazards
+                it('Get all PTWC hazards', function(done) {
+                    test.httpAgent(app)
+                        .get('/api/hazards/ptwc')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
             });
         });
     });
