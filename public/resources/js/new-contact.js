@@ -37,12 +37,7 @@ newContactMap.on('click', function(e) {
 
 function postContact() {
     var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
-    var affiliationName = '';
-    if ($('#inputContactAff').val() === 'Current MSF Staff') {
-        affiliationName = 'MSF';
-    } else {
-        affiliationName = $('#inputAffName').val() || '';
-    }
+
     var body = {
         'location':latlng,
         'properties':{
@@ -53,8 +48,6 @@ function postContact() {
             'name': contName.trim(),
             'speciality': $('#inputSpeciality').val() || '',
             'type':$('#inputContactAff').val() || $('#inputContactOtherAff').val(),
-            'affiliationName': affiliationName,
-            'OC': $('#inputContactOC').val() || '',
             'employment': $('#inputContactMSFEmploy').val() || '',
             'position': $('#inputContactMSFPosition').val() || '',
             'dob':$('#datepicker').val(),
@@ -73,6 +66,21 @@ function postContact() {
             'Skype': $('#inputSkype').val() || '',
         }
     };
+
+
+    if ($('#inputContactAff').val() === 'Current MSF Staff') {
+      body.properties['affiliationName'] = 'MSF';
+      body.properties['OC'] = $('#inputContactOC').val();
+      body.properties['msf_employment'] = $('#inputContactMSFEmploy').val();
+      body.properties['msf_section'] = $('#inputMSFSection').val() || '';
+      body.properties['msf_branch'] = $('#inputMSFBranch').val() || '';
+      body.properties['msf_project'] = $('#inputMSFProject').val() || '';
+      body.properties['msf_missions'] = $('#inputMSFMissions').val() || '';
+    } else if ($('#inputContactAff').val() !== '') {
+      body.properties['affiliationName'] = $('#inputContactAff').val();
+    } else {
+      body.properties['affiliationName'] = $('#inputAffName').val() || '';
+    }
 
     $.ajax({
         type: 'POST',
