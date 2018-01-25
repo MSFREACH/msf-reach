@@ -63,12 +63,12 @@ export default ({ config, db, logger }) => {
         validate({
             body: Joi.object().keys({
                 properties: Joi.object().required().keys({
-                  address: Joi.any().required(),
-                  title: Joi.string().required(),
-                  name: Joi.string().required(),
-                  gender: Joi.string().required(),
-                  cell: Joi.string().required(),
-                  email: Joi.string().required()
+                    address: Joi.any().required(),
+                    title: Joi.string().required(),
+                    name: Joi.string().required(),
+                    gender: Joi.string().required(),
+                    cell: Joi.string().required(),
+                    email: Joi.string().required()
                 }),
                 location: Joi.object().required().keys({
                     lat: Joi.number().min(-90).max(90).required(),
