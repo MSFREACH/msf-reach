@@ -54,32 +54,32 @@ $(function () {
         }
         else if (cInd == CONTACTDETAILSINDEX)
         {
-          if ((!$('#inputContactCell').val()) && (!$('#inputContactWork').val()) && (!$('#inputContactHome').val()) )
-          {
-            alert('Please enter at least one phone number to proceed.');
-            return;
-          }
+            if ((!$('#inputContactCell').val()) && (!$('#inputContactWork').val()) && (!$('#inputContactHome').val()) )
+            {
+                alert('Please enter at least one phone number to proceed.');
+                return;
+            }
 
-          if ($('#inputContactCell').val() && !$("#inputContactCell").intlTelInput("isValidNumber"))
-          {
-              alert('Please enter a valid cell phone number to proceed.');
-              return;
-          }
-          if ($('#inputContactHome').val() && !$("#inputContactHome").intlTelInput("isValidNumber"))
-          {
-              alert('Please enter a valid home phone number to proceed.');
-              return;
-          }
-          if ($('#inputContactWork').val() && !$("#inputContactWork").intlTelInput("isValidNumber"))
-          {
-              alert('Please enter a valid work phone number to proceed.');
-              return;
-          }
-          if ($('#inputContactFax').val() && !$("#inputContactFax").intlTelInput("isValidNumber")) 
-          {
-              alert('Please enter a valid fax number to proceed.');
-              return;
-          }
+            if ($('#inputContactCell').val() && !$('#inputContactCell').intlTelInput('isValidNumber'))
+            {
+                alert('Please enter a valid cell phone number to proceed.');
+                return;
+            }
+            if ($('#inputContactHome').val() && !$('#inputContactHome').intlTelInput('isValidNumber'))
+            {
+                alert('Please enter a valid home phone number to proceed.');
+                return;
+            }
+            if ($('#inputContactWork').val() && !$('#inputContactWork').intlTelInput('isValidNumber'))
+            {
+                alert('Please enter a valid work phone number to proceed.');
+                return;
+            }
+            if ($('#inputContactFax').val() && !$('#inputContactFax').intlTelInput('isValidNumber')) 
+            {
+                alert('Please enter a valid fax number to proceed.');
+                return;
+            }
 
             if (!valid_email($('#inputContactEmail').val()))
             {
