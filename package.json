@@ -10,7 +10,7 @@
     "prestart": "npm run -s build",
     "mocha": "nyc mocha --compilers js:babel-core/register src/test/testMSFREACHServer.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "test": "eslint src && npm run-script mocha"
+    "test": "eslint src && eslint public && npm run-script mocha"
   },
   "nyc": {
     "exclude": [
