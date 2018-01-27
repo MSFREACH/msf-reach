@@ -1,6 +1,8 @@
 var doItOnce=true;
 $(function () {
     var $sections = $('.form-section');
+
+    var previousType = '';
     var NAMESECTIONINDEX = 1;
     var MAPSECTIONINDEX = 3;
     var CONTACTDETAILSINDEX =4;
@@ -75,7 +77,7 @@ $(function () {
                 alert('Please enter a valid work phone number to proceed.');
                 return;
             }
-            if ($('#inputContactFax').val() && !$('#inputContactFax').intlTelInput('isValidNumber')) 
+            if ($('#inputContactFax').val() && !$('#inputContactFax').intlTelInput('isValidNumber'))
             {
                 alert('Please enter a valid fax number to proceed.');
                 return;
@@ -110,10 +112,13 @@ $(function () {
         $('#divOtherGender').toggle(!this.value);
     });
 
-    $('#inputContactAff').change(function(){
-        $('#divOtherAff').toggle(!this.value);
+
+    $('#inputContactType').change(function() {
+        $('#divOtherType').toggle(previousType != 'Other' && this.value == 'Other');
+        $('#divOtherType').toggle(previousType == 'Other' && this.value != 'Other');
+        $('#divNonMSFFields').toggle(this.value != 'Current MSF Staff');
         $('#divMSFFields').toggle(this.value == 'Current MSF Staff');
-        $('#divAffName').toggle(this.value != 'Current MSF Staff');
+        previousType = $('#inputContactType').val();
     });
 
 });

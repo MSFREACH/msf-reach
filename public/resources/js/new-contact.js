@@ -54,8 +54,7 @@ function postContact() {
             'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             'name': contName.trim(),
             'speciality': $('#inputSpeciality').val() || '',
-            'type':$('#inputContactAff').val() || $('#inputContactOtherAff').val(),
-            'division': $('#inputContactAffDivision').val() || '',
+            'type':$('#inputContactType').val() || $('#inputContactOtherType').val(),
             'dob':$('#datepicker').val(),
             'web': $('#inputContactWeb').val() || '',
             'email':$('#inputContactEmail').val(),
@@ -82,7 +81,7 @@ function postContact() {
         body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
     }
 
-    if ($('#inputContactAff').val() === 'Current MSF Staff') {
+    if ($('#inputContactType').val() === 'Current MSF Staff') {
         body.properties['affiliationName'] = 'MSF';
         body.properties['OC'] = $('#inputContactOC').val();
         body.properties['msf_employment'] = $('#inputContactMSFEmploy').val();
@@ -90,10 +89,11 @@ function postContact() {
         body.properties['msf_branch'] = $('#inputMSFBranch').val() || '';
         body.properties['msf_project'] = $('#inputMSFProject').val() || '';
         body.properties['msf_missions'] = $('#inputMSFMissions').val() || '';
-    } else if ($('#inputContactAff').val() !== '') {
-        body.properties['affiliationName'] = $('#inputContactAff').val();
     } else {
-        body.properties['affiliationName'] = $('#inputAffName').val() || '';
+        body.properties['supplier'] = $('#inputContactSupplier').prop('checked');
+        body.properties['msf_peer'] = $('#inputContactMSFPeer').prop('checked');
+        body.properties['employer'] = $('#inputContactEmployerName').val() || '';
+        body.properties['division'] = $('#inputContactEmployerDivision').val() || '';
     }
 
     $.ajax({

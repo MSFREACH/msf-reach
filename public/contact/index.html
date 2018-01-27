@@ -102,26 +102,21 @@
               <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields optional.</span>
             </div>
             <div class="form-section">
-              <h4>Category of contact</h4>
+              <h4>Type of contact</h4>
               <div style="text-align:left;">
                 <div class="form-group" >
-                  <label for="inputContactAff" style="text-transform:uppercase;">Category</label>
-                  <select class="form-control" style="color:black;" id="inputContactAff" >
+                  <label for="inputContactType" style="text-transform:uppercase;">Category</label>
+                  <select class="form-control" style="color:black;" id="inputContactType" >
                     <option value="" disabled selected>Please select...</option>
-                    <option value="MSF Peer">MSF Peer</option>
                     <option value="Current MSF Staff">Current MSF Staff</option>
                     <option value="Assocation member">Association member</option>
                     <option value="United Nations">United Nations</option>
                     <option value="Government">Government</option>
                     <option value="Other NGO">Other NGO</option>
-                    <option value="Supplier">Supplier</option>
                     <option value="Academic">Academic</option>
+                    <option value="Private Medical Practice">Private Medical Practice</option>
                     <option value="">Other</option>
                   </select>
-                </div>
-                <div class="form-group">
-                  <label for="inputContactSpeciality" style="text-transform:uppercase;">Profile / speciality</label>
-                  <input maxlength="150" placeholder="Speciality ..." class="form-control" style="color:black;" id="inputSpeciality" >
                 </div>
                 <div id="divMSFFields" style="display:none;">
                   <div class="form-group">
@@ -163,16 +158,29 @@
                     <input maxlength="150" class="form-control" style="color:black;" id="inputMSFProject" >
                   </div>
                 </div>
-                <div class="form-group" id="divOtherAff" style="display:none;">
-                  <input maxlength="150" placeholder="Specify other category..." class="form-control" style="color:black;" id="inputContactOtherAff">
+                <div class="form-group" id="divOtherType" style="display:none;">
+                  <input maxlength="150" placeholder="Specify other type..." class="form-control" style="color:black;" id="inputContactOtherAff">
                 </div>
-                <div class="form-group" id="divAffName" style="display:none;">
-                  <label for="inputContactAffName" style="text-transform:uppercase;">Organisation name</label>
-                  <input maxlength="150" placeholder="organisation name ..." class="form-control" style="color:black;" id="inputAffName" >
-                </div>
-                <div class="form-group" id="divAffDivision" style="display:none;">
-                  <label for="inputContactAffDivision" style="text-transform:uppercase;"Organisation divison/unit/office</label>
-                  <input maxlength="150" placeholder="organisation division/unit/offic name ..." class="form-control" style="color:black;" id="inputAffDivision" >
+              </div>
+              <div id="divNonMSFFields">
+                <table width="100%"><tr><td>
+                  <input type="checkbox" name="supplier" id="inputContactSupplier">Supplier</td><td>
+                  <input type="checkbox" name="MSF Peer" id="inputContactMSFPeer">MSF Peer</td><td>
+                </tr></table>
+                <h4>Employment details</h4>
+                <div style="text-align:left;">
+                  <div class="form-group" id="divEmploymentName">
+                    <label for="inputContactEmployerName" style="text-transform:uppercase;">Organisation/employer name</label>
+                    <input maxlength="150" placeholder="organisation/employer name ..." class="form-control" style="color:black;" id="inputContactEmployerName" >
+                  </div>
+                  <div class="form-group" id="divEmployerDivision">
+                    <label for="inputContactEmployerDivision" style="text-transform:uppercase;">Organisation/employer divison/unit/office</label>
+                    <input maxlength="150" placeholder="organisation division/unit/office name ..." class="form-control" style="color:black;" id="inputContactEmployerDivision" >
+                  </div>
+                  <div class="form-group">
+                    <label for="inputContactSpeciality" style="text-transform:uppercase;">Profile /  speciality</label>
+                    <input maxlength="150" placeholder="Speciality ..." class="form-control" style="color:black;" id="inputSpeciality" >
+                  </div>
                 </div>
               </div>
             </div>
