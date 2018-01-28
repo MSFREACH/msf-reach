@@ -50,7 +50,7 @@ function postContact() {
         'properties':{
             'address': $('#mapAddress').val(),
             'title': $('#inputContactTitle').val() || $('#inputContactOtherTitle').val(),
-            'otherNames': $('#inputContactOtherName') || '',
+            'otherNames': $('#inputContactOtherName').val() || '',
             'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             'name': contName.trim(),
             'speciality': $('#inputSpeciality').val() || '',
