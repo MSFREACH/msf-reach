@@ -89,8 +89,8 @@ function postContact() {
         body.properties['msf_project'] = $('#inputMSFProject').val() || '';
         body.properties['msf_missions'] = $('#inputMSFMissions').val() || '';
     } else {
-        body.properties['supplier'] = $('#inputContactSupplier').prop('checked');
-        body.properties['msf_peer'] = $('#inputContactMSFPeer').prop('checked');
+        body.properties['supplier'] = $('#inputContactSupplier').is(':checked');
+        body.properties['msf_peer'] = $('#inputContactMSFPeer').is(':checked');
         body.properties['employer'] = $('#inputContactEmployerName').val() || '';
         body.properties['division'] = $('#inputContactEmployerDivision').val() || '';
     }
