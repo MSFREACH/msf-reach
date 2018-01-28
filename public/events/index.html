@@ -184,12 +184,20 @@
                         <span class="gender"></span>
                     </div>
                     <div class="form-group"  style="display:none;">
-                        <label>Affiliation:</label>
+                        <label>Contact type:</label>
                         <span class="type"></span>
                     </div>
                     <div class="form-group"  style="display:none;">
-                      <label>Affiliation name:</label>
-                      <span class="affiliationName"></span>
+                        <label>Speciality / profile:</label>
+                        <span class="speciality"></span>
+                    </div>
+                    <div class="form-group"  style="display:none;">
+                        <label>Supplier:</label>
+                        <span class="supplier"></span>
+                    </div>
+                    <div class="form-group"  style="display:none;">
+                        <label>MSF Peer:</label>
+                        <span class="msf_peer"></span>
                     </div>
                     <div class="bg-success">Contact details</div>
                     <div class="form-group"  style="display:none;">
@@ -220,21 +228,40 @@
                 <div class="col-xs-6">
                     <div id="msf_details">
                       <div class="bg-success">MSF details</div>
-                        <div class="form-group"  style="display:none;">
+                        <div class="form-group" style="display:none;">
                             <label>OC:</label>
                             <span class="OC"></span>
                         </div>
-                        <div class="form-group"  style="display:none;">
-                            <label>Speciality:</label>
-                            <span class="speciality"></span>
-                        </div>
-                        <div class="form-group"  style="display:none;">
+                        <div class="form-group" style="display:none;">
                             <label>Employment status:</label>
-                            <span class="employment"></span>
+                            <span class="msf_employment"></span>
+                        </div>
+                        <div class="form-group" style="display:none;">
+                            <label>Section:</label>
+                            <span class="msf_section"></span>
+                        </div>
+                        <div class="form-group" style="display:none;">
+                            <label>Branch:</label>
+                            <span class="msf_branch"></span>
                         </div>
                         <div class="form-group"  style="display:none;">
-                            <label>Position:</label>
-                            <span class="position"></span>
+                            <label>Project:</label>
+                            <span class="msf_project"></span>
+                        </div>
+                        <div class="form-group"  style="display:none;">
+                            <label>Missions:</label>
+                            <span class="msf_missions"></span>
+                        </div>
+                    </div>
+                    <div id="employment_details">
+                      <div class="bg-success">Employment details</div>
+                        <div class="form-group"  style="display:none;">
+                            <label>Employer / organisation name:</label>
+                            <span class="employer"></span>
+                        </div>
+                        <div class="form-group"  style="display:none;">
+                            <label>Unit/division:</label>
+                            <span class="division"></span>
                         </div>
                     </div>
                     <div class="bg-success">Social media</div>
@@ -545,6 +572,9 @@
           $("span.filed").html(convertToLocaleDate(contact.result.created_at));
           $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
           $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
+          // fiddle booleans to 'yes'/'no'
+          contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
+          contact.result.properties.supplier = contact.result.properties.supplier ? 'yes' : 'no';
 
           _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);
@@ -552,10 +582,12 @@
             $("span." + key).parent().toggle(!!(value));
 
           });
-          if (contact.result.properties.type.toUpperCase().includes("MSF")) {
+          if (contact.result.properties.type === 'Current MSF Staff') {
             $("#msf_details").show();
+            $("#employment_details").hide();
           } else {
             $("#msf_details").hide();
+            $("#employment_details").show();
           }
         }).fail(function(err) {
           if (err.responseText.includes('expired')) {

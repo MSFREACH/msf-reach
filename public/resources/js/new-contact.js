@@ -82,7 +82,6 @@ function postContact() {
     }
 
     if ($('#inputContactType').val() === 'Current MSF Staff') {
-        body.properties['affiliationName'] = 'MSF';
         body.properties['OC'] = $('#inputContactOC').val();
         body.properties['msf_employment'] = $('#inputContactMSFEmploy').val();
         body.properties['msf_section'] = $('#inputMSFSection').val() || '';
