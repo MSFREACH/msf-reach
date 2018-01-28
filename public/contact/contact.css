@@ -2,6 +2,17 @@ html,body {
     height: 100%;
 }
 
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: #333;
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
 .report-root
 {
   opacity:1;
@@ -99,12 +110,14 @@ html,body {
 .section-container{
   height:90%;
   position:relative;
-  overflow:scroll;
+  overflow-y:auto;
   margin-bottom:5px;
   margin-top:20px;
   margin-left:10px;
-  margin-right:10px;
+  margin-right:0px;
+  padding-right: 5px;
 }
+
 
 .form-section {
     display: none;
@@ -120,9 +133,6 @@ html,body {
   display: none;
 }
 
-::-webkit-scrollbar {
-  display: none;
-}
 
 
 .rtype-container {
