@@ -121,7 +121,7 @@ html,body {
 
 .form-section {
     display: none;
-    height:100%;
+    height:96%;
 }
 
 .form-section.current{
