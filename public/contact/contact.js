@@ -2,7 +2,6 @@ var doItOnce=true;
 $(function () {
     var $sections = $('.form-section');
 
-    var previousType = '';
     var NAMESECTIONINDEX = 1;
     var MAPSECTIONINDEX = 3;
     var CONTACTDETAILSINDEX =4;
@@ -108,11 +107,9 @@ $(function () {
 
 
     $('#inputContactType').change(function() {
-        $('#divOtherType').toggle(previousType != 'Other' && this.value == 'Other');
-        $('#divOtherType').toggle(previousType == 'Other' && this.value != 'Other');
+        $('#divOtherType').toggle(this.value == 'Other');
         $('#divNonMSFFields').toggle(this.value != 'Current MSF Staff');
         $('#divMSFFields').toggle(this.value == 'Current MSF Staff');
-        previousType = $('#inputContactType').val();
     });
 
 });
