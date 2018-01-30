@@ -70,15 +70,24 @@ function postContact() {
 
     if ($('#inputContactCell').val()) {
         body.properties['cell']=$('#inputContactCell').intlTelInput('getNumber');
+    } else {
+        body.properties['cell'] = '';
     }
     if ($('#inputContactHome').val()) {
         body.properties['home']=$('#inputContactHome').intlTelInput('getNumber');
     }
+    else {
+        body.properties['home'] = '';
+    }
     if ($('#inputContactWork').val()) {
         body.properties['work']=$('#inputContactWork').intlTelInput('getNumber');
+    } else {
+        body.properties['work'] = '';
     }
     if ($('#inputContactFax').val()) {
         body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
+    } else {
+        body.properties['fax'] = '';
     }
 
     if ($('#inputContactType').val() === 'Current MSF Staff') {
