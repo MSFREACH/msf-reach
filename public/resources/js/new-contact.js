@@ -77,7 +77,7 @@ function postContact() {
     if ($('#inputContactWork').val()) {
         body.properties['work']=$('#inputContactWork').intlTelInput('getNumber');
     }
-    if ($('#inputContactCell').val()) {
+    if ($('#inputContactFax').val()) {
         body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
     }
 
