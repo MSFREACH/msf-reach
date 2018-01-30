@@ -87,11 +87,12 @@ function postContact() {
         body.properties['msf_section'] = $('#inputMSFSection').val() || '';
         body.properties['msf_branch'] = $('#inputMSFBranch').val() || '';
         body.properties['msf_project'] = $('#inputMSFProject').val() || '';
-        body.properties['msf_missions'] = $('#inputMSFMissions').val() || '';
+        body.properties['msf_mission'] = $('#inputMSFMission').val() || '';
     } else {
-        body.properties['supplier'] = $('#inputContactSupplier').is(':checked');
+        body.properties['msf_associate'] = $('#inputContactMSFAssociate').is(':checked');
         body.properties['msf_peer'] = $('#inputContactMSFPeer').is(':checked');
         body.properties['employer'] = $('#inputContactEmployerName').val() || '';
+        body.properties['job_title'] = $('#inputContactJobTitle').val() || '';
         body.properties['division'] = $('#inputContactEmployerDivision').val() || '';
     }
 

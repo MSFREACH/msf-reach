@@ -48,7 +48,7 @@
               <p>THANK YOU for being part of our team! </p>
               <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
               <p>Please contact <a href="mailto:support.ersu@hongkong.msf.org">support.ersu@hongkong.msf.org</a> for any queries or to remove your contact information from our database.</p>
-              <p><span style="color:red;">*</span> indicates mandatory fields</p>
+              <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
               <h4> Personal details</h4>
@@ -99,7 +99,7 @@
                   <input maxlength="50" placeholder="Other gender..." class="form-control" style="color:black;" id="inputContactOtherGender" >
                 </div>
               </div>
-              <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields optional.</span>
+              <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields are optional.</span>
             </div>
             <div class="form-section">
               <h4>Type of contact</h4>
@@ -109,7 +109,7 @@
                   <select class="form-control" style="color:black;" id="inputContactType" >
                     <option value="" disabled selected>Please select...</option>
                     <option value="Current MSF Staff">Current MSF Staff</option>
-                    <option value="Assocation member">Association member</option>
+                    <option value="Supplier">Supplier</option>
                     <option value="United Nations">United Nations</option>
                     <option value="Government">Government</option>
                     <option value="Other NGO">Other NGO</option>
@@ -119,18 +119,6 @@
                   </select>
                 </div>
                 <div id="divMSFFields" style="display:none;">
-                  <div class="form-group">
-                    <label for="inputContactOC" style="text-transform:uppercase;">OC/PS/BO/Mission</label>
-                    <select class="form-control" style="color:black;" id="inputContactOC">
-                      <option value="OCA">OCA</option>
-                      <option value="OCB">OCB</option>
-                      <option value="OCBA">OCBA</option>
-                      <option value="OCG">OCG</option>
-                      <option value="OCP">OCP</option>
-                      <option value="Inter-section">Inter-section</option>
-                      <option value="International Office">International Office</option>
-                    </select>
-                  </div>
                   <div class="form-group">
                     <label for="inputContactMSFEmploy" style="text-transform:uppercase;">Current employment status</label>
                     <select class="form-control" style="color:black;" id="inputContactMSFEmploy">
@@ -142,6 +130,19 @@
                     </select>
                   </div>
                   <div class="form-group">
+                    <label for="inputContactOC" style="text-transform:uppercase;">OC/PS/BO/Mission</label>
+                    <select class="form-control" style="color:black;" id="inputContactOC">
+                      <option value="" disabled selected>Please select...</option>
+                      <option value="OCA">OCA</option>
+                      <option value="OCB">OCB</option>
+                      <option value="OCBA">OCBA</option>
+                      <option value="OCG">OCG</option>
+                      <option value="OCP">OCP</option>
+                      <option value="Inter-section">Inter-section</option>
+                      <option value="IO">IO</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
                     <label for="inputMSFSection" style="text-transform:uppercase;">Partner sections (if any)</label>
                     <input maxlength="150" class="form-control" style="color:black;" id="inputMSFSection" >
                   </div>
@@ -150,8 +151,8 @@
                     <input maxlength="150" class="form-control" style="color:black;" id="inputMSFBranch" >
                   </div>
                   <div class="form-group">
-                    <label for="inputMSFMissions" style="text-transform:uppercase;">Missions (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFMissions" >
+                    <label for="inputMSFMission" style="text-transform:uppercase;">Mission (if any)</label>
+                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFMission" >
                   </div>
                   <div class="form-group">
                     <label for="inputMSFProject" style="text-transform:uppercase;">Project (if any)</label>
@@ -164,7 +165,7 @@
               </div>
               <div id="divNonMSFFields">
                 <div class="form-group" style="text-align:left;margin-bottom:20px;">
-                  <label class="checkbox-inline"><input type="checkbox" name="supplier" id="inputContactSupplier">Supplier</label>
+                  <label class="checkbox-inline"><input type="checkbox" name="MSF Associate" id="inputContactMSFAssociate">MSF Associate</label>
                   <label class="checkbox-inline"><input type="checkbox" name="MSF Peer" id="inputContactMSFPeer">MSF Peer</label>
                 </div>
                 <h4>Employment details</h4>
@@ -176,6 +177,10 @@
                   <div class="form-group" id="divEmployerDivision">
                     <label for="inputContactEmployerDivision" style="text-transform:uppercase;">Organisation/employer divison/unit/office</label>
                     <input maxlength="150" placeholder="organisation division/unit/office name ..." class="form-control" style="color:black;" id="inputContactEmployerDivision" >
+                  </div>
+                  <div class="form-group" id="divJobTitle">
+                    <label for="inputContactJobTitle" style="text-transform:uppercase;">Job title</label>
+                    <input maxlength="150" placeholder="Job title ..." class="form-control" style="color:black;" id="inputContactJobTitle" >
                   </div>
                   <div class="form-group">
                     <label for="inputContactSpeciality" style="text-transform:uppercase;">Profile /  speciality</label>
@@ -190,14 +195,13 @@
                 <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
               </div>
               <div id="map"></div>
-              <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields optional.</span>
+              <span class="footnote" ><span style="color:red; text-align:center;">*</span> Mandatory fields. Other fields are optional.</span>
             </div>
 
             <div class="form-section">
               <h4>Contact details</h4>
               <div style="text-align:left;">
                 <div class="form-group">
-                  <label style="text-transform:uppercase;">Phone <span style="color:red;">*</span></label>
                   <input maxlength="50" placeholder="Mobile phone..." class="form-control" style="color:black;" id="inputContactCell" >
                 </div>
                 <div class="form-group">
@@ -207,14 +211,17 @@
                   <input maxlength="50" placeholder="Home phone..." class="form-control" style="color:black;" id="inputContactHome" >
                 </div>
                 <div class="form-group">
-                  <input maxlength="50" placeholder="Fax..." class="form-control" style="color:black;" id="inputContactFax" >
-                </div>
-                <div class="form-group">
                   <label style="text-transform:uppercase;">Email <span style="color:red;">*</span></label>
                   <input maxlength="50" placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
                 </div>
                 <div class="form-group">
                   <input maxlength="50" placeholder="Other email..." class="form-control" style="color:black;" id="inputContactEmail2" >
+                </div>
+                <div class="form-group">
+                  <input maxlength="50" placeholder="Fax..." class="form-control" style="color:black;" id="inputContactFax" >
+                </div>
+                <div class="form-group">
+                  <input maxlength="50" placeholder="Web site..." class="form-control" style="color:black;" id="inputContactWeb" >
                 </div>
                 <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields optional.</span>
               </div>
