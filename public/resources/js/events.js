@@ -464,11 +464,10 @@ var mapContacts = function(contacts) {
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
-      '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-      '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-      '<br>affliation type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-      (typeof(feature.properties.properties.affiliationName)==='undefined' ? '' : '<br>affiliation name:' + feature.properties.properties.affiliationName) +
-      '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+      '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+      '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+      '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
         layer.bindPopup(popupContent);
