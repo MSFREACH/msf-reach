@@ -159,15 +159,15 @@
                 <div class="col-xs-6">
                     <div class="bg-success">Record History</div>
                     <div class="form-group">
-                        <label>Filed time:</label>
+                        <label>Created on:</label>
                         </span> <span class="filed"></span>
                     </div>
                     <div class="form-group">
-                        <label>Last update time:</label>
+                        <label>Last updated on:</label>
                         </span> <span class="updated"></span>
                     </div>
                     <div class="form-group">
-                        <label>Last email sent:</label>
+                        <label>Last email sent on:</label>
                         </span> <span class="last_email"></span>
                     </div>
                     <div class="bg-success">Personal Details</div>
@@ -192,7 +192,7 @@
                         <span class="speciality"></span>
                     </div>
                     <div class="form-group"  style="display:none;">
-                        <label>Supplier:</label>
+                        <label>MSF Association Member:</label>
                         <span class="supplier"></span>
                     </div>
                     <div class="form-group"  style="display:none;">
@@ -578,7 +578,7 @@
           $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
           // fiddle booleans to 'yes'/'no'
           contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
-          contact.result.properties.supplier = contact.result.properties.supplier ? 'yes' : 'no';
+          contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
 
           _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);
