@@ -58,31 +58,32 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
     api.post('/updateimagelabels',(req,res,next)=>{
 
-      let params=req.body;
-      //make sure keys are identical
-      if (req.headers['X-API-KEY'] === config.API_KEY)
-      {
+        let params=req.body;
+        //make sure keys are identical
+        if (req.headers['X-API-KEY'] === config.API_KEY)
+        {
 
 
-      let query = `UPDATE ${config.TABLE_REPORTS}
-            set content = content || '{\"image_labels\" : $1 }' where content->>'image_link' like '%$2%' returning id`;
+            let query = `UPDATE ${config.TABLE_REPORTS}
+            set content = content || '{"image_labels" : $1 }' where content->>'image_link' like '%$2%' returning id`;
 
-      // Setup values
-      let values = [ JSON.stringify(params.Labels), params.imglink ];
+            // Setup values
+            let values = [ JSON.stringify(params.Labels), params.imglink ];
 
-      // Execute
-      logger.debug(query, values);
-      db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-          .then((data) => {
-            res.send({success:true, id:data.id});
-          })
-          .catch((err) => {
-            logger.error(err);
-            res.status(500).send({success:false, error:err});
-          });
-      } else {
-        res.status(403).send('Forbidden');
-      }
+            // Execute
+            logger.debug(query, values);
+            db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+                .then((data) => {
+                    res.send({success:true, id:data.id});
+                })
+                .catch((err) => {
+                    logger.error(err);
+                    res.status(500).send({success:false, error:err});
+                    next(err);
+                });
+        } else {
+            res.status(403).send('Forbidden');
+        }
 
     });
 
