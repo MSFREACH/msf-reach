@@ -68,6 +68,10 @@ function postContact() {
         }
     };
 
+    if (Cookies.get('operator') === 'true') {
+      body.properties['operator_entered'] = true;
+    }
+
     if ($('#inputContactCell').val()) {
         body.properties['cell']=$('#inputContactCell').intlTelInput('getNumber');
     } else {
