@@ -1,10 +1,9 @@
 var doItOnce=true;
 
 if (Cookies.get('jwt')) {
-  Cookies.set('operator', 'true', { expires: 2 });
+    Cookies.set('operator', 'true', { expires: 2 });
 }
 
-console.log(Cookies.get('jwt'));
 
 $('#permission').toggle(Cookies.get('operator')==='true');
 
@@ -54,10 +53,10 @@ $(function () {
             }
         }
         if (cInd==STARTPAGEINDEX && Cookies.get('operator')) {
-          if (!$('#inputPermissionAcknowledge').is(':checked')) {
-            alert('Please tick the acknowldgement box to continue.');
-            return;
-          }
+            if (!$('#inputPermissionAcknowledge').is(':checked')) {
+                alert('Please tick the acknowldgement box to continue.');
+                return;
+            }
         }
         if (cInd==MAPSECTIONINDEX)
         {
