@@ -70,6 +70,8 @@ function postContact() {
 
     if (Cookies.get('operator') === 'true') {
       body.properties['operator_entered'] = true;
+    } else {
+      body.properties['operator_entered'] = false;
     }
 
     if ($('#inputContactCell').val()) {
