@@ -56,5 +56,33 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
     });
 
+    api.post('/updateimagelabels',(req,res,next)=>{
+
+      let params=req.body;
+      //make sure keys are identical
+      if (params.key == config.TEMP_API_KEY)
+      {
+
+
+      let query = `UPDATE ${config.TABLE_REPORTS}
+            set content = content || '{\"image_labels\" : $1 }' where content->>'image_link' like '%$2%' returning id`;
+
+      // Setup values
+      let values = [ JSON.stringify(params.Labels), params.imglink ];
+
+      // Execute
+      logger.debug(query, values);
+      db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+          .then((data) => {
+            res.send({succes:true, id:data.id});
+          })
+          .catch((err) => {
+            logger.error(err);
+            res.send({succes:false, error:err});
+          });
+      }
+
+    });
+
     return api;
 };
