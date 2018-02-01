@@ -74,11 +74,11 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
       logger.debug(query, values);
       db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
           .then((data) => {
-            res.send({succes:true, id:data.id});
+            res.send({success:true, id:data.id});
           })
           .catch((err) => {
             logger.error(err);
-            res.send({succes:false, error:err});
+            res.send({success:false, error:err});
           });
       }
 
