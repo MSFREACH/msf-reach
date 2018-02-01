@@ -60,7 +60,7 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
       let params=req.body;
       //make sure keys are identical
-      if (params.key == config.TEMP_API_KEY)
+      if (req.headers['X-API-KEY'] === config.API_KEY)
       {
 
 
@@ -78,8 +78,10 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
           })
           .catch((err) => {
             logger.error(err);
-            res.send({success:false, error:err});
+            res.status(500).send({success:false, error:err});
           });
+      } else {
+        res.status(403).send('Forbidden');
       }
 
     });
