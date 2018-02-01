@@ -1,10 +1,20 @@
 var doItOnce=true;
+
+if (Cookies.get('jwt')) {
+  Cookies.set('operator', 'true', { expires: 2 });
+}
+
+console.log(Cookies.get('jwt'));
+
+$('#permission').toggle(Cookies.get('operator')==='true');
+
 $(function () {
     var $sections = $('.form-section');
 
-    var NAMESECTIONINDEX = 1;
-    var MAPSECTIONINDEX = 3;
-    var CONTACTDETAILSINDEX =4;
+    const STARTPAGEINDEX = 0;
+    const NAMESECTIONINDEX = 1;
+    const MAPSECTIONINDEX = 3;
+    const CONTACTDETAILSINDEX =4;
     function navigateTo(index) {
     // Mark the current section with the class 'current'
         $sections
@@ -42,6 +52,12 @@ $(function () {
                 alert('Please enter your name to continue');
                 return;
             }
+        }
+        if (cInd==STARTPAGEINDEX && Cookies.get('operator')) {
+          if (!$('#inputPermissionAcknowledge').is(':checked')) {
+            alert('Please tick the acknowldgement box to continue.');
+            return;
+          }
         }
         if (cInd==MAPSECTIONINDEX)
         {

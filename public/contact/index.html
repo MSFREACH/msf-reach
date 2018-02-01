@@ -48,6 +48,9 @@
               <p>THANK YOU for being part of our team! </p>
               <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
               <p>Please contact <a href="mailto:support.ersu@hongkong.msf.org">support.ersu@hongkong.msf.org</a> for any queries or to remove your contact information from our database.</p>
+              <div class="form-group" style="text-align:center;margin-bottom:20px; display:none;" id="permission">
+                <label class="checkbox-inline"><input type="checkbox" name="input permission" id="inputPermissionAcknowledge">I acknowledge I have permission from contacts I am entering to enter their information.</label>
+              </div>
               <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
@@ -87,7 +90,7 @@
                   <input type="text" class="form-control" id="datepicker" colour="black" placeholder="Enter date...">
                 </div>
                 <div class="form-group" >
-                  <label for="inputGender" style="text-transform:uppercase;"><span style="color:red;">*</span>Gender</label>
+                  <label for="inputGender" style="text-transform:uppercase;">
                   <select class="form-control" style="color:black;" id="inputGender">
                     <option value="male">male</option>
                     <option value="female">female</option>
@@ -201,29 +204,26 @@
             <div class="form-section">
               <h4>Contact details</h4>
               <div style="text-align:left;">
+                <label style="text-transform:uppercase;">Phone </label>
                 <div class="form-group">
                   <input maxlength="50" placeholder="Mobile phone..." class="form-control" style="color:black;" id="inputContactCell" >
-                </div>
-                <div class="form-group">
                   <input maxlength="50" placeholder="Work phone..." class="form-control" style="color:black;" id="inputContactWork" >
-                </div>
-                <div class="form-group">
                   <input maxlength="50" placeholder="Home phone..." class="form-control" style="color:black;" id="inputContactHome" >
                 </div>
+                <label style="text-transform:uppercase;">Email <span style="color:red;">*</span></label>
                 <div class="form-group">
-                  <label style="text-transform:uppercase;">Email <span style="color:red;">*</span></label>
                   <input maxlength="50" placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
-                </div>
-                <div class="form-group">
                   <input maxlength="50" placeholder="Other email..." class="form-control" style="color:black;" id="inputContactEmail2" >
                 </div>
+                <label style="text-transform:uppercase;">Fax </label>
                 <div class="form-group">
                   <input maxlength="50" placeholder="Fax..." class="form-control" style="color:black;" id="inputContactFax" >
                 </div>
+                <label style="text-transform:uppercase;">Web </label>
                 <div class="form-group">
                   <input maxlength="50" placeholder="Web site..." class="form-control" style="color:black;" id="inputContactWeb" >
                 </div>
-                <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields optional.</span>
+                <span class="footnote" ><span style="color:red; text-align:center;">*</span> Mandatory fields. Other fields are optional.</span>
               </div>
 
             </div>
@@ -284,6 +284,8 @@
   <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script type="text/javascript" src="/resources/js/common.js"></script>
+  <!-- Cookies -->
+  <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
 
   <!-- Get query parameter from URL -->
   <!-- Ask the server for reports from specific event -->
