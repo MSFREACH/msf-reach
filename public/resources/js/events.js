@@ -341,7 +341,8 @@ var mapReports = function(reports){
             if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
                 if (feature.properties.content.image_labels) {
                     popupContent += 'AI image labels: ';
-                    feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ' ';});
+                    feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ', ';});
+                    popupContent = popupContent.substring(0,g.length-2);  
                     popupContent += '<BR>';
                 }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
