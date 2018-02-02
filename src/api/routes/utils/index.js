@@ -56,5 +56,34 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
     });
 
+    api.post('/updateimagelabels',(req,res,next)=>{
+
+        let params=req.body;
+        //make sure keys are identical
+        if (req.headers['x-api-key'] === config.API_KEY)
+        {
+            let query = `UPDATE ${config.TABLE_REPORTS}
+            set content = content || '{"image_labels" : `+JSON.stringify(params.Labels)+` }' where content->>'image_link' like '%`+params.imglink+`%' returning id`;
+
+            // Setup values
+            let values = [ ];
+
+            // Execute
+            logger.debug(query, values);
+            db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+                .then((data) => {
+                    res.json({success:true, id:data.id});
+                })
+                .catch((err) => {
+                    logger.error(err);
+                    res.json({success:false, error:err});
+                    next(err);
+                });
+        } else {
+            res.status(403).send('Forbidden');
+        }
+
+    });
+
     return api;
 };
