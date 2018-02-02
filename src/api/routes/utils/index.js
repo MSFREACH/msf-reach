@@ -63,7 +63,7 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         if (req.headers['x-api-key'] === config.API_KEY)
         {
             let query = `UPDATE ${config.TABLE_REPORTS}
-            set content = content || '{"image_labels" : `+JSON.stringify(params.Labels)+` }' where content->>'image_link' like '%`+params.imglink+`%' returning id`;
+            set content = content || '{"image_labels" : `+JSON.stringify(params.Labels)+' }\' where content->>\'image_link\' like \'%'+params.imglink+'%\' returning id';
 
             // Setup values
             let values = [ ];
