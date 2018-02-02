@@ -60,25 +60,23 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
         let params=req.body;
         //make sure keys are identical
-        if (req.headers['X-API-KEY'] === config.API_KEY)
+        if (req.headers['x-api-key'] === config.API_KEY)
         {
-
-
             let query = `UPDATE ${config.TABLE_REPORTS}
-            set content = content || '{"image_labels" : $1 }' where content->>'image_link' like '%$2%' returning id`;
+            set content = content || '{"image_labels" : `+JSON.stringify(params.Labels)+` }' where content->>'image_link' like '%`+params.imglink+`%' returning id`;
 
             // Setup values
-            let values = [ JSON.stringify(params.Labels), params.imglink ];
+            let values = [ ];
 
             // Execute
             logger.debug(query, values);
             db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
                 .then((data) => {
-                    res.send({success:true, id:data.id});
+                    res.json({success:true, id:data.id});
                 })
                 .catch((err) => {
                     logger.error(err);
-                    res.status(500).send({success:false, error:err});
+                    res.json({success:false, error:err});
                     next(err);
                 });
         } else {
