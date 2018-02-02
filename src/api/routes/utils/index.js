@@ -64,8 +64,8 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         {
             let query = `UPDATE ${config.TABLE_REPORTS}
             set content = content || $1 where content->>'image_link' like $2 returning id`;
-            let lbls= {image_labels: params.Labels }
-            let str= '%'+params.imglink+'%'
+            let lbls= {image_labels: params.Labels };
+            let str= '%'+params.imglink+'%';
             // Setup values
             let values = [lbls, str ];
 
