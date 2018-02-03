@@ -242,7 +242,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .send({
                             'eventId': eventId,
                             'status': 'confirmed',
-                            'created_at': '2017-05-22T20:35Z',
+                            'created': '2017-05-22T20:35Z',
                             'reportkey': reportKey,
                             'location': {
                                 'lat': -6.8,
@@ -273,7 +273,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .send({
                             'eventId': eventId,
                             'status': 'confirmed',
-                            'created_at': '2017-05-22T20:35Z',
+                            'created': '2017-05-22T20:35Z',
                             'reportkey': '123',
                             'location': {
                                 'lat': -6.10,
