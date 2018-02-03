@@ -130,7 +130,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .send({
                             'status': 'active',
                             'type': 'natural_hazard',
-                            'created': '2017-05-22T20:35Z',
+                            'created_at': '2017-05-22T20:35Z',
                             'location': {
                                 'lat': 45,
                                 'lng': 140
@@ -242,7 +242,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .send({
                             'eventId': eventId,
                             'status': 'confirmed',
-                            'created': '2017-05-22T20:35Z',
+                            'created_at': '2017-05-22T20:35Z',
                             'reportkey': reportKey,
                             'location': {
                                 'lat': -6.8,
@@ -273,7 +273,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .send({
                             'eventId': eventId,
                             'status': 'confirmed',
-                            'created': '2017-05-22T20:35Z',
+                            'created_at': '2017-05-22T20:35Z',
                             'reportkey': '123',
                             'location': {
                                 'lat': -6.10,
