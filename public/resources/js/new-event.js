@@ -54,7 +54,7 @@ $(function(){
             var body = {
                 'status': 'active',
                 'type': $('#selectType').val(),
-                'created': new Date().toISOString(),
+                'created_at': new Date().toISOString(),
                 'location': latlng,
                 'metadata':{
                     'user': localStorage.getItem('username'),

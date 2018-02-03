@@ -18,10 +18,10 @@ export default (config, db, logger) => ({
 	 */
     all: (status) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, status, type, created, report_key as reportkey, metadata, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
 			FROM ${config.TABLE_EVENTS}
 			WHERE ($1 is null or status = $1)
-			ORDER BY created DESC`;
+			ORDER BY updated_at DESC`;
 
         let values = [ status ];
 
@@ -39,10 +39,10 @@ export default (config, db, logger) => ({
     byId: (id) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `SELECT id, status, type, created, report_key as reportkey, metadata, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
       FROM ${config.TABLE_EVENTS}
       WHERE id = $1
-      ORDER BY created DESC`;
+      ORDER BY created_at DESC`;
 
         // Setup values
         let values = [ id ];
@@ -62,12 +62,12 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `INSERT INTO ${config.TABLE_EVENTS}
-			(status, type, created, metadata, the_geom)
-			VALUES ($1, $2, $3, $4, ST_SetSRID(ST_Point($5,$6),4326))
+			(status, type, created_at, updated_at, metadata, the_geom)
+			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326))
 			RETURNING id, report_key, the_geom`;
 
         // Setup values
-        let values = [ body.status, body.type, body.created, body.metadata, body.location.lng, body.location.lat ];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat ];
 
         // Execute
         logger.debug(query, values);
@@ -116,9 +116,10 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
 			SET status = $1,
+      updated_at = now(),
 			metadata = metadata || $2
 			WHERE id = $3
-			RETURNING type, created, report_key, metadata, the_geom`;
+			RETURNING type, created_at, updated_at, report_key, metadata, the_geom`;
 
         // Setup values
         let values = [ body.status, body.metadata, id ];

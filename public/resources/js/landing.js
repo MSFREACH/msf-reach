@@ -134,7 +134,8 @@ var mapAllEvents = function(err, events){
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<BR>' +
+    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
+    'Last updated at: ' + feature.properties.updated_at + '<br>' +
     'Type: ' + type.replace('_',' ') + '<br>' +
     statusStr +
     severityStr +
@@ -150,7 +151,8 @@ var mapAllEvents = function(err, events){
         $('#eventProperties').append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+      'Last updated at: ' + feature.properties.updated_at + '<br>' +
       'Type: ' + feature.properties.type + '<br>' +
       statusStr +
       notificationStr +
