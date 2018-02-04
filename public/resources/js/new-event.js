@@ -45,9 +45,9 @@ $(function(){
     $('#createEvent').on('click', function (e) {
 
         if (latlng === null){
-            $('#newEventModalTitle').html('<h4>Missing event location</h4>');
-            $('#newEventModalContent').html('<p>Please select the epicenter of the event using the map.</p>');
-            $('#newEventModal').modal('toggle');
+            $('#newEventAlertModalTitle').html('<h4>Missing event location</h4>');
+            $('#newEventAlertModalContent').html('<p>Please select the epicenter of the event using the map.</p>');
+            $('#newEventAlertModal').modal('toggle');
         }
         else {
             var sub_type = $('#inputDisasterType').val() || $('#inputDiseaseType').val()  || $('#inputOther').val();
@@ -101,9 +101,9 @@ $(function(){
                 if (reqm.responseText.includes('expired')) {
                     alert('session expired');
                 } else {
-                    $('#newEventModalTitle').html('<h4>Error creating event</h4>');
-                    $('#newEventModalContent').html('<p>' + err +'.</p>');
-                    $('#newEventModal').modal('toggle');
+                    $('#newEventAlertModalTitle').html('<h4>Error creating event</h4>');
+                    $('#newEventAlertModalContent').html('<p>' + err +'.</p>');
+                    $('#newEventAlertModal').modal('toggle');
                 }});
         }
     });
