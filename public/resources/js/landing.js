@@ -741,14 +741,6 @@ var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptio
 
 getAllEvents(mapAllEvents);
 
-setInterval(function() {
-    landingMap.removeLayer(eventsLayer);
-    layerControl.removeLayer(eventsLayer);
-    eventsLayer.clearLayers();
-    $('#eventProperties').empty();
-    getAllEvents(mapAllEvents);
-},180000);
-
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
