@@ -3,7 +3,7 @@
 var newEventMap = L.map('newEventMap').setView([20, 110], 4);
 
 $('#newEventModal').on('shown.bs.modal', function() {
-  _.defer(newEventMap.invalidateSize.bind(newEventMap));
+    _.defer(newEventMap.invalidateSize.bind(newEventMap));
 });
 
 var autocompleteMap=newEventMap;
