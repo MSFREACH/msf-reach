@@ -1,29 +1,33 @@
 /*eslint no-unused-vars: off*/
 
-// Create map
-var newEventMap = L.map('map').setView([20, 110], 4);
+var newEventMap = L.map('newEventMap').setView([20, 110], 4);
+
+$('#newEventModal').on('shown.bs.modal', function() {
+    _.defer(newEventMap.invalidateSize.bind(newEventMap));
+});
+
 var autocompleteMap=newEventMap;
 
 // Add some base tiles
-var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+var NEmapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 0,
     maxZoom: 18
 }).addTo(newEventMap);
 
 // Add some satellite tiles
-var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+var NEmapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
-var baseMaps = {
-    'Terrain': mapboxTerrain,
-    'Satellite' : mapboxSatellite
+var NEbaseMaps = {
+    'Terrain': NEmapboxTerrain,
+    'Satellite' : NEmapboxSatellite
 };
 
-var overlayMaps = {};
+var NEoverlayMaps = {};
 
-var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
+var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
 
 var marker;
 var latlng = null;
@@ -33,6 +37,21 @@ newEventMap.on('click', function(e) {
     latlng = e.latlng; // e is an event object (MouseEvent in this case)
     marker = L.marker(e.latlng).addTo(newEventMap);
 });
+
+
+
+var refreshLandingPage = function() {
+    var saveCookie = Cookies.get('Current Events');
+    landingMap.removeLayer(eventsLayer);
+    layerControl.removeLayer(eventsLayer);
+    eventsLayer.clearLayers();
+    $('#eventProperties').empty();
+    Cookies.set('Current Events',saveCookie);
+    getAllEvents(mapAllEvents);
+    $('#eventTab').tab('show');
+};
+
+
 $(function(){
     $( '#inputEvDateTime' ).datepicker({
         changeMonth: true,
@@ -95,8 +114,9 @@ $(function(){
                 data: JSON.stringify(body),
                 contentType: 'application/json'
             }).done(function( data, textStatus, req ){
-                var eventId = data.result.objects.output.geometries[0].properties.id;
-                window.location.href = '/events/?eventId='+eventId;
+                // var eventId = data.result.objects.output.geometries[0].properties.id;
+                $('#newEventModal').modal('hide');
+                refreshLandingPage();
             }).fail(function (reqm, textStatus, err){
                 if (reqm.responseText.includes('expired')) {
                     alert('session expired');
