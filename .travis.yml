@@ -10,8 +10,10 @@ addons:
       - postgresql-9.6-postgis-2.3
 
 before_install:
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
   - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
-  - git clone https://github.com/MSFREACH/msf-reach-schema && cd msf-reach-schema && bash build.sh && cd -
+  - git clone -b $BRANCH https://github.com/MSFREACH/msf-reach-schema && cd msf-reach-schema && bash build.sh && cd -
 
 install:
   - npm install

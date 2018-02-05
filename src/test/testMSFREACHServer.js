@@ -130,7 +130,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .send({
                             'status': 'active',
                             'type': 'natural_hazard',
-                            'created': '2017-05-22T20:35Z',
+                            'created_at': '2017-05-22T20:35Z',
                             'location': {
                                 'lat': 45,
                                 'lng': 140

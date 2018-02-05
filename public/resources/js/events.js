@@ -211,8 +211,8 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
         propertiesTable += '<tr><td>Status</td><td>'+eventProperties.status+'</td></tr>';
         propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+'</td></tr>';
-        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created)+'</td></tr>';
-
+        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+        propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
         // Create unique link to this event
         var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
         // Create unique report link for this event
@@ -342,7 +342,7 @@ var mapReports = function(reports){
                 if (feature.properties.content.image_labels) {
                     popupContent += 'AI image labels: ';
                     feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ', ';});
-                    popupContent = popupContent.substring(0,popupContent.length-2);  
+                    popupContent = popupContent.substring(0,popupContent.length-2);
                     popupContent += '<BR>';
                 }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
