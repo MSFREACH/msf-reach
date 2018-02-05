@@ -48,6 +48,7 @@ var refreshLandingPage = function() {
     $('#eventProperties').empty();
     Cookies.set('Current Events',saveCookie);
     getAllEvents(mapAllEvents);
+    $('#eventTab').tab('show');
 };
 
 
