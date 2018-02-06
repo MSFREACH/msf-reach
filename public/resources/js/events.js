@@ -221,6 +221,7 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy</button></td></tr>';
         // Add unique link to report to this event
         propertiesTable += '<tr><td>Report link</td><td><a id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a></td><td><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td></td><td><a href="#newEventModal" data-toggle="modal" data-target="#newReportModal">Create a new report</a></td></tr>'
         // Add user metadata
         if (eventProperties.metadata.user) {
             propertiesTable += '<tr><td>Owner</td><td>'+eventProperties.metadata.user+'</td></tr>';

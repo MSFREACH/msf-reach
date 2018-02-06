@@ -1,7 +1,7 @@
 /*eslint no-unused-vars: off*/
 
 // Create map
-var newReportMap = L.map('map').setView([20, 110], 4);
+var newReportMap = L.map('newReportMap').setView([20, 110], 4);
 var autocompleteMap=newReportMap;
 newReportMap.locate({setView: true, maxZoom: 16});
 // Add some base tiles
@@ -23,7 +23,11 @@ var NRbaseMaps = {
 
 var NRoverlayMaps = {};
 
-var layerControl = L.control.layers(NRbaseMaps, NRoverlayMaps, {'position':'topright'}).addTo(newReportMap);
+var NRlayerControl = L.control.layers(NRbaseMaps, NRoverlayMaps, {'position':'topright'}).addTo(newReportMap);
+
+$('#newReportModal').on('shown.bs.modal', function() {
+    _.defer(newReportMap.invalidateSize.bind(newReportMap));
+});
 
 var marker;
 var latlng = null;

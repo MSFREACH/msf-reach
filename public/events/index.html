@@ -44,6 +44,9 @@
     <!-- Events -->
     <link rel="stylesheet" href="/resources/css/events.css"/>
 
+    <!-- Report card -->
+    <link rel="stylesheet" href="/report/reportcard.css">
+
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
 
@@ -72,6 +75,78 @@
     </style>
   </head>
   <body>
+
+    <!-- report creation modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewReportModalLabel" id="newReportModal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myNewRpoertModalLabel">Create New Report</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <!-- Map -->
+                <div class="col-md-8" style="height:75vh;">
+                  <h3 id="title">1. Click on map to select report location</h3>
+                  <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
+                  <div id="newReportMap" style="height:100%; width:100%;"></div>
+                </div>
+                <!-- Side pane -->
+                <div id="newReportSidepane" class="col-md-4">
+                  <h3 id="title">New Report</h3>
+                  <div id="newReportProperties">
+                    <div class="tab-content">
+                      <div id="basic" class="tab-pane fade in active">
+                        <div class="panel panel-default">
+                          <div class="panel-body">
+                            <div class="form-group">
+                              <label for="selectType">Report type</label>
+                              <div>
+                                <p>Please help us best assess the situation by helping us sort your report.</p>
+                                <div class="rtype-container">
+                                  <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>describe</i></div>
+                                  <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>request</i></div>
+                                  <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>share</i></div>
+                                  <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>warn</i></div>
+                                </div>
+                                <p>Select one category. There is an opportunity to submit another report card for another category after submission of this one.</p>
+                              </div>
+                              <div>
+                                <h4>Please enter text in the box below to share your information.</h4>
+                                <textarea rows="2" maxlength="150" placeholder="Free text (150 characters)..." style="width:100%;color:black;" id="inputReportText" ></textarea>
+                                <i> Optional</i>
+                                <input placeholder="name..." style="width:100%;color:black;" id="inputReportUserName">
+                              </div>
+                              <div>
+                                <h4>Would you like to upload an image ? </h4><i>(optional)</i>
+                                <form enctype="multipart/form-data">
+                                  <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
+                                  <a id="btnUpTrigger" style="color:red;text-transform:uppercase;cursor:pointer;" >Select from photos / take photo</a>
+                                  <div style="margin-top:10px;width:100%;height:55vh;background-color:white;color:black;">
+                                    <img id="imgPreview" src="#" alt="your image" style="width:100%;height:55vh;"/>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" id="createReport" class="btn btn-msf">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Archive Modal -->
     <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
@@ -504,6 +579,12 @@
     <script src="/resources/js/twitter.js"></script>
     <script src="/resources/js/contacts.js"></script>
     <script src="/resources/js/missions.js"></script>
+
+    <script src="/resources/js/new-report.js"></script>
+    <script src="/report/reportcard.js"></script>
+    <script src="/resources/js/address-autocomplete.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
+
 
     <!-- events common variables -->
     <script src="/events/common.js"></script>
