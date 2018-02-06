@@ -119,7 +119,7 @@ $(function(){
                 if (reqm.responseText.includes('expired')) {
                     alert('session expired');
                 } else {
-                  alert('error creating event' + err);
+                    alert('error creating event' + err);
                 }});
         }
     });
