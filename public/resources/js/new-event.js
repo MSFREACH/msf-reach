@@ -64,9 +64,7 @@ $(function(){
     $('#createEvent').on('click', function (e) {
 
         if (latlng === null){
-            $('#newEventAlertModalTitle').html('<h4>Missing event location</h4>');
-            $('#newEventAlertModalContent').html('<p>Please select the epicenter of the event using the map.</p>');
-            $('#newEventAlertModal').modal('toggle');
+            alert('Please select the epicenter of the event using the map.');
         }
         else {
             var sub_type = $('#inputDisasterType').val() || $('#inputDiseaseType').val()  || $('#inputOther').val();
@@ -121,9 +119,7 @@ $(function(){
                 if (reqm.responseText.includes('expired')) {
                     alert('session expired');
                 } else {
-                    $('#newEventAlertModalTitle').html('<h4>Error creating event</h4>');
-                    $('#newEventAlertModalContent').html('<p>' + err +'.</p>');
-                    $('#newEventAlertModal').modal('toggle');
+                  alert('error creating event' + err);
                 }});
         }
     });
