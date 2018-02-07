@@ -31,22 +31,22 @@ var firstMissionsLoad = true;
 
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
-  Cookies.set('- access','on'); // default
+    Cookies.set('- access','on'); // default
 }
 if (typeof(Cookies.get('- needs')) === 'undefined') {
-  Cookies.set('- needs','on'); // default
+    Cookies.set('- needs','on'); // default
 }
 if (typeof(Cookies.get('- security')) === 'undefined') {
-  Cookies.set('- security','on'); // default
+    Cookies.set('- security','on'); // default
 }
 if (typeof(Cookies.get('- contacts')) === 'undefined') {
-  Cookies.set('- contacts','on'); // default
+    Cookies.set('- contacts','on'); // default
 }
 if (typeof(Cookies.get('Contacts')) === 'undefined') {
-  Cookies.set('Contacts','on'); // default
+    Cookies.set('Contacts','on'); // default
 }
 if (typeof(Cookies.get('Missions')) === 'undefined') {
-  Cookies.set('Contacts','on'); // default
+    Cookies.set('Contacts','on'); // default
 }
 
 var zoomToEvent = function(latlng) {
@@ -211,8 +211,8 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
         propertiesTable += '<tr><td>Status</td><td>'+eventProperties.status+'</td></tr>';
         propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+'</td></tr>';
-        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created)+'</td></tr>';
-
+        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+        propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
         // Create unique link to this event
         var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
         // Create unique report link for this event
@@ -339,6 +339,12 @@ var mapReports = function(reports){
             popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
             if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
+                if (feature.properties.content.image_labels) {
+                    popupContent += 'AI image labels: ';
+                    feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ', ';});
+                    popupContent = popupContent.substring(0,popupContent.length-2);
+                    popupContent += '<BR>';
+                }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
             }
         }
@@ -459,11 +465,10 @@ var mapContacts = function(contacts) {
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
-      '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-      '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-      '<br>affliation type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-      (typeof(feature.properties.properties.affiliationName)==='undefined' ? '' : '<br>affiliation name:' + feature.properties.properties.affiliationName) +
-      '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+      '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+      '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+      '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
         layer.bindPopup(popupContent);
@@ -740,13 +745,13 @@ var onArchiveEvent = function() {
 
 eventsMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
-      Cookies.set(layersControlEvent.name,'on');
+        Cookies.set(layersControlEvent.name,'on');
     }
 });
 
 
 eventsMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
-      Cookies.set(layersControlEvent.name,'off');
+        Cookies.set(layersControlEvent.name,'off');
     }
 });

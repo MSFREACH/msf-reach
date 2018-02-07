@@ -3,6 +3,7 @@ require('dotenv').config({silent: true});
 export default {
     AUTH: process.env.AUTH === 'true' || false,
     APP_NAME: process.env.APP_NAME || 'msf-reach',
+    API_KEY: process.env.API_KEY || '',
     API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
     API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
@@ -46,6 +47,8 @@ export default {
     REDIRECT_HTTP: process.env.REDIRECT_HTTP === 'true' || false,
     RESPONSE_TIME: process.env.RESPONSE_TIME === 'true' || false,
     SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
+    SMTP_USER: process.env.SMTP_USER || '',
+    SMTP_PASS: process.env.SMTP_PASS || '',
     STATIC_PATH: process.env.STATIC_PATH || 'public',
     STATIC_AUTH_PATH: process.env.STATIC_AUTH_PATH || 'public/login',
     STATIC_REPORT_PATH: process.env.STATIC_REPORT_PATH || 'public/report',

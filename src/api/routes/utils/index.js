@@ -15,7 +15,7 @@ import {S3} from 'aws-sdk';
 const uuidv4 = require('uuid/v4');
 
 
-export default ({ config, db, logger }) => { //eslint-disable-line no-unused-vars
+export default ({ config, db, logger }) => { // eslint-disable-line no-unused-vars
     let api = Router();
 
     let s3= new S3(
@@ -53,6 +53,36 @@ export default ({ config, db, logger }) => { //eslint-disable-line no-unused-var
                 res.send(returnData);
             }
         });
+
+    });
+
+    api.post('/updateimagelabels',(req,res,next)=>{
+
+        let params=req.body;
+        //make sure keys are identical
+        if (req.headers['x-api-key'] === config.API_KEY)
+        {
+            let query = `UPDATE ${config.TABLE_REPORTS}
+            set content = content || $1 where content->>'image_link' like $2 returning id`;
+            let lbls= {image_labels: params.Labels };
+            let str= '%'+params.imglink+'%';
+            // Setup values
+            let values = [lbls, str ];
+
+            // Execute
+            logger.debug(query, values);
+            db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+                .then((data) => {
+                    res.json({success:true, id:data.id});
+                })
+                .catch((err) => {
+                    logger.error(err);
+                    res.json({success:false, error:err});
+                    next(err);
+                });
+        } else {
+            res.status(403).send('Forbidden');
+        }
 
     });
 

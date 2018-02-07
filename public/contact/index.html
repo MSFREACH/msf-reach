@@ -24,6 +24,7 @@
   <!-- Leaflet -->
   <link rel="stylesheet" href="/lib/leaflet/leaflet.css"/>
 
+  <link rel="stylesheet" href="/resources/css/intlTelInput.css">
 
   <link rel="stylesheet" href="contact.css">
 
@@ -46,8 +47,11 @@
               <p>Please follow the instructions to add or update your contact information in our system.</p>
               <p>THANK YOU for being part of our team! </p>
               <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
-              <p>Please contact <a href="mailto:support.ersu@hongkong.msf.org">support.ersu@hongkong.msf.org</a> for any queries or to remove your contact information from our database.</p>
-              <p><span style="color:red;">*</span> indicates mandatory fields</p>
+              <p>Please contact <a href="mailto:lucie.gueuning@hongkong.msf.org">lucie.gueuning@hongkong.msf.org</a> for any queries or to remove your contact information from our database.</p>
+              <div class="form-group" style="text-align:center;margin-bottom:20px; display:none;" id="permission">
+                <label class="checkbox-inline"><input type="checkbox" name="input permission" id="inputPermissionAcknowledge">I acknowledge I have permission from contacts I am entering to enter their information.</label>
+              </div>
+              <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
               <h4> Personal details</h4>
@@ -55,6 +59,7 @@
                 <div class="form-group" >
                   <label for="inputContactTitle" style="text-transform:uppercase;">Title</label>
                   <select class="form-control" style="color:black;" id="inputContactTitle">
+                    <option value="">unspecified</option>
                     <option value="Mr">Mr</option>
                     <option value="Mrs">Mrs</option>
                     <option value="Ms">Ms</option>
@@ -88,97 +93,140 @@
                 <div class="form-group" >
                   <label for="inputGender" style="text-transform:uppercase;">Gender</label>
                   <select class="form-control" style="color:black;" id="inputGender">
+                    <option value="">unspecified</option>
                     <option value="male">male</option>
                     <option value="female">female</option>
                     <option value="">other</option>
                   </select>
                 </div>
                 <div class="form-group" id="divOtherGender" style="display:none;">
-                  <label for="inputContactOtherGender" style="text-transform:uppercase;"><span style="color:red;">*</span>Other gender</label>
+                  <label for="inputContactOtherGender" style="text-transform:uppercase;">Other gender</label>
                   <input maxlength="50" placeholder="Other gender..." class="form-control" style="color:black;" id="inputContactOtherGender" >
                 </div>
               </div>
+              <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields are optional.</span>
             </div>
             <div class="form-section">
               <h4>Type of contact</h4>
               <div style="text-align:left;">
                 <div class="form-group" >
-                  <label for="inputContactAff" style="text-transform:uppercase;">Type of contact / category</label>
-                  <select class="form-control" style="color:black;" id="inputContactAff" >
+                  <label for="inputContactType" style="text-transform:uppercase;">Category</label>
+                  <select class="form-control" style="color:black;" id="inputContactType" >
                     <option value="" disabled selected>Please select...</option>
-                    <option value="MSF Peer">MSF Peer</option>
                     <option value="Current MSF Staff">Current MSF Staff</option>
-                    <option value="Assocation member">Association member</option>
+                    <option value="Supplier">Supplier</option>
                     <option value="United Nations">United Nations</option>
                     <option value="Government">Government</option>
                     <option value="Other NGO">Other NGO</option>
-                    <option value="Supplier">Supplier</option>
                     <option value="Academic">Academic</option>
-                    <option value="">Other</option>
+                    <option value="Private Medical Practice">Private Medical Practice</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
                 <div id="divMSFFields" style="display:none;">
                   <div class="form-group">
-                    <label for="inputContactOC" style="text-transform:uppercase;">OC/PS/BO/Mission</label>
-                    <input maxlength="150" placeholder="OC/PS/BO/Mission ..." class="form-control" style="color:black;" id="inputContactOC" >
-                  </div>
-                  <div class="form-group">
                     <label for="inputContactMSFEmploy" style="text-transform:uppercase;">Current employment status</label>
-                    <input maxlength="150" placeholder="Current employment status ..." class="form-control" style="color:black;" id="inputContactMSFEmploy" >
+                    <select class="form-control" style="color:black;" id="inputContactMSFEmploy">
+                      <option value="Field worker (national)">Field worker (national)</option>
+                      <option value="Field worker (international)">Field worker (international)</option>
+                      <option value="OC staff">OC staff</option>
+                      <option value="PS-BO staff">PS-BO staff</option>
+                      <option value="Satellite staff">Satellite staff</option>
+                    </select>
                   </div>
                   <div class="form-group">
-                    <label for="inputContactMSFPosition" style="text-transform:uppercase;">Current position</label>
-                    <input maxlength="150" placeholder="Current position / job title ..." class="form-control" style="color:black;" id="inputContactMSFPosition" >
+                    <label for="inputContactOC" style="text-transform:uppercase;">OC/PS/BO/Mission</label>
+                    <select class="form-control" style="color:black;" id="inputContactOC">
+                      <option value="" disabled selected>Please select...</option>
+                      <option value="OCA">OCA</option>
+                      <option value="OCB">OCB</option>
+                      <option value="OCBA">OCBA</option>
+                      <option value="OCG">OCG</option>
+                      <option value="OCP">OCP</option>
+                      <option value="Inter-section">Inter-section</option>
+                      <option value="IO">IO</option>
+                    </select>
                   </div>
                   <div class="form-group">
-                    <label for="inputContactSpeciality" style="text-transform:uppercase;">Speciality</label>
-                    <input maxlength="150" placeholder="Speciality ..." class="form-control" style="color:black;" id="inputSpeciality" >
+                    <label for="inputMSFSection" style="text-transform:uppercase;">Partner sections (if any)</label>
+                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFSection" >
+                  </div>
+                  <div class="form-group">
+                    <label for="inputMSFBranch" style="text-transform:uppercase;">Branch office (if any)</label>
+                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFBranch" >
+                  </div>
+                  <div class="form-group">
+                    <label for="inputMSFMission" style="text-transform:uppercase;">Mission (if any)</label>
+                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFMission" >
+                  </div>
+                  <div class="form-group">
+                    <label for="inputMSFProject" style="text-transform:uppercase;">Project (if any)</label>
+                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFProject" >
                   </div>
                 </div>
-                <div class="form-group" id="divOtherAff" style="display:none;">
-                  <input maxlength="150" placeholder="Specify other affiliation..." class="form-control" style="color:black;" id="inputContactOtherAff">
+                <div class="form-group" id="divOtherType" style="display:none;">
+                  <input maxlength="150" placeholder="Specify other type..." class="form-control" style="color:black;" id="inputContactTypeOther">
                 </div>
-                <div class="form-group" id="divAffName" style="display:none;">
-                  <label for="inputContactAffName" style="text-transform:uppercase;">Affiliation Name</label>
-                  <input maxlength="150" placeholder="orgnisation name ..." class="form-control" style="color:black;" id="inputAffName" >
+              </div>
+              <div id="divNonMSFFields">
+                <div class="form-group" style="text-align:left;margin-bottom:20px;">
+                  <label class="checkbox-inline"><input type="checkbox" name="MSF Association Member" id="inputContactMSFAssociate">MSF Association Member</label>
+                  <label class="checkbox-inline"><input type="checkbox" name="MSF Peer" id="inputContactMSFPeer">MSF Peer</label>
                 </div>
+                <h4>Employment details</h4>
+                <div style="text-align:left;">
+                  <div class="form-group" id="divEmploymentName">
+                    <label for="inputContactEmployerName" style="text-transform:uppercase;">Organisation/employer name</label>
+                    <input maxlength="150" placeholder="organisation/employer name ..." class="form-control" style="color:black;" id="inputContactEmployerName" >
+                  </div>
+                  <div class="form-group" id="divEmployerDivision">
+                    <label for="inputContactEmployerDivision" style="text-transform:uppercase;">Divison/unit/office</label>
+                    <input maxlength="150" placeholder="organisation division/unit/office name ..." class="form-control" style="color:black;" id="inputContactEmployerDivision" >
+                  </div>
+                  <div class="form-group" id="divJobTitle">
+                    <label for="inputContactJobTitle" style="text-transform:uppercase;">Job title</label>
+                    <input maxlength="150" placeholder="Job title ..." class="form-control" style="color:black;" id="inputContactJobTitle" >
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" style="text-align:left;">
+                <label for="inputContactSpeciality" style="text-transform:uppercase;">Profile /  speciality</label>
+                <input maxlength="150" placeholder="Speciality ..." class="form-control" style="color:black;" id="inputSpeciality" >
               </div>
             </div>
             <div class="form-section">
-              <h4>Please enter your home address or location. <span style="color:red;">*</span></h4>
+              <h4>Please enter your home address or pin your home location<span style="color:red;">*</span></h4>
               <div class="form-group">
                 <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
               </div>
               <div id="map"></div>
-
+              <span class="footnote" ><span style="color:red; text-align:center;">*</span> Mandatory fields. Other fields are optional.</span>
             </div>
 
             <div class="form-section">
               <h4>Contact details</h4>
               <div style="text-align:left;">
+                <label style="text-transform:uppercase;">Phone </label>
                 <div class="form-group">
-                  <label style="text-transform:uppercase;">Phone <span style="color:red;">*</span></label>
                   <input maxlength="50" placeholder="Mobile phone..." class="form-control" style="color:black;" id="inputContactCell" >
-                </div>
-                <div class="form-group">
                   <input maxlength="50" placeholder="Work phone..." class="form-control" style="color:black;" id="inputContactWork" >
-                </div>
-                <div class="form-group">
                   <input maxlength="50" placeholder="Home phone..." class="form-control" style="color:black;" id="inputContactHome" >
                 </div>
+                <label style="text-transform:uppercase;">Email <span style="color:red;">*</span></label>
+                <div class="form-group">
+                  <input maxlength="50" placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
+                  <input maxlength="50" placeholder="Other email..." class="form-control" style="color:black;" id="inputContactEmail2" >
+                </div>
+                <label style="text-transform:uppercase;">Fax </label>
                 <div class="form-group">
                   <input maxlength="50" placeholder="Fax..." class="form-control" style="color:black;" id="inputContactFax" >
                 </div>
+                <label style="text-transform:uppercase;">Web </label>
                 <div class="form-group">
-                  <label style="text-transform:uppercase;">Email <span style="color:red;">*</span></label>
-                  <input maxlength="50" placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
+                  <input maxlength="50" placeholder="Web site..." class="form-control" style="color:black;" id="inputContactWeb" >
                 </div>
-                <div class="form-group">
-                  <input maxlength="50" placeholder="Other email..." class="form-control" style="color:black;" id="inputContactEmail2" >
-                </div>
-                <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields optional.</span>
               </div>
-
+              <span class="footnote" ><span style="color:red;">*</span> Mandatory fields. Other fields are optional.</span>
             </div>
             <div class="form-section">
               <h4>Social media</h4>
@@ -237,6 +285,8 @@
   <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script type="text/javascript" src="/resources/js/common.js"></script>
+  <!-- Cookies -->
+  <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
 
   <!-- Get query parameter from URL -->
   <!-- Ask the server for reports from specific event -->
@@ -245,6 +295,7 @@
   <script src="/lib/getQueryVariable/getQueryVariable.js"></script>
   <script src="/lib/leaflet/leaflet.js"></script>
   <script src="/lib/countrySelect.min.js"></script>
+  <script src="/lib/intlTelInput.min.js"></script>
   <script src="/resources/js/new-contact.js"></script>
   <script src="contact.js"></script>
   <script src="/resources/js/address-autocomplete.js"></script>

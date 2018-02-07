@@ -31,11 +31,137 @@
     <!-- Local -->
     <link rel="stylesheet" href="resources/css/landing.css"/>
 
+    <!-- Events -->
+    <link rel="stylesheet" href="/resources/css/new-event.css"/>
+    <!-- jqueryui css -->
+    <link rel="stylesheet" href="/resources/css/jquery-ui-1.12.1.min.css">
+
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
 
   </head>
   <body>
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewEventModalLabel" id="newEventModal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myNewEventModalLabel">Create New Event</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <!-- Map -->
+                <div class="col-md-8" style="height:75vh;">
+                  <h3 id="title">1. Click on map to select event epicentre</h3>
+                  <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
+                  <div id="newEventMap" style="height:100%; width:100%;"></div>
+                </div>
+                <!-- Side pane -->
+                <div id="newEventSidepane" class="col-md-4">
+                  <h3 id="title">2. Add event metadata</h3>
+                  <div id="newEventProperties">
+                    <div class="tab-content">
+                      <div id="basic" class="tab-pane fade in active">
+                        <div class="panel panel-default">
+                          <div class="panel-body">
+                            <div class="form-group">
+                              <label for="selectType">Event Type</label>
+                              <select class="form-control" id="selectType"> <!--Supplement an id here instead of using 'name'-->
+                                <option value="conflict" selected>Armed conflict</option>
+                                <option value="natural_hazard">Natural disaster </option>
+                                <option value="epidemiological">Disease outbreak </option>
+                                <option value="search_and_rescue">Search and rescue</option>
+                                <option value="displacement">Displacement</option>
+                                <option value="malnutrition">Malnutrition</option>
+                                <option value="other">Other</option>
+                              </select>
+                            </div>
+                            <div class="form-group" id="divNaturalDisaster" style="display:none;">
+                              <select class="form-control" id="inputDisasterType">
+                                <option value="" disabled selected>Please select ...</option>
+                                <option value="earthquake">Earthquake</option>
+                                <option value="volcano">Volcano</option>
+                                <option value="typhoon">Typhoon</option>
+                                <option value="flood">Flood</option>
+                                <option value="tsunami">Tsunami</option>
+                                <option value="drought">Drought</option>
+                                <option value="">other</option>
+                              </select>
+                            </div>
+                            <div class="form-group" id="divDisease"  style="display:none;">
+                              <select class="form-control" id="inputDiseaseType">
+                                <option value="" disabled selected>Please select ...</option>
+                                <option value="Cholera">Cholera</option>
+                                <option value="Ebola">Ebola</option>
+                                <option value="Dengue">Dengue</option>
+                                <option value="Malaria">Malaria</option>
+                                <option value="Measles">Measles</option>
+                                <option value="Meningococcal Meningitis">Meningococcal Meningitis</option>
+                                <option value="Yellow Fever">Yellow Fever</option>
+                                <option value="">other</option>
+                              </select>
+                            </div>
+                            <div class="form-group" id="divOther"  style="display:none;">
+                              <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
+                            </div>
+                            <div class="form-group">
+                              <label for="inputEvDateTime">Date and time of Event</label>
+                              <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD" >
+                            </div>
+                            <div class="form-group" >
+                              <label for="inputEvStatus">Status</label>
+                              <select class="form-control" id="inputEvStatus">
+                                <option value="monitoring">monitoring </option>
+                                <option value="assessment">assement</option>
+                                <option value="intervention">intervention</option>
+                                <option value="complete">complete</option>
+                              </select>
+                            </div>
+                            <div class="form-group">
+                              <label for="">Person in charge</label>
+                              <input type="text" id="inputInChargeName" class="form-control" placeholder="Name" >
+                              <input type="text" id="inputInChargePosition" class="form-control" placeholder="Position" >
+                            </div>
+                            <div class="form-group">
+                              <label for="inputSeverity">Severity</label>
+                              Details: <input type="text" id="inputSeverity" class="form-control" placeholder="Severity" >
+                              Scale: <input type="range" min="1" max="3" step="1"  class="pull-right" style="width: 75%" id="inputSeverityScale" />
+                            </div>
+                            <div class="form-group">
+                              <label for="inputSharepointLink">Link to sharepoint folder</label>
+                              <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
+                            </div>
+
+
+                            <div class="form-group">
+                              <label for="inputSecurity">Security Details</label>
+                              <textarea class="form-control" rows="1" id="inputSecurity" placeholder="Security details ..." required></textarea>
+                            </div>
+
+                            <!--<button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>-->
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" id="createEvent" class="btn btn-msf">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Contact Page Modal -->
     <div class="modal fade" id="contactDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelContact">
       <div class="modal-dialog" role="document">
@@ -225,7 +351,7 @@
           <div id="landingMap"></div>
         </div>
 
-        <div id="sidepane" class="col-md-4" style="min-height:90vh;">
+        <div id="sidepane" class="col-md-4" >
           <ul class="nav nav-tabs">
             <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Events</a></li>
             <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
@@ -233,7 +359,7 @@
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
 
           </ul>
-          <div class="tab-content">
+          <div class="tab-content msf-tab" >
             <div id="event" class="tab-pane fade in active">
                 <div id="eventProperties" class="list-group">
 
@@ -241,7 +367,7 @@
             </div>
             <div id="toolbox" class="tab-pane fade">
               <div class="list-group">
-                  <a  href="/events/new" target="_blank" class="list-group-item list-group-item-action">Create a new event</a>
+                  <a href="#newEventModal" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#newEventModal">Create a new event</a>
                   <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
               </div>
             </div>
@@ -270,14 +396,13 @@
     <script src="/lib/lodash.min.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/js/common.js"></script>
     <!-- Cookies -->
     <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
 
-    <!-- events common variables -->
-    <script src="/events/common.js"></script>
 
     <!-- VueJs + plug-ins -->
     <script src="/lib/vue/vue.min.js"></script>
@@ -292,5 +417,20 @@
     <script src="/lib/leaflet/leaflet.groupedlayercontrol.min.js"></script>
     <script src="resources/js/landing.js"></script>
     <script src="resources/js/nav.js"></script>
+
+    <!-- events common variables -->
+    <script src="/events/common.js"></script>
+
+    <!-- new events script -->
+    <script src="resources/js/new-event.js"></script>
+
+    <script src="/resources/js/address-autocomplete.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
+
+
+
+
+
+
   </body>
 </html>

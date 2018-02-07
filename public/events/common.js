@@ -8,7 +8,7 @@ var defaultEvent = {
     id: null,
     status: null,
     type: null,
-    created: null,
+    created_at: null,
     reportkey: null,
     metadata: {
         user_edit: null,

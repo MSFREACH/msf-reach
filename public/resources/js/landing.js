@@ -21,31 +21,31 @@ var PTWCHazardsLayer;
 
 // Set cookies if not set
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
-  Cookies.set('Mission Histories','on'); // default
+    Cookies.set('Mission Histories','on'); // default
 }
 if (typeof(Cookies.get('Current Events')) === 'undefined') {
-  Cookies.set('Current Events','on'); // default
+    Cookies.set('Current Events','on'); // default
 }
 if (typeof(Cookies.get('- PDC')) === 'undefined') {
-  Cookies.set('- PDC','on'); // default
+    Cookies.set('- PDC','on'); // default
 }
 if (typeof(Cookies.get('- TSR')) === 'undefined') {
-  Cookies.set('- TSR','on'); // default
+    Cookies.set('- TSR','on'); // default
 }
 if (typeof(Cookies.get('- PTWC')) === 'undefined') {
-  Cookies.set('- PTWC','on'); // default
+    Cookies.set('- PTWC','on'); // default
 }
 if (typeof(Cookies.get('- GDACS')) === 'undefined') {
-  Cookies.set('- GDACS','on'); // default
+    Cookies.set('- GDACS','on'); // default
 }
 if (typeof(Cookies.get('- USGS')) === 'undefined') {
-  Cookies.set('- USGS','on'); // default
+    Cookies.set('- USGS','on'); // default
 }
 if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
-  Cookies.set('- MSF Staff','on'); // default
+    Cookies.set('- MSF Staff','on'); // default
 }
 if (typeof(Cookies.get('- other contacts')) === 'undefined') {
-  Cookies.set('- other contacts','on'); // default
+    Cookies.set('- other contacts','on'); // default
 }
 
 /**
@@ -134,7 +134,8 @@ var mapAllEvents = function(err, events){
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<BR>' +
+    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
+    'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type: ' + type.replace('_',' ') + '<br>' +
     statusStr +
     severityStr +
@@ -150,7 +151,8 @@ var mapAllEvents = function(err, events){
         $('#eventProperties').append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
       'Type: ' + feature.properties.type + '<br>' +
       statusStr +
       notificationStr +
@@ -606,11 +608,10 @@ var mapContacts = function(contacts ){
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
-      '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-      '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-      '<br>affliation type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-      (typeof(feature.properties.properties.affiliationName)==='undefined' ? '' : '<br>affiliation name:' + feature.properties.properties.affiliationName) +
-      '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+      '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+      '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+      '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
         layer.bindPopup(popupContent);
@@ -741,14 +742,6 @@ var overlayMaps = {};
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(landingMap);
 
 getAllEvents(mapAllEvents);
-
-setInterval(function() {
-    landingMap.removeLayer(eventsLayer);
-    layerControl.removeLayer(eventsLayer);
-    eventsLayer.clearLayers();
-    $('#eventProperties').empty();
-    getAllEvents(mapAllEvents);
-},180000);
 
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
