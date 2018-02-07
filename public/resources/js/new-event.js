@@ -7,23 +7,23 @@ $('#newEventModal').on('shown.bs.modal', function() {
 });
 
 $('#newEventModal').on('hidden.bs.modal', function() {
-  // clear previous entry
-  $('#selectType').val('');
-  $('#inputDisasterType').val('');
-  $('#mapAddress').val('');
-  $('#inputDiseaseType').val('');
-  $('#inputOther').val('');
-  $('#inputEvDateTime').val('');
-  $('#inputEvStatus').val('');
-  $('#inputInChargeName').val('');
-  $('#inputInChargePosition').val('');
-  $('#inputSeverity').val('');
-  $('#inputSeverityScale').val('2');
-  $('#inputSharepointLink').val('');
-  $('#inputSecurity').val('');
-  newEventMap.removeLayer(marker);
-  newEventMap.setview([20,110], 4);
-  latlng = null;
+    // clear previous entry
+    $('#selectType').val('');
+    $('#inputDisasterType').val('');
+    $('#mapAddress').val('');
+    $('#inputDiseaseType').val('');
+    $('#inputOther').val('');
+    $('#inputEvDateTime').val('');
+    $('#inputEvStatus').val('');
+    $('#inputInChargeName').val('');
+    $('#inputInChargePosition').val('');
+    $('#inputSeverity').val('');
+    $('#inputSeverityScale').val('2');
+    $('#inputSharepointLink').val('');
+    $('#inputSecurity').val('');
+    newEventMap.removeLayer(marker);
+    newEventMap.setview([20,110], 4);
+    latlng = null;
 });
 
 var autocompleteMap=newEventMap;
