@@ -13,6 +13,12 @@ html,body {
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
+.form-group
+{
+  margin-top: 2px;
+  margin-bottom: 6px;
+}
+
 .report-root
 {
   opacity:1;
