@@ -20,6 +20,10 @@ var contactsLayer;
 var contactsClusters;
 var missionsLayer;
 var missionsClusters;
+var accessLayer;
+var needsLayer;
+var contactsLayer;
+var securityLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
@@ -384,7 +388,7 @@ var mapReports = function(reports){
 
     });
 
-    var accessLayer = L.geoJSON(reports, {
+    accessLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'ACCESS');
         },
@@ -399,7 +403,7 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
-    var needsLayer = L.geoJSON(reports, {
+    needsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'NEEDS');
         },
@@ -414,7 +418,7 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
-    var securityLayer = L.geoJSON(reports, {
+    securityLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'SECURITY');
         },
@@ -429,7 +433,7 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-    var contactsLayer = L.geoJSON(reports, {
+    contactsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'CONTACTS');
         },

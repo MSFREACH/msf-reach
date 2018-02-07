@@ -48,13 +48,20 @@ var refreshEventPage = function() {
                        '- security': Cookies.get('- security'),
                        '- contacts': Cookies.get('- contacts')};
 
-    eventsMap.removeLayer(reportsLayer);
-    layerControl.removeLayer(reportsLayer);
-    reportsLayer.clearLayers();
-    $('#eventProperties').empty();
-    Cookies.set('Current Events',saveCookie);
-    getAllEvents(mapAllEvents);
-    $('#eventTab').tab('show');
+    eventsMap.removeLayer(accessLayer);
+    layerControl.removeLayer(accessLayer);
+    eventsMap.removeLayer(needsLayer);
+    layerControl.removeLayer(needsLayer);
+    eventsMap.removeLayer(securityLayer);
+    layerControl.removeLayer(securityLayer);
+    eventsMap.removeLayer(contactsLayer);
+    layerControl.removeLayer(contactsLayer);
+
+    Object.keys(saveCookies).forEach(function(key) {
+      Cookies.set(key,saveCookies[key]);
+    });
+
+    getReports(currentEventId, mapReports);
 };
 
 
@@ -87,8 +94,12 @@ function postReport(eventID,reportKey,imgLink) {
         url: '/api/reports',
         data: JSON.stringify(body),
         contentType: 'application/json'
-    }).done(function( data, textStatus, req ){
-        if (!currentEventProperties) { // on report card
+    }).done(function( data, textStatus, req ) {
+        if (currentEventProperties) {
+          // on event page, so
+          refreshEventPage(); // to pick up the new report
+        } else { // on report card
+          // tell user report is submitted
           $('#divProgress').html('Report submitted!');
           $('#divSuccess').show(500);
         }
