@@ -42,6 +42,22 @@ $('#newReportModal').on('hidden.bs.modal', function() {
   }
 });
 
+var refreshEventPage = function() {
+    var saveCookies = {'- access': Cookies.get('- access'),
+                       '- needs': Cookies.get('- needs'),
+                       '- security': Cookies.get('- security'),
+                       '- contacts': Cookies.get('- contacts')};
+
+    eventsMap.removeLayer(reportsLayer);
+    layerControl.removeLayer(reportsLayer);
+    reportsLayer.clearLayers();
+    $('#eventProperties').empty();
+    Cookies.set('Current Events',saveCookie);
+    getAllEvents(mapAllEvents);
+    $('#eventTab').tab('show');
+};
+
+
 var marker;
 var latlng = null;
 newReportMap.on('click', function(e) {
