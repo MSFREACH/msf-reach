@@ -218,10 +218,9 @@ var printEventProperties = function(err, eventProperties){
         // Create unique report link for this event
         eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
         // Add unique link to this event
-        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
         // Add unique link to report to this event
-        propertiesTable += '<tr><td>Report link</td><td><a id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a></td><td><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy</button></td></tr>';
-        propertiesTable += '<tr><td></td><td><a href="#newEventModal" data-toggle="modal" data-target="#newReportModal">Create a new report</a></td></tr>'
+        propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy link</button></td></tr>';
         // Add user metadata
         if (eventProperties.metadata.user) {
             propertiesTable += '<tr><td>Owner</td><td>'+eventProperties.metadata.user+'</td></tr>';

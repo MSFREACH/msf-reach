@@ -29,6 +29,19 @@ $('#newReportModal').on('shown.bs.modal', function() {
     _.defer(newReportMap.invalidateSize.bind(newReportMap));
 });
 
+$('#newReportModal').on('hide.bs.modal', function() {
+  // tidy up
+  $('#inputReportText').val('');
+  $('#inputReportUserName').val('');
+  $('#imgPreview').attr('src','data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
+  if (marker) {
+      newReportMap.removeLayer(marker);
+  }
+  if (latlng) {
+    latlng = null;
+  }
+});
+
 var marker;
 var latlng = null;
 newReportMap.on('click', function(e) {
@@ -52,30 +65,41 @@ function postReport(eventID,reportKey,imgLink) {
             'image_link': imgLink
         }
     };
-    //console.log(body);
+    console.log(body);
     $.ajax({
         type: 'POST',
         url: '/api/reports',
         data: JSON.stringify(body),
         contentType: 'application/json'
     }).done(function( data, textStatus, req ){
-        $('#divProgress').html('Report submitted!');
-        $('#divSuccess').show(500);
+        if (!currentEventProperties) { // on report card
+          $('#divProgress').html('Report submitted!');
+          $('#divSuccess').show(500);
+        }
     }).fail(function (req, textStatus, err){
+      if (currentEventProperties) { // on events page report modal
+        alert('An error occured' + err);
+      } else {
         $('#divProgress').html('An error occured');
-        console.log(err); // eslint-disable-line no-console
-        console.log(textStatus); // eslint-disable-line no-console
+      }
     });
 }
 
 
 $('#createReport').on('click', function (e) {
-    var eventId = getQueryVariable('eventId');
-    var reportKey = getQueryVariable('reportkey');
+  var eventId, reportKey;
+
+  if (currentEventProperties) { // we are in events page report modal
+    eventId = currentEventProperties.id;
+    reportKey = currentEventProperties.reportkey;
+  } else { // on report card, get these from URL query params
+    eventId = getQueryVariable('eventId');
+    reportKey = getQueryVariable('reportkey');
+  }
 
     if ((!eventId)||(!reportKey))
     {
-        alert('EventId and/or reportKey missing in the URL. Please verify and try again.');
+        alert('EventId and/or reportKey missing. Please verify and try again.');
     }
 
     var imgLink='';
