@@ -50,7 +50,7 @@
     "dbgeo": "^1.1.0",
     "dms-conversion": "^3.0.0",
     "dotenv": "^4.0.0",
-    "express": "^4.16.2",
+    "express": "git+https://git@github.com/AcrossTheCloud/express.git",
     "express-jwt": "^5.3.0",
     "joi": "^13.1.1",
     "joi-date-extensions": "^1.1.0",
