@@ -29,7 +29,7 @@ $('#newReportModal').on('shown.bs.modal', function() {
     _.defer(newReportMap.invalidateSize.bind(newReportMap));
 });
 
-$('#newReportModal').on('hide.bs.modal', function() {
+$('#newReportModal').on('hidden.bs.modal', function() {
   // tidy up
   $('#inputReportText').val('');
   $('#inputReportUserName').val('');
