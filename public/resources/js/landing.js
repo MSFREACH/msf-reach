@@ -19,36 +19,36 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
-$( "#inputSeverityScale" ).slider({
+$( '#inputSeverityScale' ).slider({
     value: 2,
     min: 1,
     max: 3,
     step: 1
 })
-.each(function() {
+    .each(function() {
 
-  //
-  // Add labels to slider whose values
-  // are specified by min, max and whose
-  // step is set to 1
-  //
+        //
+        // Add labels to slider whose values
+        // are specified by min, max and whose
+        // step is set to 1
+        //
 
-  // Get the options for this slider
-  var opt = $(this).data().uiSlider.options;
+        // Get the options for this slider
+        var opt = $(this).data().uiSlider.options;
 
-  // Get the number of possible values
-  var vals = opt.max - opt.min;
+        // Get the number of possible values
+        var vals = opt.max - opt.min;
 
-  // Space out values
-  for (var i = 0; i <= vals; i++) {
+        // Space out values
+        for (var i = 0; i <= vals; i++) {
 
-    var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+            var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
 
-    $( "#inputSeverityScale" ).append(el);
+            $( '#inputSeverityScale' ).append(el);
 
-  }
+        }
 
-});
+    });
 
 // Set cookies if not set
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
@@ -514,7 +514,7 @@ var tableFeeds = function(feeds) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
-    var type = typeof(missionType)==='defined' ? missionType.toLowerCase() : '';
+    var type = typeof(missionType)!=='undefined' ? missionType.toLowerCase() : '';
     var html = '<img src="/resources/images/icons/event_types/';
     if (type.includes('conflict')) {
         html += 'conflict';

@@ -102,7 +102,7 @@ $(function(){
                     'incharge_name': $('#inputInChargeName').val(),
                     'incharge_position': $('#inputInChargePosition').val(),
                     'severity':  $('#inputSeverity').val(),
-                    'severity_scale': $('#inputSeverityScale').slider("option", "value"),
+                    'severity_scale': $('#inputSeverityScale').slider('option', 'value'),
                     'sharepoint_link':  $('#inputSharepointLink').val(),
                     'security_details': $('#inputSecurity').val(),
                     /* Exploratory details: free text, ask user for
