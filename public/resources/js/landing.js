@@ -19,6 +19,41 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
+var severityLabels = ['<span style="color:green">low</span>',
+                      '<span style="color:orange">medium</span>',
+                      '<span style="color:red">high</span>'];
+
+$( "#inputSeverityScale" ).slider({
+    value: 2,
+    min: 1,
+    max: 3,
+    step: 1
+})
+.each(function() {
+
+  //
+  // Add labels to slider whose values
+  // are specified by min, max and whose
+  // step is set to 1
+  //
+
+  // Get the options for this slider
+  var opt = $(this).data().uiSlider.options;
+
+  // Get the number of possible values
+  var vals = opt.max - opt.min;
+
+  // Space out values
+  for (var i = 0; i <= vals; i++) {
+
+    var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+
+    $( "#inputSeverityScale" ).append(el);
+
+  }
+
+});
+
 // Set cookies if not set
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
     Cookies.set('Mission Histories','on'); // default
@@ -497,7 +532,7 @@ var tableFeeds = function(feeds) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
-    var type = missionType.toLowerCase();
+    var type = typeof(missionType)==='defined' ? missionType.toLowerCase() : '';
     var html = '<img src="/resources/images/icons/event_types/';
     if (type.includes('conflict')) {
         html += 'conflict';

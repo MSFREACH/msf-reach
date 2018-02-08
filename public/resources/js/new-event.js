@@ -22,7 +22,7 @@ $('#newEventModal').on('hidden.bs.modal', function() {
     $('#inputSharepointLink').val('');
     $('#inputSecurity').val('');
     newEventMap.removeLayer(marker);
-    newEventMap.setview([20,110], 4);
+    newEventMap.setView([20,110], 4);
     latlng = null;
 });
 
