@@ -19,10 +19,6 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
-var severityLabels = ['<span style="color:green">low</span>',
-                      '<span style="color:orange">medium</span>',
-                      '<span style="color:red">high</span>'];
-
 $( "#inputSeverityScale" ).slider({
     value: 2,
     min: 1,
@@ -83,20 +79,6 @@ if (typeof(Cookies.get('- other contacts')) === 'undefined') {
     Cookies.set('- other contacts','on'); // default
 }
 
-/**
- * Function to color highlight severity_scale
- * @param {String} severity_scale -
- * @returns {String} html for severity_scale with color
- */
-var colourSeverity = function(severity_scale) {
-    switch(severity_scale) {
-    case('1'): return 'Severity: <font color="green">low</font>';
-    case('2'): return 'Severity: <font color="orange">medium</font>';
-    case('3'): return 'Severity: <font color="red">high</font>';
-    default: return 'Severity: <font color="red">high</font>';
-    }
-};
-
 var eventsLayer;
 
 /**
@@ -155,7 +137,7 @@ var mapAllEvents = function(err, events){
             severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += colourSeverity(feature.properties.metadata.severity) + '<br>';
+            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
         }
 
 

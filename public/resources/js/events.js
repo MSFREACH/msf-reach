@@ -261,7 +261,7 @@ var printEventProperties = function(err, eventProperties){
             $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
         }
         $('#eventBasicInfo').append('<dt>Person In charge </dt><dd>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</dd>');
-        $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + String(eventProperties.metadata.severity_scale) + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
+        $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
         $('#eventBasicInfo').append('<dt>Sharepoint Link </dt><dd>'+eventProperties.metadata.sharepoint_link+'</dd>');
 
         var extra_metadata = unpackMetadata(eventProperties.metadata);

@@ -12,3 +12,7 @@ $(function() {
         }
     });
 });
+
+var severityLabels = ['<span style="color:green">low</span>',
+                      '<span style="color:orange">medium</span>',
+                      '<span style="color:red">high</span>'];
