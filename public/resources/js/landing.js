@@ -707,12 +707,14 @@ var getContact = function(id) {
         contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
         contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
 
-        // prepend http:// to web (don't assume https, assume redirection)
-        if (!contact.result.properties.web.startsWith('http')) {
-            contact.result.properties.web = 'http://' + contact.result.properties.web;
-        }
-        // and make it a link
+
+        // if web address
         if (contact.result.properties.web) {
+            // prepend http:// to web (don't assume https, assume redirection)
+            if (!contact.result.properties.web.startsWith('http')) {
+                contact.result.properties.web = 'http://' + contact.result.properties.web;
+            }
+            // make it a link
             contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
         }
 
