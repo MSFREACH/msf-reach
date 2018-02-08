@@ -691,24 +691,54 @@ var contactInfo = {};
 var getContact = function(id) {
     $.getJSON('/api/contacts/' + id, function(contact) {
         contactInfo = contact.result ? contact.result.properties : {};
+        //$('#contactDetailsModal').find('div.form-group').hide();
+        $('span.filed').html(convertToLocaleDate(contact.result.created_at));
+        $('span.updated').html(convertToLocaleDate(contact.result.updated_at));
+        $('span.last_email').html(convertToLocaleDate(contact.result.last_email_sent_at));
+
+        // fiddle booleans to 'yes'/'no'
+        contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
+        contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
+
+        // prepend http:// to web (don't assume https, assume redirection)
+        if (!contact.result.properties.web.startsWith('http')) {
+            contact.result.properties.web = 'http://' + contact.result.properties.web;
+        }
+        // and make it a link
+        if (contact.result.properties.web) {
+            contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
+        }
+
+        // also hyperlink emails
+        if (contact.result.properties.email) {
+            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
+        }
+        if (contact.result.properties.email2) {
+            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
+        }
+
         _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);
             $('span.' + key).html(value);
+            $('span.' + key).parent().toggle(!!(value));
+
         });
-        if (contact.result.properties.type.toUpperCase().includes('MSF')) {
+        if (contact.result.properties.type === 'Current MSF Staff') {
             $('#msf_details').show();
+            $('#employment_details').hide();
         } else {
             $('#msf_details').hide();
+            $('#employment_details').show();
         }
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
         } else {
-            alert('error: '+ err.responseText);
+            // Catch condition where no data returned
+            alert('error: ' + err.responseText);
         }
     });
 };
-
 
 // Create map
 var landingMap = L.map('landingMap').setView([20, 110], 4);
