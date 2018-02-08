@@ -688,11 +688,11 @@ var onContactLinkClick = function(id) {
 };
 
 var convertToLocaleDate= function (isoDate) {
-  if (isoDate)
-   return (new Date(isoDate)).toLocaleString();
-   else
-   return '';
-}
+    if (isoDate)
+        return (new Date(isoDate)).toLocaleString();
+    else
+        return '';
+};
 
 var contactInfo = {};
 var getContact = function(id) {
