@@ -621,7 +621,7 @@ var mapContacts = function(contacts ){
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
-            popupContent = 'name: <a href="#" onclick="onContactLinkClick(' +
+            popupContent = 'Full name: <a href="#" onclick="onContactLinkClick(' +
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
