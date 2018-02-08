@@ -61,3 +61,17 @@ html, body { height: 100% }
 div.pac-container {
    z-index: 1050 !important;
 }
+
+#inputSeverityScale label {
+    position: absolute;
+    width: 20px;
+    margin-left: -10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* below is not necessary, just for style */
+#inputSeverityScale {
+    width: 50%;
+    margin: 2em auto;
+}

@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: off*/
+
 /**
  * Monitor status code to redirect login page if session expires.
 */
@@ -12,3 +14,7 @@ $(function() {
         }
     });
 });
+
+var severityLabels = ['<span style="color:green">low</span>',
+    '<span style="color:orange">medium</span>',
+    '<span style="color:red">high</span>'];

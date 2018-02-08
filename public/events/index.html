@@ -250,6 +250,10 @@
                         <label>Name:</label>
                         <span class="title"></span> <span class="name"></span>
                     </div>
+                    <div class="form-group" style="display:none;">
+                        <label>Other names:</label>
+                        <span class="otherNames"></span>
+                    </div>
                     <div class="form-group"  style="display:none;">
                         <label>Date of birth:</label>
                         <span class="dob"></span>
@@ -265,14 +269,6 @@
                     <div class="form-group"  style="display:none;">
                         <label>Speciality / profile:</label>
                         <span class="speciality"></span>
-                    </div>
-                    <div class="form-group"  style="display:none;">
-                        <label>MSF Association Member:</label>
-                        <span class="supplier"></span>
-                    </div>
-                    <div class="form-group"  style="display:none;">
-                        <label>MSF Peer:</label>
-                        <span class="msf_peer"></span>
                     </div>
                     <div class="bg-success">Contact details</div>
                     <div class="form-group"  style="display:none;">
@@ -294,6 +290,14 @@
                     <div class="form-group"  style="display:none;">
                         <label>Other email:</label>
                         <span class="email2"></span>
+                    </div>
+                    <div class="form-group"  style="display:none;">
+                        <label>Fax:</label>
+                        <span class="fax"></span>
+                    </div>
+                    <div class="form-group"  style="display:none;">
+                        <label>Web:</label>
+                        <span class="web"></span>
                     </div>
                     <div class="form-group"  style="display:none;">
                         <label>Address:</label>
@@ -330,19 +334,29 @@
                     </div>
                     <div id="employment_details">
                       <div class="bg-success">Employment details</div>
-                        <div class="form-group"  style="display:none;">
-                            <label>Employer / organisation name:</label>
-                            <span class="employer"></span>
-                        </div>
-                        <div class="form-group"  style="display:none;">
-                            <label>Job title:</label>
-                            <span class="job_title"></span>
-                        </div>
-                        <div class="form-group"  style="display:none;">
-                            <label>Unit/division:</label>
-                            <span class="division"></span>
-                        </div>
+                      <div class="form-group"  style="display:none;">
+                          <label>Employer / organisation name:</label>
+                          <span class="employer"></span>
+                      </div>
+                      <div class="form-group"  style="display:none;">
+                          <label>Job title:</label>
+                          <span class="job_title"></span>
+                      </div>
+                      <div class="form-group"  style="display:none;">
+                          <label>Unit/division:</label>
+                          <span class="division"></span>
+                      </div>
+                      <div class="bg-success">MSF relationship</div>
+                      <div class="form-group"  style="display:none;">
+                          <label>MSF associate member:</label>
+                          <span class="msf_associate"></span>
+                      </div>
+                      <div class="form-group"  style="display:none;">
+                          <label>MSF peer:</label>
+                          <span class="msf_peer"></span>
+                      </div>
                     </div>
+
                     <div class="bg-success">Social media</div>
                     <div class="form-group"  style="display:none;">
                         <label>WhatsApp:</label>
@@ -657,9 +671,28 @@
           $("span.filed").html(convertToLocaleDate(contact.result.created_at));
           $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
           $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
+
           // fiddle booleans to 'yes'/'no'
           contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
           contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
+
+          // if web address
+          if (contact.result.properties.web) {
+              // prepend http:// to web (don't assume https, assume redirection)
+              if (!contact.result.properties.web.startsWith('http')) {
+                  contact.result.properties.web = 'http://' + contact.result.properties.web;
+              }
+              // make it a link
+              contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
+          }
+
+          // also hyperlink emails
+          if (contact.result.properties.email) {
+            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>'
+          }
+          if (contact.result.properties.email2) {
+            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>'
+          }
 
           _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);

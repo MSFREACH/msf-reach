@@ -19,6 +19,37 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
+$( '#inputSeverityScale' ).slider({
+    value: 2,
+    min: 1,
+    max: 3,
+    step: 1
+})
+    .each(function() {
+
+        //
+        // Add labels to slider whose values
+        // are specified by min, max and whose
+        // step is set to 1
+        //
+
+        // Get the options for this slider
+        var opt = $(this).data().uiSlider.options;
+
+        // Get the number of possible values
+        var vals = opt.max - opt.min;
+
+        // Space out values
+        for (var i = 0; i <= vals; i++) {
+
+            var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+
+            $( '#inputSeverityScale' ).append(el);
+
+        }
+
+    });
+
 // Set cookies if not set
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
     Cookies.set('Mission Histories','on'); // default
@@ -47,20 +78,6 @@ if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
 if (typeof(Cookies.get('- other contacts')) === 'undefined') {
     Cookies.set('- other contacts','on'); // default
 }
-
-/**
- * Function to color highlight severity_scale
- * @param {String} severity_scale -
- * @returns {String} html for severity_scale with color
- */
-var colourSeverity = function(severity_scale) {
-    switch(severity_scale) {
-    case('1'): return 'Severity: <font color="green">low</font>';
-    case('2'): return 'Severity: <font color="orange">medium</font>';
-    case('3'): return 'Severity: <font color="red">high</font>';
-    default: return 'Severity: <font color="red">high</font>';
-    }
-};
 
 var eventsLayer;
 
@@ -120,7 +137,7 @@ var mapAllEvents = function(err, events){
             severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += colourSeverity(feature.properties.metadata.severity) + '<br>';
+            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
         }
 
 
@@ -497,7 +514,7 @@ var tableFeeds = function(feeds) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
-    var type = missionType.toLowerCase();
+    var type = typeof(missionType)!=='undefined' ? missionType.toLowerCase() : '';
     var html = '<img src="/resources/images/icons/event_types/';
     if (type.includes('conflict')) {
         html += 'conflict';
@@ -604,7 +621,7 @@ var mapContacts = function(contacts ){
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
-            popupContent = 'name: <a href="#" onclick="onContactLinkClick(' +
+            popupContent = 'Full name: <a href="#" onclick="onContactLinkClick(' +
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
@@ -687,28 +704,67 @@ var onContactLinkClick = function(id) {
     getContact(id);
 };
 
+var convertToLocaleDate= function (isoDate) {
+    if (isoDate)
+        return (new Date(isoDate)).toLocaleString();
+    else
+        return '';
+};
+
 var contactInfo = {};
 var getContact = function(id) {
     $.getJSON('/api/contacts/' + id, function(contact) {
         contactInfo = contact.result ? contact.result.properties : {};
+        //$('#contactDetailsModal').find('div.form-group').hide();
+        $('span.filed').html(convertToLocaleDate(contact.result.created_at));
+        $('span.updated').html(convertToLocaleDate(contact.result.updated_at));
+        $('span.last_email').html(convertToLocaleDate(contact.result.last_email_sent_at));
+
+        // fiddle booleans to 'yes'/'no'
+        contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
+        contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
+
+
+        // if web address
+        if (contact.result.properties.web) {
+            // prepend http:// to web (don't assume https, assume redirection)
+            if (!contact.result.properties.web.startsWith('http')) {
+                contact.result.properties.web = 'http://' + contact.result.properties.web;
+            }
+            // make it a link
+            contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
+        }
+
+        // also hyperlink emails
+        if (contact.result.properties.email) {
+            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
+        }
+        if (contact.result.properties.email2) {
+            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
+        }
+
         _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);
             $('span.' + key).html(value);
+            $('span.' + key).parent().toggle(!!(value));
+
         });
-        if (contact.result.properties.type.toUpperCase().includes('MSF')) {
+        if (contact.result.properties.type === 'Current MSF Staff') {
             $('#msf_details').show();
+            $('#employment_details').hide();
         } else {
             $('#msf_details').hide();
+            $('#employment_details').show();
         }
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
         } else {
-            alert('error: '+ err.responseText);
+            // Catch condition where no data returned
+            alert('error: ' + err.responseText);
         }
     });
 };
-
 
 // Create map
 var landingMap = L.map('landingMap').setView([20, 110], 4);

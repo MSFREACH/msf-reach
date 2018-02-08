@@ -22,7 +22,7 @@ $('#newEventModal').on('hidden.bs.modal', function() {
     $('#inputSharepointLink').val('');
     $('#inputSecurity').val('');
     newEventMap.removeLayer(marker);
-    newEventMap.setview([20,110], 4);
+    newEventMap.setView([20,110], 4);
     latlng = null;
 });
 
@@ -102,6 +102,7 @@ $(function(){
                     'incharge_name': $('#inputInChargeName').val(),
                     'incharge_position': $('#inputInChargePosition').val(),
                     'severity':  $('#inputSeverity').val(),
+                    'severity_scale': $('#inputSeverityScale').slider('option', 'value'),
                     'sharepoint_link':  $('#inputSharepointLink').val(),
                     'security_details': $('#inputSecurity').val(),
                     /* Exploratory details: free text, ask user for

@@ -54,7 +54,7 @@ function postContact() {
             'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             'name': contName.trim(),
             'speciality': $('#inputSpeciality').val() || '',
-            'type': $('#inputContactTypeOther').val() || $('#inputContactType').val(),
+            'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
             'dob':$('#datepicker').val(),
             'web': $('#inputContactWeb').val() || '',
             'email':$('#inputContactEmail').val(),
