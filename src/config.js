@@ -2,6 +2,7 @@ require('dotenv').config({silent: true});
 
 export default {
     AUTH: process.env.AUTH === 'true' || false,
+    AD_KEY: process.env.AD_KEY || '',
     APP_NAME: process.env.APP_NAME || 'msf-reach',
     API_KEY: process.env.API_KEY || '',
     API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
