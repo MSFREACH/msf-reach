@@ -22,7 +22,6 @@ var missionsLayer;
 var missionsClusters;
 var accessLayer;
 var needsLayer;
-var contactsLayer;
 var securityLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;

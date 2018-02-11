@@ -37,9 +37,9 @@ $('#newReportModal').on('hidden.bs.modal', function() {
 
 var refreshEventPage = function() {
     var saveCookies = {'- access': Cookies.get('- access'),
-                       '- needs': Cookies.get('- needs'),
-                       '- security': Cookies.get('- security'),
-                       '- contacts': Cookies.get('- contacts')};
+        '- needs': Cookies.get('- needs'),
+        '- security': Cookies.get('- security'),
+        '- contacts': Cookies.get('- contacts')};
 
     eventsMap.removeLayer(accessLayer);
     layerControl.removeLayer(accessLayer);
@@ -51,7 +51,7 @@ var refreshEventPage = function() {
     layerControl.removeLayer(contactsLayer);
 
     Object.keys(saveCookies).forEach(function(key) {
-      Cookies.set(key,saveCookies[key]);
+        Cookies.set(key,saveCookies[key]);
     });
 
     getReports(currentEventId, mapReports);
@@ -81,7 +81,7 @@ function postReport(eventID,reportKey,imgLink) {
             'image_link': imgLink
         }
     };
-    console.log(body);
+
     $.ajax({
         type: 'POST',
         url: '/api/reports',
@@ -89,31 +89,31 @@ function postReport(eventID,reportKey,imgLink) {
         contentType: 'application/json'
     }).done(function( data, textStatus, req ) {
         if (currentEventProperties) {
-          // on event page, so
-          refreshEventPage(); // to pick up the new report
+            // on event page, so
+            refreshEventPage(); // to pick up the new report
         }
         $('#divProgress').html('Report submitted!');
         $('#divSuccess').show(500);
     }).fail(function (req, textStatus, err){
-      if (currentEventProperties) { // on events page report modal
-        alert('An error occured' + err);
-      } else {
-        $('#divProgress').html('An error occured');
-      }
+        if (currentEventProperties) { // on events page report modal
+            alert('An error occured' + err);
+        } else {
+            $('#divProgress').html('An error occured');
+        }
     });
 }
 
 
 $('#createReport').on('click', function (e) {
-  var eventId, reportKey;
+    var eventId, reportKey;
 
-  if (currentEventProperties) { // we are in events page report modal
-    eventId = currentEventProperties.id;
-    reportKey = currentEventProperties.reportkey;
-  } else { // on report card, get these from URL query params
-    eventId = getQueryVariable('eventId');
-    reportKey = getQueryVariable('reportkey');
-  }
+    if (currentEventProperties) { // we are in events page report modal
+        eventId = currentEventProperties.id;
+        reportKey = currentEventProperties.reportkey;
+    } else { // on report card, get these from URL query params
+        eventId = getQueryVariable('eventId');
+        reportKey = getQueryVariable('reportkey');
+    }
 
     if ((!eventId)||(!reportKey))
     {

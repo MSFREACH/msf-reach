@@ -20,7 +20,7 @@ $(function () {
             newReportMap.locate({setView: true, maxZoom: 16});
             doItOnce=false;
         }
-    }
+    };
 
     function curIndex() {
     // Return the current index by looking at which section has the class 'current'
@@ -78,27 +78,27 @@ $(function () {
 
 });
 
-var cleanupForNewReport = function (){
-  // tidy up
-  $('#inputReportText').val('');
-  $('#inputReportUserName').val('');
-  $('#mapAddress').val('');
-  $('#imgPreview').hide();
-  $('#imgPreview').attr('src','');
-  if (marker) {
-      newReportMap.removeLayer(marker);
-  }
-  if (latlng) {
-    latlng = null;
-  }
-  $('.form-section').removeClass('current');
-  $('.rtype-item').removeClass('rtype-selected');
-  $('#divProgress').html('');
-  $('#divSuccess').hide();
-  $('#inputImageUpload').val('');
-  doItOnce=true;
-  navigateTo(0);
+var cleanupForNewReport = function (){ // eslint-disable-line no-unused-vars
+    // tidy up
+    $('#inputReportText').val('');
+    $('#inputReportUserName').val('');
+    $('#mapAddress').val('');
+    $('#imgPreview').hide();
+    $('#imgPreview').attr('src','');
+    if (marker) {
+        newReportMap.removeLayer(marker);
+    }
+    if (latlng) {
+        latlng = null;
+    }
+    $('.form-section').removeClass('current');
+    $('.rtype-item').removeClass('rtype-selected');
+    $('#divProgress').html('');
+    $('#divSuccess').hide();
+    $('#inputImageUpload').val('');
+    doItOnce=true;
+    navigateTo(0);
 
 
 
-}
+};
