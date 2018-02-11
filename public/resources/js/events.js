@@ -20,6 +20,10 @@ var contactsLayer;
 var contactsClusters;
 var missionsLayer;
 var missionsClusters;
+var accessLayer;
+var needsLayer;
+var contactsLayer;
+var securityLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
@@ -218,9 +222,9 @@ var printEventProperties = function(err, eventProperties){
         // Create unique report link for this event
         eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
         // Add unique link to this event
-        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
         // Add unique link to report to this event
-        propertiesTable += '<tr><td>Report link</td><td><a id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a></td><td><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy link</button></td></tr>';
         // Add user metadata
         if (eventProperties.metadata.user) {
             propertiesTable += '<tr><td>Owner</td><td>'+eventProperties.metadata.user+'</td></tr>';
@@ -384,7 +388,7 @@ var mapReports = function(reports){
 
     });
 
-    var accessLayer = L.geoJSON(reports, {
+    accessLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'ACCESS');
         },
@@ -399,7 +403,7 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
-    var needsLayer = L.geoJSON(reports, {
+    needsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'NEEDS');
         },
@@ -414,7 +418,7 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
-    var securityLayer = L.geoJSON(reports, {
+    securityLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'SECURITY');
         },
@@ -429,7 +433,7 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-    var contactsLayer = L.geoJSON(reports, {
+    contactsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'CONTACTS');
         },
