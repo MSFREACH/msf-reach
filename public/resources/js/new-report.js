@@ -30,17 +30,10 @@ $('#newReportModal').on('shown.bs.modal', function() {
 });
 
 $('#newReportModal').on('hidden.bs.modal', function() {
-  // tidy up
-  $('#inputReportText').val('');
-  $('#inputReportUserName').val('');
-  $('#imgPreview').attr('src','data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
-  if (marker) {
-      newReportMap.removeLayer(marker);
-  }
-  if (latlng) {
-    latlng = null;
-  }
+    //could call the cleanupForNewReport here
 });
+
+
 
 var refreshEventPage = function() {
     var saveCookies = {'- access': Cookies.get('- access'),
@@ -98,11 +91,9 @@ function postReport(eventID,reportKey,imgLink) {
         if (currentEventProperties) {
           // on event page, so
           refreshEventPage(); // to pick up the new report
-        } else { // on report card
-          // tell user report is submitted
-          $('#divProgress').html('Report submitted!');
-          $('#divSuccess').show(500);
         }
+        $('#divProgress').html('Report submitted!');
+        $('#divSuccess').show(500);
     }).fail(function (req, textStatus, err){
       if (currentEventProperties) { // on events page report modal
         alert('An error occured' + err);

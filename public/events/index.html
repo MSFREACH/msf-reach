@@ -44,8 +44,6 @@
     <!-- Events -->
     <link rel="stylesheet" href="/resources/css/events.css"/>
 
-    <!-- Report card -->
-    <link rel="stylesheet" href="/report/reportcard.css">
 
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
@@ -78,70 +76,81 @@
 
     <!-- report creation modal -->
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewReportModalLabel" id="newReportModal">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myNewRpoertModalLabel">Create New Report</h4>
           </div>
           <div class="modal-body">
-            <div class="container-fluid">
-              <div class="row">
-                <!-- Map -->
-                <div class="col-md-8" style="height:75vh;">
-                  <h3 id="title">1. Click on map to select report location</h3>
-                  <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
-                  <div id="newReportMap" style="height:100%; width:100%;"></div>
-                </div>
-                <!-- Side pane -->
-                <div id="newReportSidepane" class="col-md-4">
-                  <h3 id="title">New Report</h3>
-                  <div id="newReportProperties">
-                    <div class="tab-content">
-                      <div id="basic" class="tab-pane fade in active">
-                        <div class="panel panel-default">
-                          <div class="panel-body"  style="overflow-y:scroll;">
-                            <div class="form-group">
-                              <label for="selectType">Report type</label>
-                              <div>
-                                <p>Please help us best assess the situation by helping us sort your report.</p>
-                                <div class="rtype-container">
-                                  <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>describe</i></div>
-                                  <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>request</i></div>
-                                  <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>share</i></div>
-                                  <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>warn</i></div>
-                                </div>
-                                <p>Select one category. There is an opportunity to submit another report card for another category after submission of this one.</p>
-                              </div>
-                              <div>
-                                <h4>Please enter text in the box below to share your information.</h4>
-                                <textarea rows="2" maxlength="150" placeholder="Free text (150 characters)..." style="width:100%;color:black;" id="inputReportText" ></textarea>
-                                <i> Optional</i>
-                                <input placeholder="name..." style="width:100%;color:black;" id="inputReportUserName">
-                              </div>
-                              <div>
-                                <h4>Would you like to upload an image ? </h4><i>(optional)</i>
-                                <form enctype="multipart/form-data">
-                                  <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
-                                  <a id="btnUpTrigger" style="color:red;text-transform:uppercase;cursor:pointer;" >Select from photos / take photo</a>
-                                  <div style="margin-top:10px;width:100%;height:55vh;background-color:white;color:black;">
-                                    <img id="imgPreview" src="#" alt="your image" style="width:100%;height:55vh;"/>
-                                  </div>
-                                </form>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div style="">
+              <div class="form-section">
+                <h4>Hello!</h4>
+                <p>MSF would like to request any information you may have about an event that may be happening in your area.</p>
+                <p>We are piloting a new system for sharing information. Please follow the instructions to submit your report.</p>
+                <p>THANK YOU for being part of our team! </p>
+                <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
               </div>
+              <div class="form-section">
+                <h5>1. Please select the location of your information on the map:</h5>
+                <div class="form-group">
+                  <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
+                </div>
+                <div id="newReportMap"></div>
+              </div>
+              <div class="form-section">
+                <h5>2. Please help us best assess the situation by helping us sort your report.</h5>
+                <div class="rtype-container">
+                  <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>describe</i></div>
+                  <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>request</i></div>
+                  <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>share</i></div>
+                  <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>warn</i></div>
+                </div>
+                <p>Please select one category. There is an opportunity to submit another report card for another category after submission of this one.</p>
+              </div>
+              <div class="form-section">
+                <h5>3. Please enter text in the box below to share your information.</h5>
+                <textarea rows="12" maxlength="150" placeholder="Free text (150 characters)..." class ="form-control" id="inputReportText" ></textarea>
+                <i> Optional</i>
+                <input placeholder="name..." class="form-control" id="inputReportUserName">
+              </div>
+              <div class="form-section">
+                <h5>4. Would you like to upload an image ? </h5><i>(optional)</i>
+                <form enctype="multipart/form-data">
+                  <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
+                  <a id="btnUpTrigger" class="btn btn-default" style="text-transform:uppercase;" >Upload / take photo</a>
+                  <div style="margin-top:10px;width:100%;height:55vh;border:1px solid black;">
+                    <img id="imgPreview" src="" alt="your image" style="width:100%;height:55vh;display:none;"/>
+                  </div>
+                </form>
+
+              </div>
+              <div class="form-section">
+                <br>
+                <div id="divProgress"></div>
+                <div id="divSuccess" style="display:none;">
+                  <h4>Thank you for your report!</h4>
+                  <br>
+                  <p>Your information has been successfully sent to MSF-HK. We greatly appreciate your participation and value the information you provided.</p>
+                  <button onclick="cleanupForNewReport()" class="btn btn-msf">Submit new report</button><br><br>
+                  <a href="/contact/" target="_blank" class="btn btn-msf">Submit contact details</a>
+                  <br>
+                </div>
+
+              </div>
+
+
+
             </div>
+
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" id="createReport" data-dismiss="modal" class="btn btn-msf">Create</button>
+            <div class="form-navigation">
+              <button type="button" class="previous btn btn-info pull-left">PREVIOUS</button>
+              <button type="button" class="next btn btn-danger pull-right">NEXT</button>
+              <button type="button" id="createReport" class="btn btn-primary pull-right" style="display: none;">Submit</button>
+              <span class="clearfix"></span>
+            </div>
           </div>
         </div>
       </div>

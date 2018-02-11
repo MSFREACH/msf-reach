@@ -1,8 +1,9 @@
 var doItOnce=true;
+var navigateTo;//exporting the function
 $(function () {
     var $sections = $('.form-section');
 
-    function navigateTo(index) {
+    navigateTo= function(index) {
     // Mark the current section with the class 'current'
         $sections
             .removeClass('current')
@@ -54,6 +55,8 @@ $(function () {
             var reader = new FileReader();
 
             reader.onload = function (e) {
+
+                $('#imgPreview').show();
                 $('#imgPreview').attr('src', e.target.result);
             };
 
@@ -74,3 +77,28 @@ $(function () {
     });
 
 });
+
+var cleanupForNewReport = function (){
+  // tidy up
+  $('#inputReportText').val('');
+  $('#inputReportUserName').val('');
+  $('#mapAddress').val('');
+  $('#imgPreview').hide();
+  $('#imgPreview').attr('src','');
+  if (marker) {
+      newReportMap.removeLayer(marker);
+  }
+  if (latlng) {
+    latlng = null;
+  }
+  $('.form-section').removeClass('current');
+  $('.rtype-item').removeClass('rtype-selected');
+  $('#divProgress').html('');
+  $('#divSuccess').hide();
+  $('#inputImageUpload').val('');
+  doItOnce=true;
+  navigateTo(0);
+
+
+
+}
