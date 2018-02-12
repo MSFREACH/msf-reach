@@ -49,7 +49,6 @@ var defaultEvent = {
             coordinates: [],
             type: 'Point'
         },
-        msf_response_scale: 1,
         start_date_msf_response: null,
         end_date_msf_response: null,
         total_days_msf_response: 1, // Total days of activities
