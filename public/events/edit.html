@@ -16,6 +16,22 @@ dd.padding-bottom {
 .flex-text-wrap pre {
   padding: 5px;
 }
+
+#inputSeverityScale label {
+    position: absolute;
+    width: 20px;
+    margin-left: -10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* below is not necessary, just for style */
+#inputSeverityScale {
+    width: 50%;
+    height: auto;
+    margin: 2em auto;
+}
+
 </style>
 <section id="editEventVue">
   <div class="modal-header">
@@ -134,8 +150,9 @@ dd.padding-bottom {
                 <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
               </dd>
               <dd class="padding-bottom">
-                <input type="range" min="1" max="3" step="1" v-model="event.metadata.severity_scale" class="pull-right" style="width: 75%" />
-                <span class="pull-left">Severity scale: {{event.metadata.severity_scale}}</span>
+                <div class="form-group">
+                  Scale: <div id="inputSeverityScale"></div>
+                </div>
               </dd>
             </dl>
             <div class="clearfix">&nbsp;</div>
@@ -698,6 +715,38 @@ var vm = new Vue({
       });
     }
 
+    $( '#inputSeverityScale' ).slider({
+        value: 2,
+        min: 1,
+        max: 3,
+        step: 1
+    })
+        .each(function() {
+            console.log('each');
+
+            //
+            // Add labels to slider whose values
+            // are specified by min, max and whose
+            // step is set to 1
+            //
+
+            // Get the options for this slider
+            var opt = $(this).data().uiSlider.options;
+
+            // Get the number of possible values
+            var vals = opt.max - opt.min;
+
+            // Space out values
+            for (var i = 0; i <= vals; i++) {
+
+                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+
+                $( '#inputSeverityScale' ).append(el);
+
+            }
+
+        });
+
     $('textarea').flexText();
     this.calculatePercentagePeopleAffected();
 
@@ -775,6 +824,7 @@ var vm = new Vue({
   methods: {
     submitEventData() {
       var metadata = this.event.metadata;
+      metadata = _.extend(metadata, {severity_scale=$('#inputSeverityScale').slider('option', 'value')});
       var subType = replaceUnderscore(this.event.metadata.type_of_emergency.toString());
       metadata = _.extend(metadata, {
         operational_center: this.event.metadata.msf_response_operational_centers.toString(),
