@@ -824,7 +824,6 @@ var vm = new Vue({
   methods: {
     submitEventData() {
       var metadata = this.event.metadata;
-      metadata = _.extend(metadata, {severity_scale=$('#inputSeverityScale').slider('option', 'value')});
       var subType = replaceUnderscore(this.event.metadata.type_of_emergency.toString());
       metadata = _.extend(metadata, {
         operational_center: this.event.metadata.msf_response_operational_centers.toString(),
@@ -834,6 +833,7 @@ var vm = new Vue({
         status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
         metadata: metadata
       }
+      body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
       $.ajax({
         type: "PUT",
         url: "/api/events/" + currentEventId,
