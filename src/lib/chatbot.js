@@ -5,7 +5,7 @@ const lambda = new AWS.Lambda({apiVersion: '2015-03-31', region: 'us-east-1'});
 
 module.exports.addChatbotItem = (data,id,body,reportUrl) => new Promise((resolve, reject) =>
 {
-    if (typeof(body.metadata)!=='undefined' && name in body.metadata && typeof(body.metadata.name) === 'string') {
+    if (typeof(body.metadata)!=='undefined' && 'name' in body.metadata && typeof(body.metadata.name) === 'string') {
         let keywords = body.metadata.name.split('_');
         // set up the lambda event to pass on the bot handler lambda:
         var event = {
