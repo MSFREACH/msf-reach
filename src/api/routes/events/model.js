@@ -128,6 +128,8 @@ export default (config, db, logger) => ({
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => {
+                logger.debug('data',data);
+                logger.debug('body',body);
                 if (typeof(body.metadata.name)!=='undefined') {
                     addChatbotItem(data,String(id),body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key);
                 }
