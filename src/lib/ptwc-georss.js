@@ -3,6 +3,8 @@ import Promise from 'bluebird';
 import { parseString } from 'xml2js';
 import rp from 'request-promise';
 
+import { inAsiaBBox } from './util.js';
+
 const PTWC = () =>
     new Promise((resolve, reject) => {
         var options = {
@@ -35,19 +37,21 @@ const PTWC = () =>
                         // extract coords
                         let coords = event['georss:point'][0].split(' ');
 
-                        feature.geometry.coordinates.push(JSON.parse(coords[1]));
-                        feature.geometry.coordinates.push(JSON.parse(coords[0]));
-                        // extract properties
-                        feature.properties.source = 'Pacific Tsunami Warning Center';
-                        feature.properties.title = event.title[0];
-                        feature.properties.link = event.link[0];
-                        feature.properties.updated = event.pubDate[0];
-                        feature.properties.id = 'PTWC-' + event.guid[0]._;
-                        feature.properties.summary = 'Tsunami warning';
+                        if (inAsiaBBox(coords)) {
 
-                        // push feature to feature collection
-                        features.push(feature);
+                            feature.geometry.coordinates.push(JSON.parse(coords[1]));
+                            feature.geometry.coordinates.push(JSON.parse(coords[0]));
+                            // extract properties
+                            feature.properties.source = 'Pacific Tsunami Warning Center';
+                            feature.properties.title = event.title[0];
+                            feature.properties.link = event.link[0];
+                            feature.properties.updated = event.pubDate[0];
+                            feature.properties.id = 'PTWC-' + event.guid[0]._;
+                            feature.properties.summary = 'Tsunami warning';
 
+                            // push feature to feature collection
+                            features.push(feature);
+                        }
                     }
                 }
                 // return GeoJSON
