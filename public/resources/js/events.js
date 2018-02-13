@@ -69,7 +69,6 @@ var labels = {
     'incharge_position': 'In charge position',
     'incharge_name': 'In charge name',
     'sharepoint_link': 'SharePoint link',
-    'msf_response_scale': 'MSF response scale',
     'msf_response_medical_material_total': 'Number of medical supplies',
     'msf_response_non_medical_material_total': 'Number of non-medical supplies',
     'ext_capacity_who': 'Ext capacity on the ground (name)'
