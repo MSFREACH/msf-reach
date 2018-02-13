@@ -131,6 +131,9 @@ export default (config, db, logger) => ({
                 if (typeof(body.metadata.name)!=='undefined') {
                     addChatbotItem(data,String(id),body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key);
                 }
+                else {
+                  return resolve(data);
+                }
             })
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, uuid: data.uuid, the_geom:data.the_geom }))
             .catch((err) => reject(err));
