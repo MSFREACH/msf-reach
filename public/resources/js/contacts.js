@@ -21,6 +21,8 @@ var loadContacts = function(err, contacts) {
             '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Email</th><th>Mobile</th><th>Affiliation</th><th>Speciality</th></tr></thead><tbody>'
         );
 
+        var tableName = currentEventProperties.saved_contacts.includes(value.properties.id) ? '#savedContactsTable' : '#contactsTable';
+
         $.each(contacts, function(key, value) {
 
             var speciality = '';
@@ -32,9 +34,8 @@ var loadContacts = function(err, contacts) {
 
             }
 
-
             // console.log(key, value);
-            $('#contactsTable').append(
+            $(tableName).append(
                 '<tr id=\'crow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openContactPopup('+value.properties.id+')\'><td><a data-toggle=\'modal\' data-target=\'#contactDetailsModal\' href=\'#\' onclick=\'onContactLinkClick(' +
           value.properties.id +
           ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
@@ -97,6 +98,36 @@ var getContacts = function(term){
         }
     });
 };
+
+var getSavedContacts = function (list) {
+
+    $('#savedContactsContainer').html(
+        '<table class="table table-hover" id="savedContactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Email</th><th>Mobile</th><th>Affiliation</th><th>Speciality</th></tr></thead><tbody>'
+    );
+
+    var savedContacts = [];
+    for (index in list) {
+        var url='/api/contacts/'+list[index];
+        $.getJSON(url, function (data){
+            savedContacts.push(data.result.features);
+        });
+    }
+    loadContacts(null, savedContacts);
+
+
+    /*remap contacts
+        mapContacts(data.result);
+        contactsLayer.eachLayer(function(layer){
+            layer.on('mouseover',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+            layer.on('mouseout',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+            layer.on('touchstart',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+            layer.on('touchend',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+        });*/
+
+    $('#savedContactsTable').append('</tbody></table>');
+
+};
+
 
 //Create a throttled version
 var thGetContacts=_.throttle(getContacts, 300);

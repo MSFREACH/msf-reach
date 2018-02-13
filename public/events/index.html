@@ -528,7 +528,7 @@
           </div>
             <div class="col-md-7">
               <h4>Saved Tweets</h4>
-              <div style="border:1px dashed blue; height:200px; width:500px;" ondrop="dropSaveTweet(event)" ondragover="allowDrop(event)"><p style="padding-left:160px;padding-top:90px;">Drag Tweets Here to Save</p> </div>
+              <div style="border:1px dashed blue; height:200px; width:500px;" ondrop="dropSaveTweet(event)" ondragover="allowDrop(event)"><p style="padding-left:160px;padding-top:90px;">Drag tweets here to save</p> </div>
               <div id="savedTweets" style="height:45vh;overflow-y:auto;"></div>
             </div>
             </div>
@@ -537,6 +537,11 @@
             <div class="row">
             <div class="col-md-12" >
               <h4>Contacts</h4>
+              <div class="col-md-7">
+                <h4>Saved Contacts</h4>
+                <div style="border:1px dashed blue; height:200px; width:500px;" ondrop="dropSaveContact(event)" ondragover="allowDrop(event)"><p style="padding-left:160px;padding-top:90px;">Drag contacts here to save</p> </div>
+                <div id="savedContactsContainer" style="height:45vh;overflow-y:auto;"></div>
+              </div>
               <div class="form-group">
                 <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone or Email ...">
               </div>

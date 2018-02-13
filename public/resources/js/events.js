@@ -281,6 +281,11 @@ var printEventProperties = function(err, eventProperties){
                 twttr.widgets.load();
             });
         }
+        if (currentEventProperties.metadata.saved_contacts && currentEventProperties.metadata.saved_contacts.length > 0) {
+            $.each(currentEventProperties.metadata.saved_contacts, function(key, value){
+                $('#savedContacts').prepend('<div id="'+value.contactId+'">'+contact+'</div>');
+            });
+        }
     }
 };
 
