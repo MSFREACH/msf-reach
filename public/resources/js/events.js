@@ -23,6 +23,7 @@ var missionsClusters;
 var accessLayer;
 var needsLayer;
 var securityLayer;
+var reportsContactsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
@@ -325,6 +326,20 @@ var getReports = function(eventId, callback){
     });
 };
 
+var reportMarkers = [];
+
+function openReportPopup(id) {
+  for (var i in reportMarkers){
+    var markerID = reportMarkers[i].options.id;
+    if (markerID == id) {
+        eventsMap.setView(reportMarkers[i].getLatLng());
+        reportMarkers[i].openPopup();
+        break;
+    };
+  }
+};
+
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
@@ -334,6 +349,7 @@ var mapReports = function(reports){
     function onEachFeature(feature, layer) {
 
         var popupContent = '';
+        var reportsTableContent = '';
 
         if (feature.properties && feature.properties.content) {
             popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
@@ -349,6 +365,29 @@ var mapReports = function(reports){
                 }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
             }
+
+            $('#reportsContainer').html(
+                '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
+            );
+
+            $('#reportsTable').append(
+              '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
+              feature.properties.id +
+              ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
+              feature.properties.content.report_tag +
+              '</td><td>' +
+              feature.properties.content.description +
+              '</td><td>' +
+              feature.properties.content['username/alias'] +
+              '</td><td>' +
+              feature.properties.created.replace('T',' ') +
+              '</td><td>' +
+              feature.properties.content.status +
+              '</td><td></tr>'
+                );
+
+            $('#reportsTable').append('</tbody></table>');
+
         }
 
         layer.bindPopup(popupContent, {  maxWidth: 'auto' });
@@ -391,8 +430,10 @@ var mapReports = function(reports){
             return (feature.properties.content.report_tag === 'ACCESS');
         },
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: accessIcon});
+          points.push([latlng.lat, latlng.lng]);
+          marker = L.marker(latlng, {icon: accessIcon, id: feature.properties.id});
+          reportMarkers.push(marker);
+          return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -406,8 +447,10 @@ var mapReports = function(reports){
             return (feature.properties.content.report_tag === 'NEEDS');
         },
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: needsIcon});
+          points.push([latlng.lat, latlng.lng]);
+          marker = L.marker(latlng, {icon: needsIcon, id: feature.properties.id});
+          reportMarkers.push(marker);
+          return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -421,8 +464,10 @@ var mapReports = function(reports){
             return (feature.properties.content.report_tag === 'SECURITY');
         },
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: securityIcon});
+          points.push([latlng.lat, latlng.lng]);
+          marker = L.marker(latlng, {icon: securityIcon, id: feature.properties.id});
+          reportMarkers.push(marker);
+          return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -431,20 +476,22 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-    contactsLayer = L.geoJSON(reports, {
+    reportsContactsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'CONTACTS');
         },
         pointToLayer: function (feature, latlng) {
             points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: contactsIcon});
+            marker = L.marker(latlng, {icon: contactsIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
     if (Cookies.get('- contacts')==='on') {
-        contactsLayer.addTo(eventsMap);
+        reportsContactsLayer.addTo(eventsMap);
     }
-    layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
+    layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
 
     if (points.length > 0){
         eventsMap.fitBounds(points, {padding: [50,50]});
