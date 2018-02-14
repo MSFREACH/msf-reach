@@ -222,6 +222,7 @@ var printEventProperties = function(err, eventProperties){
         eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
         // Add unique link to this event
         propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
+        propertiesTable += '<tr><td>New notification</td><td><input type="submit" id="latestNotification"  /></td></tr>'
         // Add unique link to report to this event
         propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy link</button></td></tr>';
         // Add user metadata
@@ -283,7 +284,14 @@ var printEventProperties = function(err, eventProperties){
             });
         }
     }
+    document.getElementById('email').onkeydown = function(e){
+       if(e.keyCode == 13){
+         // submit
+       }
+    };
 };
+
+
 
 /**
 * Function to get event details from API
