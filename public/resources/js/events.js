@@ -346,6 +346,10 @@ function openReportPopup(id) {
 **/
 var mapReports = function(reports){
 
+    $('#reportsContainer').html(
+        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
+    );
+
     function onEachFeature(feature, layer) {
 
         var popupContent = '';
@@ -366,9 +370,7 @@ var mapReports = function(reports){
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
             }
 
-            $('#reportsContainer').html(
-                '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
-            );
+
 
             $('#reportsTable').append(
               '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
@@ -383,12 +385,12 @@ var mapReports = function(reports){
               feature.properties.created.replace('T',' ') +
               '</td><td>' +
               feature.properties.content.status +
-              '</td><td></tr>'
+              '</td></tr>'
                 );
 
-            $('#reportsTable').append('</tbody></table>');
-
         }
+
+        $('#reportsTable').append('</tbody></table>');
 
         layer.bindPopup(popupContent, {  maxWidth: 'auto' });
     }
