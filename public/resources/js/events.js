@@ -329,15 +329,15 @@ var getReports = function(eventId, callback){
 var reportMarkers = [];
 
 function openReportPopup(id) {
-  for (var i in reportMarkers){
-    var markerID = reportMarkers[i].options.id;
-    if (markerID == id) {
-        eventsMap.setView(reportMarkers[i].getLatLng());
-        reportMarkers[i].openPopup();
-        break;
-    };
-  }
-};
+    for (var i in reportMarkers){
+        var markerID = reportMarkers[i].options.id;
+        if (markerID == id) {
+            eventsMap.setView(reportMarkers[i].getLatLng());
+            reportMarkers[i].openPopup();
+            break;
+        }
+    }
+}
 
 
 /**
@@ -373,7 +373,7 @@ var mapReports = function(reports){
 
 
             $('#reportsTable').append(
-              '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
+                '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
               feature.properties.id +
               ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
               feature.properties.content.report_tag +
@@ -386,7 +386,7 @@ var mapReports = function(reports){
               '</td><td>' +
               feature.properties.content.status +
               '</td></tr>'
-                );
+            );
 
         }
 
@@ -432,10 +432,10 @@ var mapReports = function(reports){
             return (feature.properties.content.report_tag === 'ACCESS');
         },
         pointToLayer: function (feature, latlng) {
-          points.push([latlng.lat, latlng.lng]);
-          marker = L.marker(latlng, {icon: accessIcon, id: feature.properties.id});
-          reportMarkers.push(marker);
-          return marker;
+            points.push([latlng.lat, latlng.lng]);
+            marker = L.marker(latlng, {icon: accessIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -449,10 +449,10 @@ var mapReports = function(reports){
             return (feature.properties.content.report_tag === 'NEEDS');
         },
         pointToLayer: function (feature, latlng) {
-          points.push([latlng.lat, latlng.lng]);
-          marker = L.marker(latlng, {icon: needsIcon, id: feature.properties.id});
-          reportMarkers.push(marker);
-          return marker;
+            points.push([latlng.lat, latlng.lng]);
+            marker = L.marker(latlng, {icon: needsIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -466,10 +466,10 @@ var mapReports = function(reports){
             return (feature.properties.content.report_tag === 'SECURITY');
         },
         pointToLayer: function (feature, latlng) {
-          points.push([latlng.lat, latlng.lng]);
-          marker = L.marker(latlng, {icon: securityIcon, id: feature.properties.id});
-          reportMarkers.push(marker);
-          return marker;
+            points.push([latlng.lat, latlng.lng]);
+            marker = L.marker(latlng, {icon: securityIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
