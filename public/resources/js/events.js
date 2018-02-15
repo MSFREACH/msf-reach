@@ -167,6 +167,11 @@ var missionPopupIcon = function(missionType) {
     return html;
 };
 
+
+var reduceNotificationArray = function(acc, elem) {
+    return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
+};
+
 /**
 * Function to print a list of event details to web page
 * @param {Object} eventProperties - Object containing event details
@@ -259,7 +264,7 @@ var printEventProperties = function(err, eventProperties){
         $('#eventBasicInfo').append('<dt>Sub Type: </dt><dd>'+eventProperties.metadata.sub_type+'</dd>');
         $('#eventBasicInfo').append('<dt>Event Status: </dt><dd>'+eventProperties.metadata.event_status+'</dd>');
         if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+'</dd>');
+            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() + '</dd>');
         } else {
             $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
         }
@@ -267,16 +272,11 @@ var printEventProperties = function(err, eventProperties){
         $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
         $('#eventBasicInfo').append('<dt>Sharepoint Link </dt><dd>'+eventProperties.metadata.sharepoint_link+'</dd>');
 
+        if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
 
-        $('#eventNotifications').append('<table><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>')
-        if (typeof(eventProperties.metadata.notification) !== 'undefined') {
-          for (var notif in eventProperties.metadata.notification) {
-            var t = new Date(eventProperties.metadata.notification[notif].notification_time*1000);
-            $('#eventNotifications').append('<tr><td>'+t.toLocaleString()+'</td><td>'+eventProperties.metadata.notification[notif].notification);
-          }
+          $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduce(reduceNotificationArray,'')+'</tbody></table>');
+
         }
-        $('#eventNotifications').append('</tbody></table>');
-
         var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
@@ -766,13 +766,18 @@ $('#btnArchive').click(function(e){
 // Edit support
 $('#btnSaveEdits').click(function(e){
 
-    currentEventProperties.notification = currentEventProperties.notification.push({'notification_time': (new Date()).now()/1000, 'notification': $('#inputNotification').val()});
+    console.log(currentEventProperties);
+    if (currentEventProperties.metadata.hasOwnProperty('notification') && typeof(currentEventProperties)==='Object') {
+      currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+    } else {
+      currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+    }
 
     var body = {
         'status':$('#inputStatus').val()==='complete' ? 'complete' : 'active',
         'metadata':{
             'name': $('#inputName').val(),
-            'notification': currentEventProperties.notification,
+            'notification': currentEventProperties.metadata.notification,
             'event_status': $('#inputStatus').val(),
             //      "summary": $("#inputSummary").val(),
             //      "practical_details": $("#inputPracticalDetails").val(),
