@@ -120,8 +120,8 @@ var mapAllEvents = function(err, events){
 
         var notificationStr = '';
         var statusStr = '';
-        if(typeof(feature.properties.metadata.notification)!=='undefined') {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
+        if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification[feature.properties.metadata.notification.length-1].notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -571,8 +571,8 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined'){
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0){
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }

@@ -50,9 +50,9 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Latest notification</dt>
+              <dt>Enter new notification</dt>
               <dd>
-                <input type="text" class="form-control" v-model="event.metadata.notification"></date-picker>
+                <input type="text" class="form-control" id="inputNotification">
               </dd>
             </dl>
             <dl>
@@ -824,6 +824,15 @@ var vm = new Vue({
   methods: {
     submitEventData() {
       var metadata = this.event.metadata;
+
+      if ($('#inputNotification').val()) {
+        if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+          currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+        } else {
+          currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+        }
+      }
+
       var subType = replaceUnderscore(this.event.metadata.type_of_emergency.toString());
       metadata = _.extend(metadata, {
         operational_center: this.event.metadata.msf_response_operational_centers.toString(),
@@ -834,6 +843,7 @@ var vm = new Vue({
         metadata: metadata
       }
       body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+      body.metadata['notification'] = currentEventProperties.metadata.notification;
       $.ajax({
         type: "PUT",
         url: "/api/events/" + currentEventId,
