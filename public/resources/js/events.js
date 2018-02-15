@@ -167,6 +167,11 @@ var missionPopupIcon = function(missionType) {
     return html;
 };
 
+
+var reduceNotificationArray = function(acc, elem) {
+    return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
+};
+
 /**
 * Function to print a list of event details to web page
 * @param {Object} eventProperties - Object containing event details
@@ -242,8 +247,8 @@ var printEventProperties = function(err, eventProperties){
         //    $('#inputSummary').val(eventProperties.metadata.summary);
         //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
         $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
-        if (typeof(eventProperties.metadata.notification)!=='undefined') {
-            $('#inputNotification').val(eventProperties.metadata.notification);
+        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
+            $('#inputNotification').val(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification);
         }
 
         // Append output to body
@@ -258,8 +263,8 @@ var printEventProperties = function(err, eventProperties){
         $('#eventBasicInfo').append('<dt>Country: </dt><dd>'+eventProperties.metadata.country+'</dd>');
         $('#eventBasicInfo').append('<dt>Sub Type: </dt><dd>'+eventProperties.metadata.sub_type+'</dd>');
         $('#eventBasicInfo').append('<dt>Event Status: </dt><dd>'+eventProperties.metadata.event_status+'</dd>');
-        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification !== '') {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
+        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
+            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() + '</dd>');
         } else {
             $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
         }
@@ -267,6 +272,11 @@ var printEventProperties = function(err, eventProperties){
         $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
         $('#eventBasicInfo').append('<dt>Sharepoint Link </dt><dd>'+eventProperties.metadata.sharepoint_link+'</dd>');
 
+        if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
+
+          $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
+
+        }
         var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
@@ -622,7 +632,7 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined'){
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
@@ -756,11 +766,18 @@ $('#btnArchive').click(function(e){
 // Edit support
 $('#btnSaveEdits').click(function(e){
 
+    console.log(currentEventProperties);
+    if (currentEventProperties.metadata.hasOwnProperty('notification') && typeof(currentEventProperties)==='Object') {
+      currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+    } else {
+      currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+    }
+
     var body = {
         'status':$('#inputStatus').val()==='complete' ? 'complete' : 'active',
         'metadata':{
             'name': $('#inputName').val(),
-            'notification': $('#inputNotification').val(),
+            'notification': currentEventProperties.metadata.notification,
             'event_status': $('#inputStatus').val(),
             //      "summary": $("#inputSummary").val(),
             //      "practical_details": $("#inputPracticalDetails").val(),
