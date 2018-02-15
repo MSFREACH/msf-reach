@@ -274,7 +274,7 @@ var printEventProperties = function(err, eventProperties){
 
         if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
 
-          $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduce(reduceNotificationArray,'')+'</tbody></table>');
+          $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
 
         }
         var extra_metadata = unpackMetadata(eventProperties.metadata);
