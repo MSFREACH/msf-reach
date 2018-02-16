@@ -278,7 +278,7 @@ var printEventProperties = function(err, eventProperties){
 
         if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
 
-          $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
+            $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
 
         }
         var extra_metadata = unpackMetadata(eventProperties.metadata);
@@ -732,19 +732,19 @@ var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satel
 
 // OSM HOT tiles
 var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-	maxZoom: 19,
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
 });
 
 switch (Cookies.get('MapLayer')) {
-      case 'satellite':
-          mapboxSatellite.addTo(eventsMap);
-          break;
-      case 'terrain':
-          mapboxTerrain.addTo(eventsMap);
-          break;
-      default:
-          OpenStreetMap_HOT.addTo(eventsMap);
+case 'satellite':
+    mapboxSatellite.addTo(eventsMap);
+    break;
+case 'terrain':
+    mapboxTerrain.addTo(eventsMap);
+    break;
+default:
+    OpenStreetMap_HOT.addTo(eventsMap);
 }
 
 var baseMaps = {
@@ -754,7 +754,7 @@ var baseMaps = {
 };
 
 eventsMap.on('baselayerchange', function(baselayer) {
-  Cookies.set('MapLayer',baselayer.name);
+    Cookies.set('MapLayer',baselayer.name);
 });
 
 var groupedOverlays = {
@@ -792,11 +792,10 @@ $('#btnArchive').click(function(e){
 // Edit support
 $('#btnSaveEdits').click(function(e){
 
-    console.log(currentEventProperties);
-    if (currentEventProperties.metadata.hasOwnProperty('notification') && typeof(currentEventProperties)==='Object') {
-      currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+    if (currentEventProperties.metadata.hasOwnProperty('notification') && currentEventProperties.metadata.notification.length > 0) {
+        currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
     } else {
-      currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+        currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
     }
 
     var body = {
