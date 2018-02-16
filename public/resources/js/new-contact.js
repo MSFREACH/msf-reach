@@ -20,10 +20,18 @@ var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satel
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
+// OSM HOT tiles
+var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+});
+
 var baseMaps = {
     'Terrain': mapboxTerrain,
-    'Satellite' : mapboxSatellite
+    'Satellite' : mapboxSatellite,
+    'Humanitarian': OpenStreetMap_HOT
 };
+
 
 var overlayMaps = {};
 

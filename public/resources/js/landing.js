@@ -78,6 +78,9 @@ if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
 if (typeof(Cookies.get('- other contacts')) === 'undefined') {
     Cookies.set('- other contacts','on'); // default
 }
+if (typeof(Cookies.get('MapLayer')) === 'undefined') {
+    Cookies.set('MapLayer','Terrain'); // default
+}
 
 var eventsLayer;
 
@@ -774,17 +777,41 @@ var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 0,
     maxZoom: 18
-}).addTo(landingMap);
+});
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
+// OSM HOT tiles
+var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+});
+
+switch (Cookies.get('MapLayer')) {
+      case 'Satellite':
+          mapboxSatellite.addTo(landingMap);
+          break;
+      case 'Terrain':
+          mapboxTerrain.addTo(landingMap);
+          break;
+      default:
+          OpenStreetMap_HOT.addTo(landingMap);
+}
+
+
 var baseMaps = {
     'Terrain': mapboxTerrain,
-    'Satellite' : mapboxSatellite
+    'Satellite' : mapboxSatellite,
+    'Humanitarian': OpenStreetMap_HOT
 };
+
+landingMap.on('baselayerchange', function(baselayer) {
+  Cookies.set('MapLayer',baselayer.name);
+});
+
 
 var groupedOverlays = {
     'Hazards': {},
