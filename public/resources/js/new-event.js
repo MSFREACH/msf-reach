@@ -9,6 +9,7 @@ $('#newEventModal').on('shown.bs.modal', function() {
 $('#newEventModal').on('hidden.bs.modal', function() {
     // clear previous entry
     $('#selectType').val('');
+    $('#inputEventName').val('');
     $('#inputDisasterType').val('');
     $('#mapAddress').val('');
     $('#inputDiseaseType').val('');
