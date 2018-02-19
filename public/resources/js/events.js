@@ -406,19 +406,19 @@ var mapReports = function(reports){
             );
             $('#report-'+feature.properties.id).val(feature.properties.status === 'confirmed' ? 'confirmed' : 'unconfirmed');
             $('#report-'+feature.properties.id).change(function() {
-              var selectedVal = $(this).val();
-              var id = $(this).attr('id').split('-')[1];
-              var body = {
-                status: selectedVal,
-                content: {} // no updates to content
-              };
+                var selectedVal = $(this).val();
+                var id = $(this).attr('id').split('-')[1];
+                var body = {
+                    status: selectedVal,
+                    content: {} // no updates to content
+                };
 
-              $.ajax({
-                  type: 'POST',
-                  url: '/api/reports/'+id,
-                  data: JSON.stringify(body),
-                  contentType: 'application/json'
-              });
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/reports/'+id,
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                });
             });
 
         }
