@@ -8,7 +8,7 @@ module.exports.addChatbotItem = (data,id,body,reportUrl,logger) => new Promise((
     if (typeof(body.metadata)!=='undefined' && 'name' in body.metadata && typeof(body.metadata.name) === 'string') {
         let keywords = body.metadata.name.split(/[_ ]/);
         let eventName = keywords.join(' ');
-        if (typeof(body.metadata.event_datetime) != 'undefined') {
+        if (typeof(body.metadata.event_datetime) != 'undefined' && body.metadata.event_datetime) {
             keywords.push(body.metadata.event_datetime);
         } else {
             keywords.push(body.created_at.split('T')[0]);
