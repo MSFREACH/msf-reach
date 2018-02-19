@@ -9,9 +9,9 @@ module.exports.addChatbotItem = (data,id,body,reportUrl,logger) => new Promise((
         let keywords = body.metadata.name.split(/[_ ]/);
         let eventName = keywords.join(' ');
         if (typeof(body.metadata.event_datetime) != 'undefined') {
-          keywords.push(body.metadata.event_datetime);
+            keywords.push(body.metadata.event_datetime);
         } else {
-          keywords.push(body.created_at.split('T')[0]);
+            keywords.push(body.created_at.split('T')[0]);
         }
         // set up the lambda event to pass on the bot handler lambda:
         var event = {
