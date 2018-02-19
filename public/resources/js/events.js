@@ -398,13 +398,34 @@ var mapReports = function(reports){
               '</td><td>' +
               feature.properties.created.replace('T',' ') +
               '</td><td>' +
-              feature.properties.content.status +
-              '</td></tr>'
+              '<select id="report-'+feature.properties.id+'">'+
+                '<option value="unconfirmed">unconfirmed</option>' +
+                '<option value="confirmed">confirmed</option>' +
+              '</select></td></tr>'
+
             );
+            $('#report-'+feature.properties.id).val(feature.properties.status === 'confirmed' ? 'confirmed' : 'unconfirmed');
+            $('#report-'+feature.properties.id).change(function() {
+                var selectedVal = $(this).val();
+                var id = $(this).attr('id').split('-')[1];
+                var body = {
+                    status: selectedVal,
+                    content: {} // no updates to content
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/reports/'+id,
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                });
+            });
 
         }
 
         $('#reportsTable').append('</tbody></table>');
+
+
 
         layer.bindPopup(popupContent, {  maxWidth: 'auto' });
     }
