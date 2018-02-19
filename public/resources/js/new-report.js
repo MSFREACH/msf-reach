@@ -70,7 +70,7 @@ newReportMap.on('click', function(e) {
 function postReport(eventID,reportKey,imgLink) {
     var body = {
         'eventId': eventID,
-        'status': 'confirmed',
+        'status': 'unconfirmed',
         'created': new Date().toISOString(),
         'reportkey': reportKey,
         'location':latlng,
