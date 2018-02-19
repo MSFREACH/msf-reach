@@ -321,7 +321,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .post('/api/reports/' + report_id)
                         .set('Cookie', 'jwt=' + token) // to chagne existing report auth is required
                         .send({
-                            'status': 'verified',
+                            'status': 'confirmed',
                             'content': {
                                 'updated_by': 'integrated tester'
                             }
