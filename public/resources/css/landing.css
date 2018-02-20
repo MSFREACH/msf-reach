@@ -75,3 +75,7 @@ div.pac-container {
     width: 50%;
     margin: 2em auto;
 }
+
+.form-group {
+  margin-bottom: 7px;
+}
