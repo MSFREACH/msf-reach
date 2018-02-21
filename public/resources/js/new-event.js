@@ -9,6 +9,7 @@ $('#newEventModal').on('shown.bs.modal', function() {
 $('#newEventModal').on('hidden.bs.modal', function() {
     // clear previous entry
     $('#selectType').val('');
+    $('#inputEventName').val('');
     $('#inputDisasterType').val('');
     $('#mapAddress').val('');
     $('#inputDiseaseType').val('');
@@ -95,7 +96,7 @@ $(function(){
                 'location': latlng,
                 'metadata':{
                     'user': localStorage.getItem('username'),
-                    'name': (sub_type != '' ? sub_type : $('#selectType').val() ) + '_' + $('#inputEvDateTime').val(),
+                    'name': $('#inputEventName').val(),
                     'sub_type': sub_type,
                     'event_datetime': $('#inputEvDateTime').val(),
                     'event_status': $('#inputEvStatus').val(),

@@ -91,7 +91,7 @@ export default (config, db, logger) => ({
                     }
                 }
                 db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-                    .then((data) => addChatbotItem(data,data.id,body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key))
+                    .then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
                     .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                     .catch((err) => reject(err));
 
@@ -100,7 +100,7 @@ export default (config, db, logger) => ({
         } else {
 
             db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-                .then((data) => addChatbotItem(data,data.id,body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key))
+                .then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
                 .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                 .catch((err) => reject(err));
         }
@@ -127,7 +127,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key))
+            .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, uuid: data.uuid, the_geom:data.the_geom }))
             .catch((err) => reject(err));
     })
