@@ -24,33 +24,35 @@ const PTWC = () =>
                 let title = result.rss.channel.title;
 
                 let features = []; // store for features
-                for (let i = 0; i < result.rss.channel[0].item.length; i++) {
-                    let event = result.rss.channel[0].item[i];
-                    //console.log(event);
-                    if (event['georss:point']) {
-                        // define a feature
-                        let feature = {
-                            type: 'Feature',
-                            geometry: { type: 'Point', coordinates: [] },
-                            properties: {}
-                        };
-                        // extract coords
-                        let coords = event['georss:point'][0].split(' ');
+                if (result.rss.channel[0].item) {                  
+                    for (let i = 0; i < result.rss.channel[0].item.length; i++) {
+                        let event = result.rss.channel[0].item[i];
+                        //console.log(event);
+                        if (event['georss:point']) {
+                            // define a feature
+                            let feature = {
+                                type: 'Feature',
+                                geometry: { type: 'Point', coordinates: [] },
+                                properties: {}
+                            };
+                            // extract coords
+                            let coords = event['georss:point'][0].split(' ');
 
-                        if (inAsiaBBox(coords)) {
+                            if (inAsiaBBox(coords)) {
 
-                            feature.geometry.coordinates.push(JSON.parse(coords[1]));
-                            feature.geometry.coordinates.push(JSON.parse(coords[0]));
-                            // extract properties
-                            feature.properties.source = 'Pacific Tsunami Warning Center';
-                            feature.properties.title = event.title[0];
-                            feature.properties.link = event.link[0];
-                            feature.properties.updated = event.pubDate[0];
-                            feature.properties.id = 'PTWC-' + event.guid[0]._;
-                            feature.properties.summary = 'Tsunami warning';
+                                feature.geometry.coordinates.push(JSON.parse(coords[1]));
+                                feature.geometry.coordinates.push(JSON.parse(coords[0]));
+                                // extract properties
+                                feature.properties.source = 'Pacific Tsunami Warning Center';
+                                feature.properties.title = event.title[0];
+                                feature.properties.link = event.link[0];
+                                feature.properties.updated = event.pubDate[0];
+                                feature.properties.id = 'PTWC-' + event.guid[0]._;
+                                feature.properties.summary = 'Tsunami warning';
 
-                            // push feature to feature collection
-                            features.push(feature);
+                                // push feature to feature collection
+                                features.push(feature);
+                            }
                         }
                     }
                 }
