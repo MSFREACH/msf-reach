@@ -44,7 +44,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     }
 
     if (!config.CACHE) {
-      app.use(nocache());
+        app.use(nocache());
     }
 
     // Provide CORS support (not required if behind API gateway)
