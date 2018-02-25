@@ -552,7 +552,9 @@ dd.padding-bottom {
                     <dt>Visa requirement</dt>
                     <dd>
                       <label>Nationality</label>
-                      <input type="text" class="form-control input-sm" id="nationality1" @change="updateSelectedCountry" v-model="event.metadata.msf_resource_visa_requirement.name">
+                      <div style="display:block;" v-for="nat in event.metadata.msf_resource_visa_requirement.nationality">
+                        <input  type="text" class="form-control input-sm input-nat"  @change="updateSelectedCountry" v-model="nat.name">
+                      </div>
                     </dd>
                     <dd>
                       <label>Required:</label>
@@ -754,12 +756,12 @@ var vm = new Vue({
       "defaultCountry": "xx",
       "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
     };
-    $("#nationality1").countrySelect(countryParams);
-
-    $('.flag-dropdown').bind('click', function(e) {
-      var country = $("#nationality1").countrySelect("getSelectedCountryData");
-      console.log("country", country.name)
-      Vue.set(vm.event.metadata, 'msf_resource_visa_requirement', country);
+    $(".input-nat").countrySelect(countryParams);
+    $(".input-nat").change(function(){
+      console.log(this);
+      var country = $(this).countrySelect("getSelectedCountryData");
+      console.log(country);
+      //Vue.set(vm.event.metadata, 'msf_resource_visa_requirement', country);
     });
 
     this.$nextTick(function() {
@@ -891,7 +893,8 @@ var vm = new Vue({
       this.event.metadata.keyMSFFigures.splice(index, 1);
     },
     updateSelectedCountry() {
-      this.event.metadata.msf_resource_visa_requirement.nationality = $("#nationality1").countrySelect("getSelectedCountryData");
+      console.log('this is never fired');
+      //this.event.metadata.msf_resource_visa_requirement.nationality = $("#nationality1").countrySelect("getSelectedCountryData");
     },
     removeResourceBudget(index) {
       this.event.metadata.msf_resource_budget.splice(index, 1);

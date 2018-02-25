@@ -88,10 +88,14 @@ var defaultEvent = {
         msf_resource_staff_national: null,
         msf_resource_category: '',
         msf_resource_visa_requirement: {
-            nationality: {
+            nationality: [{
                 iso2: 'xx',
                 name: null
             },
+            {
+                iso2: 'xx',
+                name: null
+            }],
             is_required: 'yes',
             description: null
         },
