@@ -13,6 +13,7 @@ import morgan from 'morgan'; // Express logging
 
 import { jwtCheck } from './lib/util';
 
+import nocache from 'nocache';
 
 /** Function to initialize the api server config, db, logger
 	* @class - Initialize server
@@ -40,6 +41,10 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     // Compress responses if required but only if caching is disabled
     if (config.COMPRESS && !config.CACHE) {
         app.use(compression());
+    }
+
+    if (!config.CACHE) {
+      app.use(nocache());
     }
 
     // Provide CORS support (not required if behind API gateway)
