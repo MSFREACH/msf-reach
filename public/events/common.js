@@ -91,10 +91,6 @@ var defaultEvent = {
             nationality: [{
                 iso2: 'xx',
                 name: null
-            },
-            {
-                iso2: 'xx',
-                name: null
             }],
             is_required: 'yes',
             description: null
@@ -208,3 +204,8 @@ var msfResourceCategories = [
     'mental_health',
     'others'
 ];
+
+var countryParams = {
+  "defaultCountry": "xx",
+  "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
+};
