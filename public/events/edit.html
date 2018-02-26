@@ -553,7 +553,7 @@ dd.padding-bottom {
                     <dd>
                       <label>Nationality</label>
                       <div style="display:block;" v-for="(nat,ind) in event.metadata.msf_resource_visa_requirement.nationality">
-                        <input  type="text" class="form-control input-sm input-nat"  :data-msf-nat-index="ind"><button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
+                         <country-select :options="countryParams" v-model="nat" @input="countryChanged"></country-select> <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
                       </div>
                       <button type="button" class="btn btn-success btn-xs" @click="addNationalityField">+ Add</button>
                     </dd>
@@ -658,6 +658,39 @@ dd.padding-bottom {
 <script type="text/javascript">
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
 
+
+Vue.component('country-select', {
+  props: ['options', 'value'],
+  template: '<input  type="text" class="form-control input-sm" >',
+  mounted: function () {
+    var vmc = this
+    $(this.$el)
+      .countrySelect(this.options)
+      .countrySelect("selectCountry", this.value.iso2)
+      .trigger('change')
+      // emit event on change.
+      .on('change', function () {
+        var country = $(this).countrySelect("getSelectedCountryData");
+        //console.log(country);
+        vmc.$emit('input', country)
+      })
+  },
+  watch: {
+    value: function (value) {
+      // update value
+      $(this.$el).countrySelect("selectCountry", value.iso2);
+    },
+    options: function (options) {
+      $(this.$el).countrySelect(options);
+    }
+  },
+  destroyed: function () {
+    $(this.$el).off().countrySelect('destroy')
+  }
+})
+
+
+
 Vue.filter('formatDateOnly', function(value) {
   if (value) {
     return moment(value).format('YYYY-MM-DD');
@@ -757,16 +790,6 @@ var vm = new Vue({
     this.calculatePercentagePeopleAffected();
 
 
-    //$(".input-nat").val('');
-    $(".input-nat").countrySelect(countryParams);
-
-    this.event.metadata.msf_resource_visa_requirement.nationality.forEach(function(n,i){
-      $("[data-msf-nat-index="+i+"]").countrySelect("selectCountry", n.iso2);
-    });
-
-    $(".input-nat").change(function(){
-      vm.countryInputChanged(this);
-      });
 
     this.$nextTick(function() {
       var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
@@ -905,20 +928,12 @@ var vm = new Vue({
           iso2: 'xx',
           name: null
       });
-      this.$nextTick(function(){
-        var ind=this.event.metadata.msf_resource_visa_requirement.nationality.length-1;
-        var elem=$("[data-msf-nat-index="+ind+"]");
-        console.log($("[data-msf-nat-index="+ind+"]"));
-        elem.countrySelect(countryParams);
-        elem.change(function(){
-         vm.countryInputChanged(this);
-        });
-      });
+
     },
-    countryInputChanged(elem) {
-      var ind=Number(elem.getAttribute("data-msf-nat-index"));
-      var country = $(elem).countrySelect("getSelectedCountryData");
-      Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, country);
+    countryChanged(ind,val) {
+      console.log(ind);
+      console.log(val);
+      //Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, country);
     },
     removeResourceBudget(index) {
       this.event.metadata.msf_resource_budget.splice(index, 1);
