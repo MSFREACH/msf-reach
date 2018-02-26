@@ -553,7 +553,7 @@ dd.padding-bottom {
                     <dd>
                       <label>Nationality</label>
                       <div style="display:block;" v-for="(nat,ind) in event.metadata.msf_resource_visa_requirement.nationality">
-                         <country-select :options="countryParams" v-model="nat" @input="countryChanged"></country-select> <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
+                         <country-select :options="countryParams" v-model="nat" @input="countryChanged($event,ind)"></country-select> <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
                       </div>
                       <button type="button" class="btn btn-success btn-xs" @click="addNationalityField">+ Add</button>
                     </dd>
@@ -734,9 +734,6 @@ var vm = new Vue({
     msfResourceCategories: msfResourceCategories,
     event: $.extend(true, defaultEvent, currentEventProperties),
     currentEventGeometry: currentEventGeometry,
-  },
-  beforeMount:function(){
-    console.log('bm');
   },
   mounted: function() {
     console.log("Vue already mounted.");
@@ -930,10 +927,8 @@ var vm = new Vue({
       });
 
     },
-    countryChanged(ind,val) {
-      console.log(ind);
-      console.log(val);
-      //Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, country);
+    countryChanged(country,ind) {
+      Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, country);
     },
     removeResourceBudget(index) {
       this.event.metadata.msf_resource_budget.splice(index, 1);
