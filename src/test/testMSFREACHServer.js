@@ -479,11 +479,10 @@ describe('Cognicity Server Testing Harness', function() {
                             else {
                                 done();
                             }
-
                         });
                 });
 
-                // Can create contacts, returning new contact
+                // Can delete contacts
                 it('Delete a contact (delete /contact)', function(done) {
                     test.httpAgent(app)
                         .delete('/api/contacts/1')
@@ -496,7 +495,6 @@ describe('Cognicity Server Testing Harness', function() {
                             else {
                                 done();
                             }
-
                         });
                 });
 
