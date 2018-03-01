@@ -127,5 +127,24 @@ export default (config, db, logger) => ({
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
-    })
+    }),
+
+    /**
+    * DELETE a contact from the database
+    * @param {integer} id ID of contact
+    */
+    deleteContact: (id) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `DELETE FROM ${config.TABLE_CONTACTS} WHERE id = $1`;
+
+        // Setup values
+        let values = [ id ];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then(() => resolve())
+            .catch((err) => reject(err));
+    }),
 });

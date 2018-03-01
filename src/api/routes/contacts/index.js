@@ -127,5 +127,22 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
+
+    // Delete a contact's record from the database
+    api.delete('/:id', jwtCheck,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() }
+        }),
+        (req, res, next) => {
+            contacts(config, db, logger).deleteContact(req.params.id)
+                .then(() => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact deleted' }))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
     return api;
 };
