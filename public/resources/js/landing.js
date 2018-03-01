@@ -54,8 +54,8 @@ $( '#inputSeverityScale' ).slider({
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
     Cookies.set('Mission Histories','on'); // default
 }
-if (typeof(Cookies.get('Current Events')) === 'undefined') {
-    Cookies.set('Current Events','on'); // default
+if (typeof(Cookies.get('Ongoing MSF Projects')) === 'undefined') {
+    Cookies.set('Ongoing MSF Projects','on'); // default
 }
 if (typeof(Cookies.get('- PDC')) === 'undefined') {
     Cookies.set('- PDC','on'); // default
@@ -202,10 +202,10 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Current Events')==='on') {
+    if (Cookies.get('Ongoing MSF Projects')==='on') {
         eventsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(eventsLayer, 'Current Events');
+    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
 
 };
 
