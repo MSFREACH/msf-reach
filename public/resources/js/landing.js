@@ -496,9 +496,27 @@ var getFeeds = function(url, callback) {
     });
 };
 
+var storedFeeds = [];
+
 var tableFeeds = function(feeds) {
-    for(var i = 0; i <= feeds.features.length; i++) {
-        var feature = feeds.features[i];
+    storedFeeds = storedFeeds.concat(feeds.features);
+    console.log(storedFeeds);
+
+    storedFeeds.sort((a,b) => {
+      var dateA = new Date(a.properties.updated);
+      var dateB = new Date(b.properties.updated);
+      if (dateA > dateB) {
+        return 1;
+      } else if (dateA < dateB) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+
+    $('#rssFeeds').val('');
+    for(var i = 0; i <= storedFeeds.length; i++) {
+        var feature = storedFeeds[i];
         if (feature) {
             $('#rssFeeds').append(
                 '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
