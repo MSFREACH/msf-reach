@@ -8,7 +8,7 @@ var defaultEvent = {
     id: null,
     status: null,
     type: null,
-    created: null,
+    created_at: null,
     reportkey: null,
     metadata: {
         user_edit: null,
@@ -49,7 +49,6 @@ var defaultEvent = {
             coordinates: [],
             type: 'Point'
         },
-        msf_response_scale: 1,
         start_date_msf_response: null,
         end_date_msf_response: null,
         total_days_msf_response: 1, // Total days of activities
@@ -85,7 +84,7 @@ var defaultEvent = {
 
         /* << MSF Resources */
         msf_resource_staff_list: null,
-        msf_resource_staff_exapt: null,
+        msf_resource_staff_expatriate: null,
         msf_resource_staff_national: null,
         msf_resource_category: '',
         msf_resource_visa_requirement: {

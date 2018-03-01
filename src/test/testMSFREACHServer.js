@@ -130,7 +130,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .send({
                             'status': 'active',
                             'type': 'natural_hazard',
-                            'created': '2017-05-22T20:35Z',
+                            'created_at': '2017-05-22T20:35Z',
                             'location': {
                                 'lat': 45,
                                 'lng': 140
@@ -321,7 +321,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .post('/api/reports/' + report_id)
                         .set('Cookie', 'jwt=' + token) // to chagne existing report auth is required
                         .send({
-                            'status': 'verified',
+                            'status': 'confirmed',
                             'content': {
                                 'updated_by': 'integrated tester'
                             }

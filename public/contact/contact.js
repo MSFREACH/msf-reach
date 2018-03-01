@@ -1,9 +1,19 @@
 var doItOnce=true;
+
+if (Cookies.get('jwt')) {
+    Cookies.set('operator', 'true', { expires: 2 });
+}
+
+
+$('#permission').toggle(Cookies.get('operator')==='true');
+
 $(function () {
     var $sections = $('.form-section');
-    var NAMESECTIONINDEX = 1;
-    var MAPSECTIONINDEX = 3;
-    var CONTACTDETAILSINDEX =4;
+
+    const STARTPAGEINDEX = 0;
+    const NAMESECTIONINDEX = 1;
+    const MAPSECTIONINDEX = 3;
+    const CONTACTDETAILSINDEX =4;
     function navigateTo(index) {
     // Mark the current section with the class 'current'
         $sections
@@ -42,6 +52,12 @@ $(function () {
                 return;
             }
         }
+        if (cInd==STARTPAGEINDEX && Cookies.get('operator')) {
+            if (!$('#inputPermissionAcknowledge').is(':checked')) {
+                alert('Please tick the acknowldgement box to continue.');
+                return;
+            }
+        }
         if (cInd==MAPSECTIONINDEX)
         {
             if (!latlng)
@@ -54,14 +70,34 @@ $(function () {
         }
         else if (cInd == CONTACTDETAILSINDEX)
         {
-            if ((!$('#inputContactCell').val()) && (!$('#inputContactWork').val()) && (!$('#inputContactHome').val()) )
+            if ($('#inputContactCell').val() && !$('#inputContactCell').intlTelInput('isValidNumber'))
             {
-                alert('Please enter a phone number to proceed.');
+                alert('Please enter a valid cell phone number to proceed.');
                 return;
             }
-            if ((!$('#inputContactEmail').val())&&(!$('#inputContactEmail2').val()) )
+            if ($('#inputContactHome').val() && !$('#inputContactHome').intlTelInput('isValidNumber'))
             {
-                alert('Please enter an email address to proceed.');
+                alert('Please enter a valid home phone number to proceed.');
+                return;
+            }
+            if ($('#inputContactWork').val() && !$('#inputContactWork').intlTelInput('isValidNumber'))
+            {
+                alert('Please enter a valid work phone number to proceed.');
+                return;
+            }
+            if ($('#inputContactFax').val() && !$('#inputContactFax').intlTelInput('isValidNumber'))
+            {
+                alert('Please enter a valid fax number to proceed.');
+                return;
+            }
+
+            if (!valid_email($('#inputContactEmail').val()))
+            {
+                alert('Please enter a valid email address to proceed.');
+                return;
+            }
+            if ($('#inputContactEmail2').val() && !valid_email($('#inputContactEmail2').val())) {
+                alert('Please enter a valid second email address to proceed.');
                 return;
             }
         }
@@ -84,10 +120,11 @@ $(function () {
         $('#divOtherGender').toggle(!this.value);
     });
 
-    $('#inputContactAff').change(function(){
-        $('#divOtherAff').toggle(!this.value);
+
+    $('#inputContactType').change(function() {
+        $('#divOtherType').toggle(this.value == 'Other');
+        $('#divNonMSFFields').toggle(this.value != 'Current MSF Staff');
         $('#divMSFFields').toggle(this.value == 'Current MSF Staff');
-        $('#divAffName').toggle(this.value != 'Current MSF Staff');
     });
 
 });

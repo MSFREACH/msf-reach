@@ -19,48 +19,68 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
+$( '#inputSeverityScale' ).slider({
+    value: 2,
+    min: 1,
+    max: 3,
+    step: 1
+})
+    .each(function() {
+
+        //
+        // Add labels to slider whose values
+        // are specified by min, max and whose
+        // step is set to 1
+        //
+
+        // Get the options for this slider
+        var opt = $(this).data().uiSlider.options;
+
+        // Get the number of possible values
+        var vals = opt.max - opt.min;
+
+        // Space out values
+        for (var i = 0; i <= vals; i++) {
+
+            var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+
+            $( '#inputSeverityScale' ).append(el);
+
+        }
+
+    });
+
 // Set cookies if not set
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
-  Cookies.set('Mission Histories','on'); // default
+    Cookies.set('Mission Histories','on'); // default
 }
-if (typeof(Cookies.get('Current Events')) === 'undefined') {
-  Cookies.set('Current Events','on'); // default
+if (typeof(Cookies.get('Ongoing MSF Projects')) === 'undefined') {
+    Cookies.set('Ongoing MSF Projects','on'); // default
 }
 if (typeof(Cookies.get('- PDC')) === 'undefined') {
-  Cookies.set('- PDC','on'); // default
+    Cookies.set('- PDC','on'); // default
 }
 if (typeof(Cookies.get('- TSR')) === 'undefined') {
-  Cookies.set('- TSR','on'); // default
+    Cookies.set('- TSR','on'); // default
 }
 if (typeof(Cookies.get('- PTWC')) === 'undefined') {
-  Cookies.set('- PTWC','on'); // default
+    Cookies.set('- PTWC','on'); // default
 }
 if (typeof(Cookies.get('- GDACS')) === 'undefined') {
-  Cookies.set('- GDACS','on'); // default
+    Cookies.set('- GDACS','on'); // default
 }
 if (typeof(Cookies.get('- USGS')) === 'undefined') {
-  Cookies.set('- USGS','on'); // default
+    Cookies.set('- USGS','on'); // default
 }
 if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
-  Cookies.set('- MSF Staff','on'); // default
+    Cookies.set('- MSF Staff','on'); // default
 }
 if (typeof(Cookies.get('- other contacts')) === 'undefined') {
-  Cookies.set('- other contacts','on'); // default
+    Cookies.set('- other contacts','on'); // default
 }
-
-/**
- * Function to color highlight severity_scale
- * @param {String} severity_scale -
- * @returns {String} html for severity_scale with color
- */
-var colourSeverity = function(severity_scale) {
-    switch(severity_scale) {
-    case('1'): return 'Severity: <font color="green">low</font>';
-    case('2'): return 'Severity: <font color="orange">medium</font>';
-    case('3'): return 'Severity: <font color="red">high</font>';
-    default: return 'Severity: <font color="red">high</font>';
-    }
-};
+if (typeof(Cookies.get('MapLayer')) === 'undefined') {
+    Cookies.set('MapLayer','Terrain'); // default
+}
 
 var eventsLayer;
 
@@ -103,8 +123,8 @@ var mapAllEvents = function(err, events){
 
         var notificationStr = '';
         var statusStr = '';
-        if(typeof(feature.properties.metadata.notification)!=='undefined') {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification + '<br>';
+        if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification[feature.properties.metadata.notification.length-1].notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -120,7 +140,7 @@ var mapAllEvents = function(err, events){
             severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += colourSeverity(feature.properties.metadata.severity) + '<br>';
+            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
         }
 
 
@@ -134,7 +154,8 @@ var mapAllEvents = function(err, events){
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<BR>' +
+    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
+    'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type: ' + type.replace('_',' ') + '<br>' +
     statusStr +
     severityStr +
@@ -150,7 +171,8 @@ var mapAllEvents = function(err, events){
         $('#eventProperties').append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created) + '<br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
       'Type: ' + feature.properties.type + '<br>' +
       statusStr +
       notificationStr +
@@ -180,10 +202,10 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Current Events')==='on') {
+    if (Cookies.get('Ongoing MSF Projects')==='on') {
         eventsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(eventsLayer, 'Current Events');
+    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
 
 };
 
@@ -495,7 +517,7 @@ var tableFeeds = function(feeds) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
-    var type = missionType.toLowerCase();
+    var type = typeof(missionType)!=='undefined' ? missionType.toLowerCase() : '';
     var html = '<img src="/resources/images/icons/event_types/';
     if (type.includes('conflict')) {
         html += 'conflict';
@@ -552,8 +574,8 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined'){
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0){
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
@@ -602,15 +624,14 @@ var mapContacts = function(contacts ){
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
-            popupContent = 'name: <a href="#" onclick="onContactLinkClick(' +
+            popupContent = 'Full name: <a href="#" onclick="onContactLinkClick(' +
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
-      '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-      '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-      '<br>affliation type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-      (typeof(feature.properties.properties.affiliationName)==='undefined' ? '' : '<br>affiliation name:' + feature.properties.properties.affiliationName) +
-      '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+      '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+      '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+      '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
         layer.bindPopup(popupContent);
@@ -686,28 +707,67 @@ var onContactLinkClick = function(id) {
     getContact(id);
 };
 
+var convertToLocaleDate= function (isoDate) {
+    if (isoDate)
+        return (new Date(isoDate)).toLocaleString();
+    else
+        return '';
+};
+
 var contactInfo = {};
 var getContact = function(id) {
     $.getJSON('/api/contacts/' + id, function(contact) {
         contactInfo = contact.result ? contact.result.properties : {};
+        //$('#contactDetailsModal').find('div.form-group').hide();
+        $('span.filed').html(convertToLocaleDate(contact.result.created_at));
+        $('span.updated').html(convertToLocaleDate(contact.result.updated_at));
+        $('span.last_email').html(convertToLocaleDate(contact.result.last_email_sent_at));
+
+        // fiddle booleans to 'yes'/'no'
+        contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
+        contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
+
+
+        // if web address
+        if (contact.result.properties.web) {
+            // prepend http:// to web (don't assume https, assume redirection)
+            if (!contact.result.properties.web.startsWith('http')) {
+                contact.result.properties.web = 'http://' + contact.result.properties.web;
+            }
+            // make it a link
+            contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
+        }
+
+        // also hyperlink emails
+        if (contact.result.properties.email) {
+            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
+        }
+        if (contact.result.properties.email2) {
+            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
+        }
+
         _(contact.result.properties).forIn(function(value, key) {
             // console.log("Key:", key, "Value", value);
             $('span.' + key).html(value);
+            $('span.' + key).parent().toggle(!!(value));
+
         });
-        if (contact.result.properties.type.toUpperCase().includes('MSF')) {
+        if (contact.result.properties.type === 'Current MSF Staff') {
             $('#msf_details').show();
+            $('#employment_details').hide();
         } else {
             $('#msf_details').hide();
+            $('#employment_details').show();
         }
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
         } else {
-            alert('error: '+ err.responseText);
+            // Catch condition where no data returned
+            alert('error: ' + err.responseText);
         }
     });
 };
-
 
 // Create map
 var landingMap = L.map('landingMap').setView([20, 110], 4);
@@ -717,17 +777,41 @@ var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 0,
     maxZoom: 18
-}).addTo(landingMap);
+});
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
+// OSM HOT tiles
+var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+});
+
+switch (Cookies.get('MapLayer')) {
+case 'Satellite':
+    mapboxSatellite.addTo(landingMap);
+    break;
+case 'Terrain':
+    mapboxTerrain.addTo(landingMap);
+    break;
+default:
+    OpenStreetMap_HOT.addTo(landingMap);
+}
+
+
 var baseMaps = {
     'Terrain': mapboxTerrain,
-    'Satellite' : mapboxSatellite
+    'Satellite' : mapboxSatellite,
+    'Humanitarian': OpenStreetMap_HOT
 };
+
+landingMap.on('baselayerchange', function(baselayer) {
+    Cookies.set('MapLayer',baselayer.name);
+});
+
 
 var groupedOverlays = {
     'Hazards': {},
@@ -741,14 +825,6 @@ var overlayMaps = {};
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(landingMap);
 
 getAllEvents(mapAllEvents);
-
-setInterval(function() {
-    landingMap.removeLayer(eventsLayer);
-    layerControl.removeLayer(eventsLayer);
-    eventsLayer.clearLayers();
-    $('#eventProperties').empty();
-    getAllEvents(mapAllEvents);
-},180000);
 
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);

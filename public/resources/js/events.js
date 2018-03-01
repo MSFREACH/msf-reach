@@ -20,6 +20,10 @@ var contactsLayer;
 var contactsClusters;
 var missionsLayer;
 var missionsClusters;
+var accessLayer;
+var needsLayer;
+var securityLayer;
+var reportsContactsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
@@ -31,22 +35,26 @@ var firstMissionsLoad = true;
 
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
-  Cookies.set('- access','on'); // default
+    Cookies.set('- access','on'); // default
 }
 if (typeof(Cookies.get('- needs')) === 'undefined') {
-  Cookies.set('- needs','on'); // default
+    Cookies.set('- needs','on'); // default
 }
 if (typeof(Cookies.get('- security')) === 'undefined') {
-  Cookies.set('- security','on'); // default
+    Cookies.set('- security','on'); // default
 }
 if (typeof(Cookies.get('- contacts')) === 'undefined') {
-  Cookies.set('- contacts','on'); // default
+    Cookies.set('- contacts','on'); // default
 }
 if (typeof(Cookies.get('Contacts')) === 'undefined') {
-  Cookies.set('Contacts','on'); // default
+    Cookies.set('Contacts','on'); // default
 }
 if (typeof(Cookies.get('Missions')) === 'undefined') {
-  Cookies.set('Contacts','on'); // default
+    Cookies.set('Contacts','on'); // default
+}
+
+if (typeof(Cookies.get('MapLayer')) === 'undefined') {
+    Cookies.set('MapLayer','Terrain'); // default
 }
 
 var zoomToEvent = function(latlng) {
@@ -66,7 +74,6 @@ var labels = {
     'incharge_position': 'In charge position',
     'incharge_name': 'In charge name',
     'sharepoint_link': 'SharePoint link',
-    'msf_response_scale': 'MSF response scale',
     'msf_response_medical_material_total': 'Number of medical supplies',
     'msf_response_non_medical_material_total': 'Number of non-medical supplies',
     'ext_capacity_who': 'Ext capacity on the ground (name)'
@@ -164,6 +171,11 @@ var missionPopupIcon = function(missionType) {
     return html;
 };
 
+
+var reduceNotificationArray = function(acc, elem) {
+    return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
+};
+
 /**
 * Function to print a list of event details to web page
 * @param {Object} eventProperties - Object containing event details
@@ -211,16 +223,16 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
         propertiesTable += '<tr><td>Status</td><td>'+eventProperties.status+'</td></tr>';
         propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+'</td></tr>';
-        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created)+'</td></tr>';
-
+        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+        propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
         // Create unique link to this event
         var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
         // Create unique report link for this event
         eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
         // Add unique link to this event
-        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
         // Add unique link to report to this event
-        propertiesTable += '<tr><td>Report link</td><td><a id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a></td><td><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy link</button></td></tr>';
         // Add user metadata
         if (eventProperties.metadata.user) {
             propertiesTable += '<tr><td>Owner</td><td>'+eventProperties.metadata.user+'</td></tr>';
@@ -239,8 +251,8 @@ var printEventProperties = function(err, eventProperties){
         //    $('#inputSummary').val(eventProperties.metadata.summary);
         //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
         $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
-        if (typeof(eventProperties.metadata.notification)!=='undefined') {
-            $('#inputNotification').val(eventProperties.metadata.notification);
+        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
+            $('#inputNotification').val(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification);
         }
 
         // Append output to body
@@ -255,15 +267,20 @@ var printEventProperties = function(err, eventProperties){
         $('#eventBasicInfo').append('<dt>Country: </dt><dd>'+eventProperties.metadata.country+'</dd>');
         $('#eventBasicInfo').append('<dt>Sub Type: </dt><dd>'+eventProperties.metadata.sub_type+'</dd>');
         $('#eventBasicInfo').append('<dt>Event Status: </dt><dd>'+eventProperties.metadata.event_status+'</dd>');
-        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification !== '') {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
+        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
+            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() + '</dd>');
         } else {
             $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
         }
         $('#eventBasicInfo').append('<dt>Person In charge </dt><dd>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</dd>');
-        $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + String(eventProperties.metadata.severity_scale) + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
+        $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
         $('#eventBasicInfo').append('<dt>Sharepoint Link </dt><dd>'+eventProperties.metadata.sharepoint_link+'</dd>');
 
+        if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
+
+            $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
+
+        }
         var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
@@ -323,15 +340,34 @@ var getReports = function(eventId, callback){
     });
 };
 
+var reportMarkers = [];
+
+function openReportPopup(id) {
+    for (var i in reportMarkers){
+        var markerID = reportMarkers[i].options.id;
+        if (markerID == id) {
+            eventsMap.setView(reportMarkers[i].getLatLng());
+            reportMarkers[i].openPopup();
+            break;
+        }
+    }
+}
+
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
 **/
 var mapReports = function(reports){
 
+    $('#reportsContainer').html(
+        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
+    );
+
     function onEachFeature(feature, layer) {
 
         var popupContent = '';
+        var reportsTableContent = '';
 
         if (feature.properties && feature.properties.content) {
             popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
@@ -340,13 +376,56 @@ var mapReports = function(reports){
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
             if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
                 if (feature.properties.content.image_labels) {
-                  popupContent += "AI image labels: ";
-                  feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + " "});
-                  popupContent += "<BR>";
+                    popupContent += 'AI image labels: ';
+                    feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ', ';});
+                    popupContent = popupContent.substring(0,popupContent.length-2);
+                    popupContent += '<BR>';
                 }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
             }
+
+
+
+            $('#reportsTable').append(
+                '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
+              feature.properties.id +
+              ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
+              feature.properties.content.report_tag +
+              '</td><td>' +
+              feature.properties.content.description +
+              '</td><td>' +
+              feature.properties.content['username/alias'] +
+              '</td><td>' +
+              feature.properties.created.replace('T',' ') +
+              '</td><td>' +
+              '<select id="report-'+feature.properties.id+'">'+
+                '<option value="unconfirmed">unconfirmed</option>' +
+                '<option value="confirmed">confirmed</option>' +
+              '</select></td></tr>'
+
+            );
+            $('#report-'+feature.properties.id).val(feature.properties.status === 'confirmed' ? 'confirmed' : 'unconfirmed');
+            $('#report-'+feature.properties.id).change(function() {
+                var selectedVal = $(this).val();
+                var id = $(this).attr('id').split('-')[1];
+                var body = {
+                    status: selectedVal,
+                    content: {} // no updates to content
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/reports/'+id,
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                });
+            });
+
         }
+
+        $('#reportsTable').append('</tbody></table>');
+
+
 
         layer.bindPopup(popupContent, {  maxWidth: 'auto' });
     }
@@ -383,13 +462,15 @@ var mapReports = function(reports){
 
     });
 
-    var accessLayer = L.geoJSON(reports, {
+    accessLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'ACCESS');
         },
         pointToLayer: function (feature, latlng) {
             points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: accessIcon});
+            marker = L.marker(latlng, {icon: accessIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -398,13 +479,15 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
-    var needsLayer = L.geoJSON(reports, {
+    needsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'NEEDS');
         },
         pointToLayer: function (feature, latlng) {
             points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: needsIcon});
+            marker = L.marker(latlng, {icon: needsIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -413,13 +496,15 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
-    var securityLayer = L.geoJSON(reports, {
+    securityLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'SECURITY');
         },
         pointToLayer: function (feature, latlng) {
             points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: securityIcon});
+            marker = L.marker(latlng, {icon: securityIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
@@ -428,20 +513,22 @@ var mapReports = function(reports){
     }
     layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
-    var contactsLayer = L.geoJSON(reports, {
+    reportsContactsLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'CONTACTS');
         },
         pointToLayer: function (feature, latlng) {
             points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: contactsIcon});
+            marker = L.marker(latlng, {icon: contactsIcon, id: feature.properties.id});
+            reportMarkers.push(marker);
+            return marker;
         },
         onEachFeature: onEachFeature
     });
     if (Cookies.get('- contacts')==='on') {
-        contactsLayer.addTo(eventsMap);
+        reportsContactsLayer.addTo(eventsMap);
     }
-    layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
+    layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
 
     if (points.length > 0){
         eventsMap.fitBounds(points, {padding: [50,50]});
@@ -460,15 +547,14 @@ var mapContacts = function(contacts) {
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
-            popupContent = 'name: <a href="#" onclick="onContactLinkClick(' +
+            popupContent = 'Full name: <a href="#" onclick="onContactLinkClick(' +
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
-      '<br>email: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-      '<br>mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-      '<br>affliation type: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-      (typeof(feature.properties.properties.affiliationName)==='undefined' ? '' : '<br>affiliation name:' + feature.properties.properties.affiliationName) +
-      '<br>speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+      '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+      '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+      '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+      '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
         layer.bindPopup(popupContent);
@@ -571,7 +657,7 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined'){
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
@@ -658,17 +744,39 @@ var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 0,
     maxZoom: 18
-}).addTo(eventsMap);
+});
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
+// OSM HOT tiles
+var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+});
+
+switch (Cookies.get('MapLayer')) {
+case 'satellite':
+    mapboxSatellite.addTo(eventsMap);
+    break;
+case 'terrain':
+    mapboxTerrain.addTo(eventsMap);
+    break;
+default:
+    OpenStreetMap_HOT.addTo(eventsMap);
+}
+
 var baseMaps = {
     'Terrain': mapboxTerrain,
-    'Satellite' : mapboxSatellite
+    'Satellite' : mapboxSatellite,
+    'Humanitarian': OpenStreetMap_HOT
 };
+
+eventsMap.on('baselayerchange', function(baselayer) {
+    Cookies.set('MapLayer',baselayer.name);
+});
 
 var groupedOverlays = {
     'Reports': {},
@@ -705,11 +813,17 @@ $('#btnArchive').click(function(e){
 // Edit support
 $('#btnSaveEdits').click(function(e){
 
+    if (currentEventProperties.metadata.hasOwnProperty('notification') && currentEventProperties.metadata.notification.length > 0) {
+        currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+    } else {
+        currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+    }
+
     var body = {
         'status':$('#inputStatus').val()==='complete' ? 'complete' : 'active',
         'metadata':{
             'name': $('#inputName').val(),
-            'notification': $('#inputNotification').val(),
+            'notification': currentEventProperties.metadata.notification,
             'event_status': $('#inputStatus').val(),
             //      "summary": $("#inputSummary").val(),
             //      "practical_details": $("#inputPracticalDetails").val(),
@@ -745,13 +859,13 @@ var onArchiveEvent = function() {
 
 eventsMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
-      Cookies.set(layersControlEvent.name,'on');
+        Cookies.set(layersControlEvent.name,'on');
     }
 });
 
 
 eventsMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
-      Cookies.set(layersControlEvent.name,'off');
+        Cookies.set(layersControlEvent.name,'off');
     }
 });

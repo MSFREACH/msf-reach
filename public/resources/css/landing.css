@@ -53,3 +53,29 @@ html, body { height: 100% }
 .rss-item:hover{
     background-color: #f5f5f5;
 }
+.msf-tab{
+  height:90vh;
+  overflow-y:scroll;
+}
+
+div.pac-container {
+   z-index: 1050 !important;
+}
+
+#inputSeverityScale label {
+    position: absolute;
+    width: 20px;
+    margin-left: -10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* below is not necessary, just for style */
+#inputSeverityScale {
+    width: 50%;
+    margin: 2em auto;
+}
+
+.form-group {
+  margin-bottom: 7px;
+}

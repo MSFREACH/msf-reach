@@ -3,12 +3,13 @@ require('dotenv').config({silent: true});
 export default {
     AUTH: process.env.AUTH === 'true' || false,
     APP_NAME: process.env.APP_NAME || 'msf-reach',
+    API_KEY: process.env.API_KEY || '',
     API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
     API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
     API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
     API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'natural_hazard,conflict,epidemiological,search_and_rescue,displacement,malnutrition,other').split(','),
-    API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'confirmed,verified').split(','),
+    API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'unconfirmed,confirmed').split(','),
     AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
     AWS_COGNITO_ALGORITHM: process.env.AWS_COGNITO_ALGORITHM || 'RS256',
     AWS_S3_REGION: process.env.AWS_S3_REGION || 'ap-southeast-2',
@@ -46,6 +47,8 @@ export default {
     REDIRECT_HTTP: process.env.REDIRECT_HTTP === 'true' || false,
     RESPONSE_TIME: process.env.RESPONSE_TIME === 'true' || false,
     SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
+    SMTP_USER: process.env.SMTP_USER || '',
+    SMTP_PASS: process.env.SMTP_PASS || '',
     STATIC_PATH: process.env.STATIC_PATH || 'public',
     STATIC_AUTH_PATH: process.env.STATIC_AUTH_PATH || 'public/login',
     STATIC_REPORT_PATH: process.env.STATIC_REPORT_PATH || 'public/report',

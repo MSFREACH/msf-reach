@@ -16,6 +16,22 @@ dd.padding-bottom {
 .flex-text-wrap pre {
   padding: 5px;
 }
+
+#inputSeverityScale label {
+    position: absolute;
+    width: 20px;
+    margin-left: -10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* below is not necessary, just for style */
+#inputSeverityScale {
+    width: 50%;
+    height: auto;
+    margin: 2em auto;
+}
+
 </style>
 <section id="editEventVue">
   <div class="modal-header">
@@ -34,9 +50,9 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Latest notification</dt>
+              <dt>Enter new notification</dt>
               <dd>
-                <input type="text" class="form-control" v-model="event.metadata.notification"></date-picker>
+                <input type="text" class="form-control" id="inputNotification">
               </dd>
             </dl>
             <dl>
@@ -134,8 +150,9 @@ dd.padding-bottom {
                 <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
               </dd>
               <dd class="padding-bottom">
-                <input type="range" min="1" max="3" step="1" v-model="event.metadata.severity_scale" class="pull-right" style="width: 75%" />
-                <span class="pull-left">Severity scale: {{event.metadata.severity_scale}}</span>
+                <div class="form-group">
+                  Scale: <div id="inputSeverityScale"></div>
+                </div>
               </dd>
             </dl>
             <div class="clearfix">&nbsp;</div>
@@ -178,9 +195,6 @@ dd.padding-bottom {
                     </dd>
                     <dd>
                       <textarea v-model="event.metadata.msf_response" placeholder="MSF response" class="form-control"></textarea>
-                      <div class="clearfix" style="padding-top: 5px;"></div>
-                      <input type="range" min="1" max="10" step="1" v-model="event.metadata.msf_response_scale" class="pull-right" style="width: 75%" />
-                      <span class="pull-left">Scale: {{event.metadata.msf_response_scale}}</span>
                     </dd>
                   </dl>
                   <div class="clearfix"></div>
@@ -466,7 +480,7 @@ dd.padding-bottom {
               <ul class="list-group">
                 <li class="list-group-item">
                   <dl>
-                    <dt>Staffs list _ Human resources supply</dt>
+                    <dt>Staff list — human resources</dt>
                     <dd>
                       <textarea v-model.trim="event.metadata.msf_resource_staff_list" placeholder="Contact(s)" class="form-control"></textarea>
                     </dd>
@@ -474,9 +488,9 @@ dd.padding-bottom {
                 </li>
                 <li class="list-group-item">
                   <dl>
-                    <dt>Exapt</dt>
+                    <dt>Expatriate</dt>
                     <dd>
-                      <textarea v-model.trim="event.metadata.msf_resource_staff_exapt" placeholder="Contact(s)" class="form-control"></textarea>
+                      <textarea v-model.trim="event.metadata.msf_resource_staff_expatriate" placeholder="Contact(s)" class="form-control"></textarea>
                     </dd>
                   </dl>
                 </li>
@@ -701,6 +715,38 @@ var vm = new Vue({
       });
     }
 
+    $( '#inputSeverityScale' ).slider({
+        value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
+        min: 1,
+        max: 3,
+        step: 1
+    })
+        .each(function() {
+            console.log('each');
+
+            //
+            // Add labels to slider whose values
+            // are specified by min, max and whose
+            // step is set to 1
+            //
+
+            // Get the options for this slider
+            var opt = $(this).data().uiSlider.options;
+
+            // Get the number of possible values
+            var vals = opt.max - opt.min;
+
+            // Space out values
+            for (var i = 0; i <= vals; i++) {
+
+                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+
+                $( '#inputSeverityScale' ).append(el);
+
+            }
+
+        });
+
     $('textarea').flexText();
     this.calculatePercentagePeopleAffected();
 
@@ -778,6 +824,15 @@ var vm = new Vue({
   methods: {
     submitEventData() {
       var metadata = this.event.metadata;
+
+      if ($('#inputNotification').val()) {
+        if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+          currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+        } else {
+          currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+        }
+      }
+
       var subType = replaceUnderscore(this.event.metadata.type_of_emergency.toString());
       metadata = _.extend(metadata, {
         operational_center: this.event.metadata.msf_response_operational_centers.toString(),
@@ -787,6 +842,8 @@ var vm = new Vue({
         status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
         metadata: metadata
       }
+      body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+      body.metadata['notification'] = currentEventProperties.metadata.notification;
       $.ajax({
         type: "PUT",
         url: "/api/events/" + currentEventId,
