@@ -483,6 +483,23 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
+                // Can create contacts, returning new contact
+                it('Delete a contact (delete /contact)', function(done) {
+                    test.httpAgent(app)
+                        .delete('/api/contacts/1')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+
+                        });
+                });
+
             });
         });
     });
