@@ -452,6 +452,37 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
+                // Can create contacts, returning new contact
+                it('Create a contact (POST /contact)', function(done) {
+                    test.httpAgent(app)
+                        .post('/api/contacts')
+                        .send({
+                            'properties':{
+                                'address': '1 The Street',
+                                'title': 'King',
+                                'name': 'Joe Bloggs',
+                                'gender': 'Male',
+                                'cell': '+1 234',
+                                'email': 'joe@email.com'
+                            },
+                            'location': {
+                                'lat': 45,
+                                'lng': 140
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+
+                        });
+                });
+
             });
         });
     });
