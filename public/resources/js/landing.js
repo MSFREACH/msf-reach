@@ -169,10 +169,10 @@ var mapAllEvents = function(err, events){
         }
 
         var eventDiv = '';
-        if (statusStr.toLowerCase().includes("monitoring") || statusStr.toLowerCase().includes("assessment")) {
-          eventDiv = '#watchingEventProperties';
+        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('assessment')) {
+            eventDiv = '#watchingEventProperties';
         } else {
-          eventDiv = '#ongoingEventProperties';
+            eventDiv = '#ongoingEventProperties';
         }
         $(eventDiv).append(
             '<div class="list-group-item">' +
