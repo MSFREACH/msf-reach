@@ -398,16 +398,19 @@
 
         <div id="sidepane" class="col-md-4" >
           <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Events</a></li>
             <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
             <li role="presentation"><a id="infoTab" data-toggle="tab" href="#info">Info</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
-
+            <li role="presentation" class="active"><a id="watchingTab" data-toggle="tab" href="#watchingEvent">Monitoring and Assessment</a></li>
+            <li role="presentation"><a id="ongoingTab" data-toggle="tab" href="#ongoingEvent">Ongoing MSF projects</a></li>
           </ul>
           <div class="tab-content msf-tab" >
-            <div id="event" class="tab-pane fade in active">
-                <div id="eventProperties" class="list-group">
-
+            <div id="watchingEvent" class="tab-pane fade in active">
+                <div id="watchingEventProperties" class="list-group">
+                </div>
+            </div>
+            <div id="ongoingEvent" class="tab-pane fade">
+                <div id="ongoingEventProperties" class="list-group">
                 </div>
             </div>
             <div id="toolbox" class="tab-pane fade">

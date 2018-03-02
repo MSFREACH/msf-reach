@@ -168,7 +168,13 @@ var mapAllEvents = function(err, events){
             popupContent.substr(0,popupContent.length-4);
         }
 
-        $('#eventProperties').append(
+        var eventDiv = '';
+        if (statusStr.toLowerCase().includes("monitoring") || statusStr.toLowerCase().includes("assessment")) {
+          eventDiv = '#watchingEventProperties';
+        } else {
+          eventDiv = '#ongoingEventProperties';
+        }
+        $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
