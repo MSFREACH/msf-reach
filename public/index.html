@@ -72,10 +72,11 @@
                             <div class="form-group">
                               <label for="selectType">Event Type</label>
                               <select class="form-control" id="selectType"> <!--Supplement an id here instead of using 'name'-->
-                                <option value="conflict" selected>Armed conflict</option>
-                                <option value="natural_hazard">Natural disaster </option>
-                                <option value="epidemiological">Disease outbreak </option>
-                                <option value="search_and_rescue">Search and rescue</option>
+                                <option value="" disabled selected>Please select ...</option>
+                                <option value="conflict">Armed Conflict</option>
+                                <option value="natural_hazard">Natural Disaster </option>
+                                <option value="epidemiological">Disease Outbreak </option>
+                                <option value="search_and_rescue">Search & Rescue</option>
                                 <option value="displacement">Displacement</option>
                                 <option value="malnutrition">Malnutrition</option>
                                 <option value="other">Other</option>
@@ -84,13 +85,13 @@
                             <div class="form-group" id="divNaturalDisaster" style="display:none;">
                               <select class="form-control" id="inputDisasterType">
                                 <option value="" disabled selected>Please select ...</option>
+                                <option value="drought">Drought</option>
                                 <option value="earthquake">Earthquake</option>
-                                <option value="volcano">Volcano</option>
-                                <option value="typhoon">Typhoon</option>
                                 <option value="flood">Flood</option>
                                 <option value="tsunami">Tsunami</option>
-                                <option value="drought">Drought</option>
-                                <option value="">other</option>
+                                <option value="volcano">Volcano</option>
+                                <option value="typhoon">Typhoon</option>
+                                <option value="">Other</option>
                               </select>
                             </div>
                             <div class="form-group" id="divDisease"  style="display:none;">
@@ -103,7 +104,7 @@
                                 <option value="Measles">Measles</option>
                                 <option value="Meningococcal Meningitis">Meningococcal Meningitis</option>
                                 <option value="Yellow Fever">Yellow Fever</option>
-                                <option value="">other</option>
+                                <option value="">Other</option>
                               </select>
                             </div>
                             <div class="form-group" id="divOther"  style="display:none;">
@@ -116,10 +117,10 @@
                             <div class="form-group" >
                               <label for="inputEvStatus">Status</label>
                               <select class="form-control" id="inputEvStatus">
-                                <option value="monitoring">monitoring </option>
-                                <option value="assessment">assement</option>
-                                <option value="intervention">intervention</option>
-                                <option value="complete">complete</option>
+                                <option value="Monitoring">Monitoring </option>
+                                <option value="Assessment">Assement</option>
+                                <option value="Intervention">Intervention</option>
+                                <option value="Complete">Complete</option>
                               </select>
                             </div>
                             <div class="form-group">

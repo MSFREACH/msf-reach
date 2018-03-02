@@ -8,8 +8,8 @@
 
 // Constants
 var GEOFORMAT='geojson';
-var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
-    {'epidemiological':'Disease outbreak'}, {'search_and_rescue':'Search and rescue'},
+var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
+    {'epidemiological':'Disease Outbreak'}, {'search_and_rescue':'Search & rescue'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
@@ -169,7 +169,7 @@ var mapAllEvents = function(err, events){
         }
 
         var eventDiv = '';
-        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('assessment')) {
+        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
             eventDiv = '#watchingEventProperties';
         } else {
             eventDiv = '#ongoingEventProperties';
