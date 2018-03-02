@@ -55,7 +55,7 @@ export default ({ config, db, logger }) => {
         validate({
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
-                type: Joi.string().valid(config.API_EVENT_TYPES).required(),
+                type: Joi.string().required(),
                 created_at: Joi.date().iso().required(),
                 metadata: Joi.object().required(),
                 location: Joi.object().required().keys({
