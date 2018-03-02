@@ -74,7 +74,8 @@ var refreshLandingPage = function() {
 
 
 $(function(){
-    $( '#inputEvDateTime' ).datepicker({
+    $( '#inputEvDateTime' ).datetimepicker({
+        //controlType: 'select',
         changeMonth: true,
         changeYear: true,
         dateFormat: 'yy-mm-dd',
