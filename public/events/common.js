@@ -90,9 +90,9 @@ var defaultEvent = {
         msf_resource_visa_requirement: {
             nationality: [{
                 iso2: 'xx',
-                name: null
+                name: null,
+                is_required: 'yes'
             }],
-            is_required: 'yes',
             description: null
         },
         msf_resource_budget: [{

@@ -553,19 +553,21 @@ dd.padding-bottom {
                     <dd>
                       <label>Nationality</label>
                       <div style="display:block;" v-for="(nat,ind) in event.metadata.msf_resource_visa_requirement.nationality">
-                         <country-select :options="countryParams" v-model="nat" @input="countryChanged($event,ind)"></country-select> <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
+                         <country-select :options="countryParams" v-model="nat" @input="countryChanged($event,ind)"></country-select>
+
+                           <label>Required:</label>
+                           <label>
+                             <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="yes"> Yes
+                           </label>
+                           <label>
+                             <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="no"> No
+                           </label>
+
+                         <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
                       </div>
                       <button type="button" class="btn btn-success btn-xs" @click="addNationalityField">+ Add</button>
                     </dd>
-                    <dd>
-                      <label>Required:</label>
-                      <label>
-                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="yes"> Yes
-                      </label>
-                      <label>
-                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="no"> No
-                      </label>
-                    </dd>
+
                     <dd>
                       <label>Description:</label>
                       <textarea v-model.trim="event.metadata.msf_resource_visa_requirement.description" placeholder="Specify" class="form-control"></textarea>
@@ -671,7 +673,6 @@ Vue.component('country-select', {
       // emit event on change.
       .on('change', function () {
         var country = $(this).countrySelect("getSelectedCountryData");
-        //console.log(country);
         vmc.$emit('input', country)
       })
   },
@@ -923,12 +924,18 @@ var vm = new Vue({
     addNationalityField(){
       this.event.metadata.msf_resource_visa_requirement.nationality.push({
           iso2: 'xx',
-          name: null
+          name: null,
+          is_required:true
       });
 
     },
     countryChanged(country,ind) {
-      Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, country);
+      var obj={
+        name:country.name,
+        iso2:country.iso2,
+        is_required: vm.event.metadata.msf_resource_visa_requirement.nationality[ind].is_required
+      }
+      Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, obj);
     },
     removeResourceBudget(index) {
       this.event.metadata.msf_resource_budget.splice(index, 1);
