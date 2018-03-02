@@ -199,8 +199,11 @@ var printEventProperties = function(err, eventProperties){
                   searchTerm = currentEventProperties.metadata.name;
               }
             } else {
-              if (currentEventProperties.metadata.hasOwnProperty('type')) {
-                searchTerm = currentEventProperties.metadata.type;
+              if (currentEventProperties.hasOwnProperty('type')) {
+                searchTerm = currentEventProperties.type.replace(',','');
+              }
+              if (currentEventProperties.hasOwnProperty('sub_type')) {
+                searchTerm = currentEventProperties.metadata.sub_type.replace(',','');
               }
               if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
                 searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
