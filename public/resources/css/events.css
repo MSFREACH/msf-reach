@@ -129,3 +129,17 @@ textarea {
 div.pac-container {
    z-index: 1050 !important;
 }
+@media (min-width: 768px)
+{
+.dl-horizontal dd
+{
+  margin-left: 220px; 
+}
+.dl-horizontal dt
+{
+    white-space: normal;
+    width: 200px;
+}
+
+
+}
