@@ -250,7 +250,7 @@ var mapPDCHazards = function(hazards){
     if (Cookies.get('- PDC')==='on') {
         PDCHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'Hazards');
+    layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'RSS Feeds');
 
 };
 
@@ -280,7 +280,7 @@ var mapTSRHazards = function(hazards){
     if (Cookies.get('- TSR')==='on') {
         TSRHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'Hazards');
+    layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'RSS Feeds');
 
 };
 
@@ -303,7 +303,7 @@ var mapPTWCHazards = function(hazards){
         PTWCHazardsLayer.addTo(landingMap);
     }
 
-    layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'Hazards');
+    layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'RSS Feeds');
 
 };
 
@@ -363,7 +363,7 @@ var mapGDACSHazards = function(hazards){
     if (Cookies.get('- GDACS')==='on') {
         GDACSHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'Hazards');
+    layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'RSS Feeds');
 
 };
 
@@ -386,7 +386,7 @@ var mapUSGSHazards = function(hazards){
     if (Cookies.get('- USGS')==='on') {
         USGSHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'Hazards');
+    layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'RSS Feeds');
 
 };
 
@@ -820,7 +820,7 @@ landingMap.on('baselayerchange', function(baselayer) {
 
 
 var groupedOverlays = {
-    'Hazards': {},
+    'RSS Feeds': {},
     'Contacts': {}
 };
 
