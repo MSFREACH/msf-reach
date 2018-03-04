@@ -233,10 +233,23 @@ var printEventProperties = function(err, eventProperties){
         //['id', 'status', 'type', 'created'];
         propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
         propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
-        propertiesTable += '<tr><td>Status</td><td>'+eventProperties.status+'</td></tr>';
-        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+'</td></tr>';
-        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+        propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
+        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
+        propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+        if (eventProperties.metadata.notification)
+          propertiesTable += '<tr><td>Latest notification: </td><td>'+(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)' +'</td></tr>';
+        else
+        propertiesTable += '<tr><td>Latest notification:  </td><td>(none)</td></tr>';
+        propertiesTable += '<tr><td>Severity </td><td>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</td></tr>';
+        propertiesTable += '<tr><td>Person In charge </td><td>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</td></tr>';
+        propertiesTable += '<tr><td>Sharepoint Link </td><td>'+eventProperties.metadata.sharepoint_link+'</td></tr>';
+        //propertiesTable += '<tr><td> </td><td>'++'</td></tr>';
         propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
+
+
+
+
+
         // Create unique link to this event
         var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
         // Create unique report link for this event
@@ -247,7 +260,7 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy link</button></td></tr>';
         // Add user metadata
         if (eventProperties.metadata.user) {
-            propertiesTable += '<tr><td>Owner</td><td>'+eventProperties.metadata.user+'</td></tr>';
+            propertiesTable += '<tr><td>Creator</td><td>'+eventProperties.metadata.user+'</td></tr>';
         }
         if (eventProperties.metadata.user_edit) {
             propertiesTable += '<tr><td>Edits</td><td>'+eventProperties.metadata.user_edit+'</td></tr>';
@@ -275,18 +288,8 @@ var printEventProperties = function(err, eventProperties){
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
         $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
-        $('#eventBasicInfo').append('<dt>Name: </dt><dd>'+eventProperties.metadata.name+'</dd>');
-        $('#eventBasicInfo').append('<dt>Country: </dt><dd>'+eventProperties.metadata.country+'</dd>');
-        $('#eventBasicInfo').append('<dt>Sub Type: </dt><dd>'+eventProperties.metadata.sub_type+'</dd>');
-        $('#eventBasicInfo').append('<dt>Event Status: </dt><dd>'+eventProperties.metadata.event_status+'</dd>');
-        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() + '</dd>');
-        } else {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
-        }
-        $('#eventBasicInfo').append('<dt>Person In charge </dt><dd>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</dd>');
-        $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
-        $('#eventBasicInfo').append('<dt>Sharepoint Link </dt><dd>'+eventProperties.metadata.sharepoint_link+'</dd>');
+
+
 
         if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
 
