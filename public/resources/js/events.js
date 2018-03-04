@@ -135,6 +135,9 @@ var unpackMetadata = function(metadata) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
+    if (typeOf(missionType) === 'undefined') {
+      return '';
+    }
     var type = missionType.toLowerCase();
     var html = '<img src="/resources/images/icons/event_types/';
     if (type.includes('conflict')) {
@@ -168,7 +171,7 @@ var missionPopupIcon = function(missionType) {
     } else if (type.includes('volcano')) {
         html += 'volcano';
     } else {
-        return missionType + '<br>'; // just return text in this case
+        return missionType + '<br />'; // just return text in this case
     }
     html += '.svg" width="40">';
 
