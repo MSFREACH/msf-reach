@@ -66,10 +66,10 @@ dd.padding-bottom {
               <dd>
                 <select class="form-control" v-model="event.type">
                   <!--Supplement an id here instead of using 'name'-->
-                  <option value="conflict">Armed conflict</option>
-                  <option value="natural_hazard">Natural disaster </option>
-                  <option value="epidemiological">Disease outbreak </option>
-                  <option value="search_and_rescue">Search and rescue</option>
+                  <option value="conflict">Armed Conflict</option>
+                  <option value="natural_hazard">Natural Disaster </option>
+                  <option value="epidemiological">Disease Outbreak </option>
+                  <option value="search_and_rescue">Search & Rescue</option>
                   <option value="displacement">Displacement</option>
                   <option value="malnutrition">Malnutrition</option>
                   <option value="other">Other</option>
@@ -165,7 +165,7 @@ dd.padding-bottom {
             <dl>
               <dt>ID link - SharePoint</dt>
               <dd>
-                <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint link" />
+                <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint Link" />
               </dd>
             </dl>
           </div>
@@ -552,17 +552,22 @@ dd.padding-bottom {
                     <dt>Visa requirement</dt>
                     <dd>
                       <label>Nationality</label>
-                      <input type="text" class="form-control input-sm" id="nationality1" @change="updateSelectedCountry" v-model="event.metadata.msf_resource_visa_requirement.name">
+                      <div style="display:block;" v-for="(nat,ind) in event.metadata.msf_resource_visa_requirement.nationality">
+                         <country-select :options="countryParams" v-model="nat" @input="countryChanged($event,ind)"></country-select>
+
+                           <label>Required:</label>
+                           <label>
+                             <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="yes"> Yes
+                           </label>
+                           <label>
+                             <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="no"> No
+                           </label>
+
+                         <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
+                      </div>
+                      <button type="button" class="btn btn-success btn-xs" @click="addNationalityField">+ Add</button>
                     </dd>
-                    <dd>
-                      <label>Required:</label>
-                      <label>
-                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="yes"> Yes
-                      </label>
-                      <label>
-                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="no"> No
-                      </label>
-                    </dd>
+
                     <dd>
                       <label>Description:</label>
                       <textarea v-model.trim="event.metadata.msf_resource_visa_requirement.description" placeholder="Specify" class="form-control"></textarea>
@@ -595,7 +600,7 @@ dd.padding-bottom {
                           </tr>
                           <tr>
                             <td colspan="4">
-                              <button type="button" class="btn btn-xs btn-succes" v-on:click="addResourceBudget">Add more budget</button>
+                              <button type="button" class="btn btn-xs btn-success" v-on:click="addResourceBudget">Add more budget</button>
                             </td>
                           </tr>
                         </tbody>
@@ -655,6 +660,38 @@ dd.padding-bottom {
 <script type="text/javascript">
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
 
+
+Vue.component('country-select', {
+  props: ['options', 'value'],
+  template: '<input  type="text" class="form-control input-sm" >',
+  mounted: function () {
+    var vmc = this
+    $(this.$el)
+      .countrySelect(this.options)
+      .countrySelect("selectCountry", this.value.iso2)
+      .trigger('change')
+      // emit event on change.
+      .on('change', function () {
+        var country = $(this).countrySelect("getSelectedCountryData");
+        vmc.$emit('input', country)
+      })
+  },
+  watch: {
+    value: function (value) {
+      // update value
+      $(this.$el).countrySelect("selectCountry", value.iso2);
+    },
+    options: function (options) {
+      $(this.$el).countrySelect(options);
+    }
+  },
+  destroyed: function () {
+    $(this.$el).off().countrySelect('destroy')
+  }
+})
+
+
+
 Vue.filter('formatDateOnly', function(value) {
   if (value) {
     return moment(value).format('YYYY-MM-DD');
@@ -701,6 +738,7 @@ var vm = new Vue({
   },
   mounted: function() {
     console.log("Vue already mounted.");
+
 
     if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
       var optCenter = this.event.metadata.operational_center;
@@ -750,17 +788,7 @@ var vm = new Vue({
     $('textarea').flexText();
     this.calculatePercentagePeopleAffected();
 
-    var countryParams = {
-      "defaultCountry": "xx",
-      "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
-    };
-    $("#nationality1").countrySelect(countryParams);
 
-    $('.flag-dropdown').bind('click', function(e) {
-      var country = $("#nationality1").countrySelect("getSelectedCountryData");
-      console.log("country", country.name)
-      Vue.set(vm.event.metadata, 'msf_resource_visa_requirement', country);
-    });
 
     this.$nextTick(function() {
       var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
@@ -890,8 +918,25 @@ var vm = new Vue({
       this.keyMSFFigures.push(item.category);
       this.event.metadata.keyMSFFigures.splice(index, 1);
     },
-    updateSelectedCountry() {
-      this.event.metadata.msf_resource_visa_requirement.nationality = $("#nationality1").countrySelect("getSelectedCountryData");
+    removeNationalityField(index){
+      this.event.metadata.msf_resource_visa_requirement.nationality.splice(index,1);
+
+    },
+    addNationalityField(){
+      this.event.metadata.msf_resource_visa_requirement.nationality.push({
+          iso2: 'xx',
+          name: null,
+          is_required:true
+      });
+
+    },
+    countryChanged(country,ind) {
+      var obj={
+        name:country.name,
+        iso2:country.iso2,
+        is_required: vm.event.metadata.msf_resource_visa_requirement.nationality[ind].is_required
+      }
+      Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, obj);
     },
     removeResourceBudget(index) {
       this.event.metadata.msf_resource_budget.splice(index, 1);

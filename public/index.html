@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="/resources/css/new-event.css"/>
     <!-- jqueryui css -->
     <link rel="stylesheet" href="/resources/css/jquery-ui-1.12.1.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" integrity="sha256-AbZqn2w4KXugIvUu6QtV4nK4KlXj4nrIp6x/8S4Xg2U=" crossorigin="anonymous" />
 
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
@@ -72,10 +73,11 @@
                             <div class="form-group">
                               <label for="selectType">Event Type</label>
                               <select class="form-control" id="selectType"> <!--Supplement an id here instead of using 'name'-->
-                                <option value="conflict" selected>Armed conflict</option>
-                                <option value="natural_hazard">Natural disaster </option>
-                                <option value="epidemiological">Disease outbreak </option>
-                                <option value="search_and_rescue">Search and rescue</option>
+                                <option value="" disabled selected>Please select ...</option>
+                                <option value="conflict">Armed Conflict</option>
+                                <option value="natural_hazard">Natural Disaster </option>
+                                <option value="epidemiological">Disease Outbreak </option>
+                                <option value="search_and_rescue">Search & Rescue</option>
                                 <option value="displacement">Displacement</option>
                                 <option value="malnutrition">Malnutrition</option>
                                 <option value="other">Other</option>
@@ -84,13 +86,14 @@
                             <div class="form-group" id="divNaturalDisaster" style="display:none;">
                               <select class="form-control" id="inputDisasterType">
                                 <option value="" disabled selected>Please select ...</option>
+                                <option value="drought">Drought</option>
                                 <option value="earthquake">Earthquake</option>
-                                <option value="volcano">Volcano</option>
-                                <option value="typhoon">Typhoon</option>
                                 <option value="flood">Flood</option>
                                 <option value="tsunami">Tsunami</option>
-                                <option value="drought">Drought</option>
-                                <option value="">other</option>
+                                <option value="typhoon">Typhoon</option>
+                                <option value="volcano">Volcano</option>
+                                <option value="landslide">Landslide</option>
+                                <option value="">Other</option>
                               </select>
                             </div>
                             <div class="form-group" id="divDisease"  style="display:none;">
@@ -103,7 +106,7 @@
                                 <option value="Measles">Measles</option>
                                 <option value="Meningococcal Meningitis">Meningococcal Meningitis</option>
                                 <option value="Yellow Fever">Yellow Fever</option>
-                                <option value="">other</option>
+                                <option value="">Other</option>
                               </select>
                             </div>
                             <div class="form-group" id="divOther"  style="display:none;">
@@ -111,15 +114,15 @@
                             </div>
                             <div class="form-group">
                               <label for="inputEvDateTime">Date and time of Event</label>
-                              <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD" >
+                              <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD HH:MM" >
                             </div>
                             <div class="form-group" >
                               <label for="inputEvStatus">Status</label>
                               <select class="form-control" id="inputEvStatus">
-                                <option value="monitoring">monitoring </option>
-                                <option value="assessment">assement</option>
-                                <option value="intervention">intervention</option>
-                                <option value="complete">complete</option>
+                                <option value="Monitoring">Monitoring </option>
+                                <option value="Exploration">Exploration</option>
+                                <option value="Intervention">Intervention</option>
+                                <option value="Completed Missions">Completed Missions</option>
                               </select>
                             </div>
                             <div class="form-group">
@@ -133,14 +136,13 @@
                               <label for="inputSeverityScale" style="vertical-align:top;margin-top:5px;"> Scale </label><div style="display:inline-block;margin-left:10%;" id="inputSeverityScale"></div>
                             </div>
                             <div class="form-group">
-                              <label for="inputSharepointLink">Link to sharepoint folder</label>
-                              <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
-                            </div>
-                            <div class="form-group">
                               <label for="inputSecurity">Security Details</label>
                               <textarea class="form-control" rows="1" id="inputSecurity" placeholder="Security details ..." required></textarea>
                             </div>
-
+                            <div class="form-group">
+                              <label for="inputSharepointLink">Link to SharePoint folder</label>
+                              <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
+                            </div>
                             <!--<button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>-->
 
                           </div>
@@ -398,16 +400,19 @@
 
         <div id="sidepane" class="col-md-4" >
           <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Events</a></li>
             <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
             <li role="presentation"><a id="infoTab" data-toggle="tab" href="#info">Info</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
-
+            <li role="presentation" class="active"><a id="watchingTab" data-toggle="tab" href="#watchingEvent">Monitoring and Assessment</a></li>
+            <li role="presentation"><a id="ongoingTab" data-toggle="tab" href="#ongoingEvent">Ongoing MSF projects</a></li>
           </ul>
           <div class="tab-content msf-tab" >
-            <div id="event" class="tab-pane fade in active">
-                <div id="eventProperties" class="list-group">
-
+            <div id="watchingEvent" class="tab-pane fade in active">
+                <div id="watchingEventProperties" class="list-group">
+                </div>
+            </div>
+            <div id="ongoingEvent" class="tab-pane fade">
+                <div id="ongoingEventProperties" class="list-group">
                 </div>
             </div>
             <div id="toolbox" class="tab-pane fade">
@@ -442,6 +447,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="lib/jquery/jquery-3.3.1.min.js"></script>
     <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js" integrity="sha256-gQzieXjKD85Ibbpg4l8GduIagpt4oUSQRYaDaLd+8sI=" crossorigin="anonymous"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/js/common.js"></script>
@@ -471,11 +477,6 @@
 
     <script src="/resources/js/address-autocomplete.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
-
-
-
-
-
 
   </body>
 </html>
