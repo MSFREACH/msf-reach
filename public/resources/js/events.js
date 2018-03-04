@@ -95,7 +95,7 @@ var unpackMetadata = function(metadata) {
         result += '<dt>Visa requirement:</dt>';
         $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
             if(val)
-                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';            
+                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';
         });
         if (metadata.msf_resource_visa_requirement.description)
             result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
@@ -240,8 +240,12 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
         propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
         propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+
         if (eventProperties.metadata.notification)
-            propertiesTable += '<tr><td>Latest notification: </td><td>'+(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)' +'</td></tr>';
+        {
+            var notStr=(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+            propertiesTable += '<tr><td>Latest notification: </td><td>'+ notStr +'</td></tr>';
+        }
         else
             propertiesTable += '<tr><td>Latest notification:  </td><td>(none)</td></tr>';
         propertiesTable += '<tr><td>Severity </td><td>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</td></tr>';
@@ -286,6 +290,7 @@ var printEventProperties = function(err, eventProperties){
 
         // Append output to body
         propertiesTable += '</table>';
+
         $('#eventProperties').html(propertiesTable);
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
