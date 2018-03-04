@@ -206,6 +206,6 @@ var msfResourceCategories = [
 ];
 
 var countryParams = {
-  "defaultCountry": "xx",
-  "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
+    'defaultCountry': 'xx',
+    'preferredCountries': ['xx', 'us', 'gb', 'id', 'au', 'hk']
 };
