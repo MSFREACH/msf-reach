@@ -192,6 +192,17 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
 
+    //patch to support current data for multiple nationality
+    if (currentEventProperties.metadata.msf_resource_visa_requirement)
+    {
+        if (! ((currentEventProperties.metadata.msf_resource_visa_requirement.nationality) instanceof Array))
+            currentEventProperties.metadata.msf_resource_visa_requirement.nationality=[{
+                iso2: currentEventProperties.metadata.msf_resource_visa_requirement.nationality.iso2 || 'xx',
+                name: currentEventProperties.metadata.msf_resource_visa_requirement.nationality.name || null,
+                is_required: currentEventProperties.metadata.msf_resource_visa_requirement.nationality || 'yes'
+            }];
+    }
+
     // Add to Twitter search "AI"
     $(document).ready(function(){
         var searchTerm = '';
