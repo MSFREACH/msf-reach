@@ -739,7 +739,7 @@ var vm = new Vue({
   mounted: function() {
     console.log("Vue already mounted.");
 
-    console.log(event.metadata.msf_resource_visa_requirement.nationality);
+    console.log(this.event.metadata.msf_resource_visa_requirement.nationality);
 
     if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
       var optCenter = this.event.metadata.operational_center;
