@@ -92,9 +92,12 @@ var unpackMetadata = function(metadata) {
         }
     }
     if (metadata.hasOwnProperty('msf_resource_visa_requirement')) {
-        if (metadata.msf_resource_visa_requirement.is_required==='yes') {
-            result += '<dt>Visa requirement:</dt><dd>'+metadata.msf_resource_visa_requirement.name+'</dd>';
-        }
+      result += '<dt>Visa requirement:</dt>';
+       $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
+         result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';
+       });
+       if (metadata.msf_resource_visa_requirement.description)
+         result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
     }
     if (metadata.hasOwnProperty('msf_response_medical_material')) {
         result += '<dt>Medical requirements:</dt><dd>';
