@@ -136,7 +136,7 @@ var unpackMetadata = function(metadata) {
 **/
 var missionPopupIcon = function(missionType) {
     if (typeOf(missionType) === 'undefined') {
-      return '';
+        return '';
     }
     var type = missionType.toLowerCase();
     var html = '<img src="/resources/images/icons/event_types/';
