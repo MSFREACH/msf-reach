@@ -173,7 +173,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button id="btnArchive" type="button" class="btn btn-danger">Archive Event</button>
+          <button id="btnArchive" type="button" class="btn btn-danger">Close Event</button>
         </div>
       </div>
     </div>
@@ -202,10 +202,10 @@
             </div>
             <div class="panel-body">
               <select class="form-control" id="inputStatus">
-                <option value="monitoring" selected>monitoring</option>
-                <option value="assessment">assessment</option>
-                <option value="intervention">intervention</option>
-                <option value="complete">complete</option>
+                <option value="Monitoring" selected>Monitoring</option>
+                <option value="Exploration">Exploration</option>
+                <option value="Intervention">Intervention</option>
+                <option value="Completed Mission">Completed Mission</option>
               </select>
             </div>
           </div>
@@ -453,11 +453,12 @@
         <!-- Side pane -->
         <div id="sidepane" class="col-md-6" style="min-height:90vh;">
           <ul class="nav nav-tabs">
-            <li role="presentation" class ="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
+            <li role="presentation"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
             <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
-            <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
+            <li role="presentation" class="active"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
+            <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
           <div class="tab-content">
             <div id="event" class="tab-pane fade in active">
@@ -531,7 +532,7 @@
       </div>
       <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="onEditEvent()">Edit</button>
       <!-- Button trigger modal -->
-      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Archive</button>
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Close</button>
     </div>
     <div id="tweets" class="tab-pane fade">
       <div class="row">
@@ -579,6 +580,14 @@
         <div class="col-md-6" >
           <h4>Reports</h4>
           <div id="reportsContainer" style="height:70vh;"></div>
+        </div>
+      </div>
+    </div>
+    <div id="countryDetails" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-6" >
+          <h4>Country details</h4>
+          <div id="countryDetailsContainer" style="height:70vh;">(work on this tab in progress)</div>
         </div>
       </div>
     </div>
@@ -700,6 +709,19 @@ $('#reportsTab').on('click', function(e){
     setTimeout(function(){eventsMap.invalidateSize()}, 400);
   }
 });
+
+$('#countryDetailsTab').on('click', function(e){
+  //$('#mapContainer').removeClass('col-md-8');
+  if (mapOn === 0) {
+    $('#mapContainer').toggle();
+    $('#mapContainer').addClass('col-md-6');
+    $('#sidepane').removeClass('col-md-12');
+    $('#sidepane').addClass('col-md-6');
+    mapOn = 1;
+    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+  }
+});
+
 
 var onContactLinkClick = function(id) {
   $('#contactDetailsModal').on('shown.bs.modal');

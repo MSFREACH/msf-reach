@@ -73,7 +73,7 @@ var labels = {
     'region': 'Region',
     'incharge_position': 'In charge position',
     'incharge_name': 'In charge name',
-    'sharepoint_link': 'SharePoint link',
+    'sharepoint_link': 'SharePoint Link',
     'msf_response_medical_material_total': 'Number of medical supplies',
     'msf_response_non_medical_material_total': 'Number of non-medical supplies',
     'ext_capacity_who': 'Ext capacity on the ground (name)'
@@ -189,13 +189,25 @@ var printEventProperties = function(err, eventProperties){
     $(document).ready(function(){
         var searchTerm = '';
         if (currentEventProperties) {
-            if (currentEventProperties.metadata.name.includes('_')) {
-                elements = currentEventProperties.metadata.name.split('_');
-                for (var i = 0; i < elements.length-1; i++) {
-                    searchTerm += elements[i] + ' ';
+            if (currentEventProperties.metadata.name) {
+                if (currentEventProperties.metadata.name.includes('_')) {
+                    elements = currentEventProperties.metadata.name.split('_');
+                    for (var i = 0; i < elements.length-1; i++) {
+                        searchTerm += elements[i] + ' ';
+                    }
+                } else {
+                    searchTerm = currentEventProperties.metadata.name;
                 }
             } else {
-                searchTerm = currentEventProperties.metadata.name;
+                if (currentEventProperties.hasOwnProperty('type')) {
+                    searchTerm = currentEventProperties.type.replace(',','');
+                }
+                if (currentEventProperties.hasOwnProperty('sub_type')) {
+                    searchTerm = currentEventProperties.metadata.sub_type.replace(',','');
+                }
+                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
+                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                }
             }
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
                 searchTerm += currentEventProperties.metadata.country;
