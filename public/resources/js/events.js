@@ -135,7 +135,7 @@ var unpackMetadata = function(metadata) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
-    if (typeOf(missionType) === 'undefined') {
+    if (typeof(missionType) === 'undefined') {
         return '';
     }
     var type = missionType.toLowerCase();
