@@ -94,8 +94,8 @@ var unpackMetadata = function(metadata) {
     if (metadata.hasOwnProperty('msf_resource_visa_requirement')) {
         result += '<dt>Visa requirement:</dt>';
         $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
-          if(val)
-            result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';            
+            if(val)
+                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';            
         });
         if (metadata.msf_resource_visa_requirement.description)
             result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
