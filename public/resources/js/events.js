@@ -930,10 +930,9 @@ function makeApiRequest(endpoint, data, type, authNeeded) {
         url += '&q=' + encodeURI(data.textToTranslate);
     }
 
-    // If translating, send target and source languages
+    // If translating, send target language
     if (endpoint === GoogleEndpoints.translate) {
         url += '&target=' + data.targetLang;
-        url += '&source=' + data.sourceLang;
     }
 
     // Return response from API
@@ -971,12 +970,12 @@ $(function() {
     $('#translateLanguageSelection')
     // Bind translate function to translate button
         .on('change', function() {
-            var detectObj = {
+            var translateObj = {
                 textToTranslate: $('searchTerm').val(),
                 targetLang: $(this).val()
             };
 
 
-            translate(detectObj);
+            translate(translateObj);
         });
 });
