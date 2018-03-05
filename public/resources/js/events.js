@@ -958,8 +958,8 @@ function translate(data) {
             $('#searchTerm').val(data.textToTranslate); // just return original
         } else {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
+            $('#btnSearchTwitter').trigger('click');
         }
-        $('#btnSearchTwitter').trigger('click');
     });
 }
 
