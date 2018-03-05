@@ -739,13 +739,6 @@ var vm = new Vue({
   mounted: function() {
     console.log("Vue already mounted.");
 
-    if (! ((this.event.metadata.msf_resource_visa_requirement.nationality) instanceof Array))
-       this.event.metadata.msf_resource_visa_requirement.nationality=[{
-           iso2: this.event.metadata.msf_resource_visa_requirement.nationality.iso2 || 'xx',
-           name: this.event.metadata.msf_resource_visa_requirement.nationality.name || null,
-           is_required: this.event.metadata.msf_resource_visa_requirement.nationality || 'yes'
-       }];
-
 
     if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
       var optCenter = this.event.metadata.operational_center;
