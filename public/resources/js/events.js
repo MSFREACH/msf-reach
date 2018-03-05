@@ -954,7 +954,7 @@ function translate(data) {
     makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
         resp
     ) {
-        if (resp.data.translations[0].translatedText === 'undefined') {
+        if (resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '') {
             $('#searchTerm').val(data.textToTranslate); // just return original
         } else {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
@@ -962,20 +962,6 @@ function translate(data) {
         $('#btnSearchTwitter').trigger('click');
     });
 }
-
-// Detect language
-function detect(data) {
-    makeApiRequest(GoogleEndpoints.detect, data, 'GET', false).then(function(resp) {
-        var translationObj = {
-            textToTranslate: $('searchTerm').val(),
-            sourceLang: resp.data.detections[0][0].language || 'en',
-            targetLang: data.targetLang
-        };
-        translate(translationObj);
-
-    });
-}
-
 
 // On document ready
 $(function() {
@@ -991,6 +977,6 @@ $(function() {
             };
 
 
-            detect(detectObj);
+            translate(detectObj);
         });
 });
