@@ -896,3 +896,89 @@ eventsMap.on('overlayremove', function (layersControlEvent) {
         Cookies.set(layersControlEvent.name,'off');
     }
 });
+
+
+// Enter an API key from the Google API Console:
+//   https://console.developers.google.com/apis/credentials
+const GoogleApiKey = "AIzaSyAhhKWjsykF_ljVvn-P1o4l6aeE0tGjZOI";
+
+// Set endpoints
+const GoogleEndpoints = {
+  translate: "",
+  detect: "detect",
+  languages: "languages"
+};
+
+// Abstract API request function
+function makeApiRequest(endpoint, data, type, authNeeded) {
+  url = "https://www.googleapis.com/language/translate/v2/" + endpoint;
+  url += "?key=" + GoogleApiKey;
+
+  // If not listing languages, send text to translate
+  if (endpoint !== GoogleEndpoints.languages) {
+    url += "&q=" + encodeURI(data.textToTranslate);
+  }
+
+  // If translating, send target and source languages
+  if (endpoint === GoogleEndpoints.translate) {
+    url += "&target=" + data.targetLang;
+    url += "&source=" + data.sourceLang;
+  }
+
+  // Return response from API
+  return $.ajax({
+    url: url,
+    type: type || "GET",
+    data: data ? JSON.stringify(data) : "",
+    dataType: "json",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    }
+  });
+}
+
+// Translate
+function translate(data) {
+  makeApiRequest(GoogleEndpoints.translate, data, "GET", false).then(function(
+    resp
+  ) {
+    if (resp.data.translations[0].translatedText === 'undefined') {
+      $('#searchTerm').val(data.textToTranslate); // just return original
+    } else {
+      $('#searchTerm').val(resp.data.translations[0].translatedText);
+    }
+  });
+}
+
+// Detect language
+function detect(data) {
+  makeApiRequest(GoogleEndpoints.detect, data, "GET", false).then(function(resp) {
+    var translationObj = {
+      textToTranslate: $("searchTerm").val(),
+      sourceLang: resp.data.detections[0][0].language || 'en',
+      targetLang: data.targetLang
+    };
+    translate(translationObj);
+
+  });
+}
+
+
+// On document ready
+$(function() {
+  window.makeApiRequest = makeApiRequest;
+  var translationObj = {};
+
+  $('#translateLanguageSelection')
+    // Bind translate function to translate button
+    .on('change', function() {
+      var detectObj = {
+        textToTranslate: $("searchTerm").val(),
+        targetLang: $(this).val()
+      };
+
+
+      detect(detectObj);
+    });
+  });
