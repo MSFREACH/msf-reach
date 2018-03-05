@@ -8,8 +8,8 @@
 
 // Constants
 var GEOFORMAT='geojson';
-var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural disaster'},
-    {'epidemiological':'Disease outbreak'}, {'search_and_rescue':'Search and rescue'},
+var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
+    {'epidemiological':'Disease Outbreak'}, {'search_and_rescue':'Search & rescue'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
@@ -54,8 +54,8 @@ $( '#inputSeverityScale' ).slider({
 if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
     Cookies.set('Mission Histories','on'); // default
 }
-if (typeof(Cookies.get('Current Events')) === 'undefined') {
-    Cookies.set('Current Events','on'); // default
+if (typeof(Cookies.get('Ongoing MSF Projects')) === 'undefined') {
+    Cookies.set('Ongoing MSF Projects','on'); // default
 }
 if (typeof(Cookies.get('- PDC')) === 'undefined') {
     Cookies.set('- PDC','on'); // default
@@ -168,7 +168,13 @@ var mapAllEvents = function(err, events){
             popupContent.substr(0,popupContent.length-4);
         }
 
-        $('#eventProperties').append(
+        var eventDiv = '';
+        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
+            eventDiv = '#watchingEventProperties';
+        } else {
+            eventDiv = '#ongoingEventProperties';
+        }
+        $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
@@ -202,10 +208,10 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Current Events')==='on') {
+    if (Cookies.get('Ongoing MSF Projects')==='on') {
         eventsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(eventsLayer, 'Current Events');
+    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
 
 };
 
@@ -244,7 +250,7 @@ var mapPDCHazards = function(hazards){
     if (Cookies.get('- PDC')==='on') {
         PDCHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'Hazards');
+    layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'RSS Feeds');
 
 };
 
@@ -274,7 +280,7 @@ var mapTSRHazards = function(hazards){
     if (Cookies.get('- TSR')==='on') {
         TSRHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'Hazards');
+    layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'RSS Feeds');
 
 };
 
@@ -297,7 +303,7 @@ var mapPTWCHazards = function(hazards){
         PTWCHazardsLayer.addTo(landingMap);
     }
 
-    layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'Hazards');
+    layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'RSS Feeds');
 
 };
 
@@ -357,7 +363,7 @@ var mapGDACSHazards = function(hazards){
     if (Cookies.get('- GDACS')==='on') {
         GDACSHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'Hazards');
+    layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'RSS Feeds');
 
 };
 
@@ -380,7 +386,7 @@ var mapUSGSHazards = function(hazards){
     if (Cookies.get('- USGS')==='on') {
         USGSHazardsLayer.addTo(landingMap);
     }
-    layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'Hazards');
+    layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'RSS Feeds');
 
 };
 
@@ -814,7 +820,7 @@ landingMap.on('baselayerchange', function(baselayer) {
 
 
 var groupedOverlays = {
-    'Hazards': {},
+    'RSS Feeds': {},
     'Contacts': {}
 };
 

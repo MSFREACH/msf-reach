@@ -73,7 +73,7 @@ var labels = {
     'region': 'Region',
     'incharge_position': 'In charge position',
     'incharge_name': 'In charge name',
-    'sharepoint_link': 'SharePoint link',
+    'sharepoint_link': 'SharePoint Link',
     'msf_response_medical_material_total': 'Number of medical supplies',
     'msf_response_non_medical_material_total': 'Number of non-medical supplies',
     'ext_capacity_who': 'Ext capacity on the ground (name)'
@@ -92,9 +92,13 @@ var unpackMetadata = function(metadata) {
         }
     }
     if (metadata.hasOwnProperty('msf_resource_visa_requirement')) {
-        if (metadata.msf_resource_visa_requirement.is_required==='yes') {
-            result += '<dt>Visa requirement:</dt><dd>'+metadata.msf_resource_visa_requirement.name+'</dd>';
-        }
+        result += '<dt>Visa requirement:</dt>';
+        $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
+            if(val)
+                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';
+        });
+        if (metadata.msf_resource_visa_requirement.description)
+            result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
     }
     if (metadata.hasOwnProperty('msf_response_medical_material')) {
         result += '<dt>Medical requirements:</dt><dd>';
@@ -131,6 +135,9 @@ var unpackMetadata = function(metadata) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
+    if (typeof(missionType) === 'undefined') {
+        return '';
+    }
     var type = missionType.toLowerCase();
     var html = '<img src="/resources/images/icons/event_types/';
     if (type.includes('conflict')) {
@@ -164,7 +171,7 @@ var missionPopupIcon = function(missionType) {
     } else if (type.includes('volcano')) {
         html += 'volcano';
     } else {
-        return missionType + '<br>'; // just return text in this case
+        return missionType + '<br />'; // just return text in this case
     }
     html += '.svg" width="40">';
 
@@ -185,20 +192,43 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
 
+    //patch to support current data for multiple nationality
+    if (currentEventProperties.metadata.msf_resource_visa_requirement)
+    {
+        if (! ((currentEventProperties.metadata.msf_resource_visa_requirement.nationality) instanceof Array))
+            currentEventProperties.metadata.msf_resource_visa_requirement.nationality=[{
+                iso2: currentEventProperties.metadata.msf_resource_visa_requirement.nationality.iso2 || 'xx',
+                name: currentEventProperties.metadata.msf_resource_visa_requirement.nationality.name || null,
+                is_required: currentEventProperties.metadata.msf_resource_visa_requirement.nationality || 'yes'
+            }];
+    }
+
     // Add to Twitter search "AI"
     $(document).ready(function(){
         var searchTerm = '';
         if (currentEventProperties) {
-            if (currentEventProperties.metadata.name.includes('_')) {
-                elements = currentEventProperties.metadata.name.split('_');
-                for (var i = 0; i < elements.length-1; i++) {
-                    searchTerm += elements[i] + ' ';
+            if (currentEventProperties.metadata.name) {
+                if (currentEventProperties.metadata.name.includes('_')) {
+                    elements = currentEventProperties.metadata.name.split('_');
+                    for (var i = 0; i < elements.length-1; i++) {
+                        searchTerm += elements[i] + ' ';
+                    }
+                } else {
+                    searchTerm = currentEventProperties.metadata.name;
                 }
             } else {
-                searchTerm = currentEventProperties.metadata.name;
+                if (currentEventProperties.hasOwnProperty('type')) {
+                    searchTerm = currentEventProperties.type.replace(',','');
+                }
+                if (currentEventProperties.hasOwnProperty('sub_type')) {
+                    searchTerm = currentEventProperties.metadata.sub_type.replace(',','');
+                }
+                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
+                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                }
             }
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += currentEventProperties.metadata.country;
+                searchTerm += ' ' + currentEventProperties.metadata.country;
             }
             $('#searchTerm').val(searchTerm);
         }
@@ -221,10 +251,27 @@ var printEventProperties = function(err, eventProperties){
         //['id', 'status', 'type', 'created'];
         propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
         propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
-        propertiesTable += '<tr><td>Status</td><td>'+eventProperties.status+'</td></tr>';
-        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+'</td></tr>';
-        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+        propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
+        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
+        propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+
+        if (eventProperties.metadata.notification)
+        {
+            var notStr=(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+            propertiesTable += '<tr><td>Latest notification: </td><td>'+ notStr +'</td></tr>';
+        }
+        else
+            propertiesTable += '<tr><td>Latest notification:  </td><td>(none)</td></tr>';
+        propertiesTable += '<tr><td>Severity </td><td>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</td></tr>';
+        propertiesTable += '<tr><td>Person In charge </td><td>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</td></tr>';
+        propertiesTable += '<tr><td>Sharepoint Link </td><td>'+eventProperties.metadata.sharepoint_link+'</td></tr>';
+        //propertiesTable += '<tr><td> </td><td>'++'</td></tr>';
         propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
+
+
+
+
+
         // Create unique link to this event
         var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
         // Create unique report link for this event
@@ -235,7 +282,7 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy link</button></td></tr>';
         // Add user metadata
         if (eventProperties.metadata.user) {
-            propertiesTable += '<tr><td>Owner</td><td>'+eventProperties.metadata.user+'</td></tr>';
+            propertiesTable += '<tr><td>Creator</td><td>'+eventProperties.metadata.user+'</td></tr>';
         }
         if (eventProperties.metadata.user_edit) {
             propertiesTable += '<tr><td>Edits</td><td>'+eventProperties.metadata.user_edit+'</td></tr>';
@@ -257,24 +304,15 @@ var printEventProperties = function(err, eventProperties){
 
         // Append output to body
         propertiesTable += '</table>';
+
         $('#eventProperties').html(propertiesTable);
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
         $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
-        $('#eventBasicInfo').append('<dt>Name: </dt><dd>'+eventProperties.metadata.name+'</dd>');
-        $('#eventBasicInfo').append('<dt>Country: </dt><dd>'+eventProperties.metadata.country+'</dd>');
-        $('#eventBasicInfo').append('<dt>Sub Type: </dt><dd>'+eventProperties.metadata.sub_type+'</dd>');
-        $('#eventBasicInfo').append('<dt>Event Status: </dt><dd>'+eventProperties.metadata.event_status+'</dd>');
-        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() + '</dd>');
-        } else {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
-        }
-        $('#eventBasicInfo').append('<dt>Person In charge </dt><dd>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</dd>');
-        $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
-        $('#eventBasicInfo').append('<dt>Sharepoint Link </dt><dd>'+eventProperties.metadata.sharepoint_link+'</dd>');
+
+
 
         if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
 
@@ -868,4 +906,76 @@ eventsMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'off');
     }
+});
+
+
+// Enter an API key from the Google API Console:
+//   https://console.developers.google.com/apis/credentials
+const GoogleApiKey = 'AIzaSyAhhKWjsykF_ljVvn-P1o4l6aeE0tGjZOI';
+
+// Set endpoints
+const GoogleEndpoints = {
+    translate: '',
+    detect: 'detect',
+    languages: 'languages'
+};
+
+// Abstract API request function
+function makeApiRequest(endpoint, data, type, authNeeded) {
+    url = 'https://www.googleapis.com/language/translate/v2/' + endpoint;
+    url += '?key=' + GoogleApiKey;
+
+    // If not listing languages, send text to translate
+    if (endpoint !== GoogleEndpoints.languages) {
+        url += '&q=' + encodeURI(data.textToTranslate);
+    }
+
+    // If translating, send target language
+    if (endpoint === GoogleEndpoints.translate) {
+        url += '&target=' + data.targetLang;
+    }
+
+    // Return response from API
+    return $.ajax({
+        url: url,
+        type: type || 'GET',
+        data: data ? JSON.stringify(data) : '',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        }
+    });
+}
+
+// Translate
+function translate(data) {
+    makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
+        resp
+    ) {
+        if (resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '') {
+            $('#searchTerm').val(data.textToTranslate); // just return original
+        } else {
+            $('#searchTerm').val(resp.data.translations[0].translatedText);
+            $('#btnSearchTwitter').trigger('click');
+        }
+    });
+}
+
+// On document ready
+$(function() {
+    window.makeApiRequest = makeApiRequest;
+    var translationObj = {};
+
+    $('#translateLanguageSelection')
+    // Bind translate function to translate button
+        .on('change', function() {
+            var translateObj = {
+                textToTranslate: $('searchTerm').val(),
+                targetLang: $(this).val()
+            };
+
+
+            translate(translateObj);
+        });
 });

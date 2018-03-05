@@ -88,11 +88,11 @@ var defaultEvent = {
         msf_resource_staff_national: null,
         msf_resource_category: '',
         msf_resource_visa_requirement: {
-            nationality: {
+            nationality: [{
                 iso2: 'xx',
-                name: null
-            },
-            is_required: 'yes',
+                name: null,
+                is_required: 'yes'
+            }],
             description: null
         },
         msf_resource_budget: [{
@@ -204,3 +204,8 @@ var msfResourceCategories = [
     'mental_health',
     'others'
 ];
+
+var countryParams = {
+    'defaultCountry': 'xx',
+    'preferredCountries': ['xx', 'us', 'gb', 'id', 'au', 'hk']
+};
