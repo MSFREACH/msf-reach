@@ -228,7 +228,7 @@ var printEventProperties = function(err, eventProperties){
                 }
             }
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += currentEventProperties.metadata.country;
+                searchTerm += ' ' + currentEventProperties.metadata.country;
             }
             $('#searchTerm').val(searchTerm);
         }
