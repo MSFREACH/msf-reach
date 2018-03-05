@@ -959,6 +959,7 @@ function translate(data) {
         } else {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
         }
+        $('#btnSearchTwitter').trigger('click');
     });
 }
 
