@@ -194,17 +194,17 @@ var printEventProperties = function(err, eventProperties){
     currentEventProperties = eventProperties;
 
     if (currentEventProperties.metadata.country) {
-      $.getJSON({
-        url: "/resources/js/country-to-language-mapping.json"
-      }).done(function(result) {
-        $.each(result.countries[currentEventProperties.metadata.country], function(index, item) {
-          if (index == result.countries[currentEventProperties.metadata.country].length-1) {
-            $('#translationSuggestedLanguages').append(item.name);
-          } else {
-            $('#translationSuggestedLanguages').append(item.name+', ');
-          }
+        $.getJSON({
+            url: '/resources/js/country-to-language-mapping.json'
+        }).done(function(result) {
+            $.each(result.countries[currentEventProperties.metadata.country], function(index, item) {
+                if (index == result.countries[currentEventProperties.metadata.country].length-1) {
+                    $('#translationSuggestedLanguages').append(item.name);
+                } else {
+                    $('#translationSuggestedLanguages').append(item.name+', ');
+                }
+            });
         });
-      });
     }
 
     //patch to support current data for multiple nationality
