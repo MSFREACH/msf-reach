@@ -732,12 +732,10 @@
 
 <script src="/lib/leaflet/leaflet.markercluster.js"></script>
 
-<script src="/resources/js/events.js"></script>
+
 <script src="/resources/js/nav.js"></script>
 <script src="/resources/js/dragdrop.js"></script>
 <script src="/resources/js/twitter.js"></script>
-<script src="/resources/js/contacts.js"></script>
-<script src="/resources/js/missions.js"></script>
 
 <script src="/resources/js/new-report.js"></script>
 <script src="/report/reportcard.js"></script>
@@ -746,8 +744,12 @@
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
 
+<script src="/resources/js/events.js"></script>
+
 <!-- events common variables -->
 <script src="/events/common.js"></script>
+<script src="/resources/js/contacts.js"></script>
+<script src="/resources/js/missions.js"></script>
 <script>
 
 var mapOn = 1;
@@ -759,7 +761,7 @@ $('#feedTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-6');
     $('#sidepane').addClass('col-md-12');
     mapOn = 0;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -771,7 +773,7 @@ $('#contactsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -783,7 +785,7 @@ $('#missionsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -794,7 +796,7 @@ $('#eventTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -805,7 +807,7 @@ $('#reportsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -817,7 +819,7 @@ $('#countryDetailsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 

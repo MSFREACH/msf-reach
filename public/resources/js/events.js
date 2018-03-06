@@ -12,53 +12,16 @@ var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var MAX_RADIUS= 5;
 
-// Globals
-var currentEventId;
-var eventReportLink;
-var currentEventProperties;
-var contactsLayer;
-var contactsClusters;
-var missionsLayer;
-var missionsClusters;
-var accessLayer;
-var needsLayer;
-var securityLayer;
-var reportsContactsLayer;
-var missionsLayerControlSetUp = false;
-var contactsLayerControlSetUp = false;
-var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
+
+var mainMap = L.map('map').setView([-6.8, 108.7], 7);
 
 var computerTriggered = false;
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
-// Set cookies if not set
-if (typeof(Cookies.get('- access')) === 'undefined') {
-    Cookies.set('- access','on'); // default
-}
-if (typeof(Cookies.get('- needs')) === 'undefined') {
-    Cookies.set('- needs','on'); // default
-}
-if (typeof(Cookies.get('- security')) === 'undefined') {
-    Cookies.set('- security','on'); // default
-}
-if (typeof(Cookies.get('- contacts')) === 'undefined') {
-    Cookies.set('- contacts','on'); // default
-}
-if (typeof(Cookies.get('Contacts')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
-if (typeof(Cookies.get('Missions')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
-
-if (typeof(Cookies.get('MapLayer')) === 'undefined') {
-    Cookies.set('MapLayer','Terrain'); // default
-}
-
 var zoomToEvent = function(latlng) {
-    eventsMap.setView(latlng, 5);
+    mainMap.setView(latlng, 5);
 };
 
 var clipboard = new Clipboard('.btn');
@@ -399,7 +362,7 @@ function openReportPopup(id) {
     for (var i in reportMarkers){
         var markerID = reportMarkers[i].options.id;
         if (markerID == id) {
-            eventsMap.setView(reportMarkers[i].getLatLng());
+            mainMap.setView(reportMarkers[i].getLatLng());
             reportMarkers[i].openPopup();
             break;
         }
@@ -528,7 +491,7 @@ var mapReports = function(reports){
         onEachFeature: onEachFeature
     });
     if (Cookies.get('- access')==='on') {
-        accessLayer.addTo(eventsMap);
+        accessLayer.addTo(mainMap);
     }
     layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
@@ -545,7 +508,7 @@ var mapReports = function(reports){
         onEachFeature: onEachFeature
     });
     if (Cookies.get('- needs')==='on') {
-        needsLayer.addTo(eventsMap);
+        needsLayer.addTo(mainMap);
     }
     layerControl.addOverlay(needsLayer, '- needs', 'Reports');
 
@@ -562,7 +525,7 @@ var mapReports = function(reports){
         onEachFeature: onEachFeature
     });
     if (Cookies.get('- security')==='on') {
-        securityLayer.addTo(eventsMap);
+        securityLayer.addTo(mainMap);
     }
     layerControl.addOverlay(securityLayer, '- security', 'Reports');
 
@@ -579,12 +542,12 @@ var mapReports = function(reports){
         onEachFeature: onEachFeature
     });
     if (Cookies.get('- contacts')==='on') {
-        reportsContactsLayer.addTo(eventsMap);
+        reportsContactsLayer.addTo(mainMap);
     }
     layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
 
     if (points.length > 0){
-        eventsMap.fitBounds(points, {padding: [200,200]});
+        mainMap.fitBounds(points, {padding: [200,200]});
     }
 
 };
@@ -594,6 +557,24 @@ var mapReports = function(reports){
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
 var mapContacts = function(contacts) {
+
+    // function returns list of msf staff contacts if msf is true, else other contacts
+    function msfContact(contacts, msf) {
+
+        var newFC = {features: []};
+        for(var i = 0; i < contacts.features.length; i++) {
+
+            if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
+                if (msf) {
+                    newFC.features.push(contacts.features[i]);
+                }
+            } else if (!msf) {
+                newFC.features.push(contacts.features[i]);
+            }
+        }
+        return newFC;
+    }
+
 
     function onEachFeature(feature, layer) {
 
@@ -622,12 +603,12 @@ var mapContacts = function(contacts) {
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
 
-    var contactsLayerOn = eventsMap.hasLayer(contactsClusters);
+    var contactsLayerOn = mainMap.hasLayer(contactsClusters);
 
     if (contactsClusters)
     {
         computerTriggered=true;
-        eventsMap.removeLayer(contactsClusters);
+        mainMap.removeLayer(contactsClusters);
         layerControl.removeLayer(contactsClusters);
         computerTriggered=false;
     }
@@ -654,7 +635,7 @@ var mapContacts = function(contacts) {
 
     if (contactsLayerOn || firstContactsLoad) {
         if (Cookies.get('Contacts')==='on') {
-            contactsClusters.addTo(eventsMap);
+            contactsClusters.addTo(mainMap);
         }
         firstContactsLoad = false;
     }
@@ -734,12 +715,12 @@ var mapMissions = function(missions ){
         popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
-    var missionsLayerOn = eventsMap.hasLayer(missionsClusters);
+    var missionsLayerOn = mainMap.hasLayer(missionsClusters);
 
     if (missionsClusters)
     {
         computerTriggered=true;
-        eventsMap.removeLayer(missionsClusters);
+        mainMap.removeLayer(missionsClusters);
         layerControl.removeLayer(missionsClusters);
         computerTriggered=false;
     }
@@ -767,7 +748,7 @@ var mapMissions = function(missions ){
 
     if (missionsLayerOn || firstMissionsLoad ) {
         if (Cookies.get('Missions')==='on') {
-            missionsClusters.addTo(eventsMap);
+            missionsClusters.addTo(mainMap);
         }
         firstMissionsLoad = false;
     }
@@ -812,13 +793,13 @@ var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{
 
 switch (Cookies.get('MapLayer')) {
 case 'satellite':
-    mapboxSatellite.addTo(eventsMap);
+    mapboxSatellite.addTo(mainMap);
     break;
 case 'terrain':
-    mapboxTerrain.addTo(eventsMap);
+    mapboxTerrain.addTo(mainMap);
     break;
 default:
-    OpenStreetMap_HOT.addTo(eventsMap);
+    OpenStreetMap_HOT.addTo(mainMap);
 }
 
 var baseMaps = {
@@ -827,7 +808,7 @@ var baseMaps = {
     'Humanitarian': OpenStreetMap_HOT
 };
 
-eventsMap.on('baselayerchange', function(baselayer) {
+mainMap.on('baselayerchange', function(baselayer) {
     Cookies.set('MapLayer',baselayer.name);
 });
 
@@ -837,7 +818,7 @@ var groupedOverlays = {
 
 var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
-var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(eventsMap);
+var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
 // Archive support
 $('#btnArchive').click(function(e){
@@ -910,18 +891,24 @@ var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
 };
 
-eventsMap.on('overlayadd', function (layersControlEvent) {
+mainMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'on');
     }
 });
 
 
-eventsMap.on('overlayremove', function (layersControlEvent) {
+mainMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'off');
     }
 });
+
+getFeeds('/api/hazards/pdc',mapPDCHazards);
+getFeeds('/api/hazards/tsr',mapTSRHazards);
+getFeeds('/api/hazards/usgs',mapUSGSHazards);
+getFeeds('/api/hazards/gdacs',mapGDACSHazards);
+getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 
 
 // Enter an API key from the Google API Console:

@@ -13,11 +13,7 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
-var PDCHazardsLayer;
-var TSRHazardsLayer;
-var USGSHazardsLayer;
-var GDACSHazardsLayer;
-var PTWCHazardsLayer;
+
 
 $( '#inputSeverityScale' ).slider({
     value: 2,
@@ -50,37 +46,7 @@ $( '#inputSeverityScale' ).slider({
 
     });
 
-// Set cookies if not set
-if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
-    Cookies.set('Mission Histories','on'); // default
-}
-if (typeof(Cookies.get('Ongoing MSF Projects')) === 'undefined') {
-    Cookies.set('Ongoing MSF Projects','on'); // default
-}
-if (typeof(Cookies.get('- PDC')) === 'undefined') {
-    Cookies.set('- PDC','on'); // default
-}
-if (typeof(Cookies.get('- TSR')) === 'undefined') {
-    Cookies.set('- TSR','on'); // default
-}
-if (typeof(Cookies.get('- PTWC')) === 'undefined') {
-    Cookies.set('- PTWC','on'); // default
-}
-if (typeof(Cookies.get('- GDACS')) === 'undefined') {
-    Cookies.set('- GDACS','on'); // default
-}
-if (typeof(Cookies.get('- USGS')) === 'undefined') {
-    Cookies.set('- USGS','on'); // default
-}
-if (typeof(Cookies.get('- MSF Staff')) === 'undefined') {
-    Cookies.set('- MSF Staff','on'); // default
-}
-if (typeof(Cookies.get('- other contacts')) === 'undefined') {
-    Cookies.set('- other contacts','on'); // default
-}
-if (typeof(Cookies.get('MapLayer')) === 'undefined') {
-    Cookies.set('MapLayer','Terrain'); // default
-}
+
 
 var eventsLayer;
 
@@ -209,253 +175,11 @@ var mapAllEvents = function(err, events){
     });
 
     if (Cookies.get('Ongoing MSF Projects')==='on') {
-        eventsLayer.addTo(landingMap);
+        eventsLayer.addTo(mainMap);
     }
     layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
 
 };
-
-/**
-* Function to map from PDC hazard summary to PDC hazard icon
-* @param {String} hazardSummary - hazard summary
-**/
-var PDCHazardIcon = function(hazardSummary) {
-    var iconUrl = '/resources/images/hazards/';
-    iconUrl += hazardSummary.split(' ')[0].toLowerCase() + '_' +
-  hazardSummary.split(' ')[1].toLowerCase().replace(/(\(|\))/g,'') +
-  '.svg';
-
-    return L.icon({
-        'iconUrl': iconUrl,
-        iconSize:     [39, 39] // size of the icon
-    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-};
-
-/**
-* Function to add PDC hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing PDC hazard points
-**/
-var mapPDCHazards = function(hazards){
-
-    PDCHazardsLayer = L.geoJSON(hazards, {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: PDCHazardIcon(feature.properties.summary)});
-        },
-        onEachFeature: hazardFeature
-    });
-
-    if (Cookies.get('- PDC')==='on') {
-        PDCHazardsLayer.addTo(landingMap);
-    }
-    layerControl.addOverlay(PDCHazardsLayer, '- PDC', 'RSS Feeds');
-
-};
-
-/*
-* Function to add TSR hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing TSR hazard points
-**/
-
-var hazardFeature = function(feature, layer) {
-    var popupContent = '<strong><a href=\''+feature.properties.link+'\' target=_blank>' + feature.properties.title +'</a></strong>' + '<BR>Source: '+ feature.properties.source + '<BR>Summary: '+ feature.properties.summary +'<BR>Updated: ' + feature.properties.updated;
-
-    layer.bindPopup(popupContent);
-};
-
-var mapTSRHazards = function(hazards){
-
-    TSRHazardsLayer = L.geoJSON(hazards, {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, L.icon({
-                iconUrl: '/resources/images/icons/event_types/typhoon.svg',
-                iconSize: [39, 39]
-            }));
-        },
-        onEachFeature: hazardFeature
-    });
-
-    if (Cookies.get('- TSR')==='on') {
-        TSRHazardsLayer.addTo(landingMap);
-    }
-    layerControl.addOverlay(TSRHazardsLayer, '- TSR', 'RSS Feeds');
-
-};
-
-/*
-* Function to add PTWC hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing PTWC hazard points
-**/
-var mapPTWCHazards = function(hazards){
-    PTWCHazardsLayer = L.geoJSON(hazards, {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, L.icon({
-                iconUrl: '/resources/images/icons/event_types/tsunami.svg',
-                iconSize: [39, 39]
-            }));
-        },
-        onEachFeature: hazardFeature
-    });
-
-    if (Cookies.get('- PTWC')==='on') {
-        PTWCHazardsLayer.addTo(landingMap);
-    }
-
-    layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'RSS Feeds');
-
-};
-
-/**
-* Function to map from GDACS hazard summary to GDACS hazard icon
-* @param {String} hazardSummary - hazard summary
-**/
-var GDACSHazardIcon = function(GDACSProperties) {
-    var iconUrl = '/resources/images/hazards/';
-
-    switch(GDACSProperties.type) {
-    case 'EQ':
-        iconUrl += 'earthquake_';
-        break;
-    case 'TC':
-        iconUrl += 'cyclone_';
-        break;
-    default:
-        console.log('error in GDACS data'); // eslint-disable-line no-console
-    }
-    switch(GDACSProperties.level) {
-    case 'green':
-        iconUrl += 'advisory.svg';
-        break;
-    case 'yellow':
-        iconUrl += 'watch.svg';
-        break;
-    case 'red':
-        iconUrl += 'warning.svg';
-        break;
-    default:
-        iconUrl += 'advisory.svg'; // reviewme fixme
-    }
-
-
-    return L.icon({
-        'iconUrl': iconUrl,
-        iconSize:     [39, 39] // size of the icon
-    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-};
-
-/*
-* Function to add GDACS hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing GDACS hazard points
-**/
-var mapGDACSHazards = function(hazards){
-    GDACSHazardsLayer = L.geoJSON(hazards, {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: GDACSHazardIcon(feature.properties)});
-        },
-        onEachFeature: hazardFeature
-    });
-
-    if (Cookies.get('- GDACS')==='on') {
-        GDACSHazardsLayer.addTo(landingMap);
-    }
-    layerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'RSS Feeds');
-
-};
-
-/*
-* Function to add USGS hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing USGS hazard points
-**/
-var mapUSGSHazards = function(hazards){
-
-    USGSHazardsLayer = L.geoJSON(hazards, {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, L.icon({
-                iconUrl: '/resources/images/icons/event_types/earthquake.svg',
-                iconSize: [39, 39]
-            }));
-        },
-        onEachFeature: hazardFeature
-    });
-
-    if (Cookies.get('- USGS')==='on') {
-        USGSHazardsLayer.addTo(landingMap);
-    }
-    layerControl.addOverlay(USGSHazardsLayer, '- USGS', 'RSS Feeds');
-
-};
-
-function openHazardPopup(id)
-{
-
-    switch(id.split('-',1)[0]) {
-    case 'USGS':
-        USGSHazardsLayer.eachLayer(function(layer){
-            if (layer.feature.properties.id === id)
-                layer.openPopup();
-
-            var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
-            layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
-            layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
-            layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
-            layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
-        });
-        break;
-    case 'PDC':
-        PDCHazardsLayer.eachLayer(function(layer){
-            if (layer.feature.properties.id == id)
-                layer.openPopup();
-            var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
-            layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
-            layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
-            layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
-            layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
-        });
-        break;
-    case 'TSR':
-        TSRHazardsLayer.eachLayer(function(layer){
-            if (layer.feature.properties.id == id)
-                layer.openPopup();
-            var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
-            layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
-            layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
-            layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
-            layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
-        });
-        break;
-    case 'PTWC':
-        PTWCHazardsLayer.eachLayer(function(layer){
-            if (layer.feature.properties.id == id)
-                layer.openPopup();
-            var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
-            layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
-            layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
-            layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
-            layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
-        });
-        break;
-    case 'GDACS':
-        GDACSHazardsLayer.eachLayer(function(layer){
-            if (layer.feature.properties.id == id)
-                layer.openPopup();
-            var selector='[id="rssdiv'+sanitiseId(layer.feature.properties.id)+'"]';
-            layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
-            layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
-            layer.on('touchstart',function(e){$(selector).addClass('isHovered');});
-            layer.on('touchend',function(e){$(selector).removeClass('isHovered');});
-        });
-        break;
-    default:
-        break;
-
-    }
-}
-
 
 /**
 * Function to get contacts
@@ -487,20 +211,6 @@ var getMissions = function(callback){
     });
 };
 
-/**
-* Function to get feeds
-**/
-var getFeeds = function(url, callback) {
-    $.getJSON(url, function( data ){
-        callback(data.result);
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
-        }
-    });
-};
 
 var tableFeeds = function(feeds) {
     for(var i = 0; i <= feeds.features.length; i++) {
@@ -613,7 +323,7 @@ var mapMissions = function(missions ){
     });
 
     if (Cookies.get('Mission Histories')==='on') {
-        missionsLayer.addTo(landingMap);
+        missionsLayer.addTo(mainMap);
     }
     layerControl.addOverlay(missionsLayer, 'Mission Histories');
 };
@@ -684,10 +394,10 @@ var mapContacts = function(contacts ){
     });
 
     if (Cookies.get('- MSF Staff')==='on') {
-        MSFContactsLayer.addTo(landingMap);
+        MSFContactsLayer.addTo(mainMap);
     }
     if (Cookies.get('- other contacts')==='on') {
-        nonMSFContactsLayer.addTo(landingMap);
+        nonMSFContactsLayer.addTo(mainMap);
     }
     layerControl.addOverlay(MSFContactsLayer, '- MSF Staff', 'Contacts');
     layerControl.addOverlay(nonMSFContactsLayer, '- other contacts', 'Contacts');
@@ -776,7 +486,7 @@ var getContact = function(id) {
 };
 
 // Create map
-var landingMap = L.map('landingMap').setView([20, 110], 4);
+var mainMap = L.map('mainMap').setView([20, 110], 4);
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
@@ -798,13 +508,13 @@ var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{
 
 switch (Cookies.get('MapLayer')) {
 case 'Satellite':
-    mapboxSatellite.addTo(landingMap);
+    mapboxSatellite.addTo(mainMap);
     break;
 case 'Terrain':
-    mapboxTerrain.addTo(landingMap);
+    mapboxTerrain.addTo(mainMap);
     break;
 default:
-    OpenStreetMap_HOT.addTo(landingMap);
+    OpenStreetMap_HOT.addTo(mainMap);
 }
 
 
@@ -814,7 +524,7 @@ var baseMaps = {
     'Humanitarian': OpenStreetMap_HOT
 };
 
-landingMap.on('baselayerchange', function(baselayer) {
+mainMap.on('baselayerchange', function(baselayer) {
     Cookies.set('MapLayer',baselayer.name);
 });
 
@@ -828,7 +538,7 @@ var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
 var overlayMaps = {};
 
-var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(landingMap);
+var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
 getAllEvents(mapAllEvents);
 
@@ -860,10 +570,10 @@ var displayVideo = function(video) {
 
 };
 
-landingMap.on('overlayadd', function (layersControlEvent) {
+mainMap.on('overlayadd', function (layersControlEvent) {
     Cookies.set(layersControlEvent.name,'on');
 });
 
-landingMap.on('overlayremove', function (layersControlEvent) {
+mainMap.on('overlayremove', function (layersControlEvent) {
     Cookies.set(layersControlEvent.name,'off');
 });

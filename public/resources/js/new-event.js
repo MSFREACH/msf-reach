@@ -63,7 +63,7 @@ newEventMap.on('click', function(e) {
 
 var refreshLandingPage = function() {
     var saveCookie = Cookies.get('Current Events');
-    landingMap.removeLayer(eventsLayer);
+    mainMap.removeLayer(eventsLayer);
     layerControl.removeLayer(eventsLayer);
     eventsLayer.clearLayers();
     $('#eventProperties').empty();

@@ -41,13 +41,13 @@ var refreshEventPage = function() {
         '- security': Cookies.get('- security'),
         '- contacts': Cookies.get('- contacts')};
 
-    eventsMap.removeLayer(accessLayer);
+    mainMap.removeLayer(accessLayer);
     layerControl.removeLayer(accessLayer);
-    eventsMap.removeLayer(needsLayer);
+    mainMap.removeLayer(needsLayer);
     layerControl.removeLayer(needsLayer);
-    eventsMap.removeLayer(securityLayer);
+    mainMap.removeLayer(securityLayer);
     layerControl.removeLayer(securityLayer);
-    eventsMap.removeLayer(contactsLayer);
+    mainMap.removeLayer(contactsLayer);
     layerControl.removeLayer(contactsLayer);
 
     Object.keys(saveCookies).forEach(function(key) {
