@@ -577,3 +577,11 @@ mainMap.on('overlayadd', function (layersControlEvent) {
 mainMap.on('overlayremove', function (layersControlEvent) {
     Cookies.set(layersControlEvent.name,'off');
 });
+
+var autocompleteMap=mainMap;
+
+var latlng;
+mainMap.on('dblclick', function(dblclickEvent) {
+    latlng = dblclickEvent.latlng;
+    $('#newEventModal').modal('show');
+});

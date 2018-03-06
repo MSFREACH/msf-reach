@@ -1,10 +1,6 @@
 /*eslint no-unused-vars: off*/
 
-var newEventMap = L.map('newEventMap').setView([20, 110], 4);
-
-$('#newEventModal').on('shown.bs.modal', function() {
-    _.defer(newEventMap.invalidateSize.bind(newEventMap));
-});
+//var newEventMap = L.map('newEventMap').setView([20, 110], 4);
 
 $('#newEventModal').on('hidden.bs.modal', function() {
     // clear previous entry
@@ -22,12 +18,7 @@ $('#newEventModal').on('hidden.bs.modal', function() {
     $('#inputSeverityScale').val('2');
     $('#inputSharepointLink').val('');
     $('#inputSecurity').val('');
-    newEventMap.removeLayer(marker);
-    newEventMap.setView([20,110], 4);
-    latlng = null;
 });
-
-var autocompleteMap=newEventMap;
 
 // Add some base tiles
 var NEmapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
