@@ -155,6 +155,9 @@ var printEventProperties = function(err, eventProperties){
 
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
+    console.log('hereeee');
+    vmEventDetails.event= $.extend(true, defaultEvent, currentEventProperties);
+    vmEventDetails.$mount('#eventVApp');
 
     if (currentEventProperties.metadata.country) {
         $.getJSON({
@@ -283,7 +286,7 @@ var printEventProperties = function(err, eventProperties){
         // Append output to body
         propertiesTable += '</table>';
 
-        $('#eventProperties').html(propertiesTable);
+        //$('#eventProperties').html(propertiesTable);
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
@@ -980,4 +983,30 @@ $(function() {
 
             translate(translateObj);
         });
+});
+
+var vmEventDetails = new Vue({
+
+  data: {
+    name: 'test',
+    event: $.extend(true, defaultEvent, currentEventProperties),
+    severityLabels: severityLabels
+  },
+  mounted:function(){
+    console.log('mounted here');
+    console.log(this.event);
+
+  },
+  computed:{
+    notStr:function(){
+      return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+    },
+    eventLink:function(){
+      return WEB_HOST + 'events/?eventId=' + this.event.id;
+    },
+    eventReportLink:function()
+    {
+      return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+    }
+  }
 });

@@ -74,6 +74,9 @@
     padding: 5px;
   }
   </style>
+  <!-- VueJs + plug-ins -->
+  <script src="/lib/vue/vue.min.js"></script>
+  <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
 </head>
 <body>
 
@@ -462,7 +465,37 @@
           </ul>
           <div class="tab-content">
             <div id="event" class="tab-pane fade in active">
-              <div id="eventProperties"></div>
+              <div id="eventVApp">
+                <table class="table">
+                  <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
+                  <tr><td>Country</td><td> {{ event.metadata.country }}</td></tr>
+                  <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
+                  <tr><td>Type</td><td> {{ event.type+' '+event.metadata.sub_type }}</td></tr>
+                  <tr><td>Event date and Time</td><td> {{ event.metadata.event_datetime || event.created_at }}</td></tr>
+
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>
+
+                  <tr v-else><td>Latest notification:  </td><td>(none)</td></tr>
+                  <tr><td>Severity </td><td> {{ ((event.metadata.severity_scale) ? ('scale: ' + severityLabels[event.metadata.severity_scale-1]) : '') + event.metadata.severity }}</td></tr>
+                  <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
+                  <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
+                  <tr><td>Last updated at</td><td> {{ event.updated_at.split('T')[0] }}</td></tr>
+
+
+
+
+                  <tr><td>Event link</td><td><a id='eventLink'  :href='eventLink' target='_blank'>{{ eventLink }}</a></td><td><button class='btn btn-primary' data-clipboard-target='#eventLink'>Copy link</button></td></tr>
+
+                  <tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td>
+                    <td><a style="display:none;" id='reportLink' :href='eventReportLink' target='_blank'> {{ eventReportLink }} </a><button class='btn btn-primary' :data-clipboard-text='eventReportLink'>Copy link</button></td></tr>
+
+
+                    <tr v-if='event.metadata.user'><td>Creator</td><td> {{ event.metadata.user }}</td></tr>
+                    <tr v-if='event.metadata.user_edit'><td>Edits</td><td>{{ event.metadata.user_edit }}</td></tr>
+                  </table>
+
+
+              </div>
               <div class="panel-group" id="accordion">
                 <div class="panel panel-default" id="panel4">
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
@@ -718,9 +751,7 @@
 
 <script src="/lib/countrySelect.min.js"></script>
 
-<!-- VueJs + plug-ins -->
-<script src="/lib/vue/vue.min.js"></script>
-<script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
+
 
 <!-- Get query parameter from URL -->
 <!-- Ask the server for reports from specific event -->
@@ -744,10 +775,10 @@
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
 
-<script src="/resources/js/events.js"></script>
-
 <!-- events common variables -->
 <script src="/events/common.js"></script>
+<script src="/resources/js/events.js"></script>
+
 <script src="/resources/js/contacts.js"></script>
 <script src="/resources/js/missions.js"></script>
 <script>
