@@ -64,6 +64,10 @@ if (typeof(Cookies.get('MapLayer')) === 'undefined') {
     Cookies.set('MapLayer','Terrain'); // default
 }
 
+if (Cookies.get('Ongoing MSF Projects')==='undefined') {
+    Cookies.set('Ongoing MSF Projects','on');
+}
+
 /**
 * Function to get feeds
 **/
