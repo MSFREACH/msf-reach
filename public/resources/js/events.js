@@ -58,7 +58,7 @@ if (typeof(Cookies.get('MapLayer')) === 'undefined') {
 }
 
 var zoomToEvent = function(latlng) {
-    eventsMap.setView(latlng, 12);
+    eventsMap.setView(latlng, 5);
 };
 
 var clipboard = new Clipboard('.btn');
@@ -584,7 +584,7 @@ var mapReports = function(reports){
     layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
 
     if (points.length > 0){
-        eventsMap.fitBounds(points, {padding: [50,50]});
+        eventsMap.fitBounds(points, {padding: [200,200]});
     }
 
 };
