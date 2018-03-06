@@ -101,8 +101,8 @@ var mapAllEvents = function(err, events){
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
-    'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+    'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
+    'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type: ' + type.replace('_',' ') + '<br>' +
     statusStr +
     severityStr +
