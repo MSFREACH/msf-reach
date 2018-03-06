@@ -51,25 +51,6 @@ $( '#inputSeverityScale' ).slider({
 var eventsLayer;
 
 /**
-* Function to get all events from the API
-* @param {Function} callback - Function to call once data returned
-* @returns {String} err - Error message if any, else none
-* @returns {Object} events - Events as GeoJSON FeatureCollection
-*/
-var getAllEvents = function(callback){
-    $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT, function ( data ){
-    // Print output to page
-        callback(null, data.result);
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            callback(err.responseText, null);
-        }
-    });
-};
-
-/**
 * Function to map and print a table of events
 * @param {Object} events - GeoJSON Object containing event details
 */
