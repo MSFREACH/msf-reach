@@ -156,7 +156,8 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
     console.log('hereeee');
-    vmEventDetails.event= $.extend(true, defaultEvent, currentEventProperties);
+    vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
+    vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
     vmEventDetails.$mount('#eventVApp');
 
     if (currentEventProperties.metadata.country) {
@@ -939,8 +940,6 @@ $(function() {
 var vmEventDetails = new Vue({
 
   data: {
-    name: 'test',
-    event: $.extend(true, defaultEvent, currentEventProperties),
     severityColors: severityColors,
     severityTexts: severityTexts
   },

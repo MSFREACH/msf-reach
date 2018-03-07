@@ -514,7 +514,42 @@
                                   <td>{{ (new Date(elem.notification_time*1000)).toLocaleString() }}</td>
                                   <td> {{ elem.notification }}</td>
                                 </tr>
-                              </tbody></table>
+                              </tbody>
+                            </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResp" >
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-target="#collapseResp"
+                      href="#collapseResp" class="collapsed">
+                      Responses
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapseResp" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                        <ul class="list-group">
+                          <li class="list-group-item">
+                            <dl class="dl-horizontal">
+                              <dt> Type of programmes</dt>
+                              <dd v-for="item in event.metadata.msf_response_types_of_programmes" >
+                                <span class="label label-primary" >
+                                     {{ item }}
+                                </span>&nbsp;
+                              </dd>
+                              <dt> Notes:</dt>
+                              <dd>
+                                {{event.metadata.msf_response}}
+                              </dd>
+                            </dl>
+                          </li>
+                        </ul>
+
+
                       </div>
                     </div>
                   </div>
