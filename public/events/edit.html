@@ -791,7 +791,75 @@ var vm = new Vue({
 
 
     this.$nextTick(function() {
-      var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
+
+    switch (Cookies.get('MapLayer')) {
+    case 'Satellite':
+        mapboxSatellite.addTo(eventMap);
+        mapboxSatellite.addTo(msfResponseMap);
+        break;
+    case 'Terrain':
+        mapboxTerrain.addTo(eventMap);
+        mapboxTerrain.addTo(msfResponseMap);
+        break;
+    default:
+        OpenStreetMap_HOT.addTo(eventMap);
+        OpenStreetMap_HOT.addTo(msfResponseMap);
+    }
+
+
+    var baseMaps = {
+        'Terrain': mapboxTerrain,
+        'Satellite' : mapboxSatellite,
+        'Humanitarian': OpenStreetMap_HOT
+    };
+
+    eventMap.on('baselayerchange', function(baselayer) {
+        Cookies.set('MapLayer',baselayer.name);
+    });
+
+    msfResponseMap.on('baselayerchange', function(baselayer) {
+        Cookies.set('MapLayer',baselayer.name);
+    });
+
+    var groupedOverlays = {
+        'RSS Feeds': {},
+        'Contacts': {}
+    };
+
+    var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+    var overlayMaps = {};
+
+    var eventMapLayerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(eventMap);
+    var msfResponseMapLayerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(msfResponseMap);
+
+
+    getAllEvents(mapAllEvents);
+
+    getFeeds('/api/hazards/pdc',mapEditPDCHazards);
+    getFeeds('/api/hazards/tsr',mapEditTSRHazards);
+    getFeeds('/api/hazards/usgs',mapEditUSGSHazards);
+    getFeeds('/api/hazards/gdacs',mapEditGDACSHazards);
+    getFeeds('/api/hazards/ptwc',mapEditPTWCHazards);
+    getMissions(mapEventMissions);
+    getContacts(mapEventContacts);
+
+
+    eventMap.on('overlayadd', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'on');
+    });
+
+    eventMap.on('overlayremove', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'off');
+    });
+
+    msfResponseMap.on('overlayadd', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'on');
+    });
+
+    msfResponseMap.on('overlayremove', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'off');
+    });
       var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
 
       /** << eventMap */
