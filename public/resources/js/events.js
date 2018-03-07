@@ -227,47 +227,6 @@ var printEventProperties = function(err, eventProperties){
     if (err){
         $('#eventProperties').append(err);
     } else {
-        var propertiesTable = '';
-        propertiesTable += '<table class="table">';
-        //['id', 'status', 'type', 'created'];
-        propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
-        propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
-        propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
-        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
-        propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
-
-        if (eventProperties.metadata.notification)
-        {
-            var notStr=(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
-            propertiesTable += '<tr><td>Latest notification: </td><td>'+ notStr +'</td></tr>';
-        }
-        else
-            propertiesTable += '<tr><td>Latest notification:  </td><td>(none)</td></tr>';
-        propertiesTable += '<tr><td>Severity </td><td>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</td></tr>';
-        propertiesTable += '<tr><td>Person In charge </td><td>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</td></tr>';
-        propertiesTable += '<tr><td>Sharepoint Link </td><td>'+eventProperties.metadata.sharepoint_link+'</td></tr>';
-        //propertiesTable += '<tr><td> </td><td>'++'</td></tr>';
-        propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
-
-
-
-
-
-        // Create unique link to this event
-        var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
-        // Create unique report link for this event
-        eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
-        // Add unique link to this event
-        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
-        // Add unique link to report to this event
-        propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-text=\''+eventReportLink+'\'>Copy link</button></td></tr>';
-        // Add user metadata
-        if (eventProperties.metadata.user) {
-            propertiesTable += '<tr><td>Creator</td><td>'+eventProperties.metadata.user+'</td></tr>';
-        }
-        if (eventProperties.metadata.user_edit) {
-            propertiesTable += '<tr><td>Edits</td><td>'+eventProperties.metadata.user_edit+'</td></tr>';
-        }
 
         // Pre-fil edit modal
         $('#inputName').val(eventProperties.metadata.name);
@@ -283,10 +242,6 @@ var printEventProperties = function(err, eventProperties){
             $('#inputNotification').val(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification);
         }
 
-        // Append output to body
-        propertiesTable += '</table>';
-
-        //$('#eventProperties').html(propertiesTable);
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
