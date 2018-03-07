@@ -476,7 +476,7 @@
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>
 
                   <tr v-else><td>Latest notification:  </td><td>(none)</td></tr>
-                  <tr><td>Severity </td><td> {{ ((event.metadata.severity_scale) ? ('scale: ' + severityLabels[event.metadata.severity_scale-1]) : '') + event.metadata.severity }}</td></tr>
+                  <tr><td>Severity </td><td> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityTexts[event.metadata.severity_scale-1]}}</span></span> {{ event.metadata.severity }} </td></tr>
                   <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
                   <tr><td>Last updated at</td><td> {{ event.updated_at.split('T')[0] }}</td></tr>

@@ -990,7 +990,8 @@ var vmEventDetails = new Vue({
   data: {
     name: 'test',
     event: $.extend(true, defaultEvent, currentEventProperties),
-    severityLabels: severityLabels
+    severityColors: severityColors,
+    severityTexts: severityTexts
   },
   mounted:function(){
     console.log('mounted here');

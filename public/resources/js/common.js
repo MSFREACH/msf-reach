@@ -15,6 +15,9 @@ $(function() {
     });
 });
 
+var severityColors=['green','orange','red'];
+var severityTexts=['low','med','high'];
+
 var severityLabels = ['<span style="color:green">low</span>',
     '<span style="color:orange">med</span>',
     '<span style="color:red">high</span>'];
