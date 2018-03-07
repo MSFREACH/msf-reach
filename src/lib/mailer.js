@@ -1,44 +1,44 @@
-const nodemailer = require('nodemailer');
+/**
+send emails
+**/
 
-var config=require('./config.js');
+import nodemailer from 'nodemailer';
 
-//console.log(config.SMTP.user);
-//console.log(config.SMTP.pass);
+export default ( config, logger ) => ({
 
-// create reusable transporter object using the default SMTP transport
-let smtpConfig = {
-    host: 'email-smtp.us-west-2.amazonaws.com',
-    port: 465,
-    secure: true,
-    requireTLS: true,
-    auth: {
-        user: config.SMTP_USER,
-        pass: config.SMTP_PASS
-    }
-};
+  send: (recipient, emContext) => new Promise((resolve, reject) => {
 
-var transport = nodemailer.createTransport(smtpConfig);
+    const smtpConfig = {
+        host: 'email-smtp.us-west-2.amazonaws.com',
+        port: 465,
+        secure: true,
+        requireTLS: true,
+        auth: {
+            user: config.SMTP_USER,
+            pass: config.SMTP_PASS
+        }
+    };
 
-module.exports.mail = (receiver,emContext,logger) => new Promise((resolve, reject) =>
-{
+    const transport = nodemailer.createTransport(smtpConfig);
 
-    let mailOptions = {
+    const mailOptions = {
         from: 'MSF-REACH <admin@msf-reach.org>', // sender address
+        to: recipient,
         subject: 'Update your MSF-REACH contact details',
         template: 'fixme',
         context: emContext
     };
 
     // send mail with defined transport object
-    logger.info('Sending email to '+receivers);
+    logger.info('Sending email to ' + recipient);
     transport.sendMail(mailOptions, (error, info) => {
         if (error) {
-            logger.error(error);
+            logger.error(error.message);
             reject(error);
         }
         else
             logger.info('Email %s sent: %s', info.messageId, info.response);
-        resolve(); // fixme probably want to resolve something useful
+            resolve(info); // fixme probably want to resolve something useful
     });
-
+  })
 });

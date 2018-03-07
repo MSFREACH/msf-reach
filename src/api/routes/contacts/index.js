@@ -3,6 +3,9 @@ import { Router } from 'express';
 // Import our data model
 import contacts from './model';
 
+// Import peers subroute
+import peers from './peers';
+
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
 
@@ -14,6 +17,9 @@ import validate from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();
+
+    // Add peers subroute
+    api.use('/peers', peers({config, db, logger}));
 
     api.get('/', jwtCheck, cacheResponse('1 minute'),
         validate({
@@ -144,5 +150,7 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
+
+    // Return api
     return api;
 };
