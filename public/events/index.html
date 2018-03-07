@@ -463,9 +463,9 @@
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
-          <div class="tab-content">
+          <div class="tab-content" id="eventVApp">
             <div id="event" class="tab-pane fade in active">
-              <div id="eventVApp">
+              <div>
                 <table class="table">
                   <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
                   <tr><td>Country</td><td> {{ event.metadata.country }}</td></tr>
@@ -508,7 +508,17 @@
                   </div>
                   <div id="collapseNotif" class="panel-collapse collapse in">
                     <div class="panel-body" >
-                      <div id="eventNotifications"></div>
+                      <div id="eventNotifications">
+
+                            <table v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
+                              <thead><tr><td>Time</td><td>Notification</td></tr></thead>
+                              <tbody>
+                                <tr v-for="elem in event.metadata.notification">
+                                  <td>{{ (new Date(elem.notification_time*1000)).toLocaleString() }}</td>
+                                  <td> {{ elem.notification }}</td>
+                                </tr>
+                              </tbody></table>
+                      </div>
                     </div>
                   </div>
                 </div>
