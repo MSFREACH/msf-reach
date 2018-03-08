@@ -10,7 +10,7 @@ export default (config, db, logger) => ({
     /**
 	* Return all events
 	*/
-    all: (search,bounds) => new Promise((resolve, reject) => {
+    all: (search,bounds,country) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, properties, the_geom
 		FROM ${config.TABLE_MISSIONS}
@@ -18,13 +18,14 @@ export default (config, db, logger) => ({
 			properties ->> 'name' ILIKE $1
 			OR properties ->> 'cell' ILIKE $1
 			OR properties ->> 'email' ILIKE $1)) AND
-			($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
+			($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
+            ($7 IS NULL OR metadata->>'country' = $7)
 			ORDER BY id`;
 
         // Format search string for Postgres
         let text = (!search) ? null : '%'+search+'%';
         let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
-        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
+        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax, country ];
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
