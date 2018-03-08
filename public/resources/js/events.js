@@ -439,14 +439,26 @@ var mapAllEvents = function(err, events){
 
     eventsLayer = L.geoJSON(events, {
         pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: L.icon({
-                iconUrl: '/resources/images/icons/event_types/open_event.svg',
-                iconSize:     [50, 50], // size of the icon
-                iconAnchor: [25, 50],
-                popupAnchor: [0, -40]
-                //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-                //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-            })});
+            if (feature.properties.id===currentEventId) {
+                return L.marker(latlng, {icon: L.icon({
+                    iconUrl: '/resources/images/icons/event_types/selected_event.svg',
+                    iconSize:     [50, 50], // size of the icon
+                    iconAnchor: [25, 50],
+                    popupAnchor: [0, -40]
+                    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+                })});
+
+            } else {
+                return L.marker(latlng, {icon: L.icon({
+                    iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                    iconSize:     [50, 50], // size of the icon
+                    iconAnchor: [25, 50],
+                    popupAnchor: [0, -40]
+                    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+                })});
+            }
         },
         onEachFeature: onEachFeature
     });
