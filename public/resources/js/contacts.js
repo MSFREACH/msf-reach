@@ -7,7 +7,7 @@ function openContactPopup(id)
         {
             if (contactsClusters.hasLayer(layer))
                 contactsClusters.zoomToShowLayer(layer);
-            layer.openPopup(eventsMap.center);
+            layer.openPopup(mainMap.center);
         }
     });
 }
@@ -72,10 +72,10 @@ var loadContacts = function(err, contacts) {
 // Perform GET call to get contacts
 var getContacts = function(term){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var lngmin= eventsMap.getBounds().getSouthWest().wrap().lng;
-    var latmin= eventsMap.getBounds().getSouthWest().wrap().lat;
-    var lngmax= eventsMap.getBounds().getNorthEast().wrap().lng;
-    var latmax= eventsMap.getBounds().getNorthEast().wrap().lat;
+    var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
+    var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
+    var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
+    var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
     url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
     $.getJSON(url, function (data){
         loadContacts(null, data.result.features);
@@ -102,8 +102,8 @@ var getContacts = function(term){
 var thGetContacts=_.throttle(getContacts, 300);
 
 //attach handler to different map events
-eventsMap.on('load', function(){thGetContacts(null);});
-eventsMap.on('moveend', function(){thGetContacts($('#contSearchTerm').val());});
+mainMap.on('load', function(){thGetContacts(null);});
+mainMap.on('moveend', function(){thGetContacts($('#contSearchTerm').val());});
 
 
 $('#contSearchTerm').on('input',function(){

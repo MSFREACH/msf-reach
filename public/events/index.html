@@ -453,10 +453,10 @@
         <!-- Side pane -->
         <div id="sidepane" class="col-md-6" style="min-height:90vh;">
           <ul class="nav nav-tabs">
-            <li role="presentation"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
+            <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
             <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
-            <li role="presentation" class="active"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
+            <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
@@ -527,6 +527,8 @@
               <button id="btnSearchTwitter" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
             </div>
           </div>
+          <div id="translationSuggestedLanguages">Suggested languages (based on country, if in SE Asia): </div>
+          <div>
           <select class="goog-te-combo" id="translateLanguageSelection">
             <option value="">Select Language</option>
             <option value="af">Afrikaans</option>
@@ -635,7 +637,8 @@
             <option value="zu">Zulu</option>
           </select>
 
-        Powered by <span style="white-space: nowrap;"><a class="goog-logo-link" href="https://translate.google.com" target="_blank"><img style="padding-right: 3px;" src="http://www.google.com/images/logos/google_logo_41.png" width="37" height="13">Translate</a></span>
+        Powered by <span style="white-space: nowrap;"><a class="goog-logo-link" href="https://translate.google.com" target="_blank"><img style="padding-right: 3px;" src="https://www.google.com/images/logos/google_logo_41.png" width="37" height="13">Translate</a></span>
+      </div>
 
           <div id="tweetFeed"></div>
 
@@ -729,12 +732,10 @@
 
 <script src="/lib/leaflet/leaflet.markercluster.js"></script>
 
-<script src="/resources/js/events.js"></script>
+
 <script src="/resources/js/nav.js"></script>
 <script src="/resources/js/dragdrop.js"></script>
 <script src="/resources/js/twitter.js"></script>
-<script src="/resources/js/contacts.js"></script>
-<script src="/resources/js/missions.js"></script>
 
 <script src="/resources/js/new-report.js"></script>
 <script src="/report/reportcard.js"></script>
@@ -743,8 +744,12 @@
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
 
+<script src="/resources/js/events.js"></script>
+
 <!-- events common variables -->
 <script src="/events/common.js"></script>
+<script src="/resources/js/contacts.js"></script>
+<script src="/resources/js/missions.js"></script>
 <script>
 
 var mapOn = 1;
@@ -756,7 +761,7 @@ $('#feedTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-6');
     $('#sidepane').addClass('col-md-12');
     mapOn = 0;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -768,7 +773,7 @@ $('#contactsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -780,7 +785,7 @@ $('#missionsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -791,7 +796,7 @@ $('#eventTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -802,7 +807,7 @@ $('#reportsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
@@ -814,7 +819,7 @@ $('#countryDetailsTab').on('click', function(e){
     $('#sidepane').removeClass('col-md-12');
     $('#sidepane').addClass('col-md-6');
     mapOn = 1;
-    setTimeout(function(){eventsMap.invalidateSize()}, 400);
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
 
