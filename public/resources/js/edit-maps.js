@@ -93,26 +93,48 @@ var mapEditEvents = function(err, events){
         layer.bindPopup(popupContent);
     }
 
-    eventsLayer = L.geoJSON(events, {
+    eventEventsLayer = L.geoJSON(events, {
         pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: L.icon({
-                iconUrl: '/resources/images/icons/event_types/open_event.svg',
-                iconSize:     [50, 50], // size of the icon
-                iconAnchor: [25, 50],
-                popupAnchor: [0, -40]
-                //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
-                //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-            })});
+            if (feature.properties.id!==currentEventId) {
+                return L.marker(latlng, {icon: L.icon({
+                    iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                    iconSize:     [50, 50], // size of the icon
+                    iconAnchor: [25, 50],
+                    popupAnchor: [0, -40]
+                    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+                })});
+            } else {
+                return null;
+            }
+        },
+        onEachFeature: onEachFeature
+    });
+
+    msfResponseEventsLayer = L.geoJSON(events, {
+        pointToLayer: function (feature, latlng) {
+            if (feature.properties.id!==currentEventId) {
+                return L.marker(latlng, {icon: L.icon({
+                    iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                    iconSize:     [50, 50], // size of the icon
+                    iconAnchor: [25, 50],
+                    popupAnchor: [0, -40]
+                    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+                })});
+            } else {
+                return null;
+            }
         },
         onEachFeature: onEachFeature
     });
 
     if (Cookies.get('Ongoing MSF Projects')==='on') {
-        eventsLayer.addTo(eventMap);
-        eventsLayer.addTo(msfResponseMap);
+        eventEventsLayer.addTo(eventMap);
+        msfResponseEventsLayer.addTo(msfResponseMap);
     }
-    eventMapLayerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
-    msfResponseMapLayerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
+    eventMapLayerControl.addOverlay(eventEventsLayer, 'Ongoing MSF Projects');
+    msfResponseMapLayerControl.addOverlay(msfResponseEventsLayer, 'Ongoing MSF Projects');
 
 };
 
@@ -158,7 +180,14 @@ var mapEditMissions = function(missions ){
         popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
-    var missionsLayer = L.geoJSON(missions, {
+    var eventMissionsLayer = L.geoJSON(missions, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: missionIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+
+    var msfResponseMissionsLayer = L.geoJSON(missions, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: missionIcon});
         },
@@ -166,11 +195,11 @@ var mapEditMissions = function(missions ){
     });
 
     if (Cookies.get('Mission Histories')==='on') {
-        missionsLayer.addTo(eventMap);
-        missionsLayer.addTo(msfResponseMap);
+        eventMissionsLayer.addTo(eventMap);
+        msfResponseMissionsLayer.addTo(msfResponseMap);
     }
-    eventMapLayerControl.addOverlay(missionsLayer, 'Mission Histories');
-    msfResponseMapLayerControl.addOverlay(missionsLayer, 'Mission Histories');
+    eventMapLayerControl.addOverlay(eventMissionsLayer, 'Mission Histories');
+    msfResponseMapLayerControl.addOverlay(msfResponseMissionsLayer, 'Mission Histories');
 
 };
 
@@ -225,14 +254,28 @@ var mapEditContacts = function(contacts ){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
 
-    var MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
+    var eventMSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: contactIcon});
         },
         onEachFeature: onEachFeature
     });
 
-    var nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+    var eventNonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: contactIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+
+    var msfResponseMSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: contactIcon});
+        },
+        onEachFeature: onEachFeature
+    });
+
+    var msfResponseNonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: contactIcon});
         },
@@ -240,22 +283,33 @@ var mapEditContacts = function(contacts ){
     });
 
     if (Cookies.get('- MSF Staff')==='on') {
-        MSFContactsLayer.addTo(eventMap);
-        MSFContactsLayer.addTo(msfResponseMap);
+        eventMSFContactsLayer.addTo(eventMap);
+        msfResponseMSFContactsLayer.addTo(msfResponseMap);
     }
     if (Cookies.get('- other contacts')==='on') {
-        nonMSFContactsLayer.addTo(eventMap);
-        nonMSFContactsLayer.addTo(msfResponseMap);
+        eventNonMSFContactsLayer.addTo(eventMap);
+        msfResponseNonMSFContactsLayer.addTo(msfResponseMap);
     }
-    layerControl.addOverlay(MSFContactsLayer, '- MSF Staff', 'Contacts');
-    layerControl.addOverlay(nonMSFContactsLayer, '- other contacts', 'Contacts');
+    eventMapLayerControl.addOverlay(eventMSFContactsLayer, '- MSF Staff', 'Contacts');
+    eventMapLayerControl.addOverlay(eventNonMSFContactsLayer, '- other contacts', 'Contacts');
+
+    msfResponseMapLayerControl.addOverlay(msfResponseMSFContactsLayer, '- MSF Staff', 'Contacts');
+    msfResponseMapLayerControl.addOverlay(msfResponseNonMSFContactsLayer, '- other contacts', 'Contacts');
+
 
 };
 
 
 var mapEditPDCHazards = function(hazards){
 
-    PDCHazardsLayer = L.geoJSON(hazards, {
+    eventPDCHazardsLayer = L.geoJSON(hazards, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: PDCHazardIcon(feature.properties.summary)});
+        },
+        onEachFeature: hazardFeature
+    });
+
+    msfResponsePDCHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: PDCHazardIcon(feature.properties.summary)});
         },
@@ -266,15 +320,26 @@ var mapEditPDCHazards = function(hazards){
         PDCHazardsLayer.addTo(eventMap);
         PDCHazardsLayer.addTo(msfResponseMap);
     }
-    eventMapLayerControl.addOverlay(PDCHazardsLayer, '- PDC', 'RSS Feeds');
-    msfResponseMapLayerControl.addOverlay(PDCHazardsLayer, '- PDC', 'RSS Feeds');
+
+    eventMapLayerControl.addOverlay(eventPDCHazardsLayer, '- PDC', 'RSS Feeds');
+    msfResponseMapLayerControl.addOverlay(msfResponsePDCHazardsLayer, '- PDC', 'RSS Feeds');
 
 
 };
 
 var mapEditTSRHazards = function(hazards){
 
-    TSRHazardsLayer = L.geoJSON(hazards, {
+    eventTSRHazardsLayer = L.geoJSON(hazards, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, L.icon({
+                iconUrl: '/resources/images/icons/event_types/typhoon.svg',
+                iconSize: [39, 39]
+            }));
+        },
+        onEachFeature: hazardFeature
+    });
+
+    msfResponseTSRHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, L.icon({
                 iconUrl: '/resources/images/icons/event_types/typhoon.svg',
@@ -285,11 +350,11 @@ var mapEditTSRHazards = function(hazards){
     });
 
     if (Cookies.get('- TSR')==='on') {
-        TSRHazardsLayer.addTo(eventMap);
-        TSRHazardsLayer.addTo(msfResponseMap);
+        eventTSRHazardsLayer.addTo(eventMap);
+        msfResponseTSRHazardsLayer.addTo(msfResponseMap);
     }
-    EventMapLayerControl.addOverlay(TSRHazardsLayer, '- TSR', 'RSS Feeds');
-    msfResponseMapLayerControl.addOverlay(TSRHazardsLayer, '- TSR', 'RSS Feeds');
+    eventMapLayerControl.addOverlay(eventTSRHazardsLayer, '- TSR', 'RSS Feeds');
+    msfResponseMapLayerControl.addOverlay(msfResponseTSRHazardsLayer, '- TSR', 'RSS Feeds');
 
 
 };
@@ -299,7 +364,17 @@ var mapEditTSRHazards = function(hazards){
 * @param {Object} hazards - GeoJson FeatureCollection containing PTWC hazard points
 **/
 var mapEditPTWCHazards = function(hazards){
-    PTWCHazardsLayer = L.geoJSON(hazards, {
+    eventPTWCHazardsLayer = L.geoJSON(hazards, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, L.icon({
+                iconUrl: '/resources/images/icons/event_types/tsunami.svg',
+                iconSize: [39, 39]
+            }));
+        },
+        onEachFeature: hazardFeature
+    });
+
+    msfResponsePTWCHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, L.icon({
                 iconUrl: '/resources/images/icons/event_types/tsunami.svg',
@@ -310,10 +385,12 @@ var mapEditPTWCHazards = function(hazards){
     });
 
     if (Cookies.get('- PTWC')==='on') {
-        PTWCHazardsLayer.addTo(mainMap);
+        eventPTWCHazardsLayer.addTo(eventMap);
+        msfResponsePTWCHazardsLayer.addTo(msfResponseMap);
     }
 
-    layerControl.addOverlay(PTWCHazardsLayer, '- PTWC', 'RSS Feeds');
+    eventMapLayerControl.addOverlay(eventPTWCHazardsLayer, '- PTWC', 'RSS Feeds');
+    msfResponseMapLayerControl.addOverlay(msfResponsePTWCHazardsLayer, '- PTWC', 'RSS Feeds');
 
 };
 
@@ -322,7 +399,14 @@ var mapEditPTWCHazards = function(hazards){
 * @param {Object} hazards - GeoJson FeatureCollection containing GDACS hazard points
 **/
 var mapEditGDACSHazards = function(hazards){
-    GDACSHazardsLayer = L.geoJSON(hazards, {
+    eventGDACSHazardsLayer = L.geoJSON(hazards, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: GDACSHazardIcon(feature.properties)});
+        },
+        onEachFeature: hazardFeature
+    });
+
+    msfResponseGDACSHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: GDACSHazardIcon(feature.properties)});
         },
@@ -330,11 +414,11 @@ var mapEditGDACSHazards = function(hazards){
     });
 
     if (Cookies.get('- GDACS')==='on') {
-        GDACSHazardsLayer.addTo(eventMap);
-        GDACSHazardsLayer.addTo(msfResponseMap);
+        eventGDACSHazardsLayer.addTo(eventMap);
+        msfResponseGDACSHazardsLayer.addTo(msfResponseMap);
     }
-    eventMapLayerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'RSS Feeds');
-    msfResponseMapLayerControl.addOverlay(GDACSHazardsLayer, '- GDACS', 'RSS Feeds');
+    eventMapLayerControl.addOverlay(eventGDACSHazardsLayer, '- GDACS', 'RSS Feeds');
+    msfResponseMapLayerControl.addOverlay(msfResponseGDACSHazardsLayer, '- GDACS', 'RSS Feeds');
 
 };
 
