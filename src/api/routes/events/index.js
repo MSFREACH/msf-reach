@@ -19,10 +19,11 @@ export default ({ config, db, logger }) => {
         validate({
             query: {
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
-                status: Joi.any().valid(config.API_EVENT_STATUS_TYPES)
+                status: Joi.any().valid(config.API_EVENT_STATUS_TYPES),
+                country: Joi.string()
             }
         }),
-        (req, res, next) => events(config, db, logger).all(req.query.status)
+        (req, res, next) => events(config, db, logger).all(req.query.status, req.query.country)
             .then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
