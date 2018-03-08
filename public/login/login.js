@@ -2,8 +2,8 @@
 
 // Constants
 var POOL_DATA = {
-    UserPoolId : 'ap-southeast-2_izc55nNFX', // Your user pool id here
-    ClientId : 'uke84ie7fl3aj9djnpqufoam' // Your client id here
+    UserPoolId : 'ap-southeast-2_WPmNy3RZj', // Your user pool id here
+    ClientId : '1fgpds1cqu6sg1j8bo8d09d691' // Your client id here
 };
 
 var setJWTCookie = function(jwt){
