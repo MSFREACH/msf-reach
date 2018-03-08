@@ -1,0 +1,14 @@
+{ "countries": {
+  "Brunei": [{"iso":"ms","name":"Malay"}],
+  "Cambodia": [{"iso":"km","name":"Khmer"}],
+  "East Timor": [{"iso":"pt","name":"Portuguese"}],
+  "Indonesia": [{"iso":"id","name":"Indonesian"},{"iso":"jw","name":"Javanese"}],
+  "Laos": [{"iso":"lo","name":"Lao"}],
+  "Malaysia": [{"iso":"ms","name":"Malay"}],
+  "Myanmar": [{"iso":"my","name":"Burmese"}],
+  "Philippines": [{"iso":"tl","name":"Filipino"}],
+  "Singapore": [{"iso":"en","name":"English"},{"iso":"ta","name":"Tamil"},{"iso":"zh-CN","name":"Chinese"},{"iso":"ms","name":"Malay"}],
+  "Thailand": [{"iso":"th","name":"Thai"},{"iso":"lo","name":"Lao"}],
+  "Vietnam": [{"iso": "vi","name":"Vietnamese"}]
+  }
+}

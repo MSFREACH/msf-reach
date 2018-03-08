@@ -55,14 +55,11 @@
             <div class="container-fluid">
               <div class="row">
                 <!-- Map -->
-                <div class="col-sm-7" style="height:80vh;overflow:hidden;">
-                  <h4 id="title">1. Click on map to select event epicentre</h4>
-                  <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
-                  <div id="newEventMap" style="height:90%; width:100%;"></div>
-                </div>
+
                 <!-- Side pane -->
-                <div id="newEventSidepane" class="col-sm-5">
-                  <h4 id="title">2. Add event metadata</h4>
+                <div id="newEventSidepane" class="col-sm-12">
+                  <h4 id="title">Add event metadata</h4>
+                  <div id="geocodingNotice"><strong>Note that the event coordinates (only) are sent to Google for geocoding events to country</strong></div>
                   <div id="newEventProperties">
                         <div class="panel panel-default" style="margin-bottom:0px;">
                           <div class="panel-body">
@@ -113,7 +110,7 @@
                               <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
                             </div>
                             <div class="form-group">
-                              <label for="inputEvDateTime">Date and time of Event</label>
+                              <label for="inputEvDateTime">Date and time of Event (local time in time zone of event)</label>
                               <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD HH:MM" >
                             </div>
                             <div class="form-group" >
@@ -395,7 +392,13 @@
 
 
         <div class="col-md-8">
-          <div id="landingMap"></div>
+            <h6>Double click on approximate location of event on map to create a new event.</h6>
+            <div class="form-section">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
+              </div>
+              <div id="mainMap" style="height:80vh;"></div>
+            </div>
         </div>
 
         <div id="sidepane" class="col-md-4" >
@@ -417,7 +420,6 @@
             </div>
             <div id="toolbox" class="tab-pane fade">
               <div class="list-group">
-                  <a href="#newEventModal" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#newEventModal">Create a new event</a>
                   <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
               </div>
             </div>
@@ -450,10 +452,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js" integrity="sha256-gQzieXjKD85Ibbpg4l8GduIagpt4oUSQRYaDaLd+8sI=" crossorigin="anonymous"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/resources/js/common.js"></script>
     <!-- Cookies -->
     <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
-
+    <script type="text/javascript" src="/resources/js/common.js"></script>
 
     <!-- VueJs + plug-ins -->
     <script src="/lib/vue/vue.min.js"></script>
@@ -466,6 +467,7 @@
     <script src="lib/getQueryVariable/getQueryVariable.js"></script>
     <script src="lib/leaflet/leaflet.js"></script>
     <script src="/lib/leaflet/leaflet.groupedlayercontrol.min.js"></script>
+    <script src="resources/js/common.js"></script>
     <script src="resources/js/landing.js"></script>
     <script src="resources/js/nav.js"></script>
 

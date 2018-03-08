@@ -6,7 +6,7 @@ function openMissionPopup(id) {
         {
             if (missionsClusters.hasLayer(layer))
                 missionsClusters.zoomToShowLayer(layer);
-            layer.openPopup(eventsMap.center);
+            layer.openPopup(mainMap.center);
         }
     });
 }
@@ -50,10 +50,10 @@ var loadMissions = function(err, missions) {
 var getMissions = function(term) {
 
     var url='/api/missions?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var lngmin = eventsMap.getBounds().getSouthWest().wrap().lng;
-    var latmin = eventsMap.getBounds().getSouthWest().wrap().lat;
-    var lngmax = eventsMap.getBounds().getNorthEast().wrap().lng;
-    var latmax = eventsMap.getBounds().getNorthEast().wrap().lat;
+    var lngmin = mainMap.getBounds().getSouthWest().wrap().lng;
+    var latmin = mainMap.getBounds().getSouthWest().wrap().lat;
+    var lngmax = mainMap.getBounds().getNorthEast().wrap().lng;
+    var latmax = mainMap.getBounds().getNorthEast().wrap().lat;
     url = url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
     $.getJSON(
         url,
@@ -95,8 +95,8 @@ var onMissionLinkClick = function(id) {
 var thGetMissions=_.throttle(getMissions, 300);
 
 //attach handler to different map events
-eventsMap.on('load', function(){thGetMissions(null);});
-eventsMap.on('moveend', function(){thGetMissions($('#missSearchTerm').val());});
+mainMap.on('load', function(){thGetMissions(null);});
+mainMap.on('moveend', function(){thGetMissions($('#missSearchTerm').val());});
 
 
 $('#missSearchTerm').on('input',function(){
