@@ -19,7 +19,7 @@ export default (config, db, logger) => ({
 			OR properties ->> 'cell' ILIKE $1
 			OR properties ->> 'email' ILIKE $1)) AND
 			($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
-            ($7 IS NULL OR metadata->>'country' = $7)
+            ($7 IS NULL OR properties->>'country' = $7)
 			ORDER BY id`;
 
         // Format search string for Postgres
