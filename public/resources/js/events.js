@@ -845,7 +845,7 @@ mainMap.on('overlayremove', function (layersControlEvent) {
 var getEventsByCountry = function(country, callback){
     var q;
     if (typeof(country)!=='undefined' && country !== '') {
-        q = '&country='+country
+        q = '&country='+country;
     }
     $.getJSON('/api/events/?status=active'+q+'&geoformat=' + GEOFORMAT, function ( data ){
     // Print output to page
