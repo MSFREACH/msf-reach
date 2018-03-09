@@ -429,6 +429,19 @@ var mapAllEvents = function(err, events){
     totalPopulationStr +
     affectedPopulationStr;
 
+        $('#ongoingEventsContainer').append(
+            '<div class="list-group-item">' +
+      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+      'Type: ' + feature.properties.type + '<br>' +
+      statusStr +
+      notificationStr +
+      totalPopulationStr +
+      affectedPopulationStr +
+      '</div>'
+        );
+
 
         if (feature.properties && feature.properties.popupContent) {
             popupContent += feature.properties.popupContent;
@@ -823,12 +836,35 @@ mainMap.on('overlayremove', function (layersControlEvent) {
     }
 });
 
+/**
+* Function to get all events from the API
+* @param {Function} callback - Function to call once data returned
+* @returns {String} err - Error message if any, else none
+* @returns {Object} events - Events as GeoJSON FeatureCollection
+*/
+var getEventsByCountry = function(country, callback){
+    var q;
+    if (typeof(country)!=='undefined' && country !== '') {
+        q = '&country='+country
+    }
+    $.getJSON('/api/events/?status=active'+q+'&geoformat=' + GEOFORMAT, function ( data ){
+    // Print output to page
+        callback(null, data.result);
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            callback(err.responseText, null);
+        }
+    });
+};
+
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getAllEvents(mapAllEvents);
+getEventsByCountry(currentEventProperties.properties.country, mapAllEvents);
 
 
 // Enter an API key from the Google API Console:
