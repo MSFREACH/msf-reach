@@ -156,7 +156,10 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
 
+
+
     if (currentEventProperties.metadata.country) {
+         getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
         $.getJSON({
             url: '/resources/js/country-to-language-mapping.json'
         }).done(function(result) {
@@ -864,7 +867,7 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getEventsByCountry(currentEventProperties.properties.country, mapAllEvents);
+
 
 
 // Enter an API key from the Google API Console:
