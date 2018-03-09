@@ -30,7 +30,7 @@ export default ({ config, db, logger }) => {
             ymin: req.query.latmin,
             xmax: req.query.lngmax,
             ymax: req.query.latmax
-        },res.query.country).then((data) => handleGeoResponse(data, req, res, next))
+        },req.query.country).then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
                 logger.error(err);
