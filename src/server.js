@@ -44,7 +44,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         },
         function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
             if (!profile.oid) {
-                return done(new Error("No oid found"), null);
+                return done(new Error('No oid found'), null);
             }
             process.nextTick(function () {
                 findByOid(profile.oid, function(err, user) {
