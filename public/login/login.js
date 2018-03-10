@@ -81,3 +81,9 @@ $('#inputPassword').keyup(function(event){
         $('#login').click();
     }
 });
+
+$(function() {
+    if (location.hash === '#about') {
+        $('#about').modal('show');
+    }
+});

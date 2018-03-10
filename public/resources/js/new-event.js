@@ -1,14 +1,11 @@
 /*eslint no-unused-vars: off*/
 
-var newEventMap = L.map('newEventMap').setView([20, 110], 4);
-
-$('#newEventModal').on('shown.bs.modal', function() {
-    _.defer(newEventMap.invalidateSize.bind(newEventMap));
-});
+//var newEventMap = L.map('newEventMap').setView([20, 110], 4);
 
 $('#newEventModal').on('hidden.bs.modal', function() {
     // clear previous entry
     $('#selectType').val('');
+    $('#inputEventName').val('');
     $('#inputDisasterType').val('');
     $('#mapAddress').val('');
     $('#inputDiseaseType').val('');
@@ -21,14 +18,10 @@ $('#newEventModal').on('hidden.bs.modal', function() {
     $('#inputSeverityScale').val('2');
     $('#inputSharepointLink').val('');
     $('#inputSecurity').val('');
-    newEventMap.removeLayer(marker);
-    newEventMap.setView([20,110], 4);
-    latlng = null;
 });
 
-var autocompleteMap=newEventMap;
-
 // Add some base tiles
+/*
 var NEmapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 0,
@@ -47,10 +40,11 @@ var NEbaseMaps = {
 
 var NEoverlayMaps = {};
 
-var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
-
+ var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
+*/
 var marker;
 var latlng = null;
+/*
 newEventMap.on('click', function(e) {
     if(marker)
         newEventMap.removeLayer(marker);
@@ -58,22 +52,24 @@ newEventMap.on('click', function(e) {
     marker = L.marker(e.latlng).addTo(newEventMap);
 });
 
-
+*/
 
 var refreshLandingPage = function() {
-    var saveCookie = Cookies.get('Current Events');
-    landingMap.removeLayer(eventsLayer);
+    var saveCookie = Cookies.get('Ongoing MSF Projects');
+    mainMap.removeLayer(eventsLayer);
     layerControl.removeLayer(eventsLayer);
     eventsLayer.clearLayers();
-    $('#eventProperties').empty();
-    Cookies.set('Current Events',saveCookie);
+    $('#ongoingEventProperties').empty();
+    $('#watchingEventProperties').empty();
+    Cookies.set('Ongoing MSF Projects',saveCookie);
     getAllEvents(mapAllEvents);
-    $('#eventTab').tab('show');
+    $('watchingTab').tab('show');
 };
 
 
 $(function(){
-    $( '#inputEvDateTime' ).datepicker({
+    $( '#inputEvDateTime' ).datetimepicker({
+        //controlType: 'select',
         changeMonth: true,
         changeYear: true,
         dateFormat: 'yy-mm-dd',
@@ -95,7 +91,7 @@ $(function(){
                 'location': latlng,
                 'metadata':{
                     'user': localStorage.getItem('username'),
-                    'name': (sub_type != '' ? sub_type : $('#selectType').val() ) + '_' + $('#inputEvDateTime').val(),
+                    'name': $('#inputEventName').val(),
                     'sub_type': sub_type,
                     'event_datetime': $('#inputEvDateTime').val(),
                     'event_status': $('#inputEvStatus').val(),

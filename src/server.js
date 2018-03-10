@@ -16,6 +16,8 @@ import passport from 'passport';
 import { OIDCStrategy } from 'passport-azure-ad';
 import { ensureAuthenticated } from './lib/util';
 
+import nocache from 'nocache';
+
 /** Function to initialize the api server config, db, logger
 	* @class - Initialize server
 	* @param {Object} config - server config
@@ -105,6 +107,10 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     // Compress responses if required but only if caching is disabled
     if (config.COMPRESS && !config.CACHE) {
         app.use(compression());
+    }
+
+    if (!config.CACHE) {
+        app.use(nocache());
     }
 
     // Provide CORS support (not required if behind API gateway)

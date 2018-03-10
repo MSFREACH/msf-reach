@@ -31,7 +31,7 @@
   font-weight: normal;
   color:rgb(35, 82, 124);
 }
-
+/*
 .panel-heading a:after {
     font-family:'Glyphicons Halflings';
     content:"\e114";
@@ -41,6 +41,7 @@
 .panel-heading a.collapsed:after {
     content:"\e080";
 }
+*/
 
 textarea {
   resize: vertical;
@@ -62,4 +63,83 @@ textarea {
 
 .isHovered{
   background-color: #f5f5f5;
+}
+
+/* new report modal styling here: */
+
+
+#newReportMap {
+  height:55vh;
+}
+
+
+.form-section {
+    display: none;
+    height:100%;
+}
+
+.form-section.current{
+    display: inherit;
+}
+
+.form-navigation .previous
+{
+  display: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+
+.rtype-container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: 100%;
+    background-color: white;
+}
+
+.rtype-item {
+    background-color: black;
+    text-align: center;
+    color:white;
+    width: 40%;
+    margin: 10px;
+    cursor:pointer;
+    border:3px solid white;
+}
+
+.rtype-selected{
+  border:3px solid red;
+}
+
+.btn-msf{
+  color: #fff;
+  background-color: black;
+  border-color: white;
+  text-transform: uppercase;
+}
+.btn-msf:hover , .btn-msf:focus{
+  color: #fff;
+  background-color:#555555;
+}
+
+div.pac-container {
+   z-index: 1050 !important;
+}
+@media (min-width: 768px)
+{
+.dl-horizontal dd
+{
+  margin-left: 220px; 
+}
+.dl-horizontal dt
+{
+    white-space: normal;
+    width: 200px;
+}
+
+
 }

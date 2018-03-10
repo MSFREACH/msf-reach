@@ -14,17 +14,15 @@ export default (config, db, logger) => ({
     /**
 	 * Return all events
 	 * @param {String} Status of event { active | inactive }
-
+   * @param {String} Country filter for event
 	 */
-    all: (status) => new Promise((resolve, reject) => {
+    all: (status, country) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
 			FROM ${config.TABLE_EVENTS}
-			WHERE ($1 is null or status = $1)
+			WHERE ($1 is null or status = $1) AND ($2 is null or metadata->>'country' = $2)
 			ORDER BY updated_at DESC`;
-
-        let values = [ status ];
-
+        let values = [ status, country ];
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))
@@ -91,7 +89,7 @@ export default (config, db, logger) => ({
                     }
                 }
                 db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-                    .then((data) => addChatbotItem(data,data.id,body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key))
+                    .then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
                     .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                     .catch((err) => reject(err));
 
@@ -100,7 +98,7 @@ export default (config, db, logger) => ({
         } else {
 
             db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-                .then((data) => addChatbotItem(data,data.id,body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key))
+                .then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
                 .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                 .catch((err) => reject(err));
         }
@@ -127,7 +125,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => addChatbotItem(data,String(id),body.metadata.name.split('_'),config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key))
+            .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, uuid: data.uuid, the_geom:data.the_geom }))
             .catch((err) => reject(err));
     })

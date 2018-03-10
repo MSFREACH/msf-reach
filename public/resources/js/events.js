@@ -12,45 +12,16 @@ var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var MAX_RADIUS= 5;
 
-// Globals
-var currentEventId;
-var eventReportLink;
-var currentEventProperties;
-var contactsLayer;
-var contactsClusters;
-var missionsLayer;
-var missionsClusters;
-var missionsLayerControlSetUp = false;
-var contactsLayerControlSetUp = false;
-var eventsMap = L.map('map').setView([-6.8, 108.7], 7);
+
+var mainMap = L.map('map').setView([-6.8, 108.7], 7);
 
 var computerTriggered = false;
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
-// Set cookies if not set
-if (typeof(Cookies.get('- access')) === 'undefined') {
-    Cookies.set('- access','on'); // default
-}
-if (typeof(Cookies.get('- needs')) === 'undefined') {
-    Cookies.set('- needs','on'); // default
-}
-if (typeof(Cookies.get('- security')) === 'undefined') {
-    Cookies.set('- security','on'); // default
-}
-if (typeof(Cookies.get('- contacts')) === 'undefined') {
-    Cookies.set('- contacts','on'); // default
-}
-if (typeof(Cookies.get('Contacts')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
-if (typeof(Cookies.get('Missions')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
-
 var zoomToEvent = function(latlng) {
-    eventsMap.setView(latlng, 12);
+    mainMap.setView(latlng, 5);
 };
 
 var clipboard = new Clipboard('.btn');
@@ -65,8 +36,7 @@ var labels = {
     'region': 'Region',
     'incharge_position': 'In charge position',
     'incharge_name': 'In charge name',
-    'sharepoint_link': 'SharePoint link',
-    'msf_response_scale': 'MSF response scale',
+    'sharepoint_link': 'SharePoint Link',
     'msf_response_medical_material_total': 'Number of medical supplies',
     'msf_response_non_medical_material_total': 'Number of non-medical supplies',
     'ext_capacity_who': 'Ext capacity on the ground (name)'
@@ -85,9 +55,13 @@ var unpackMetadata = function(metadata) {
         }
     }
     if (metadata.hasOwnProperty('msf_resource_visa_requirement')) {
-        if (metadata.msf_resource_visa_requirement.is_required==='yes') {
-            result += '<dt>Visa requirement:</dt><dd>'+metadata.msf_resource_visa_requirement.name+'</dd>';
-        }
+        result += '<dt>Visa requirement:</dt>';
+        $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
+            if(val)
+                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';
+        });
+        if (metadata.msf_resource_visa_requirement.description)
+            result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
     }
     if (metadata.hasOwnProperty('msf_response_medical_material')) {
         result += '<dt>Medical requirements:</dt><dd>';
@@ -124,6 +98,9 @@ var unpackMetadata = function(metadata) {
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
+    if (typeof(missionType) === 'undefined') {
+        return '';
+    }
     var type = missionType.toLowerCase();
     var html = '<img src="/resources/images/icons/event_types/';
     if (type.includes('conflict')) {
@@ -157,11 +134,16 @@ var missionPopupIcon = function(missionType) {
     } else if (type.includes('volcano')) {
         html += 'volcano';
     } else {
-        return missionType + '<br>'; // just return text in this case
+        return missionType + '<br />'; // just return text in this case
     }
     html += '.svg" width="40">';
 
     return html;
+};
+
+
+var reduceNotificationArray = function(acc, elem) {
+    return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
 };
 
 /**
@@ -170,23 +152,64 @@ var missionPopupIcon = function(missionType) {
 */
 var printEventProperties = function(err, eventProperties){
 
+
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
+
+
+
+    if (currentEventProperties.metadata.country) {
+        getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
+        $.getJSON({
+            url: '/resources/js/country-to-language-mapping.json'
+        }).done(function(result) {
+            $.each(result.countries[currentEventProperties.metadata.country], function(index, item) {
+                if (index == result.countries[currentEventProperties.metadata.country].length-1) {
+                    $('#translationSuggestedLanguages').append(item.name);
+                } else {
+                    $('#translationSuggestedLanguages').append(item.name+', ');
+                }
+            });
+        });
+    }
+
+    //patch to support current data for multiple nationality
+    if (currentEventProperties.metadata.msf_resource_visa_requirement)
+    {
+        if (! ((currentEventProperties.metadata.msf_resource_visa_requirement.nationality) instanceof Array))
+            currentEventProperties.metadata.msf_resource_visa_requirement.nationality=[{
+                iso2: currentEventProperties.metadata.msf_resource_visa_requirement.nationality.iso2 || 'xx',
+                name: currentEventProperties.metadata.msf_resource_visa_requirement.nationality.name || null,
+                is_required: currentEventProperties.metadata.msf_resource_visa_requirement.nationality || 'yes'
+            }];
+    }
 
     // Add to Twitter search "AI"
     $(document).ready(function(){
         var searchTerm = '';
         if (currentEventProperties) {
-            if (currentEventProperties.metadata.name.includes('_')) {
-                elements = currentEventProperties.metadata.name.split('_');
-                for (var i = 0; i < elements.length-1; i++) {
-                    searchTerm += elements[i] + ' ';
+            if (currentEventProperties.metadata.name) {
+                if (currentEventProperties.metadata.name.includes('_')) {
+                    elements = currentEventProperties.metadata.name.split('_');
+                    for (var i = 0; i < elements.length-1; i++) {
+                        searchTerm += elements[i] + ' ';
+                    }
+                } else {
+                    searchTerm = currentEventProperties.metadata.name;
                 }
             } else {
-                searchTerm = currentEventProperties.metadata.name;
+                if (currentEventProperties.hasOwnProperty('type')) {
+                    searchTerm = currentEventProperties.type.replace(',','');
+                }
+                if (currentEventProperties.hasOwnProperty('sub_type')) {
+                    searchTerm = currentEventProperties.metadata.sub_type.replace(',','');
+                }
+                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
+                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                }
             }
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += currentEventProperties.metadata.country;
+                searchTerm += ' ' + currentEventProperties.metadata.country;
             }
             $('#searchTerm').val(searchTerm);
         }
@@ -209,21 +232,38 @@ var printEventProperties = function(err, eventProperties){
         //['id', 'status', 'type', 'created'];
         propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
         propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
-        propertiesTable += '<tr><td>Status</td><td>'+eventProperties.status+'</td></tr>';
-        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+'</td></tr>';
-        propertiesTable += '<tr><td>Opened</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+        propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
+        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
+        propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
+
+        if (eventProperties.metadata.notification)
+        {
+            var notStr=(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+            propertiesTable += '<tr><td>Latest notification: </td><td>'+ notStr +'</td></tr>';
+        }
+        else
+            propertiesTable += '<tr><td>Latest notification:  </td><td>(none)</td></tr>';
+        propertiesTable += '<tr><td>Severity </td><td>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</td></tr>';
+        propertiesTable += '<tr><td>Person In charge </td><td>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</td></tr>';
+        propertiesTable += '<tr><td>Sharepoint Link </td><td>'+eventProperties.metadata.sharepoint_link+'</td></tr>';
+        //propertiesTable += '<tr><td> </td><td>'++'</td></tr>';
         propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
+
+
+
+
+
         // Create unique link to this event
         var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
         // Create unique report link for this event
         eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
         // Add unique link to this event
-        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
         // Add unique link to report to this event
-        propertiesTable += '<tr><td>Report link</td><td><a id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a></td><td><button class=\'btn btn-primary\' data-clipboard-target=\'#reportLink\'>Copy</button></td></tr>';
+        propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-text=\''+eventReportLink+'\'>Copy link</button></td></tr>';
         // Add user metadata
         if (eventProperties.metadata.user) {
-            propertiesTable += '<tr><td>Owner</td><td>'+eventProperties.metadata.user+'</td></tr>';
+            propertiesTable += '<tr><td>Creator</td><td>'+eventProperties.metadata.user+'</td></tr>';
         }
         if (eventProperties.metadata.user_edit) {
             propertiesTable += '<tr><td>Edits</td><td>'+eventProperties.metadata.user_edit+'</td></tr>';
@@ -239,31 +279,27 @@ var printEventProperties = function(err, eventProperties){
         //    $('#inputSummary').val(eventProperties.metadata.summary);
         //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
         $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
-        if (typeof(eventProperties.metadata.notification)!=='undefined') {
-            $('#inputNotification').val(eventProperties.metadata.notification);
+        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
+            $('#inputNotification').val(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification);
         }
 
         // Append output to body
         propertiesTable += '</table>';
+
         $('#eventProperties').html(propertiesTable);
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
         $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
-        $('#eventBasicInfo').append('<dt>Name: </dt><dd>'+eventProperties.metadata.name+'</dd>');
-        $('#eventBasicInfo').append('<dt>Country: </dt><dd>'+eventProperties.metadata.country+'</dd>');
-        $('#eventBasicInfo').append('<dt>Sub Type: </dt><dd>'+eventProperties.metadata.sub_type+'</dd>');
-        $('#eventBasicInfo').append('<dt>Event Status: </dt><dd>'+eventProperties.metadata.event_status+'</dd>');
-        if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification !== '') {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>'+eventProperties.metadata.notification+'</dd>');
-        } else {
-            $('#eventBasicInfo').append('<dt>Latest notification: </dt><dd>(none)</dd>');
-        }
-        $('#eventBasicInfo').append('<dt>Person In charge </dt><dd>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</dd>');
-        $('#eventBasicInfo').append('<dt>Severity </dt><dd>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</dd>');
-        $('#eventBasicInfo').append('<dt>Sharepoint Link </dt><dd>'+eventProperties.metadata.sharepoint_link+'</dd>');
 
+
+
+        if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
+
+            $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
+
+        }
         var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
@@ -311,9 +347,9 @@ var getEvent = function(eventId, callback){
 * Function to get reports for an event
 * @param {Number} eventId - UniqueId of event
 **/
-var getReports = function(eventId, callback){
+var getReports = function(eventId, mapForReports, callback){
     $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
-        callback(data.result);
+        callback(data.result, mapForReports);
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
@@ -323,138 +359,168 @@ var getReports = function(eventId, callback){
     });
 };
 
+var reportMarkers = [];
+
+function openReportPopup(id) {
+    for (var i in reportMarkers){
+        var markerID = reportMarkers[i].options.id;
+        if (markerID == id) {
+            mainMap.setView(reportMarkers[i].getLatLng());
+            reportMarkers[i].openPopup();
+            break;
+        }
+    }
+}
+
+
+function openEventPopup(id)
+{
+    eventsLayer.eachLayer(function(layer){
+        if (layer.feature.properties.id == id)
+        {
+            layer.openPopup(mainMap.center);
+        }
+    });
+}
+
 /**
-* Function to add reports to map
-* @param {Object} reports - GeoJson FeatureCollection containing report points
-**/
-var mapReports = function(reports){
+* Function to map and print a table of events
+* @param {Object} events - GeoJSON Object containing event details
+*/
+var mapAllEvents = function(err, events){
 
+    // Add popups
     function onEachFeature(feature, layer) {
-
-        var popupContent = '';
-
-        if (feature.properties && feature.properties.content) {
-            popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
-            popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
-            popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
-            popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
-            if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
-                if (feature.properties.content.image_labels) {
-                    popupContent += 'AI image labels: ';
-                    feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ', ';});
-                    popupContent = popupContent.substring(0,popupContent.length-2);
-                    popupContent += '<BR>';
-                }
-                popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
-            }
+        var affectedPopulationStr = '';
+        if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
+            affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
         }
 
-        layer.bindPopup(popupContent, {  maxWidth: 'auto' });
+        var totalPopulationStr = '';
+        if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
+            totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
+        }
+
+        var notificationStr = '';
+        var statusStr = '';
+        if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification[feature.properties.metadata.notification.length-1].notification + '<br>';
+        } else {
+            notificationStr = 'Latest notification: (none)<br>';
+        }
+        if(typeof(feature.properties.metadata.event_status)!=='undefined') {
+            statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
+        } else {
+            statusStr = 'Status: ' + feature.properties.status + '<br>';
+        }
+
+        var severityStr = '';
+
+        if (feature.properties.metadata.hasOwnProperty('severity')) {
+            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+        }
+        if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
+            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+        }
+
+
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type;
+        if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+            icon_name = 'epidemic';
+        }
+
+        var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
+    '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
+    '<strong><a href=\'/events/?eventId=' + feature.properties.id +
+    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
+    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
+    'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+    'Type: ' + type.replace('_',' ') + '<br>' +
+    statusStr +
+    severityStr +
+    notificationStr +
+    totalPopulationStr +
+    affectedPopulationStr;
+
+        $('#ongoingEventsContainer').append(
+            '<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
+      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+      'Type: ' + feature.properties.type + '<br>' +
+      statusStr +
+      notificationStr +
+      totalPopulationStr +
+      affectedPopulationStr +
+      '</div>'
+        );
+
+
+        if (feature.properties && feature.properties.popupContent) {
+            popupContent += feature.properties.popupContent;
+        }
+
+        layer.bindPopup(popupContent);
     }
 
-    var points = []; // local storage for coordinates of reports (used for map bounds)
-
-    // MSF Icons
-    const accessIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/access_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    const securityIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/security_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    const contactsIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    const needsIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/needs_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-
-    });
-
-    var accessLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'ACCESS');
-        },
+    eventsLayer = L.geoJSON(events, {
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: accessIcon});
+            if (feature.properties.id===currentEventId) {
+                return L.marker(latlng, {icon: L.icon({
+                    iconUrl: '/resources/images/icons/event_types/selected_event.svg',
+                    iconSize:     [50, 50], // size of the icon
+                    iconAnchor: [25, 50],
+                    popupAnchor: [0, -40]
+                    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+                })});
+
+            } else {
+                return L.marker(latlng, {icon: L.icon({
+                    iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                    iconSize:     [50, 50], // size of the icon
+                    iconAnchor: [25, 50],
+                    popupAnchor: [0, -40]
+                    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+                })});
+            }
         },
         onEachFeature: onEachFeature
     });
-    if (Cookies.get('- access')==='on') {
-        accessLayer.addTo(eventsMap);
-    }
-    layerControl.addOverlay(accessLayer, '- access', 'Reports');
 
-    var needsLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'NEEDS');
-        },
-        pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: needsIcon});
-        },
-        onEachFeature: onEachFeature
-    });
-    if (Cookies.get('- needs')==='on') {
-        needsLayer.addTo(eventsMap);
+    if (Cookies.get('Ongoing MSF Projects')==='on') {
+        eventsLayer.addTo(mainMap);
     }
-    layerControl.addOverlay(needsLayer, '- needs', 'Reports');
-
-    var securityLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'SECURITY');
-        },
-        pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: securityIcon});
-        },
-        onEachFeature: onEachFeature
-    });
-    if (Cookies.get('- security')==='on') {
-        securityLayer.addTo(eventsMap);
-    }
-    layerControl.addOverlay(securityLayer, '- security', 'Reports');
-
-    var contactsLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'CONTACTS');
-        },
-        pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            return L.marker(latlng, {icon: contactsIcon});
-        },
-        onEachFeature: onEachFeature
-    });
-    if (Cookies.get('- contacts')==='on') {
-        contactsLayer.addTo(eventsMap);
-    }
-    layerControl.addOverlay(contactsLayer, '- contacts', 'Reports');
-
-    if (points.length > 0){
-        eventsMap.fitBounds(points, {padding: [50,50]});
-    }
+    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
 
 };
+
 
 /**
 * Function to add contacts to map
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
 var mapContacts = function(contacts) {
+
+    // function returns list of msf staff contacts if msf is true, else other contacts
+    function msfContact(contacts, msf) {
+
+        var newFC = {features: []};
+        for(var i = 0; i < contacts.features.length; i++) {
+
+            if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
+                if (msf) {
+                    newFC.features.push(contacts.features[i]);
+                }
+            } else if (!msf) {
+                newFC.features.push(contacts.features[i]);
+            }
+        }
+        return newFC;
+    }
+
 
     function onEachFeature(feature, layer) {
 
@@ -483,12 +549,12 @@ var mapContacts = function(contacts) {
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
 
-    var contactsLayerOn = eventsMap.hasLayer(contactsClusters);
+    var contactsLayerOn = mainMap.hasLayer(contactsClusters);
 
     if (contactsClusters)
     {
         computerTriggered=true;
-        eventsMap.removeLayer(contactsClusters);
+        mainMap.removeLayer(contactsClusters);
         layerControl.removeLayer(contactsClusters);
         computerTriggered=false;
     }
@@ -515,7 +581,7 @@ var mapContacts = function(contacts) {
 
     if (contactsLayerOn || firstContactsLoad) {
         if (Cookies.get('Contacts')==='on') {
-            contactsClusters.addTo(eventsMap);
+            contactsClusters.addTo(mainMap);
         }
         firstContactsLoad = false;
     }
@@ -571,7 +637,7 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined'){
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification + '<BR>';
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
@@ -595,12 +661,12 @@ var mapMissions = function(missions ){
         popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
-    var missionsLayerOn = eventsMap.hasLayer(missionsClusters);
+    var missionsLayerOn = mainMap.hasLayer(missionsClusters);
 
     if (missionsClusters)
     {
         computerTriggered=true;
-        eventsMap.removeLayer(missionsClusters);
+        mainMap.removeLayer(missionsClusters);
         layerControl.removeLayer(missionsClusters);
         computerTriggered=false;
     }
@@ -628,7 +694,7 @@ var mapMissions = function(missions ){
 
     if (missionsLayerOn || firstMissionsLoad ) {
         if (Cookies.get('Missions')==='on') {
-            missionsClusters.addTo(eventsMap);
+            missionsClusters.addTo(mainMap);
         }
         firstMissionsLoad = false;
     }
@@ -645,7 +711,7 @@ currentEventId = getQueryVariable('eventId');
 // Only ask API where event is specified and not empty
 if (currentEventId !== false && currentEventId != ''){
     getEvent(currentEventId, printEventProperties);
-    getReports(currentEventId, mapReports);
+    getReports(currentEventId, mainMap, mapReports);
     //initGetContacts(mapContacts);
     //initGetMissions(mapMissions);
 } else {
@@ -658,17 +724,39 @@ var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 0,
     maxZoom: 18
-}).addTo(eventsMap);
+});
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
+// OSM HOT tiles
+var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+});
+
+switch (Cookies.get('MapLayer')) {
+case 'satellite':
+    mapboxSatellite.addTo(mainMap);
+    break;
+case 'terrain':
+    mapboxTerrain.addTo(mainMap);
+    break;
+default:
+    OpenStreetMap_HOT.addTo(mainMap);
+}
+
 var baseMaps = {
     'Terrain': mapboxTerrain,
-    'Satellite' : mapboxSatellite
+    'Satellite' : mapboxSatellite,
+    'Humanitarian': OpenStreetMap_HOT
 };
+
+mainMap.on('baselayerchange', function(baselayer) {
+    Cookies.set('MapLayer',baselayer.name);
+});
 
 var groupedOverlays = {
     'Reports': {},
@@ -676,7 +764,7 @@ var groupedOverlays = {
 
 var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
-var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(eventsMap);
+var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
 // Archive support
 $('#btnArchive').click(function(e){
@@ -705,11 +793,17 @@ $('#btnArchive').click(function(e){
 // Edit support
 $('#btnSaveEdits').click(function(e){
 
+    if (currentEventProperties.metadata.hasOwnProperty('notification') && currentEventProperties.metadata.notification.length > 0) {
+        currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+    } else {
+        currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+    }
+
     var body = {
         'status':$('#inputStatus').val()==='complete' ? 'complete' : 'active',
         'metadata':{
             'name': $('#inputName').val(),
-            'notification': $('#inputNotification').val(),
+            'notification': currentEventProperties.metadata.notification,
             'event_status': $('#inputStatus').val(),
             //      "summary": $("#inputSummary").val(),
             //      "practical_details": $("#inputPracticalDetails").val(),
@@ -743,15 +837,117 @@ var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
 };
 
-eventsMap.on('overlayadd', function (layersControlEvent) {
+mainMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'on');
     }
 });
 
 
-eventsMap.on('overlayremove', function (layersControlEvent) {
+mainMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'off');
     }
+});
+
+/**
+* Function to get all events from the API
+* @param {Function} callback - Function to call once data returned
+* @returns {String} err - Error message if any, else none
+* @returns {Object} events - Events as GeoJSON FeatureCollection
+*/
+var getEventsByCountry = function(country, callback){
+    var q;
+    if (typeof(country)!=='undefined' && country !== '') {
+        q = '&country='+country;
+    }
+    $.getJSON('/api/events/?status=active'+q+'&geoformat=' + GEOFORMAT, function ( data ){
+    // Print output to page
+        callback(null, data.result);
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            callback(err.responseText, null);
+        }
+    });
+};
+
+getFeeds('/api/hazards/pdc',mapPDCHazards);
+getFeeds('/api/hazards/tsr',mapTSRHazards);
+getFeeds('/api/hazards/usgs',mapUSGSHazards);
+getFeeds('/api/hazards/gdacs',mapGDACSHazards);
+getFeeds('/api/hazards/ptwc',mapPTWCHazards);
+
+
+
+// Enter an API key from the Google API Console:
+//   https://console.developers.google.com/apis/credentials
+const GoogleApiKey = 'AIzaSyAhhKWjsykF_ljVvn-P1o4l6aeE0tGjZOI';
+
+// Set endpoints
+const GoogleEndpoints = {
+    translate: '',
+    detect: 'detect',
+    languages: 'languages'
+};
+
+// Abstract API request function
+function makeApiRequest(endpoint, data, type, authNeeded) {
+    url = 'https://www.googleapis.com/language/translate/v2/' + endpoint;
+    url += '?key=' + GoogleApiKey;
+
+    // If not listing languages, send text to translate
+    if (endpoint !== GoogleEndpoints.languages) {
+        url += '&q=' + encodeURI(data.textToTranslate);
+    }
+
+    // If translating, send target language
+    if (endpoint === GoogleEndpoints.translate) {
+        url += '&target=' + data.targetLang;
+    }
+
+    // Return response from API
+    return $.ajax({
+        url: url,
+        type: type || 'GET',
+        data: data ? JSON.stringify(data) : '',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        }
+    });
+}
+
+// Translate
+function translate(data) {
+    makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
+        resp
+    ) {
+        if (resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '') {
+            $('#searchTerm').val(data.textToTranslate); // just return original
+        } else {
+            $('#searchTerm').val(resp.data.translations[0].translatedText);
+            $('#btnSearchTwitter').trigger('click');
+        }
+    });
+}
+
+// On document ready
+$(function() {
+    window.makeApiRequest = makeApiRequest;
+    var translationObj = {};
+
+    $('#translateLanguageSelection')
+    // Bind translate function to translate button
+        .on('change', function() {
+            var translateObj = {
+                textToTranslate: $('searchTerm').val(),
+                targetLang: $(this).val()
+            };
+
+
+            translate(translateObj);
+        });
 });

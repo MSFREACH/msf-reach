@@ -1,6 +1,6 @@
 html, body { height: 100% }
 
-#landingMap {
+#mainMap {
   height:90vh;
   width:100%;
 }
@@ -74,4 +74,8 @@ div.pac-container {
 #inputSeverityScale {
     width: 50%;
     margin: 2em auto;
+}
+
+.form-group {
+  margin-bottom: 7px;
 }

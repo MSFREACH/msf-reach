@@ -107,6 +107,12 @@ const handleResponse = (data, req, res) => {
         res.status(200).json({ statusCode: 200, result: data });
 };
 
+const inAsiaBBox = (coords) => {
+    let lat = Number(coords[0]);
+    let lng = Number(coords[1]);
+    return (lat> -12.5611 && lat < 82.5005 && lng > 19.6381 && lng < 180.0000);
+};
+
 module.exports = {
-    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated
+    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, inAsiaBBox
 };

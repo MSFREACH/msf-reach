@@ -16,8 +16,25 @@ dd.padding-bottom {
 .flex-text-wrap pre {
   padding: 5px;
 }
+
+#inputSeverityScale label {
+    position: absolute;
+    width: 20px;
+    margin-left: -10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* below is not necessary, just for style */
+#inputSeverityScale {
+    width: 50%;
+    height: auto;
+    margin: 2em auto;
+}
+
 </style>
 <section id="editEventVue">
+    <script src="/resources/js/edit-maps.js"></script>
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title" id="myModalLabel">Edit Event</h4>
@@ -34,9 +51,9 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Latest notification</dt>
+              <dt>Enter new notification</dt>
               <dd>
-                <input type="text" class="form-control" v-model="event.metadata.notification"></date-picker>
+                <input type="text" class="form-control" id="inputNotification">
               </dd>
             </dl>
             <dl>
@@ -50,10 +67,10 @@ dd.padding-bottom {
               <dd>
                 <select class="form-control" v-model="event.type">
                   <!--Supplement an id here instead of using 'name'-->
-                  <option value="conflict">Armed conflict</option>
-                  <option value="natural_hazard">Natural disaster </option>
-                  <option value="epidemiological">Disease outbreak </option>
-                  <option value="search_and_rescue">Search and rescue</option>
+                  <option value="conflict">Armed Conflict</option>
+                  <option value="natural_hazard">Natural Disaster </option>
+                  <option value="epidemiological">Disease Outbreak </option>
+                  <option value="search_and_rescue">Search & Rescue</option>
                   <option value="displacement">Displacement</option>
                   <option value="malnutrition">Malnutrition</option>
                   <option value="other">Other</option>
@@ -134,8 +151,9 @@ dd.padding-bottom {
                 <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
               </dd>
               <dd class="padding-bottom">
-                <input type="range" min="1" max="3" step="1" v-model="event.metadata.severity_scale" class="pull-right" style="width: 75%" />
-                <span class="pull-left">Severity scale: {{event.metadata.severity_scale}}</span>
+                <div class="form-group">
+                  Scale: <div id="inputSeverityScale"></div>
+                </div>
               </dd>
             </dl>
             <div class="clearfix">&nbsp;</div>
@@ -148,7 +166,7 @@ dd.padding-bottom {
             <dl>
               <dt>ID link - SharePoint</dt>
               <dd>
-                <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint link" />
+                <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint Link" />
               </dd>
             </dl>
           </div>
@@ -178,9 +196,6 @@ dd.padding-bottom {
                     </dd>
                     <dd>
                       <textarea v-model="event.metadata.msf_response" placeholder="MSF response" class="form-control"></textarea>
-                      <div class="clearfix" style="padding-top: 5px;"></div>
-                      <input type="range" min="1" max="10" step="1" v-model="event.metadata.msf_response_scale" class="pull-right" style="width: 75%" />
-                      <span class="pull-left">Scale: {{event.metadata.msf_response_scale}}</span>
                     </dd>
                   </dl>
                   <div class="clearfix"></div>
@@ -466,7 +481,7 @@ dd.padding-bottom {
               <ul class="list-group">
                 <li class="list-group-item">
                   <dl>
-                    <dt>Staffs list _ Human resources supply</dt>
+                    <dt>Staff list — human resources</dt>
                     <dd>
                       <textarea v-model.trim="event.metadata.msf_resource_staff_list" placeholder="Contact(s)" class="form-control"></textarea>
                     </dd>
@@ -474,9 +489,9 @@ dd.padding-bottom {
                 </li>
                 <li class="list-group-item">
                   <dl>
-                    <dt>Exapt</dt>
+                    <dt>Expatriate</dt>
                     <dd>
-                      <textarea v-model.trim="event.metadata.msf_resource_staff_exapt" placeholder="Contact(s)" class="form-control"></textarea>
+                      <textarea v-model.trim="event.metadata.msf_resource_staff_expatriate" placeholder="Contact(s)" class="form-control"></textarea>
                     </dd>
                   </dl>
                 </li>
@@ -538,17 +553,22 @@ dd.padding-bottom {
                     <dt>Visa requirement</dt>
                     <dd>
                       <label>Nationality</label>
-                      <input type="text" class="form-control input-sm" id="nationality1" @change="updateSelectedCountry" v-model="event.metadata.msf_resource_visa_requirement.name">
+                      <div style="display:block;" v-for="(nat,ind) in event.metadata.msf_resource_visa_requirement.nationality">
+                         <country-select :options="countryParams" v-model="nat" @input="countryChanged($event,ind)"></country-select>
+
+                           <label>Required:</label>
+                           <label>
+                             <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="yes"> Yes
+                           </label>
+                           <label>
+                             <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="no"> No
+                           </label>
+
+                         <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
+                      </div>
+                      <button type="button" class="btn btn-success btn-xs" @click="addNationalityField">+ Add</button>
                     </dd>
-                    <dd>
-                      <label>Required:</label>
-                      <label>
-                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="yes"> Yes
-                      </label>
-                      <label>
-                        <input type="radio" name="nationalityRequired" v-model="event.metadata.msf_resource_visa_requirement.is_required" value="no"> No
-                      </label>
-                    </dd>
+
                     <dd>
                       <label>Description:</label>
                       <textarea v-model.trim="event.metadata.msf_resource_visa_requirement.description" placeholder="Specify" class="form-control"></textarea>
@@ -581,7 +601,7 @@ dd.padding-bottom {
                           </tr>
                           <tr>
                             <td colspan="4">
-                              <button type="button" class="btn btn-xs btn-succes" v-on:click="addResourceBudget">Add more budget</button>
+                              <button type="button" class="btn btn-xs btn-success" v-on:click="addResourceBudget">Add more budget</button>
                             </td>
                           </tr>
                         </tbody>
@@ -641,6 +661,38 @@ dd.padding-bottom {
 <script type="text/javascript">
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
 
+
+Vue.component('country-select', {
+  props: ['options', 'value'],
+  template: '<input  type="text" class="form-control input-sm" >',
+  mounted: function () {
+    var vmc = this
+    $(this.$el)
+      .countrySelect(this.options)
+      .countrySelect("selectCountry", this.value.iso2)
+      .trigger('change')
+      // emit event on change.
+      .on('change', function () {
+        var country = $(this).countrySelect("getSelectedCountryData");
+        vmc.$emit('input', country)
+      })
+  },
+  watch: {
+    value: function (value) {
+      // update value
+      $(this.$el).countrySelect("selectCountry", value.iso2);
+    },
+    options: function (options) {
+      $(this.$el).countrySelect(options);
+    }
+  },
+  destroyed: function () {
+    $(this.$el).off().countrySelect('destroy')
+  }
+})
+
+
+
 Vue.filter('formatDateOnly', function(value) {
   if (value) {
     return moment(value).format('YYYY-MM-DD');
@@ -672,6 +724,11 @@ var replaceUnderscore = function(value) {
   return value.replace(/_/g, " ");
 }
 
+var eventMap;
+var msfResponseMap;
+var eventMapLayerControl;
+var msfResponseMapLayerControl;
+
 var vm = new Vue({
   el: "#editEventVue",
   data: {
@@ -688,6 +745,7 @@ var vm = new Vue({
   mounted: function() {
     console.log("Vue already mounted.");
 
+
     if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
       var optCenter = this.event.metadata.operational_center;
       this.event.metadata.msf_response_operational_centers.push(optCenter);
@@ -701,73 +759,197 @@ var vm = new Vue({
       });
     }
 
+    $( '#inputSeverityScale' ).slider({
+        value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
+        min: 1,
+        max: 3,
+        step: 1
+    })
+        .each(function() {
+            console.log('each');
+
+            //
+            // Add labels to slider whose values
+            // are specified by min, max and whose
+            // step is set to 1
+            //
+
+            // Get the options for this slider
+            var opt = $(this).data().uiSlider.options;
+
+            // Get the number of possible values
+            var vals = opt.max - opt.min;
+
+            // Space out values
+            for (var i = 0; i <= vals; i++) {
+
+                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+
+                $( '#inputSeverityScale' ).append(el);
+
+            }
+
+        });
+
     $('textarea').flexText();
     this.calculatePercentagePeopleAffected();
 
-    var countryParams = {
-      "defaultCountry": "xx",
-      "preferredCountries": ["xx", "us", "gb", "id", "au", "hk"]
-    };
-    $("#nationality1").countrySelect(countryParams);
 
-    $('.flag-dropdown').bind('click', function(e) {
-      var country = $("#nationality1").countrySelect("getSelectedCountryData");
-      console.log("country", country.name)
-      Vue.set(vm.event.metadata, 'msf_resource_visa_requirement', country);
-    });
 
     this.$nextTick(function() {
-      var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
-      var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
 
-      /** << eventMap */
-      var eventMap = L.map('eventMap').setView(eventDefaultLatLng, 13);
-      L.tileLayer(eventDefaultLayer, {
-        minZoom: 0,
-        maxZoom: 18,
-        attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-        id: 'mapbox.streets'
-      }).addTo(eventMap);
+        var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
 
-      var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
 
-      /*
-      var latlng = null;
-      eventMap.on('click', function(e) {
-        if (eventMarker) {
-          eventMap.removeLayer(eventMarker);
-        }
-        latlng = e.latlng;
-        Vue.set(vm.currentEventGeometry, 'coordinates', [latlng.lng, latlng.lat]);
-        eventMarker = L.marker(e.latlng).addTo(eventMap);
-      });
-      */
-      /** eventMap >> */
 
-      /** << msfResponseMap */
-      var msfResponseMarkerLatLng = eventDefaultLatLng;
-      if (!_.isEmpty(this.event.metadata.msf_response_location.coordinates)) {
-        msfResponseMarkerLatLng = [this.event.metadata.msf_response_location.coordinates[1], this.event.metadata.msf_response_location.coordinates[0]];
-      }
+          /** << eventMap */
+          eventMap = L.map('eventMap').setView(eventDefaultLatLng, 13);
 
-      var msfResponseMap = L.map('msfResponseMap').setView(msfResponseMarkerLatLng, 13);
-      L.tileLayer(eventDefaultLayer, {
-        attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-        id: 'mapbox.streets'
-      }).addTo(msfResponseMap);
+          var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
 
-      var msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap);
+          /*
+          var latlng = null;
+          eventMap.on('click', function(e) {
+            if (eventMarker) {
+              eventMap.removeLayer(eventMarker);
+            }
+            latlng = e.latlng;
+            Vue.set(vm.currentEventGeometry, 'coordinates', [latlng.lng, latlng.lat]);
+            eventMarker = L.marker(e.latlng).addTo(eventMap);
+          });
+          */
+          /** eventMap >> */
 
-      var msflatlng = null;
-      msfResponseMap.on('click', function(e) {
-        if (msfResponseMarker) {
-          msfResponseMap.removeLayer(msfResponseMarker);
-        }
-        msflatlng = e.latlng;
-        Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lng, msflatlng.lat]);
-        msfResponseMarker = L.marker(e.latlng).addTo(msfResponseMap);
-      });
-      /** msfResponseMap >> */
+          /** << msfResponseMap */
+          var msfResponseMarkerLatLng = eventDefaultLatLng;
+          if (!_.isEmpty(this.event.metadata.msf_response_location.coordinates)) {
+            msfResponseMarkerLatLng = [this.event.metadata.msf_response_location.coordinates[1], this.event.metadata.msf_response_location.coordinates[0]];
+          }
+
+          msfResponseMap = L.map('msfResponseMap').setView(msfResponseMarkerLatLng, 13);
+
+          var msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap);
+
+          var msflatlng = null;
+          msfResponseMap.on('click', function(e) {
+            if (msfResponseMarker) {
+              msfResponseMap.removeLayer(msfResponseMarker);
+            }
+            msflatlng = e.latlng;
+            Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lng, msflatlng.lat]);
+            msfResponseMarker = L.marker(e.latlng).addTo(msfResponseMap);
+          });
+          /** msfResponseMap >> */
+
+          // Add some base tiles
+          var eventMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+              attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+              minZoom: 0,
+              maxZoom: 18
+          });
+
+          // Add some satellite tiles
+          var eventMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+              attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+          });
+
+          // OSM HOT tiles
+          var eventOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+              maxZoom: 19,
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+          });
+          // Add some base tiles
+          var msfResponseMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+              attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+              minZoom: 0,
+              maxZoom: 18
+          });
+
+          // Add some satellite tiles
+          var msfResponseMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+              attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+          });
+
+          // OSM HOT tiles
+          var msfResponseOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+              maxZoom: 19,
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+          });
+    switch (Cookies.get('MapLayer')) {
+    case 'Satellite':
+        eventMapboxSatellite.addTo(eventMap);
+        msfResponseMapboxSatellite.addTo(msfResponseMap);
+        break;
+    case 'Terrain':
+        eventMapboxTerrain.addTo(eventMap);
+        msfResponseMapboxTerrain.addTo(msfResponseMap);
+        break;
+    default:
+        eventOpenStreetMap_HOT.addTo(eventMap);
+        msfResponseOpenStreetMap_HOT.addTo(msfResponseMap);
+    }
+
+
+    var eventBaseMaps = {
+        'Terrain': eventMapboxTerrain,
+        'Satellite' : eventMapboxSatellite,
+        'Humanitarian': eventOpenStreetMap_HOT
+    };
+
+
+    var msfResponseBaseMaps = {
+        'Terrain': msfResponseMapboxTerrain,
+        'Satellite' : msfResponseMapboxSatellite,
+        'Humanitarian': msfResponseOpenStreetMap_HOT
+    };
+
+    eventMap.on('baselayerchange', function(baselayer) {
+        Cookies.set('MapLayer',baselayer.name);
+    });
+
+    msfResponseMap.on('baselayerchange', function(baselayer) {
+        Cookies.set('MapLayer',baselayer.name);
+    });
+
+    var groupedOverlays = {
+        'RSS Feeds': {},
+        'Contacts': {}
+    };
+
+    var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+    var overlayMaps = {};
+
+    eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
+    msfResponseMapLayerControl = L.control.groupedLayers(msfResponseBaseMaps, groupedOverlays, groupOptions).addTo(msfResponseMap);
+
+    getAllEvents(mapEditEvents);
+
+    getFeeds('/api/hazards/pdc',mapEditPDCHazards);
+    getFeeds('/api/hazards/tsr',mapEditTSRHazards);
+    getFeeds('/api/hazards/usgs',mapEditUSGSHazards);
+    getFeeds('/api/hazards/gdacs',mapEditGDACSHazards);
+    getFeeds('/api/hazards/ptwc',mapEditPTWCHazards);
+    initGetMissions(mapEditMissions);
+    initGetContacts(mapEditContacts);
+
+
+    eventMap.on('overlayadd', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'on');
+    });
+
+    eventMap.on('overlayremove', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'off');
+    });
+
+    msfResponseMap.on('overlayadd', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'on');
+    });
+
+    msfResponseMap.on('overlayremove', function (layersControlEvent) {
+        Cookies.set(layersControlEvent.name,'off');
+    });
+
 
       setTimeout(function() {
         eventMap.invalidateSize();
@@ -778,6 +960,15 @@ var vm = new Vue({
   methods: {
     submitEventData() {
       var metadata = this.event.metadata;
+
+      if ($('#inputNotification').val()) {
+        if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+          currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+        } else {
+          currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+        }
+      }
+
       var subType = replaceUnderscore(this.event.metadata.type_of_emergency.toString());
       metadata = _.extend(metadata, {
         operational_center: this.event.metadata.msf_response_operational_centers.toString(),
@@ -787,6 +978,8 @@ var vm = new Vue({
         status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
         metadata: metadata
       }
+      body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+      body.metadata['notification'] = currentEventProperties.metadata.notification;
       $.ajax({
         type: "PUT",
         url: "/api/events/" + currentEventId,
@@ -833,8 +1026,25 @@ var vm = new Vue({
       this.keyMSFFigures.push(item.category);
       this.event.metadata.keyMSFFigures.splice(index, 1);
     },
-    updateSelectedCountry() {
-      this.event.metadata.msf_resource_visa_requirement.nationality = $("#nationality1").countrySelect("getSelectedCountryData");
+    removeNationalityField(index){
+      this.event.metadata.msf_resource_visa_requirement.nationality.splice(index,1);
+
+    },
+    addNationalityField(){
+      this.event.metadata.msf_resource_visa_requirement.nationality.push({
+          iso2: 'xx',
+          name: null,
+          is_required:true
+      });
+
+    },
+    countryChanged(country,ind) {
+      var obj={
+        name:country.name,
+        iso2:country.iso2,
+        is_required: vm.event.metadata.msf_resource_visa_requirement.nationality[ind].is_required
+      }
+      Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, obj);
     },
     removeResourceBudget(index) {
       this.event.metadata.msf_resource_budget.splice(index, 1);

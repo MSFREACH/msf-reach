@@ -49,7 +49,6 @@ var defaultEvent = {
             coordinates: [],
             type: 'Point'
         },
-        msf_response_scale: 1,
         start_date_msf_response: null,
         end_date_msf_response: null,
         total_days_msf_response: 1, // Total days of activities
@@ -85,15 +84,15 @@ var defaultEvent = {
 
         /* << MSF Resources */
         msf_resource_staff_list: null,
-        msf_resource_staff_exapt: null,
+        msf_resource_staff_expatriate: null,
         msf_resource_staff_national: null,
         msf_resource_category: '',
         msf_resource_visa_requirement: {
-            nationality: {
+            nationality: [{
                 iso2: 'xx',
-                name: null
-            },
-            is_required: 'yes',
+                name: null,
+                is_required: 'yes'
+            }],
             description: null
         },
         msf_resource_budget: [{
@@ -205,3 +204,8 @@ var msfResourceCategories = [
     'mental_health',
     'others'
 ];
+
+var countryParams = {
+    'defaultCountry': 'xx',
+    'preferredCountries': ['xx', 'us', 'gb', 'id', 'au', 'hk']
+};

@@ -17,6 +17,7 @@ export default ({ config, db, logger }) => {
         validate({
             query: {
                 search: Joi.string().min(1),
+                country: Joi.string(),
                 latmin: Joi.number().min(-90).max(90),
                 lngmin: Joi.number().min(-180).max(180),
                 latmax: Joi.number().min(-90).max(90),
@@ -29,7 +30,7 @@ export default ({ config, db, logger }) => {
             ymin: req.query.latmin,
             xmax: req.query.lngmax,
             ymax: req.query.latmax
-        }).then((data) => handleGeoResponse(data, req, res, next))
+        },req.query.country).then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
                 logger.error(err);
