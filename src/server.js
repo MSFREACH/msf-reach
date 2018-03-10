@@ -146,7 +146,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                     });
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
-                    function(req, res, next) {
+                    function(req, res, next) { // eslint-disable-line no-unused-vars
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
                         res.redirect('/authreturn');

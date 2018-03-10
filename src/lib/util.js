@@ -51,7 +51,7 @@ const ensureAuthenticated = (req, res, next) => {
         return;
     }
     //we must be using jwt, call express-jwt middleware
-    jwtCheck(req, res, function(err){
+    jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
         /*Left this here in case you really need it for anything.
         if (err.name === 'UnauthorizedError') {
             res.redirect('/login');
