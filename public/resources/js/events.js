@@ -156,7 +156,10 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
 
+
+
     if (currentEventProperties.metadata.country) {
+        getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
         $.getJSON({
             url: '/resources/js/country-to-language-mapping.json'
         }).done(function(result) {
@@ -369,6 +372,17 @@ function openReportPopup(id) {
     }
 }
 
+
+function openEventPopup(id)
+{
+    eventsLayer.eachLayer(function(layer){
+        if (layer.feature.properties.id == id)
+        {
+            layer.openPopup(mainMap.center);
+        }
+    });
+}
+
 /**
 * Function to map and print a table of events
 * @param {Object} events - GeoJSON Object containing event details
@@ -430,7 +444,7 @@ var mapAllEvents = function(err, events){
     affectedPopulationStr;
 
         $('#ongoingEventsContainer').append(
-            '<div class="list-group-item">' +
+            '<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
@@ -864,7 +878,7 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getEventsByCountry(currentEventProperties.properties.country, mapAllEvents);
+
 
 
 // Enter an API key from the Google API Console:

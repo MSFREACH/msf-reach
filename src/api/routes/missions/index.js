@@ -4,7 +4,7 @@ import { Router } from 'express';
 import missions from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -13,7 +13,7 @@ import validate from 'celebrate';
 export default ({ config, db, logger }) => {
     let api = Router();
 
-    api.get('/', jwtCheck, cacheResponse('10 minutes'),
+    api.get('/', ensureAuthenticated, cacheResponse('10 minutes'),
         validate({
             query: {
                 search: Joi.string().min(1),
@@ -39,7 +39,7 @@ export default ({ config, db, logger }) => {
             })
     );
 
-    api.get('/:id',jwtCheck, cacheResponse('1 minute'),
+    api.get('/:id',ensureAuthenticated, cacheResponse('1 minute'),
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             query: {
