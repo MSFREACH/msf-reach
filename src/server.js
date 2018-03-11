@@ -70,7 +70,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                                 u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                             }
                             else {
-                                return done(new Error("not in operators group"));
+                                return done(new Error('not in operators group'));
                             }
                         }
                         users.push(u);
