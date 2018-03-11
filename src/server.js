@@ -34,6 +34,17 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     app.use(expressSession({ secret: config.SESSION_SECRET, resave: true, saveUninitialized: false })); //Hopefully this fixes #236 //TODO Need to save sessions to db instead to avoid memory leaks in prod
 
     if(config.AZURE_AD_TENANT_NAME){
+        // array to hold signed-in users
+        let users = [];
+        let findByOid = function(id, fn) {
+            for (var i = 0, len = users.length; i < len; i++) {
+                var user = users[i];
+                if (user.oid === id) {
+                    return fn(null, user);
+                }
+            }
+            return fn(null, null);
+        };
         const authenticationStrategy = new OIDCStrategy({
             identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/.well-known/openid-configuration`,
             clientID: config.AZURE_AD_CLIENT_ID,
@@ -55,7 +66,12 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         // "Auto-registration"
                         var u = profile;
                         if(jwtClaims.groups){
-                            u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS = 04f4943e-af5b-4cde-9e1c-875849fa091c
+                            if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
+                                u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
+                            }
+                            else {
+                                return done(new Error("not in operators group"));
+                            }
                         }
                         users.push(u);
                         return done(null, u);
@@ -73,17 +89,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 done(err, user);
             });
         });
-        // array to hold signed-in users
-        var users = [];
-        var findByOid = function(id, fn) {
-            for (var i = 0, len = users.length; i < len; i++) {
-                var user = users[i];
-                if (user.oid === id) {
-                    return fn(null, user);
-                }
-            }
-            return fn(null, null);
-        };
+
         passport.use(authenticationStrategy);
         app.use(cookieParser()); //This must be used for passport-azure-ad
         app.use(bodyParser.urlencoded({ extended : true })); //This must be used for passport-azure-ad and come before app.use(passport.initialize());

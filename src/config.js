@@ -5,6 +5,7 @@ export default {
     AZURE_AD_TENANT_NAME: process.env.AZURE_AD_TENANT_NAME || '',
     AZURE_AD_CLIENT_ID: process.env.AZURE_AD_CLIENT_ID || '',
     AZURE_AD_RETURN_URL: process.env.AZURE_AD_RETURN_URL || '',
+    AZURE_AD_OPERATORS_GROUP_ID: process.env.AZURE_AD_OPERATORS_GROUP_ID || '',
     APP_NAME: process.env.APP_NAME || 'msf-reach',
     API_KEY: process.env.API_KEY || '',
     API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
