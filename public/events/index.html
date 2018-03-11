@@ -440,9 +440,6 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#" id="username"></a></li>
-            <li role="separator" class="divider"></li>
-            <li><a id="logout" href="/login">LOGOUT</a><li>
-
             </ul>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -453,10 +450,11 @@
         <!-- Side pane -->
         <div id="sidepane" class="col-md-6" style="min-height:90vh;">
           <ul class="nav nav-tabs">
-            <li role="presentation"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
+            <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
             <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
-            <li role="presentation" class="active"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
+            <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF projects</a></li>
+            <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
@@ -712,7 +710,7 @@
             <option value="zu">Zulu</option>
           </select>
 
-        Powered by <span style="white-space: nowrap;"><a class="goog-logo-link" href="https://translate.google.com" target="_blank"><img style="padding-right: 3px;" src="http://www.google.com/images/logos/google_logo_41.png" width="37" height="13">Translate</a></span>
+        Powered by <span style="white-space: nowrap;"><a class="goog-logo-link" href="https://translate.google.com" target="_blank"><img style="padding-right: 3px;" src="https://www.google.com/images/logos/google_logo_41.png" width="37" height="13">Translate</a></span>
       </div>
 
           <div id="tweetFeed"></div>
@@ -744,6 +742,14 @@
             <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
           </div>
           <div id="missionsContainer"></div>
+        </div>
+      </div>
+    </div>
+    <div id="ongoingEvents" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-12" >
+          <h4>Ongoing MSF Projects in the same country</h4>
+          <div id ="ongoingEventsContainer" style="height:70vh;"></div>
         </div>
       </div>
     </div>
@@ -866,6 +872,17 @@ $('#missionsTab').on('click', function(e){
 });
 
 $('#eventTab').on('click', function(e){
+  if (mapOn === 0) {
+    $('#mapContainer').toggle();
+    $('#mapContainer').addClass('col-md-6');
+    $('#sidepane').removeClass('col-md-12');
+    $('#sidepane').addClass('col-md-6');
+    mapOn = 1;
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
+  }
+});
+
+$('#ongoingEventsTab').on('click', function(e){
   if (mapOn === 0) {
     $('#mapContainer').toggle();
     $('#mapContainer').addClass('col-md-6');

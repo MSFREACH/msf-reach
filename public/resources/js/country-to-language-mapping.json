@@ -7,7 +7,7 @@
   "Malaysia": [{"iso":"ms","name":"Malay"}],
   "Myanmar": [{"iso":"my","name":"Burmese"}],
   "Philippines": [{"iso":"tl","name":"Filipino"}],
-  "Singapore": [{"iso":"en","name":"English"},{"iso":"ta","name":"Tamil"}],
+  "Singapore": [{"iso":"en","name":"English"},{"iso":"ta","name":"Tamil"},{"iso":"zh-CN","name":"Chinese"},{"iso":"ms","name":"Malay"}],
   "Thailand": [{"iso":"th","name":"Thai"},{"iso":"lo","name":"Lao"}],
   "Vietnam": [{"iso": "vi","name":"Vietnamese"}]
   }

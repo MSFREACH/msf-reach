@@ -54,7 +54,7 @@ var refreshEventPage = function() {
         Cookies.set(key,saveCookies[key]);
     });
 
-    getReports(currentEventId, mapReports);
+    getReports(currentEventId, mainMap, mapReports);
 };
 
 
