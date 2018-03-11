@@ -520,33 +520,63 @@
                 </div>
                 <div class="panel panel-default" >
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResp" >
-                    <h4 class="panel-title">
                       <a data-toggle="collapse" data-target="#collapseResp"
                       href="#collapseResp" class="collapsed">
                       Responses
                       </a>
-                    </h4>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent()">Edit</button>
                   </div>
                   <div id="collapseResp" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div>
-                        <ul class="list-group">
-                          <li class="list-group-item">
                             <dl class="dl-horizontal">
                               <dt> Type of programmes</dt>
                               <dd v-for="item in event.metadata.msf_response_types_of_programmes" >
                                 <span class="label label-primary" >
-                                     {{ item }}
+                                     {{ getTypeOfProgramme(item) }}
                                 </span>&nbsp;
                               </dd>
-                              <dt> Notes:</dt>
+                              <dt> MSF Response</dt>
                               <dd>
                                 {{event.metadata.msf_response}}
                               </dd>
-                            </dl>
-                          </li>
-                        </ul>
+                              <dt> Start Date</dt>
+                              <dd>
+                                {{formatDateOnly(event.metadata.start_date_msf_response)}}
+                              </dd>
+                              <dt> End Date</dt>
+                              <dd>
+                                {{formatDateOnly(event.metadata.end_date_msf_response)}}
+                              </dd>
+                              <dt>
+                                Location of MSF Response
+                              </dt>
+                              <dd>
+                                <a href="">Link</a>
+                              </dd>
+                              <dt>Operational Centre</dt>
+                              <dd>
+                                {{event.metadata.operational_center}}
+                              </dd>
+                              <dt>
+                                Medical Material
+                              </dt>
+                                  <dd v-for="item in event.metadata.msf_response_medical_material">
+                                    {{item}}
+                                  </dd>
+                                  <dd><b>Total:</b> {{event.metadata.msf_response_medical_material_total}}</dd>
+                                  <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_medical_material_date_arrival)}}</dd>
+                              <dt>
+                                Non-Medical Material
+                              </dt>
+                              <dd v-for="item in event.metadata.msf_response_non_medical_material">
+                                {{item}}
+                              </dd>
+                              <dd><b>Total:</b> {{event.metadata.msf_response_non_medical_material_total}}</dd>
+                              <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_non_medical_material_date_arrival)}}</dd>
 
+
+                            </dl>
 
                       </div>
                     </div>

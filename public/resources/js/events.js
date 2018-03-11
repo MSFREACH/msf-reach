@@ -155,7 +155,6 @@ var printEventProperties = function(err, eventProperties){
 
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
-    console.log('hereeee');
     vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
     vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
     vmEventDetails.$mount('#eventVApp');
@@ -909,25 +908,44 @@ $(function() {
 
 var vmEventDetails = new Vue({
 
-  data: {
-    severityColors: severityColors,
-    severityTexts: severityTexts
-  },
-  mounted:function(){
-    console.log('mounted here');
-    console.log(this.event);
+    data: {
+        severityColors: severityColors,
+        severityTexts: severityTexts,
+        msfTypeOfProgrammes:msfTypeOfProgrammes,
+    },
+    mounted:function(){
+        console.log('mounted event instance.');
+        console.log(this.event);
 
-  },
-  computed:{
-    notStr:function(){
-      return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
     },
-    eventLink:function(){
-      return WEB_HOST + 'events/?eventId=' + this.event.id;
+    methods:{
+        getTypeOfProgramme:function(val)
+        {
+            var filtered= msfTypeOfProgrammes.filter(function(e){
+                return e.value==val;
+            });
+            return filtered[0].text;
+        },
+        formatDateOnly:function(value) {
+            if (value) {
+                return moment(value).format('YYYY-MM-DD');
+            }
+        },
+        editEvent:function(){
+            onEditEvent();
+            $( '#editModal' ).modal('show');
+        }
     },
-    eventReportLink:function()
-    {
-      return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+    computed:{
+        notStr:function(){
+            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+        },
+        eventLink:function(){
+            return WEB_HOST + 'events/?eventId=' + this.event.id;
+        },
+        eventReportLink:function()
+        {
+            return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+        }
     }
-  }
 });
