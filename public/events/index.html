@@ -656,7 +656,19 @@
         <div class="col-md-12" >
           <h4>Contacts</h4>
           <div class="form-group">
-            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone or Email ...">
+              <input type="radio" id="type_"
+               name="msf_relationship" value="msf_peer">
+              <label for="radio_msf_peer">MSF Peers only</label>
+              <input type="radio" id="radio_msf_associate"
+               name="msf_relationship" value="msf_associate">
+              <label for="radio_msf_associate">MSF Associates only</label>
+            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Type of Contact, Phone or Email ...">
+            <input type="radio" id="radio_msf_peer"
+             name="msf_relationship" value="msf_peer">
+            <label for="radio_msf_peer">MSF Peers only</label>
+            <input type="radio" id="radio_msf_associate"
+             name="msf_relationship" value="msf_associate">
+            <label for="msf_associate">MSF Associates only</label>
           </div>
           <div id="contactsContainer" style="height:70vh;overflow:auto;"></div>
         </div>
@@ -864,7 +876,6 @@ var getContact = function(id) {
     $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
     $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
 
-    // fiddle booleans to 'yes'/'no'
     contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
     contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
 
