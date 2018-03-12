@@ -10,7 +10,7 @@ body {
     display: block;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 10px;
     width: 100%;
     height: 100%;
     z-index: -1;
@@ -19,23 +19,23 @@ body {
     background-image: url('/resources/images/background.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: 95% 90%;
+    background-size: 95% 95%;
     background-position: center;
 
-    -ms-background-size: 95% 90%;
-    -o-background-size: 95% 90%;
-    -moz-background-size: 95% 90%;
-    -webkit-background-size: 95% 90%;
+    -ms-background-size: 95% 95%;
+    -o-background-size: 95% 95%;
+    -moz-background-size: 95% 95%;
+    -webkit-background-size: 95% 95%;
 }
 
 #wrapper{
   position: fixed;
   display:table;
-  border: 20px solid red;
+  border: 15px solid red;
   top:40px;
   left:0px;
   width:100%;
-  height:100%;
+  height:calc(100% - 40px);
 }
 
 .infolink:before
