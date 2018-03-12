@@ -3,44 +3,44 @@
 function bindACInputToMap(targetMap,inputId)
 {
 
-      var autocomplete = new google.maps.places.Autocomplete(document.getElementById(inputId),{
-          types: ['geocode'],
-      //setting preference to NSW bounds:
-      //bounds: (new google.maps.LatLngBounds({lat: -35.816081, lng:141.035681 },{lat:-28.108865 , lng:153.560095 }))
-      });
-      //autocomplete.setComponentRestrictions({'country': ['au']});
-      // Bind the map's bounds (viewport) property to the autocomplete object,
-      // so that the autocomplete requests use the current map bounds for the
-      // bounds option in the request.
+    var autocomplete = new google.maps.places.Autocomplete(document.getElementById(inputId),{
+        types: ['geocode'],
+        //setting preference to NSW bounds:
+        //bounds: (new google.maps.LatLngBounds({lat: -35.816081, lng:141.035681 },{lat:-28.108865 , lng:153.560095 }))
+    });
+    //autocomplete.setComponentRestrictions({'country': ['au']});
+    // Bind the map's bounds (viewport) property to the autocomplete object,
+    // so that the autocomplete requests use the current map bounds for the
+    // bounds option in the request.
 
-      autocomplete.addListener('place_changed', function() {
-          var place = autocomplete.getPlace();
-          if (!place.geometry) {
-              // User entered the name of a Place that was not suggested and
-              // pressed the Enter key, or the Place Details request failed.
-              alert('No details available for input: \'' + place.name + '\'. Please select from one of the suggested addresses.');
-              return;
-          }
+    autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            // User entered the name of a Place that was not suggested and
+            // pressed the Enter key, or the Place Details request failed.
+            alert('No details available for input: \'' + place.name + '\'. Please select from one of the suggested addresses.');
+            return;
+        }
 
-          var foundLatLng=place.geometry.location.toJSON();
+        var foundLatLng=place.geometry.location.toJSON();
 
-          var addrDetailLevel=place.address_components.length;
+        var addrDetailLevel=place.address_components.length;
 
-          if (targetMap)
-          {
-              targetMap.setView([foundLatLng.lat, foundLatLng.lng],(addrDetailLevel > 3) ? 17 : 7);
-              if(targetMap.msf_marker)
-                  targetMap.removeLayer(targetMap.msf_marker);
-              targetMap.msf_latlng = foundLatLng;
-              targetMap.msf_marker = L.marker(foundLatLng).addTo(targetMap);
-          }
+        if (targetMap)
+        {
+            targetMap.setView([foundLatLng.lat, foundLatLng.lng],(addrDetailLevel > 3) ? 17 : 7);
+            if(targetMap.msf_marker)
+                targetMap.removeLayer(targetMap.msf_marker);
+            targetMap.msf_latlng = foundLatLng;
+            targetMap.msf_marker = L.marker(foundLatLng).addTo(targetMap);
+        }
 
-      });
+    });
 }
 
 function initGoogle()
 {
 
-   bindACInputToMap(autocompleteMap,'mapAddress');
+    bindACInputToMap(autocompleteMap,'mapAddress');
 
 }
