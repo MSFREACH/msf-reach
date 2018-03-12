@@ -133,5 +133,7 @@ body {
   background-color: white;
   position: fixed;
   bottom:20px;
-  height:15%;
+  width: 40%;
+  min-width: 300px;
+  max-width: 500px;
 }
