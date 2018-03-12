@@ -35,7 +35,7 @@ $(function () {
     // Next button goes forward iff current block validates
     $('.form-navigation .next').on('click',function() {
         var cInd=curIndex();
-        if ((cInd==1)&&(!latlng))
+        if ((cInd==1)&&(!newReportMap.msf_latlng))
         {
             alert('Please select a report location on the map to proceed.');
             return;
@@ -88,8 +88,8 @@ var cleanupForNewReport = function (){ // eslint-disable-line no-unused-vars
     if (marker) {
         newReportMap.removeLayer(marker);
     }
-    if (latlng) {
-        latlng = null;
+    if (newReportMap.msf_latlng) {
+        newReportMap.msf_latlng = null;
     }
     $('.form-section').removeClass('current');
     $('.rtype-item').removeClass('rtype-selected');
