@@ -204,22 +204,40 @@ var getMissions = function(callback){
     });
 };
 
+var allFeedFeatures=[];
+var totalFeedsSaved=0;
 
 var tableFeeds = function(feeds) {
     for(var i = 0; i <= feeds.features.length; i++) {
-        var feature = feeds.features[i];
-        if (feature) {
-            $('#rssFeeds').append(
-                '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
-        'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
-        'Source: ' + feature.properties.source + '<br>' +
-        'Updated: ' + feature.properties.updated + '<br>' +
-        'Summary: ' + feature.properties.summary.trim() + '<br>' +
-        '</div>'
-            );
-        }
+        allFeedFeatures.push(feeds.features[i]);
     }
+    totalFeedsSaved++;
+    if (totalFeedsSaved ==1)
+        $('#rssFeeds').html('<div class="msf-loader"></div>');
+    if (totalFeedsSaved == TOTAL_FEEDS)
+    {
+        $('#rssFeeds').html('');
+        allFeedFeatures.sort(function(a,b){
+            return new Date(b.properties.updated) - new Date(a.properties.updated);
+        });
+        $.each(allFeedFeatures,function(i,feature){
+            if (feature) {
+                $('#rssFeeds').append(
+                    '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
+         'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
+         'Source: ' + feature.properties.source + '<br>' +
+         'Updated: ' + (new Date(feature.properties.updated)).toISOString().replace('T', ' ').replace('Z',' GMT') + '<br>' +
+         'Summary: ' + feature.properties.summary.trim() + '<br>' +
+         '</div>'
+                );
+            }
+        });
+
+
+    }
+
 };
+
 
 /**
 * Function to return an icon for mission in popupContent
@@ -565,6 +583,7 @@ getFeeds('/api/hazards/usgs', tableFeeds);
 getFeeds('/api/hazards/tsr', tableFeeds);
 getFeeds('/api/hazards/gdacs', tableFeeds);
 getFeeds('/api/hazards/ptwc', tableFeeds);
+var TOTAL_FEEDS=5;
 
 var displayVideo = function(video) {
 
