@@ -429,7 +429,7 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><div id="username"></div> <span class="caret"></span></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="username"></span> <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="#about" data-toggle="modal" data-target="#about">About MSF-REACH</a></li>
                     <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
@@ -438,9 +438,9 @@
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
-
-
-        <div class="col-md-8">
+      <div class="container-fluid" style="margin-top:5px;">
+        <div class="row">
+          <div class="col-md-8">
             <span style="font-weight:bold;">Double click on approximate location of event on map to create a new event.</span>
             <div class="form-section">
               <div class="form-group">
@@ -465,39 +465,40 @@
               </div>
               <div id="mainMap" style="height:65vh;"></div>
             </div>
-        </div>
+          </div>
 
-        <div id="sidepane" class="col-md-4" >
-          <ul class="nav nav-tabs">
-            <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
-            <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
-            <li role="presentation" class="active"><a id="watchingTab" data-toggle="tab" href="#watchingEvent">Monitoring and Assessment</a></li>
-            <li role="presentation"><a id="ongoingTab" data-toggle="tab" href="#ongoingEvent">Ongoing MSF projects</a></li>
-          </ul>
-          <div class="tab-content msf-tab" >
-            <div id="watchingEvent" class="tab-pane fade in active">
+          <div id="sidepane" class="col-md-4" >
+            <ul class="nav nav-tabs">
+              <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
+              <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
+              <li role="presentation" class="active"><a id="watchingTab" data-toggle="tab" href="#watchingEvent">Monitoring and Assessment</a></li>
+              <li role="presentation"><a id="ongoingTab" data-toggle="tab" href="#ongoingEvent">Ongoing MSF projects</a></li>
+            </ul>
+            <div class="tab-content msf-tab" >
+              <div id="watchingEvent" class="tab-pane fade in active">
                 <div id="watchingEventProperties" class="list-group">
                 </div>
-            </div>
-            <div id="ongoingEvent" class="tab-pane fade">
+              </div>
+              <div id="ongoingEvent" class="tab-pane fade">
                 <div id="ongoingEventProperties" class="list-group">
                 </div>
-            </div>
-            <div id="toolbox" class="tab-pane fade">
-              <div class="list-group">
-                  <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
               </div>
-            </div>
+              <div id="toolbox" class="tab-pane fade">
+                <div class="list-group">
+                  <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
+                </div>
+              </div>
 
 
-            <div id="feed" class="tab-pane fade">
+              <div id="feed" class="tab-pane fade">
                 <div id="rssFeeds" class="list-group">
 
                 </div>
+              </div>
             </div>
           </div>
         </div>
-
+      </div>
     <script src="/lib/lodash.min.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="lib/jquery/jquery-3.3.1.min.js"></script>

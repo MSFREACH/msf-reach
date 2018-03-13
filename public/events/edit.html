@@ -803,7 +803,8 @@ var vm = new Vue({
 
 
           /** << eventMap */
-          eventMap = L.map('eventMap').setView(eventDefaultLatLng, 13);
+          eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false}).setView(eventDefaultLatLng, 13);
+          eventMap.scrollWheelZoom.disable();
 
           var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
 
@@ -826,7 +827,8 @@ var vm = new Vue({
             msfResponseMarkerLatLng = [this.event.metadata.msf_response_location.coordinates[1], this.event.metadata.msf_response_location.coordinates[0]];
           }
 
-          msfResponseMap = L.map('msfResponseMap').setView(msfResponseMarkerLatLng, 13);
+          msfResponseMap = L.map('msfResponseMap',{dragging: !L.Browser.mobile, tap:false}).setView(msfResponseMarkerLatLng, 13);
+          msfResponseMap.scrollWheelZoom.disable();
 
           var msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap);
 
