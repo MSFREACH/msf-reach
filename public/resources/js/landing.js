@@ -374,7 +374,6 @@ var mapContacts = function(contacts ){
 
     if (MSFContactsLayer)
     {
-        console.log('removing MSF contacts');
         computerTriggered=true;
         mainMap.removeLayer(MSFContactsLayer);
         layerControl.removeLayer(MSFContactsLayer);
