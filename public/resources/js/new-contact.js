@@ -66,6 +66,7 @@ function postContact() {
             'web': $('#inputContactWeb').val() || '',
             'email':$('#inputContactEmail').val(),
             'email2': $('#inputContactEmail2').val() || '',
+            'sharepoint': $('#inputContactSharepoint').val() || '',
             'WhatsApp': $('#inputWhatsApp').val() || '',
             'Facebook': $('#inputFacebook').val() || '',
             'Twitter': $('#inputTwitter').val() || '',
