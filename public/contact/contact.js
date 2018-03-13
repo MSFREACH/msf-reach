@@ -60,7 +60,7 @@ $(function () {
         }
         if (cInd==MAPSECTIONINDEX)
         {
-            if (!latlng)
+            if (!newContactMap.msf_latlng)
             {
                 alert('Please enter an address/location to proceed.');
                 return;
