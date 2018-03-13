@@ -1,7 +1,7 @@
 var doItOnce=true;
 
-$('#permission').toggle(localStorage.getItem('username'));
-$('#sharepoint').toggle(localStorage.getItem('username'));
+$('#permission').toggle(localStorage.getItem('username')!=null);
+$('#sharepoint').toggle(localStorage.getItem('username')!=null);
 
 $(function () {
     var $sections = $('.form-section');
