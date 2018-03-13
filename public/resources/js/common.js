@@ -34,6 +34,8 @@ var reportsContactsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 
+var computerTriggered = false;
+
 var PDCHazardsLayer;
 var TSRHazardsLayer;
 var USGSHazardsLayer;
@@ -525,3 +527,16 @@ var getAllEvents = function(callback){
         }
     });
 };
+
+mainMap.on('overlayadd', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'on');
+    }
+});
+
+
+mainMap.on('overlayremove', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'off');
+    }
+});

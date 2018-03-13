@@ -13,6 +13,7 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+var MSFContactsLayer, nonMSFContactsLayer;
 
 
 $( '#inputSeverityScale' ).slider({
@@ -165,8 +166,19 @@ var mapAllEvents = function(err, events){
 /**
 * Function to get contacts
 **/
-var getContacts = function(callback){
-    $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
+var getContacts = function(callback,term,peer_or_associate){
+
+    var url = '/api/contacts/?geoformat='+GEOFORMAT;
+    if (term) {
+        url += '&search='+term;
+    }
+    if (peer_or_associate==='peer') {
+        url=url+'&msf_peer=true';
+    }
+    if (peer_or_associate==='associate') {
+        url=url+'&msf_associate=true';
+    }
+    $.getJSON(url, function( data ){
         callback(data.result);
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
@@ -360,14 +372,32 @@ var mapContacts = function(contacts ){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
 
-    var MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
+    if (MSFContactsLayer)
+    {
+        console.log('removing MSF contacts');
+        computerTriggered=true;
+        mainMap.removeLayer(MSFContactsLayer);
+        layerControl.removeLayer(MSFContactsLayer);
+        computerTriggered=false;
+    }
+
+
+    if (nonMSFContactsLayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(nonMSFContactsLayer);
+        layerControl.removeLayer(nonMSFContactsLayer);
+        computerTriggered=false;
+    }
+
+    MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: contactIcon});
         },
         onEachFeature: onEachFeature
     });
 
-    var nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+    nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: contactIcon});
         },
@@ -551,18 +581,30 @@ var displayVideo = function(video) {
 
 };
 
-mainMap.on('overlayadd', function (layersControlEvent) {
-    Cookies.set(layersControlEvent.name,'on');
-});
-
-mainMap.on('overlayremove', function (layersControlEvent) {
-    Cookies.set(layersControlEvent.name,'off');
-});
-
 var autocompleteMap=mainMap;
 
 var latlng;
 mainMap.on('dblclick', function(dblclickEvent) {
     latlng = dblclickEvent.latlng;
     $('#newEventModal').modal('show');
+});
+
+$('#contSearchTerm').on('input',function(){
+    if ($('#radio_msf_peer').is(':checked')) {
+        getContacts(mapContacts,this.value,'peer');
+    } else if ($('#radio_msf_associate').is(':checked')) {
+        getContacts(mapContacts,this.value,'associate');
+    } else {
+        getContacts(mapContacts,this.value);
+    }
+});
+
+$('#inputContactType').on('change',function(){
+    if ($('#radio_msf_peer').is(':checked')) {
+        getContacts(mapContacts,this.value,'peer');
+    } else if ($('#radio_msf_associate').is(':checked')) {
+        getContacts(mapContacts,this.value,'associate');
+    } else {
+        getContacts(mapContacts,this.value);
+    }
 });

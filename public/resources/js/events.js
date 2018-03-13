@@ -15,8 +15,6 @@ var MAX_RADIUS= 5;
 
 var mainMap = L.map('map').setView([-6.8, 108.7], 7);
 
-var computerTriggered = false;
-
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
@@ -837,18 +835,6 @@ var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
 };
 
-mainMap.on('overlayadd', function (layersControlEvent) {
-    if (!computerTriggered) {
-        Cookies.set(layersControlEvent.name,'on');
-    }
-});
-
-
-mainMap.on('overlayremove', function (layersControlEvent) {
-    if (!computerTriggered) {
-        Cookies.set(layersControlEvent.name,'off');
-    }
-});
 
 /**
 * Function to get all events from the API

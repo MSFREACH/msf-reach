@@ -19,8 +19,8 @@ export default ({ config, db, logger }) => {
         validate({
             query: {
                 search: Joi.string().min(1),
-                msf_associate: Joi.boolean().strict(),
-                msf_peer: Joi.boolean().strict(),
+                msf_associate: Joi.string(),
+                msf_peer: Joi.string(),
                 latmin: Joi.number().min(-90).max(90),
                 lngmin: Joi.number().min(-180).max(180),
                 latmax: Joi.number().min(-90).max(90),
