@@ -69,7 +69,7 @@
     "response-time": "^2.3.2",
     "save": "^2.3.2",
     "twitter": "^1.7.1",
-    "winston": "^3.0.0-rc2",
+    "winston": "^2.4.1",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
