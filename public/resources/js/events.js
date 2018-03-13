@@ -13,7 +13,7 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var MAX_RADIUS= 5;
 
 
-var mainMap = L.map('map').setView([-6.8, 108.7], 7);
+var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false}).setView([-6.8, 108.7], 7);
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
