@@ -1,11 +1,7 @@
 var doItOnce=true;
 
-if (Cookies.get('jwt')) {
-    Cookies.set('operator', 'true', { expires: 2 });
-}
-
-
-$('#permission').toggle(Cookies.get('operator')==='true');
+$('#permission').toggle(localStorage.getItem('username'));
+$('#sharepoint').toggle(localStorage.getItem('username'));
 
 $(function () {
     var $sections = $('.form-section');
