@@ -937,3 +937,16 @@ $(function() {
             translate(translateObj);
         });
 });
+
+mainMap.on('overlayadd', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'on');
+    }
+});
+
+
+mainMap.on('overlayremove', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'off');
+    }
+});

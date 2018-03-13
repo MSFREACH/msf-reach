@@ -607,3 +607,16 @@ $('#inputContactType').on('change',function(){
         getContacts(mapContacts,this.value);
     }
 });
+
+mainMap.on('overlayadd', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'on');
+    }
+});
+
+
+mainMap.on('overlayremove', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'off');
+    }
+});
