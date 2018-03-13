@@ -363,6 +363,56 @@
           </div>
         </div>
       </div> -->
+
+      <!-- About modal -->
+      <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAbout">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabelAbout">About MSF-REACH</h4>
+            </div>
+            <div class="modal-body" id="AboutModalBody">
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
+                    <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
+                      <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
+                    </div>
+                    <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
+                    <div class="list-group-item list-group-item-action" style="display:none;" id="tic_video" >
+                      <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/-Kfodflm3M8?autoplay=0"></iframe>
+                    </div>
+                    <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action"><i>&bull;</i> Partnership and confidentiality</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- FAQ modal -->
+      <div class="modal fade" id="FAQ" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFAQ">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabelFAQ">Frequently Asked Questions</h4>
+            </div>
+            <div class="modal-body" id="FAQModalBody">
+              <p><span style="font-weight:bold;">What is REACH?</span><br /></p>
+              <p><span style="font-weight:bold;">Who is responsible?</span><br /></p>
+              <p><span style="font-weight:bold;">Who are the main users?</span><br /></p>
+              <p><span style="font-weight:bold;">Who can access REACH?</span><br /></p>
+              <p><span style="font-weight:bold;">What is the main impact for MSF beneficiaries?</span><br /></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
@@ -379,11 +429,10 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><div id="username"></div> <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a href="#" id="username"></a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a id="logout" href="/login">LOGOUT</a><li>
+                    <li><a href="#about" data-toggle="modal" data-target="#about">About MSF-REACH</a></li>
+                    <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
                   </ul>
             </ul>
           </div><!-- /.navbar-collapse -->
@@ -392,19 +441,35 @@
 
 
         <div class="col-md-8">
-            <h6>Double click on approximate location of event on map to create a new event.</h6>
+            <span style="font-weight:bold;">Double click on approximate location of event on map to create a new event.</span>
             <div class="form-section">
               <div class="form-group">
                 <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
               </div>
-              <div id="mainMap" style="height:80vh;"></div>
+              <div class="form-group" >
+                Contact search category
+                <select class="form-control" style="color:black;" id="inputContactType" >
+                  <option value="" disabled selected>Please select...</option>
+                  <option value="Current MSF Staff">Current MSF Staff</option>
+                  <option value="Supplier">Supplier</option>
+                  <option value="United Nations">United Nations</option>
+                  <option value="Government">Government</option>
+                  <option value="Other NGO">Other NGO</option>
+                  <option value="Academic">Academic</option>
+                  <option value="Private Medical Practice">Private Medical Practice</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
+              </div>
+              <div id="mainMap" style="height:65vh;"></div>
             </div>
         </div>
 
         <div id="sidepane" class="col-md-4" >
           <ul class="nav nav-tabs">
             <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
-            <li role="presentation"><a id="infoTab" data-toggle="tab" href="#info">Info</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
             <li role="presentation" class="active"><a id="watchingTab" data-toggle="tab" href="#watchingEvent">Monitoring and Assessment</a></li>
             <li role="presentation"><a id="ongoingTab" data-toggle="tab" href="#ongoingEvent">Ongoing MSF projects</a></li>
@@ -423,19 +488,7 @@
                   <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
               </div>
             </div>
-            <div id="info" class="tab-pane fade">
-              <div class="list-group">
-                  <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
-                  <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
-                    <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
-                  </div>
-                  <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
-                  <div class="list-group-item list-group-item-action" style="display:none;" id="tic_video" >
-                    <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/-Kfodflm3M8?autoplay=0"></iframe>
-                  </div>
-                  <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action"><i>&bull;</i> Partnership and confidentiality</a>
-              </div>
-            </div>
+
 
             <div id="feed" class="tab-pane fade">
                 <div id="rssFeeds" class="list-group">

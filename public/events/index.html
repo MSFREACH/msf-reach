@@ -440,9 +440,6 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#" id="username"></a></li>
-            <li role="separator" class="divider"></li>
-            <li><a id="logout" href="/login">LOGOUT</a><li>
-
             </ul>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -456,6 +453,7 @@
             <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
             <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
+            <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF projects</a></li>
             <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
@@ -654,8 +652,29 @@
       <div class="row">
         <div class="col-md-12" >
           <h4>Contacts</h4>
+          <div class="form-group" >
+            <label for="inputContactType" style="text-transform:uppercase;">Category</label>
+            <select class="form-control" style="color:black;" id="inputContactType" >
+              <option value="" disabled selected>Please select...</option>
+              <option value="Current MSF Staff">Current MSF Staff</option>
+              <option value="Supplier">Supplier</option>
+              <option value="United Nations">United Nations</option>
+              <option value="Government">Government</option>
+              <option value="Other NGO">Other NGO</option>
+              <option value="Academic">Academic</option>
+              <option value="Private Medical Practice">Private Medical Practice</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone or Email ...">
+            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ... ..."><br />
+            <!--<table><tr><td>
+            <input type="radio" id="radio_msf_peer"
+             name="msf_relationship" value="msf_peer">
+            <label for="radio_msf_peer">MSF Peers only</label></td><td>
+            <input type="radio" id="radio_msf_associate"
+             name="msf_relationship" value="msf_associate">
+            <label for="msf_associate">MSF Associates only</label></td></tr></table>-->
           </div>
           <div id="contactsContainer" style="height:70vh;overflow:auto;"></div>
         </div>
@@ -669,6 +688,14 @@
             <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
           </div>
           <div id="missionsContainer"></div>
+        </div>
+      </div>
+    </div>
+    <div id="ongoingEvents" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-12" >
+          <h4>Ongoing MSF Projects in the same country</h4>
+          <div id ="ongoingEventsContainer" style="height:70vh;"></div>
         </div>
       </div>
     </div>
@@ -800,6 +827,17 @@ $('#eventTab').on('click', function(e){
   }
 });
 
+$('#ongoingEventsTab').on('click', function(e){
+  if (mapOn === 0) {
+    $('#mapContainer').toggle();
+    $('#mapContainer').addClass('col-md-6');
+    $('#sidepane').removeClass('col-md-12');
+    $('#sidepane').addClass('col-md-6');
+    mapOn = 1;
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
+  }
+});
+
 $('#reportsTab').on('click', function(e){
   if (mapOn === 0) {
     $('#reportsContainer').toggle();
@@ -844,7 +882,6 @@ var getContact = function(id) {
     $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
     $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
 
-    // fiddle booleans to 'yes'/'no'
     contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
     contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
 

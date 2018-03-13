@@ -70,13 +70,19 @@ var loadContacts = function(err, contacts) {
 };
 
 // Perform GET call to get contacts
-var getContacts = function(term){
+var getContacts = function(term,peer_or_associate){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
     var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
     var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
     var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
     var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
     url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+    if (peer_or_associate==='peer') {
+        url=url+'&msf_peer=true';
+    }
+    if (peer_or_associate==='associate') {
+        url=url+'&msf_associate=true';
+    }
     $.getJSON(url, function (data){
         loadContacts(null, data.result.features);
         //remap contacts
@@ -107,5 +113,25 @@ mainMap.on('moveend', function(){thGetContacts($('#contSearchTerm').val());});
 
 
 $('#contSearchTerm').on('input',function(){
-    thGetContacts(this.value);
+    if ($('#radio_msf_peer').is(':checked')) {
+        thGetContacts(this.value,'peer');
+        $('#radio_msf_peer').checked = false;
+    } else if ($('#radio_msf_associate').is(':checked')) {
+        thGetContacts(this.value,'associate');
+        $('#radio_msf_associate').checked = false;
+    } else {
+        thGetContacts(this.value);
+    }
+});
+
+$('#inputContactType').on('change',function(){
+    if ($('#radio_msf_peer').is(':checked')) {
+        thGetContacts(this.value,'peer');
+        $('#radio_msf_peer').checked = false;
+    } else if ($('#radio_msf_associate').is(':checked')) {
+        thGetContacts(this.value,'associate');
+        $('#radio_msf_associate').checked = false;
+    } else {
+        thGetContacts(this.value);
+    }
 });

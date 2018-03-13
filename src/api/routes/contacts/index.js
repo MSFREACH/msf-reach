@@ -4,7 +4,7 @@ import { Router } from 'express';
 import contacts from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, jwtCheck } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import BaseJoi from 'joi';
@@ -15,10 +15,12 @@ import validate from 'celebrate';
 export default ({ config, db, logger }) => {
     let api = Router();
 
-    api.get('/', jwtCheck, cacheResponse('1 minute'),
+    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 search: Joi.string().min(1),
+                msf_associate: Joi.string(),
+                msf_peer: Joi.string(),
                 latmin: Joi.number().min(-90).max(90),
                 lngmin: Joi.number().min(-180).max(180),
                 latmax: Joi.number().min(-90).max(90),
@@ -31,7 +33,7 @@ export default ({ config, db, logger }) => {
             ymin: req.query.latmin,
             xmax: req.query.lngmax,
             ymax: req.query.latmax
-        }).then((data) => handleGeoResponse(data, req, res, next))
+        },req.query.msf_associate,req.query.msf_peer).then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
                 logger.error(err);
@@ -40,7 +42,7 @@ export default ({ config, db, logger }) => {
             })
     );
 
-    api.get('/:id', jwtCheck, cacheResponse('1 minute'),
+    api.get('/:id', ensureAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 params: { id: Joi.number().integer().min(1).required() }
@@ -83,7 +85,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact record in the database
-    api.patch('/:id', jwtCheck,
+    api.patch('/:id', ensureAuthenticated,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
@@ -103,7 +105,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact's last_email_sent_at record in the database
-    api.patch('/:id/emailtime', jwtCheck,
+    api.patch('/:id/emailtime', ensureAuthenticated,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({

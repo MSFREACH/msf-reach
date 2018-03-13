@@ -15,8 +15,6 @@ var MAX_RADIUS= 5;
 
 var mainMap = L.map('map').setView([-6.8, 108.7], 7);
 
-var computerTriggered = false;
-
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
@@ -156,7 +154,10 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
 
+
+
     if (currentEventProperties.metadata.country) {
+        getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
         $.getJSON({
             url: '/resources/js/country-to-language-mapping.json'
         }).done(function(result) {
@@ -369,6 +370,17 @@ function openReportPopup(id) {
     }
 }
 
+
+function openEventPopup(id)
+{
+    eventsLayer.eachLayer(function(layer){
+        if (layer.feature.properties.id == id)
+        {
+            layer.openPopup(mainMap.center);
+        }
+    });
+}
+
 /**
 * Function to map and print a table of events
 * @param {Object} events - GeoJSON Object containing event details
@@ -428,6 +440,19 @@ var mapAllEvents = function(err, events){
     notificationStr +
     totalPopulationStr +
     affectedPopulationStr;
+
+        $('#ongoingEventsContainer').append(
+            '<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
+      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+      'Type: ' + feature.properties.type + '<br>' +
+      statusStr +
+      notificationStr +
+      totalPopulationStr +
+      affectedPopulationStr +
+      '</div>'
+        );
 
 
         if (feature.properties && feature.properties.popupContent) {
@@ -810,25 +835,36 @@ var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
 };
 
-mainMap.on('overlayadd', function (layersControlEvent) {
-    if (!computerTriggered) {
-        Cookies.set(layersControlEvent.name,'on');
-    }
-});
 
-
-mainMap.on('overlayremove', function (layersControlEvent) {
-    if (!computerTriggered) {
-        Cookies.set(layersControlEvent.name,'off');
+/**
+* Function to get all events from the API
+* @param {Function} callback - Function to call once data returned
+* @returns {String} err - Error message if any, else none
+* @returns {Object} events - Events as GeoJSON FeatureCollection
+*/
+var getEventsByCountry = function(country, callback){
+    var q;
+    if (typeof(country)!=='undefined' && country !== '') {
+        q = '&country='+country;
     }
-});
+    $.getJSON('/api/events/?status=active'+q+'&geoformat=' + GEOFORMAT, function ( data ){
+    // Print output to page
+        callback(null, data.result);
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            callback(err.responseText, null);
+        }
+    });
+};
 
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getAllEvents(mapAllEvents);
+
 
 
 // Enter an API key from the Google API Console:
@@ -900,4 +936,17 @@ $(function() {
 
             translate(translateObj);
         });
+});
+
+mainMap.on('overlayadd', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'on');
+    }
+});
+
+
+mainMap.on('overlayremove', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'off');
+    }
 });
