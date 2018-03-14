@@ -911,8 +911,8 @@ var vmEventDetails = new Vue({
         msfTypeOfProgrammes:msfTypeOfProgrammes,
     },
     mounted:function(){
-        console.log('mounted event instance.');
-        console.log(this.event);
+        //console.log('mounted event instance.');
+        //console.log(this.event);
 
     },
     methods:{
