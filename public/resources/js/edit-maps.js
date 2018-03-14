@@ -67,24 +67,6 @@ var mapEditEvents = function(err, events){
             popupContent.substr(0,popupContent.length-4);
         }
 
-        var eventDiv = '';
-        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
-            eventDiv = '#watchingEventProperties';
-        } else {
-            eventDiv = '#ongoingEventProperties';
-        }
-        $(eventDiv).append(
-            '<div class="list-group-item">' +
-      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
-      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type: ' + feature.properties.type + '<br>' +
-      statusStr +
-      notificationStr +
-      totalPopulationStr +
-      affectedPopulationStr +
-      '</div>'
-        );
 
         if (feature.properties && feature.properties.popupContent) {
             popupContent += feature.properties.popupContent;

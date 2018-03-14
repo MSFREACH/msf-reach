@@ -374,7 +374,7 @@ var mapAllEvents = function(err, events){
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type: ' + feature.properties.type + '<br>' +
+      'Type(s): ' + type.replace('_',' ') + '<br>' +
       statusStr +
       notificationStr +
       totalPopulationStr +
