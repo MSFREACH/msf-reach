@@ -83,10 +83,12 @@ $(function(){
             alert('Please select the epicenter of the event using the map.');
         }
         else {
-            var sub_type = $('#inputDisasterType').val() || $('#inputDiseaseType').val()  || $('#inputOther').val();
+            var sub_type = $('input[class=newSubEventTypeBox]:checked').map(
+                function () {return this.value;}).get().join(',');
             var body = {
                 'status': 'active',
-                'type': $('#selectType').val(),
+                'type': $('input[class=newEventTypeBox]:checked').map(
+                    function () {return this.value;}).get().join(','),
                 'created_at': new Date().toISOString(),
                 'location': latlng,
                 'metadata':{
@@ -146,24 +148,56 @@ $(function(){
     });
 
 
-    $('#selectType').change(function(){
-        $('#divNaturalDisaster').toggle(this.value == 'natural_hazard');
-        if (this.value != 'natural_hazard') $('#inputDisasterType').val('');
+    //hide/show div containers of subtypes and other text input if their relevant checkbox is true
+    $('.newEventTypeBox').change(function () {
+        //console.log(this.checked);
+        //console.log($(this).attr('id'));
 
-        $('#divDisease').toggle(this.value == 'epidemiological');
-        if (this.value != 'epidemiological')
-            $('#inputDiseaseType').val('');
+        //console.log($('input[class=newEventTypeBox]:checked').map(
+        //    function () {return this.value;}).get().join(', '));
 
+        if($(this).attr('id') == 'selectType4') {
+            $('#divNaturalDisaster').css('display', (this.checked ? '' : 'none'));
+        }
 
-        $('#divOther').toggle(this.value == 'other');
-        //$("#inputName").val(this.value.replace('_',' ')+" "+$("#inputEvDateTime").val());
+        if($(this).attr('id') == 'selectType1') {
+            $('#divDisease').css('display', (this.checked ? '' : 'none'));
+        }
+
+        if($(this).attr('id') == 'selectType6') {
+            $('#divOther').css('display', (this.checked ? '' : 'none'));
+        }
     });
 
+    $('.newSubEventTypeBox').change(function () {
+        if($(this).attr('id') == 'diseaseType7') {
+            $('#divOtherDisease').css('display', (this.checked ? '' : 'none'));
+            var diseaseTxt = $('#diseaseType8').val();
+            $(this).val(diseaseTxt);
+        }
 
-    $('#inputDisasterType , #inputDiseaseType').change(function(){
-        $('#divOther').toggle(!this.value);
-        if (this.value)
-            $('#inputOther').val('');
+        if($(this).attr('id') == 'disasterType7') {
+            $('#divOtherDisaster').css('display', (this.checked ? '' : 'none'));
+            var disasterTxt = $('#disasterType8').val();
+            $(this).val(disasterTxt);
+        }
+    });
+
+    $('.form-control').focusout(function () {
+
+        //console.log($(this).attr('id'));
+
+        if($(this).attr('id') == 'disasterType8') {
+            var disasterTxt = $(this).val();
+            $('#disasterType7').val(disasterTxt);
+            //console.log(disasterTxt);
+        }
+
+        if($(this).attr('id') == 'diseaseType8') {
+            var diseaseTxt = $(this).val();
+            $('#diseaseType7').val(diseaseTxt);
+            //console.log(diseaseTxt);
+        }
     });
 
 
