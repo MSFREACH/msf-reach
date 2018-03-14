@@ -7,8 +7,7 @@ types = types.split(',');
 function powerSet( list ){
     var set = [],
         listSize = list.length,
-        combinationsCount = (1 << listSize),
-        combination;
+        combinationsCount = (1 << listSize);
 
     for (var i = 1; i < combinationsCount ; i++ ){
         var combination = [];
