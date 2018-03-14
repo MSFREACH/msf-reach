@@ -191,7 +191,7 @@ dd.padding-bottom {
                 </a>
               </h4>
             </div>
-            <div id="collapseOne1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div id="collapseOne1" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='response')}" role="tabpanel" aria-labelledby="headingOne">
               <ul class="list-group">
                 <li class="list-group-item">
                   <dl>
@@ -320,7 +320,7 @@ dd.padding-bottom {
                 </a>
               </h4>
             </div>
-            <div id="collapseTwo1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div id="collapseTwo1" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='externalcap')}" role="tabpanel" aria-labelledby="headingTwo">
               <ul class="list-group">
                 <li class="list-group-item">
                   <dl>
@@ -756,6 +756,7 @@ var vm = new Vue({
     diseaseOther: '',
     disasterType: [],
     disasterOther: '',
+    editCategory:editCategory
   },
   mounted: function() {
     console.log("Vue already mounted.");

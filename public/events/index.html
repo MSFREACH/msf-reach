@@ -458,25 +458,159 @@
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
-          <div class="tab-content">
+          <div class="tab-content" id="eventVApp">
             <div id="event" class="tab-pane fade in active">
-              <div id="eventProperties"></div>
+              <div>
+                <table class="table">
+                  <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
+                  <tr><td>Country</td><td> {{ event.metadata.country }}</td></tr>
+                  <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
+                  <tr><td>Type</td><td> {{ event.type+' '+event.metadata.sub_type }}</td></tr>
+                  <tr><td>Event date and Time</td><td> {{ event.metadata.event_datetime || event.created_at }}</td></tr>
+
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>
+
+                  <tr v-else><td>Latest notification:  </td><td>(none)</td></tr>
+                  <tr><td>Severity </td><td> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityTexts[event.metadata.severity_scale-1]}}</span></span> {{ event.metadata.severity }} </td></tr>
+                  <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
+                  <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
+                  <tr><td>Last updated at</td><td> {{ event.updated_at.split('T')[0] }}</td></tr>
+
+
+
+
+                  <tr><td>Event link</td><td><a id='eventLink'  :href='eventLink' target='_blank'>{{ eventLink }}</a></td><td><button class='btn btn-primary' data-clipboard-target='#eventLink'>Copy link</button></td></tr>
+
+                  <tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td>
+                    <td><a style="display:none;" id='reportLink' :href='eventReportLink' target='_blank'> {{ eventReportLink }} </a><button class='btn btn-primary' :data-clipboard-text='eventReportLink'>Copy link</button></td></tr>
+
+
+                    <tr v-if='event.metadata.user'><td>Creator</td><td> {{ event.metadata.user }}</td></tr>
+                    <tr v-if='event.metadata.user_edit'><td>Edits</td><td>{{ event.metadata.user_edit }}</td></tr>
+                  </table>
+
+
+              </div>
               <div class="panel-group" id="accordion">
                 <div class="panel panel-default" id="panel4">
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
-                    <h4 class="panel-title">
                       <a data-toggle="collapse" data-target="#collapseNotif"
                       href="#collapseNotif" class="collapsed">
                       Notifications
                       </a>
-                    </h4>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('general')">Edit</button>
                   </div>
                   <div id="collapseNotif" class="panel-collapse collapse in">
                     <div class="panel-body" >
-                      <div id="eventNotifications"></div>
+                      <div id="eventNotifications">
+
+                            <table v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
+                              <thead><tr><td>Time</td><td>Notification</td></tr></thead>
+                              <tbody>
+                                <tr v-for="elem in event.metadata.notification">
+                                  <td>{{ (new Date(elem.notification_time*1000)).toLocaleString() }}</td>
+                                  <td> {{ elem.notification }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResp" >
+                      <a data-toggle="collapse" data-target="#collapseResp"
+                      href="#collapseResp" class="collapsed">
+                      Response
+                      </a>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('response')">Edit</button>
+                  </div>
+                  <div id="collapseResp" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                            <dl class="dl-horizontal">
+                              <dt>Type of programmes:</dt>
+                              <dd v-for="item in event.metadata.msf_response_types_of_programmes" >
+                                <span class="label label-primary" >
+                                     {{ getTypeOfProgramme(item) }}
+                                </span>&nbsp;
+                              </dd>
+                              <dt>MSF Response:</dt>
+                              <dd>
+                                {{event.metadata.msf_response}}
+                              </dd>
+                              <dt>Start Date:</dt>
+                              <dd>
+                                {{formatDateOnly(event.metadata.start_date_msf_response)}}
+                              </dd>
+                              <dt>End Date:</dt>
+                              <dd>
+                                {{formatDateOnly(event.metadata.end_date_msf_response)}}
+                              </dd>
+                              <dt>
+                                Location of MSF Response:
+                              </dt>
+                              <dd>
+                                <a @click="editEvent('response')">Edit</a>
+                              </dd>
+                              <dt>Operational Centre:</dt>
+                              <dd>
+                                {{event.metadata.operational_center}}
+                              </dd>
+                              <dt>
+                                Medical Material:
+                              </dt>
+                                  <dd v-for="item in event.metadata.msf_response_medical_material">
+                                    {{item}}
+                                  </dd>
+                                  <dd><b>Total:</b> {{event.metadata.msf_response_medical_material_total}}</dd>
+                                  <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_medical_material_date_arrival)}}</dd>
+                              <dt>
+                                Non-Medical Material:
+                              </dt>
+                              <dd v-for="item in event.metadata.msf_response_non_medical_material">
+                                {{item}}
+                              </dd>
+                              <dd><b>Total:</b> {{event.metadata.msf_response_non_medical_material_total}}</dd>
+                              <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_non_medical_material_date_arrival)}}</dd>
+
+
+                            </dl>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtCapacity" >
+                      <a data-toggle="collapse" data-target="#collapseExtCapacity"
+                      href="#collapseExtCapacity" class="collapsed">
+                      External Capacity
+                      </a>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('externalcap')">Edit</button>
+                  </div>
+                  <div id="collapseExtCapacity" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                            <dl class="dl-horizontal">
+                              <dt>Analysis of capacity on the ground:</dt>
+                              <dd>{{event.metadata.ext_capacity_type_in_ground =='medical' ? 'Medical' : 'Non-Medical'}}</dd>
+                              <dd>{{event.metadata.capacity}}</dd>
+                              <dd>{{event.metadata.ext_capacity_by_humanitarian}}</dd>
+                              <dd>{{event.metadata.ext_capacity_action_plan}}</dd>
+                              <dd>{{event.metadata.ext_capacity_who}}</dd>
+                              <dt>Other organizations:</dt>
+                              <section v-for="(item, index) in event.metadata.ext_other_organizations">
+                                <dd>{{item.name + ' - ' + item.deployment + ' - '+ formatDateOnly(item.arrival_date) }}</dd>
+                              </section>
+
+                            </dl>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
               <div class="panel panel-default" id="panel3">
                 <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseThree">
                   <h4 class="panel-title">
@@ -749,6 +883,7 @@
 <script src="/lib/vue/vue.min.js"></script>
 <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
 
+
 <!-- Get query parameter from URL -->
 <!-- Ask the server for reports from specific event -->
 <!-- Display event details -->
@@ -771,10 +906,10 @@
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
 
-<script src="/resources/js/events.js"></script>
-
 <!-- events common variables -->
 <script src="/events/common.js"></script>
+<script src="/resources/js/events.js"></script>
+
 <script src="/resources/js/contacts.js"></script>
 <script src="/resources/js/missions.js"></script>
 <script>
