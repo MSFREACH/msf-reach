@@ -494,12 +494,11 @@
               <div class="panel-group" id="accordion">
                 <div class="panel panel-default" id="panel4">
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
-                    <h4 class="panel-title">
                       <a data-toggle="collapse" data-target="#collapseNotif"
                       href="#collapseNotif" class="collapsed">
                       Notifications
                       </a>
-                    </h4>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('general')">Edit</button>
                   </div>
                   <div id="collapseNotif" class="panel-collapse collapse in">
                     <div class="panel-body" >
@@ -522,44 +521,44 @@
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResp" >
                       <a data-toggle="collapse" data-target="#collapseResp"
                       href="#collapseResp" class="collapsed">
-                      Responses
+                      Response
                       </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent()">Edit</button>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('response')">Edit</button>
                   </div>
                   <div id="collapseResp" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div>
                             <dl class="dl-horizontal">
-                              <dt> Type of programmes</dt>
+                              <dt>Type of programmes:</dt>
                               <dd v-for="item in event.metadata.msf_response_types_of_programmes" >
                                 <span class="label label-primary" >
                                      {{ getTypeOfProgramme(item) }}
                                 </span>&nbsp;
                               </dd>
-                              <dt> MSF Response</dt>
+                              <dt>MSF Response:</dt>
                               <dd>
                                 {{event.metadata.msf_response}}
                               </dd>
-                              <dt> Start Date</dt>
+                              <dt>Start Date:</dt>
                               <dd>
                                 {{formatDateOnly(event.metadata.start_date_msf_response)}}
                               </dd>
-                              <dt> End Date</dt>
+                              <dt>End Date:</dt>
                               <dd>
                                 {{formatDateOnly(event.metadata.end_date_msf_response)}}
                               </dd>
                               <dt>
-                                Location of MSF Response
+                                Location of MSF Response:
                               </dt>
                               <dd>
-                                <a href="">Link</a>
+                                <a @click="editEvent('response')">Edit</a>
                               </dd>
-                              <dt>Operational Centre</dt>
+                              <dt>Operational Centre:</dt>
                               <dd>
                                 {{event.metadata.operational_center}}
                               </dd>
                               <dt>
-                                Medical Material
+                                Medical Material:
                               </dt>
                                   <dd v-for="item in event.metadata.msf_response_medical_material">
                                     {{item}}
@@ -567,7 +566,7 @@
                                   <dd><b>Total:</b> {{event.metadata.msf_response_medical_material_total}}</dd>
                                   <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_medical_material_date_arrival)}}</dd>
                               <dt>
-                                Non-Medical Material
+                                Non-Medical Material:
                               </dt>
                               <dd v-for="item in event.metadata.msf_response_non_medical_material">
                                 {{item}}
@@ -582,6 +581,36 @@
                     </div>
                   </div>
                 </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtCapacity" >
+                      <a data-toggle="collapse" data-target="#collapseExtCapacity"
+                      href="#collapseExtCapacity" class="collapsed">
+                      External Capacity
+                      </a>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('externalcap')">Edit</button>
+                  </div>
+                  <div id="collapseExtCapacity" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                            <dl class="dl-horizontal">
+                              <dt>Analysis of capacity on the ground:</dt>
+                              <dd>{{event.metadata.ext_capacity_type_in_ground =='medical' ? 'Medical' : 'Non-Medical'}}</dd>
+                              <dd>{{event.metadata.capacity}}</dd>
+                              <dd>{{event.metadata.ext_capacity_by_humanitarian}}</dd>
+                              <dd>{{event.metadata.ext_capacity_action_plan}}</dd>
+                              <dd>{{event.metadata.ext_capacity_who}}</dd>
+                              <dt>Other organizations:</dt>
+                              <section v-for="(item, index) in event.metadata.ext_other_organizations">
+                                <dd>{{item.name + ' - ' + item.deployment + ' - '+ formatDateOnly(item.arrival_date) }}</dd>
+                              </section>
+
+                            </dl>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
               <div class="panel panel-default" id="panel3">
                 <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseThree">
                   <h4 class="panel-title">

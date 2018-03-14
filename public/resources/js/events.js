@@ -902,7 +902,7 @@ $(function() {
             translate(translateObj);
         });
 });
-
+var editCategory='general';
 var vmEventDetails = new Vue({
 
     data: {
@@ -928,7 +928,8 @@ var vmEventDetails = new Vue({
                 return moment(value).format('YYYY-MM-DD');
             }
         },
-        editEvent:function(){
+        editEvent:function(category){
+            editCategory=category;
             onEditEvent();
             $( '#editModal' ).modal('show');
         }
