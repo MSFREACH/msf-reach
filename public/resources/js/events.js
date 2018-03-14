@@ -27,18 +27,12 @@ var clipboard = new Clipboard('.btn');
 
 var labels = {
     'exploratory_details': 'Exploratory details',
-    'operational_center': 'Operational Center',
     'other_orgs': 'Other organisations',
     'capacity': 'Capacity',
     'deployment': 'Deployment details',
-    'name': 'Event name',
     'region': 'Region',
     'incharge_position': 'In charge position',
-    'incharge_name': 'In charge name',
-    'sharepoint_link': 'SharePoint Link',
-    'msf_response_medical_material_total': 'Number of medical supplies',
-    'msf_response_non_medical_material_total': 'Number of non-medical supplies',
-    'ext_capacity_who': 'Ext capacity on the ground (name)'
+    'incharge_name': 'In charge name'
 };
 
 var unpackMetadata = function(metadata) {
@@ -62,27 +56,8 @@ var unpackMetadata = function(metadata) {
         if (metadata.msf_resource_visa_requirement.description)
             result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
     }
-    if (metadata.hasOwnProperty('msf_response_medical_material')) {
-        result += '<dt>Medical requirements:</dt><dd>';
-        for (var i =0; i < metadata.msf_response_medical_material.length; i++) {
-            result += metadata.msf_response_medical_material[i] + '<br>';
-        }
-        result += '</dd>';
-        result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
-        if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
-            result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
-        }
-    }
+
     if (metadata.hasOwnProperty('msf_response_non_medical_material')) {
-        result += '<dt>Medical requirements:</dt><dd>';
-        for (var i =0; i < metadata.msf_response_non_medical_material.length; i++) { // eslint-disable-line no-redeclare
-            result += metadata.msf_response_non_medical_material[i] + '<br>';
-        }
-        result += '</dd>';
-        result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
-        if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
-            result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
-        }
     }
     else {
         if (metadata.hasOwnProperty('nonMedicalMaterials')) {
