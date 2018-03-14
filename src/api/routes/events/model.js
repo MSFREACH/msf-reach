@@ -115,12 +115,13 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_EVENTS}
 			SET status = $1,
       updated_at = now(),
+            type = $4,
 			metadata = metadata || $2
 			WHERE id = $3
 			RETURNING type, created_at, updated_at, report_key, metadata, the_geom`;
 
         // Setup values
-        let values = [ body.status, body.metadata, id ];
+        let values = [ body.status, body.metadata, id, body.type ];
 
         // Execute
         logger.debug(query, values);

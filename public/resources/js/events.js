@@ -13,9 +13,8 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var MAX_RADIUS= 5;
 
 
-var mainMap = L.map('map').setView([-6.8, 108.7], 7);
-
 var computerTriggered = false;
+var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false}).setView([-6.8, 108.7], 7);
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
@@ -230,7 +229,6 @@ var printEventProperties = function(err, eventProperties){
     if (err){
         $('#eventProperties').append(err);
     } else {
-
         // Pre-fil edit modal
         $('#inputName').val(eventProperties.metadata.name);
         if (typeof(eventProperties.metadata.event_status)!=='undefined') {
@@ -377,9 +375,8 @@ var mapAllEvents = function(err, events){
             severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
         }
 
-
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ' ' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
         }
@@ -390,7 +387,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace('_',' ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +

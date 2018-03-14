@@ -37,6 +37,8 @@ var reportsContactsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 
+var computerTriggered = false;
+
 var PDCHazardsLayer;
 var TSRHazardsLayer;
 var USGSHazardsLayer;

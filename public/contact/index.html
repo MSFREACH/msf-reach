@@ -99,6 +99,10 @@
                     <option value="">other</option>
                   </select>
                 </div>
+                <div class="form-group" style="display:none;" id="sharepoint">
+                  <label for="inputContactSharepoint" style="text-transform:uppercase;">Sharepoint link</label>
+                  <input maxlength="50" placeholder="Sharepoint link for meeting notes..." class="form-control" style="color:black;" id="inputContactSharepoint">
+                </div>
                 <div class="form-group" id="divOtherGender" style="display:none;">
                   <label for="inputContactOtherGender" style="text-transform:uppercase;">Other gender</label>
                   <input maxlength="50" placeholder="Other gender..." class="form-control" style="color:black;" id="inputContactOtherGender" >
@@ -284,10 +288,11 @@
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
   <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script type="text/javascript" src="/resources/js/common.js"></script>
+
   <!-- Cookies -->
   <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script type="text/javascript" src="/resources/js/common.js"></script>
 
   <!-- Get query parameter from URL -->
   <!-- Ask the server for reports from specific event -->

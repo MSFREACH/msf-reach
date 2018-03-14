@@ -1,11 +1,7 @@
 var doItOnce=true;
 
-if (Cookies.get('jwt')) {
-    Cookies.set('operator', 'true', { expires: 2 });
-}
-
-
-$('#permission').toggle(Cookies.get('operator')==='true');
+$('#permission').toggle(localStorage.getItem('username')!=null);
+$('#sharepoint').toggle(localStorage.getItem('username')!=null);
 
 $(function () {
     var $sections = $('.form-section');
@@ -60,7 +56,7 @@ $(function () {
         }
         if (cInd==MAPSECTIONINDEX)
         {
-            if (!latlng)
+            if (!newContactMap.msf_latlng)
             {
                 alert('Please enter an address/location to proceed.');
                 return;

@@ -83,6 +83,7 @@ export default ({ config, db, logger }) => {
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+                type: Joi.string().required(),
                 metadata: Joi.object().required(),
                 location: Joi.object().keys({
                     lat: Joi.number().min(-90).max(90),

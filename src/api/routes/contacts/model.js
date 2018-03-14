@@ -12,23 +12,30 @@ export default (config, db, logger) => ({
     * @function all - returns contacts, optionally filtered by string
     * @param {String} search - optional string search against name, email, cell
     */
-    all: (search,bounds) => new Promise((resolve, reject) => {
+    all: (search,bounds,msf_associate,msf_peer) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, properties, the_geom
      FROM ${config.TABLE_CONTACTS}
      WHERE ($1 IS NULL OR (
       properties ->> 'name' ILIKE $1
       OR properties ->> 'cell' ILIKE $1
+      OR properties ->> 'home' ILIKE $1
+      OR properties ->> 'work' ILIKE $1
+      OR properties ->> 'fax' ILIKE $1
       OR properties ->> 'type' ILIKE $1
-      OR properties ->> 'speciality' ILIKE $1
-      OR properties ->> 'email' ILIKE $1)) AND
-      ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
+      OR properties ->> 'employer' ILIKE $1
+      OR properties ->> 'email' ILIKE $1
+      OR properties ->> 'email2' ILIKE $1
+      OR properties ->> 'speciality' ILIKE $1)) AND
+      ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
+      ($7 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
+      ($8 IS NULL OR properties ->> 'msf_peer' ILIKE $8)
      ORDER BY id`;
 
         // Format search string for Postgres
         let text = (!search) ? null : '%'+search+'%'	;
         let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
-        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
+        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax, msf_associate, msf_peer ];
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)

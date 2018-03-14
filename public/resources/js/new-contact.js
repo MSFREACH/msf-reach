@@ -37,13 +37,12 @@ var overlayMaps = {};
 
 var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'topright'}).addTo(newContactMap);
 
-var marker;
-var latlng = null;
+
 newContactMap.on('click', function(e) {
-    if(marker)
-        newContactMap.removeLayer(marker);
-    latlng = e.latlng; // e is an event object (MouseEvent in this case)
-    marker = L.marker(e.latlng).addTo(newContactMap);
+    if(this.msf_marker)
+        newContactMap.removeLayer(this.msf_marker);
+    this.msf_latlng = e.latlng; // e is an event object (MouseEvent in this case)
+    this.msf_marker = L.marker(e.latlng).addTo(newContactMap);
 });
 
 function valid_email(email) {
@@ -54,7 +53,7 @@ function postContact() {
     var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
 
     var body = {
-        'location':latlng,
+        'location':newContactMap.msf_latlng,
         'properties':{
             'address': $('#mapAddress').val(),
             'title': $('#inputContactTitle').val() || $('#inputContactOtherTitle').val(),
@@ -67,6 +66,7 @@ function postContact() {
             'web': $('#inputContactWeb').val() || '',
             'email':$('#inputContactEmail').val(),
             'email2': $('#inputContactEmail2').val() || '',
+            'sharepoint': $('#inputContactSharepoint').val() || '',
             'WhatsApp': $('#inputWhatsApp').val() || '',
             'Facebook': $('#inputFacebook').val() || '',
             'Twitter': $('#inputTwitter').val() || '',

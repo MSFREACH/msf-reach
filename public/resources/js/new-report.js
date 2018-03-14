@@ -58,13 +58,12 @@ var refreshEventPage = function() {
 };
 
 
-var marker;
-var latlng = null;
+
 newReportMap.on('click', function(e) {
-    if(marker)
-        newReportMap.removeLayer(marker);
-    latlng = e.latlng; // e is an event object (MouseEvent in this case)
-    marker = L.marker(e.latlng).addTo(newReportMap);
+    if(this.msf_marker)
+        newReportMap.removeLayer(this.msf_marker);
+    this.msf_latlng = e.latlng; // e is an event object (MouseEvent in this case)
+    this.msf_marker = L.marker(e.latlng).addTo(newReportMap);
 });
 
 function postReport(eventID,reportKey,imgLink) {
@@ -73,7 +72,7 @@ function postReport(eventID,reportKey,imgLink) {
         'status': 'unconfirmed',
         'created': new Date().toISOString(),
         'reportkey': reportKey,
-        'location':latlng,
+        'location':newReportMap.msf_latlng,
         'content':{
             'report_tag': $('.rtype-selected').attr('data-msf-value'),
             'username/alias':$('#inputReportUserName').val(),
@@ -122,7 +121,7 @@ $('#createReport').on('click', function (e) {
 
     var imgLink='';
 
-    if (latlng !== null ) {
+    if (newReportMap.msf_latlng !== null ) {
         $('#divProgress').html('Submitting your report...');
         var files=document.getElementById('inputImageUpload').files;
 
