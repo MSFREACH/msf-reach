@@ -231,7 +231,7 @@ var printEventProperties = function(err, eventProperties){
         propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
         propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
         propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
-        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
+        propertiesTable += '<tr><td>Type(s)</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
         propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
 
         if (eventProperties.metadata.notification)
@@ -421,9 +421,8 @@ var mapAllEvents = function(err, events){
             severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
         }
 
-
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ' ' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
         }
@@ -434,7 +433,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace('_',' ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +

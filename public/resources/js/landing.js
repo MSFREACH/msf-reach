@@ -92,8 +92,8 @@ var mapAllEvents = function(err, events){
         }
 
 
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ' ' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
         }
@@ -104,7 +104,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace('_',' ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
