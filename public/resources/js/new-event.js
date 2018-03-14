@@ -153,8 +153,8 @@ $(function(){
         //console.log(this.checked);
         //console.log($(this).attr('id'));
 
-        console.log($('input[class=newEventTypeBox]:checked').map(
-            function () {return this.value;}).get().join(', '));
+        //console.log($('input[class=newEventTypeBox]:checked').map(
+        //    function () {return this.value;}).get().join(', '));
 
         if($(this).attr('id') == 'selectType4') {
             $('#divNaturalDisaster').css('display', (this.checked ? '' : 'none'));
@@ -185,18 +185,18 @@ $(function(){
 
     $('.form-control').focusout(function () {
 
-        console.log($(this).attr('id'));
+        //console.log($(this).attr('id'));
 
         if($(this).attr('id') == 'disasterType8') {
             var disasterTxt = $(this).val();
             $('#disasterType7').val(disasterTxt);
-            console.log(disasterTxt);
+            //console.log(disasterTxt);
         }
 
         if($(this).attr('id') == 'diseaseType8') {
             var diseaseTxt = $(this).val();
             $('#diseaseType7').val(diseaseTxt);
-            console.log(diseaseTxt);
+            //console.log(diseaseTxt);
         }
     });
 
