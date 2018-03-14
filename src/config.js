@@ -1,5 +1,27 @@
 require('dotenv').config({silent: true});
 
+var types = 'conflict,epidemiological,displacement,malnutrition,natural_hazard,search_and_rescue,other';
+types = types.split(',');
+
+//get all possible combinations of types in correct order
+function powerSet( list ){
+    var set = [],
+        listSize = list.length,
+        combinationsCount = (1 << listSize),
+        combination;
+
+    for (var i = 1; i < combinationsCount ; i++ ){
+        var combination = [];
+        for (var j=0;j<listSize;j++){
+            if ((i & (1 << j))){
+                combination.push(list[j]);
+            }
+        }
+        set.push(combination.join());
+    }
+    return set;
+}
+
 export default {
     AUTH: process.env.AUTH === 'true' || false,
     AZURE_AD_TENANT_NAME: process.env.AZURE_AD_TENANT_NAME || '',
@@ -12,7 +34,7 @@ export default {
     API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
     API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
-    API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'natural_hazard,conflict,epidemiological,search_and_rescue,displacement,malnutrition,other').split(','),
+    API_EVENT_TYPES: powerSet(types),
     API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'unconfirmed,confirmed').split(','),
     AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
     AWS_COGNITO_ALGORITHM: process.env.AWS_COGNITO_ALGORITHM || 'RS256',

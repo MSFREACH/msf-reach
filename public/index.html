@@ -69,18 +69,47 @@
                             </div>
                             <div class="form-group">
                               <label for="selectType">Event Type</label>
-                              <select class="form-control" id="selectType"> <!--Supplement an id here instead of using 'name'-->
-                                <option value="" disabled selected>Please select ...</option>
-                                <option value="conflict">Armed Conflict</option>
-                                <option value="natural_hazard">Natural Disaster </option>
-                                <option value="epidemiological">Disease Outbreak </option>
-                                <option value="search_and_rescue">Search & Rescue</option>
-                                <option value="displacement">Displacement</option>
-                                <option value="malnutrition">Malnutrition</option>
-                                <option value="other">Other</option>
-                              </select>
+
+
+                                <div>
+                                    <input class="newEventTypeBox" id="selectType0" type="checkbox" value="conflict" /><label class="eventBox">&nbsp Armed Conflict</label><br>
+                                    <input class="newEventTypeBox" id="selectType1" type="checkbox" value="epidemiological" /><label class="eventBox">&nbsp Disease Outbreak</label><br>
+                                    <div id="divDisease" style="display:none; margin-left: 20px;">
+                                        <input class="newSubEventTypeBox" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox">&nbsp Cholera</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox">&nbsp Ebola</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType2" type="checkbox" value="Dengue" /><label class="eventBox">&nbsp Dengue</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType3" type="checkbox" value="Malaria" /><label class="eventBox">&nbsp Malaria</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType4" type="checkbox" value="Measles" /><label class="eventBox">&nbsp Measles</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType5" type="checkbox" value="Meningococcal Meningitis" /><label class="eventBox">&nbsp Meningococcal Meningitis</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType6" type="checkbox" value="Yellow Fever" /><label class="eventBox">&nbsp Yellow Fever</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType7" type="checkbox" value="Other Disease" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                        <div class="form-group" id="divOtherDisease"  style="display:none;">
+                                            <input type="text" id="diseaseType8" class="form-control" placeholder="(Specify)" >
+                                        </div>
+                                    </div>
+                                    <input class="newEventTypeBox" id="selectType2" type="checkbox" value="displacement" /><label class="eventBox">&nbsp Displacement</label><br>
+                                    <input class="newEventTypeBox" id="selectType3" type="checkbox" value="malnutrition" /><label class="eventBox">&nbsp Malnutrition</label><br>
+                                    <input class="newEventTypeBox" id="selectType4" type="checkbox" value="natural_hazard" /><label class="eventBox">&nbsp Natural Disaster</label><br>
+                                    <div id="divNaturalDisaster" style="display:none; margin-left: 20px;">
+                                        <input class="newSubEventTypeBox" id="disasterType0" type="checkbox" value="drought" /><label class="eventBox">&nbsp Drought</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType1" type="checkbox" value="earthquake" /><label class="eventBox">&nbsp Earthquake</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType2" type="checkbox" value="flood" /><label class="eventBox">&nbsp Flood</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType3" type="checkbox" value="tsunami" /><label class="eventBox">&nbsp Tsunami</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType4" type="checkbox" value="typhoon" /><label class="eventBox">&nbsp Typhoon</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType5" type="checkbox" value="volcano" /><label class="eventBox">&nbsp Volcano</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType6" type="checkbox" value="landslides" /><label class="eventBox">&nbsp Landslides</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType7" type="checkbox" value="other disaster" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                        <div class="form-group" id="divOtherDisaster"  style="display:none;">
+                                            <input type="text" id="disasterType8" class="form-control" placeholder="(Specify)" >
+                                        </div>
+                                    </div>
+                                    <input class="newEventTypeBox" id="selectType5" type="checkbox" value="search_and_rescue" /><label class="eventBox">&nbsp Search & Rescue</label><br>
+                                    <input class="newEventTypeBox" id="selectType6" type="checkbox" value="other" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                </div>
+
+
                             </div>
-                            <div class="form-group" id="divNaturalDisaster" style="display:none;">
+                            <!--<div class="form-group" id="divNaturalDisaster" style="display:none;">
                               <select class="form-control" id="inputDisasterType">
                                 <option value="" disabled selected>Please select ...</option>
                                 <option value="drought">Drought</option>
@@ -105,7 +134,7 @@
                                 <option value="Yellow Fever">Yellow Fever</option>
                                 <option value="">Other</option>
                               </select>
-                            </div>
+                            </div>-->
                             <div class="form-group" id="divOther"  style="display:none;">
                               <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
                             </div>
