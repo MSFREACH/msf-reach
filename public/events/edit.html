@@ -128,25 +128,6 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Emergency details (nature)</dt>
-              <dd>
-                <!-- emergencies -->
-                <div v-for="item in emergencies" class="category-of-emergency">
-                  <label>
-                    <input type="checkbox" :value="item.value" v-model="event.metadata.type_of_emergency" /> {{ item.text }}
-                  </label>
-                </div>
-                <div v-for="item in emergenciesWithTypes">
-                  <strong class="category-of-emergency">{{item.emergency}}</strong>
-                  <div v-for="type in item.types" class="type-of-emergency">
-                    <label>
-                      <input type="checkbox" :value="type.value" v-model="event.metadata.type_of_emergency" /> {{ type.text }}
-                    </label>
-                  </div>
-                </div>
-              </dd>
-            </dl>
-            <dl>
               <dt>Date and hours (local time) of the disaster</dt>
               <dd>
                 <date-picker v-model="event.metadata.event_local_time"></date-picker>
