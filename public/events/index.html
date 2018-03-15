@@ -467,7 +467,7 @@
                   <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
                   <tr><td>Country</td><td> {{ event.metadata.country }}</td></tr>
                   <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
-                  <tr><td>Type</td><td> {{ event.type+' '+event.metadata.sub_type }}</td></tr>
+                  <tr><td>Type</td><td> {{ event.type.replace(/_/g,' ').replace(/,/g,', ')+' '+event.metadata.sub_type.replace(/_/g,' ').replace(/,/g,', ') }}</td></tr>
                   <tr><td>Event date and Time</td><td> {{ event.metadata.event_datetime || event.created_at }}</td></tr>
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>

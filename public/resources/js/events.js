@@ -160,10 +160,10 @@ var printEventProperties = function(err, eventProperties){
                 }
             } else {
                 if (currentEventProperties.hasOwnProperty('type')) {
-                    searchTerm = currentEventProperties.type.replace(',','');
+                    searchTerm = currentEventProperties.type.replace(/_/g,' ').replace(/,/g,' ');
                 }
                 if (currentEventProperties.hasOwnProperty('sub_type')) {
-                    searchTerm = currentEventProperties.metadata.sub_type.replace(',','');
+                    searchTerm += currentEventProperties.metadata.sub_type.replace(/_/g,' ').replace(/,/g,' ');
                 }
                 if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
                     searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
