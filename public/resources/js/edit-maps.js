@@ -36,10 +36,10 @@ var mapEditEvents = function(err, events){
         var severityStr = '';
 
         if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
 
@@ -55,7 +55,7 @@ var mapEditEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +

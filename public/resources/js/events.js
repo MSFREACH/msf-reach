@@ -328,15 +328,15 @@ var mapAllEvents = function(err, events){
         var severityStr = '';
 
         if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ' ' + feature.properties.metadata.sub_type : feature.properties.type;
         var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+        if (icon_name.includes('epidemiological')) {
             icon_name = 'epidemic';
         }
 
@@ -346,7 +346,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
@@ -358,7 +358,7 @@ var mapAllEvents = function(err, events){
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type(s): ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
       statusStr +
       notificationStr +
       totalPopulationStr +
@@ -546,7 +546,7 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined'){
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
                 popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
@@ -866,7 +866,7 @@ var vmEventDetails = new Vue({
 
     data: {
         severityColors: severityColors,
-        severityTexts: severityTexts,
+        severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
     },
     mounted:function(){
