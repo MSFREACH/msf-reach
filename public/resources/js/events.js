@@ -884,6 +884,7 @@ var vmEventDetails = new Vue({
         msfTypeOfProgrammes:msfTypeOfProgrammes,
     },
     mounted:function(){
+        $('.msf-loader').hide();
         //console.log('mounted event instance.');
         //console.log(this.event);
 
