@@ -611,6 +611,90 @@
                         </div>
                       </div>
                     </div>
+                    <div class="panel panel-default" >
+                      <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#medFigures" >
+                        <a data-toggle="collapse" data-target="#medFigures"
+                        href="#medFigures" class="collapsed">
+                        Medical Figures
+                      </a>
+                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('medfigures')">Edit</button>
+                    </div>
+                    <div id="medFigures" class="panel-collapse collapse">
+                      <div class="panel-body" >
+                        <div>
+                          <dl class="dl-horizontal">
+                            <dt>Figures:</dt>
+                            <dd v-for="(item, index) in event.metadata.keyMSFFigures">{{'category: '+ item.category + ' , value: '+item.value}}</dd>
+                            <dt>Population in total for zone impacted:</dt>
+                            <dd>{{event.metadata.population_total}}</dd>
+                            <dt>Description:</dt>
+                            <dd>{{event.metadata.population_total_description}}</dd>
+                            <dt>Population affected:</dt>
+                            <dd>{{event.metadata.population_affected}}</dd>
+                            <dt>Description:</dt>
+                            <dd>{{event.metadata.population_affected_description}}</dd>
+                            <dt>Percentage of people affected:</dt>
+                            <dd>{{event.metadata.percentage_population_affected}}</dd>
+                          </dl>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default" >
+                    <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#" >
+                      <a data-toggle="collapse" data-target="#"
+                      href="#" class="collapsed">
+                      Staff Resources
+                    </a>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('')">Edit</button>
+                  </div>
+                  <div id="" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                        <dl class="dl-horizontal">
+                          <dt></dt>
+                          <dd></dd>
+                          <dt></dt>
+                          <dd></dd>
+                          <dt></dt>
+                          <dd></dd>
+                          <dt></dt>
+                          <dd></dd>
+                          <dt></dt>
+                          <dd></dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#" >
+                    <a data-toggle="collapse" data-target="#"
+                    href="#" class="collapsed">
+                    Reflection
+                  </a>
+                  <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('')">Edit</button>
+                </div>
+                <div id="" class="panel-collapse collapse">
+                  <div class="panel-body" >
+                    <div>
+                      <dl class="dl-horizontal">
+                        <dt></dt>
+                        <dd></dd>
+                        <dt></dt>
+                        <dd></dd>
+                        <dt></dt>
+                        <dd></dd>
+                        <dt></dt>
+                        <dd></dd>
+                        <dt></dt>
+                        <dd></dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
 
 
               <div class="panel panel-default" id="panel3">

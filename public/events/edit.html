@@ -396,7 +396,7 @@ dd.padding-bottom {
                 </a>
               </h4>
             </div>
-            <div id="collapseThree1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div id="collapseThree1" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='medfigures')}" role="tabpanel" aria-labelledby="headingThree">
               <ul class="list-group">
                 <li class="list-group-item">
                   <dl>
