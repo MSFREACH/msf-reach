@@ -42,20 +42,6 @@ var unpackMetadata = function(metadata) {
             result += '<dt>'+labels[property]+':</dt><dd>'+metadata[property]+'</dd>';
         }
     }
-    if (metadata.hasOwnProperty('percentage_population_affected')) {
-        if (metadata.percentage_population_affected!=='NaN') {
-            result += '<dt>percentage_population_affected: </dt><dd>'+metadata.percentage_population_affected+'</dd>';
-        }
-    }
-    if (metadata.hasOwnProperty('msf_resource_visa_requirement')) {
-        result += '<dt>Visa requirement:</dt>';
-        $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
-            if(val)
-                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';
-        });
-        if (metadata.msf_resource_visa_requirement.description)
-            result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
-    }
 
     if (!(metadata.hasOwnProperty('msf_response_non_medical_material'))) {
         if (metadata.hasOwnProperty('nonMedicalMaterials')) {
