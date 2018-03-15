@@ -31,7 +31,11 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     let app = express();
     app.server = http.createServer(app);
 
-    app.use(expressSession({ secret: config.SESSION_SECRET, resave: true, saveUninitialized: false })); //Hopefully this fixes #236 //TODO Need to save sessions to db instead to avoid memory leaks in prod
+    if (config.SESSION_SECRET) {
+        app.use(expressSession({ secret: config.SESSION_SECRET, resave: true, saveUninitialized: false })); //Hopefully this fixes #236 //TODO Need to save sessions to db instead to avoid memory leaks in prod
+    } else {
+        app.use(expressSession({ resave: true, saveUninitialized: false }));
+    }
 
     if(config.AZURE_AD_TENANT_NAME){
         // array to hold signed-in users
