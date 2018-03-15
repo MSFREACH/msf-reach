@@ -486,7 +486,7 @@ dd.padding-bottom {
                 </a>
               </h4>
             </div>
-            <div id="collapseFour1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+            <div id="collapseFour1" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='resources')}" role="tabpanel" aria-labelledby="headingFour">
               <ul class="list-group">
                 <li class="list-group-item">
                   <dl>
@@ -637,7 +637,7 @@ dd.padding-bottom {
                 </a>
               </h4>
             </div>
-            <div id="collapseFive1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+            <div id="collapseFive1" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='reflection')}" role="tabpanel" aria-labelledby="headingFive">
               <ul class="list-group">
                 <li class="list-group-item">
                   <dl>
