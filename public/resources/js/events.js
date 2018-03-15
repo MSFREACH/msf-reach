@@ -57,9 +57,7 @@ var unpackMetadata = function(metadata) {
             result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
     }
 
-    if (metadata.hasOwnProperty('msf_response_non_medical_material')) {
-    }
-    else {
+    if (!(metadata.hasOwnProperty('msf_response_non_medical_material'))) {
         if (metadata.hasOwnProperty('nonMedicalMaterials')) {
             result += '<dt>Medical Materials</dt><dd>'+metadata.nonMedicalMaterials+'</dd>';
         }
