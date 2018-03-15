@@ -44,6 +44,17 @@ dd.padding-bottom {
       <div class="col-sm-5">
         <div class="row">
           <div class="col-sm-12">
+            <div class="panel panel-default">
+              <div class="panel-heading"  >
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse"  href="#collapseGeneral" aria-expanded="false" aria-controls="collapseGeneral">
+                    General Details
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseGeneral" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='general')}" role="tabpanel" >
+              <div class="panel-body">  
+
             <dl>
               <dt>Event Name</dt>
               <dd>
@@ -180,6 +191,9 @@ dd.padding-bottom {
             </dl>
           </div>
         </div>
+        </div>
+      </div>
+    </div>
       </div>
       <div class="col-sm-7">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
