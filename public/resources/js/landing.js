@@ -92,7 +92,7 @@ var mapAllEvents = function(err, events){
         }
 
 
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ' ' + feature.properties.metadata.sub_type : feature.properties.type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
         var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';

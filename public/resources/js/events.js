@@ -334,7 +334,7 @@ var mapAllEvents = function(err, events){
             severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ' ' + feature.properties.metadata.sub_type : feature.properties.type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
         var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (icon_name.includes('epidemiological')) {
             icon_name = 'epidemic';
