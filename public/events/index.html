@@ -676,7 +676,7 @@
                           <dt>Description:</dt>
                           <dd>{{event.metadata.msf_resource_visa_requirement.description}}</dd>
                           <dt>Budget:</dt>
-                          <dd v-for="(item, index) in event.metadata.msf_resource_budget"><i>Amount:</i>{{item.amount}}, <i>From:</i>{{item.from_who}} </dd>
+                          <dd v-for="(item, index) in event.metadata.msf_resource_budget"><span v-if="(item.from_who) || (item.amount>0)" ><i>Amount:</i>{{item.amount}}, <i>From:</i>{{item.from_who}}</span><span v-else></span> </dd>
                           <dt>Institutional Donors:</dt>
                           <dd>{{event.metadata.msf_resource_institutional_donors}}</dd>
                         </dl>
