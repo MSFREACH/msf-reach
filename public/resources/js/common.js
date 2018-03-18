@@ -81,10 +81,10 @@ var getFeeds = function(url, callback) {
     $.getJSON(url, function( data ){
         callback(data.result);
     }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
+        if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
             alert('session expired');
         } else {
-            alert('error: '+ err.responseText);
+            alert('error');
         }
     });
 };
@@ -197,7 +197,7 @@ var GDACSHazardIcon = function(GDACSProperties) {
         iconUrl += 'cyclone_';
         break;
     default:
-        console.log('error in GDACS data'); // eslint-disable-line no-console
+        return L.icon({'iconUrl':'404.svg'}); // eslint-disable-line no-console
     }
     switch(GDACSProperties.level) {
     case 'green':
