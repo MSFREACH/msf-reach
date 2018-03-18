@@ -166,17 +166,14 @@ var mapAllEvents = function(err, events){
 /**
 * Function to get contacts
 **/
-var getContacts = function(callback,term,peer_or_associate){
+var getContacts = function(callback,term,type){
 
     var url = '/api/contacts/?geoformat='+GEOFORMAT;
     if (term) {
         url += '&search='+term;
     }
-    if (peer_or_associate==='peer') {
-        url=url+'&msf_peer=true';
-    }
-    if (peer_or_associate==='associate') {
-        url=url+'&msf_associate=true';
+    if (type) {
+        url=url+'&type='+type;
     }
     $.getJSON(url, function( data ){
         callback(data.result);
@@ -608,22 +605,19 @@ mainMap.on('dblclick', function(dblclickEvent) {
 });
 
 $('#contSearchTerm').on('input',function(){
-    if ($('#radio_msf_peer').is(':checked')) {
-        getContacts(mapContacts,this.value,'peer');
-    } else if ($('#radio_msf_associate').is(':checked')) {
-        getContacts(mapContacts,this.value,'associate');
+    if ($('#inputContactType').val()!=='') {
+        getContacts(mapContacts,this.value,$('#inputContactType').val());
     } else {
         getContacts(mapContacts,this.value);
     }
+
 });
 
 $('#inputContactType').on('change',function(){
-    if ($('#radio_msf_peer').is(':checked')) {
-        getContacts(mapContacts,this.value,'peer');
-    } else if ($('#radio_msf_associate').is(':checked')) {
-        getContacts(mapContacts,this.value,'associate');
+    if ($('#contSearchTerm').val()!=='') {
+        getContacts(mapContacts,$('#contSearchTerm').val(),this.value);
     } else {
-        getContacts(mapContacts,this.value);
+        getContacts(mapContacts,null,this.value);
     }
 });
 
