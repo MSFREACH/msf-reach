@@ -17,7 +17,7 @@ var loadTweets = function(err, tweets) {
 };
 
 // Perform GET call to get tweets
-var getTweets = function(searchString) {
+var getTweets = function(searchString) { // eslint-disable-line no-unused-vars
     $.getJSON('/api/twitter/?searchString=' + searchString, function (data){
         loadTweets(null, data.result);
     }).fail(function(err) {

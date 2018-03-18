@@ -862,7 +862,7 @@ var vmEventDetails = new Vue({
 
 
         var searchTerm = '';
-        console.log(currentEventProperties);
+
         if (currentEventProperties) {
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
