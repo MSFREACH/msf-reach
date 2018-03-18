@@ -913,6 +913,24 @@ var vmEventDetails = new Vue({
                 translate(translateObj);
             });
 
+        $('#contSearchTerm').on('input',function(){
+            if ($('#inputContactType').val()!=='') {
+                thGetContacts(mapContacts,this.value,$('#inputContactType').val());
+            } else {
+                thGetContacts(mapContacts,this.value);
+            }
+
+        });
+
+        $('#inputContactType').on('change',function(){
+            if ($('#contSearchTerm').val()!=='') {
+                thGetContacts(mapContacts,$('#contSearchTerm').val(),this.value);
+            } else {
+                thGetContacts(mapContacts,null,this.value);
+            }
+        });
+
+
     },
     methods:{
         getTypeOfProgramme:function(val)
