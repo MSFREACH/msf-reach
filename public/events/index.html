@@ -658,7 +658,7 @@
                           <dt>National staff:</dt>
                           <dd>{{event.metadata.msf_resource_staff_national}}</dd>
                           <dt>Visa requirement:</dt>
-                          <dd v-for="item in event.metadata.msf_resource_visa_requirement.nationality">{{item.name}} , <i>required:</i> {{item.is_required}}</dd>
+                          <dd v-for="item in event.metadata.msf_resource_visa_requirement.nationality"><span v-if="item.name"> {{item.name}} , <i>required:</i> {{item.is_required}} </span><span v-else>No</span></dd>
                           <dt>Description:</dt>
                           <dd>{{event.metadata.msf_resource_visa_requirement.description}}</dd>
                           <dt>Budget:</dt>
