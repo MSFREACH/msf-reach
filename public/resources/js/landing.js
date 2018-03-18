@@ -511,7 +511,7 @@ var getContact = function(id) {
 };
 
 // Create map
-var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false}).setView([20, 110], 4);
+var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false}).setView([20, 110], 4);
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
