@@ -770,7 +770,7 @@ getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 
 // Enter an API key from the Google API Console:
 //   https://console.developers.google.com/apis/credentials
-const GoogleApiKey = 'AIzaSyCeWNJ8HV03xo4qIFY12Y7UgESu75nlB8k';
+const GoogleApiKey = 'AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g';
 
 // Set endpoints
 const GoogleEndpoints = {
