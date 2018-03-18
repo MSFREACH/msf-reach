@@ -83,9 +83,7 @@ var getFeeds = function(url, callback) {
     }).fail(function(err) {
         if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
             alert('session expired');
-        } else {
-            alert('error');
-        }
+        } 
     });
 };
 
