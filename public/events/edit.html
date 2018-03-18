@@ -1302,4 +1302,13 @@ $('.newSubEventTypeBox').change(function () {
         $(this).val(disasterTxt);
     }
 });
+$('#collapseOne1').on('shown.bs.collapse', function () {
+  msfResponseMap.invalidateSize();
+});
+$('#collapseGeneral').on('shown.bs.collapse', function () {
+  eventMap.invalidateSize();
+});
+
+
+
 </script>
