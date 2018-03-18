@@ -159,44 +159,7 @@ var printEventProperties = function(err, eventProperties){
             }];
     }
 
-    // Add to Twitter search "AI"
-    $(document).ready(function(){
-        var searchTerm = '';
-        if (currentEventProperties) {
-            if (currentEventProperties.metadata.name) {
-                if (currentEventProperties.metadata.name.includes('_')) {
-                    elements = currentEventProperties.metadata.name.split('_');
-                    for (var i = 0; i < elements.length-1; i++) {
-                        searchTerm += elements[i] + ' ';
-                    }
-                } else {
-                    searchTerm = currentEventProperties.metadata.name;
-                }
-            } else {
-                if (currentEventProperties.hasOwnProperty('type')) {
-                    searchTerm = currentEventProperties.type.replace(/_/g,' ').replace(/,/g,' ');
-                }
-                if (currentEventProperties.hasOwnProperty('sub_type')) {
-                    searchTerm += currentEventProperties.metadata.sub_type.replace(/_/g,' ').replace(/,/g,' ');
-                }
-                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
-                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
-                }
-            }
-            if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += ' ' + currentEventProperties.metadata.country;
-            }
-            $('#searchTerm').val(searchTerm);
-        }
-        $('#btnSearchTwitter').trigger('click');
 
-        $('#searchTerm').keyup(function(event){
-            if(event.keyCode == 13){
-                $('#btnSearchTwitter').trigger('click');
-            }
-        });
-
-    });
 
     // If called with err, print that instead
     if (err){
@@ -807,7 +770,7 @@ getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 
 // Enter an API key from the Google API Console:
 //   https://console.developers.google.com/apis/credentials
-const GoogleApiKey = 'AIzaSyAhhKWjsykF_ljVvn-P1o4l6aeE0tGjZOI';
+const GoogleApiKey = 'AIzaSyCeWNJ8HV03xo4qIFY12Y7UgESu75nlB8k';
 
 // Set endpoints
 const GoogleEndpoints = {
@@ -887,6 +850,68 @@ var vmEventDetails = new Vue({
         $('.msf-loader').hide();
         //console.log('mounted event instance.');
         //console.log(this.event);
+
+        // Search Twitter
+        $('#btnSearchTwitter').click(function() {
+            if ($('#searchTerm').val() !== '') {
+                var search = $('#searchTerm').val();
+                getTweets(search);
+
+            }
+        });
+
+
+        var searchTerm = '';
+        console.log(currentEventProperties);
+        if (currentEventProperties) {
+            if (currentEventProperties.metadata.name) {
+                if (currentEventProperties.metadata.name.includes('_')) {
+                    elements = currentEventProperties.metadata.name.split('_');
+                    for (var i = 0; i < elements.length-1; i++) {
+                        searchTerm += elements[i] + ' ';
+                    }
+                } else {
+                    searchTerm = currentEventProperties.metadata.name;
+                }
+            } else {
+                if (currentEventProperties.hasOwnProperty('type')) {
+                    searchTerm = currentEventProperties.type.replace(/_/g,' ').replace(/,/g,' ');
+                }
+                if (currentEventProperties.hasOwnProperty('sub_type')) {
+                    searchTerm += currentEventProperties.metadata.sub_type.replace(/_/g,' ').replace(/,/g,' ');
+                }
+                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
+                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                }
+            }
+            if (currentEventProperties.metadata.hasOwnProperty('country')) {
+                searchTerm += ' ' + currentEventProperties.metadata.country;
+            }
+            $('#searchTerm').val(searchTerm);
+        }
+        $('#btnSearchTwitter').trigger('click');
+
+        $('#searchTerm').keyup(function(event){
+            if(event.keyCode == 13){
+                $('#btnSearchTwitter').trigger('click');
+            }
+        });
+
+
+        window.makeApiRequest = makeApiRequest;
+        var translationObj = {};
+
+        $('#translateLanguageSelection')
+        // Bind translate function to translate button
+            .on('change', function() {
+                var translateObj = {
+                    textToTranslate: $('searchTerm').val(),
+                    targetLang: $(this).val()
+                };
+
+
+                translate(translateObj);
+            });
 
     },
     methods:{

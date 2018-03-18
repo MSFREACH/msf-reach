@@ -28,12 +28,3 @@ var getTweets = function(searchString) {
         }
     });
 };
-
-// Search Twitter
-$('#btnSearchTwitter').click(function() { 
-    if ($('#searchTerm').val() !== '') {
-        var search = $('#searchTerm').val();
-        getTweets(search);
-
-    }
-});
