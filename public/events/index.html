@@ -99,6 +99,20 @@
               <div class="form-group">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
               </div>
+              <div class="row bottom-margined">
+                <div class="col-sm-1">
+                  <label for="mapAddressLat">OR:</label>
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control input-sm" value="" id="mapAddressLat" placeholder="Latitude">
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control input-sm" value="" id="mapAddressLng" placeholder="Longitude">
+                </div>
+                <div class="col-sm-2">
+                  <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
+              </div>
               <div id="newReportMap"></div>
             </div>
             <div class="form-section">
@@ -936,6 +950,25 @@
 
 <!-- Map -->
 <div id="mapContainer" class="col-md-6">
+  <div class="row bottom-margined">
+      <div class="col-sm-12">
+        <input type="text" class="form-control" placeholder="Search address/location..." id="eventAddress">
+      </div>
+  </div>
+  <div class="row bottom-margined">
+    <div class="col-sm-4">
+      <label for="mapAddressLat">OR locate by coordinates:</label>
+    </div>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" value="" id="eventAddressLat" placeholder="Latitude">
+    </div>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" value="" id="eventAddressLng" placeholder="Longitude">
+    </div>
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-info btn-sm" id="eventAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+  </div>
   <div id="map"></div>
 </div>
 </div> <!-- Row -->

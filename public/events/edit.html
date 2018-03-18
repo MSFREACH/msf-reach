@@ -53,7 +53,7 @@ dd.padding-bottom {
                 </h4>
               </div>
               <div id="collapseGeneral" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='general')}" role="tabpanel" >
-              <div class="panel-body">  
+              <div class="panel-body">
 
             <dl>
               <dt>Event Name</dt>
@@ -69,6 +69,25 @@ dd.padding-bottom {
             </dl>
             <dl>
               <dt>Precise location of the emergency</dt>
+              <dd class="bottom-margined">
+                <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
+              </dd>
+              <dd class="bottom-margined">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <label for="editEventAddressLat">OR</label>
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" class="form-control input-sm" value="" id="editEventAddressLat" placeholder="Latitude">
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" class="form-control input-sm" value="" id="editEventAddressLng" placeholder="Longitude">
+                  </div>
+                  <div class="col-sm-2">
+                    <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                  </div>
+                </div>
+              </dd>
               <dd>
                 <div id="eventMap" style="width: 100%; height: 380px;"></div>
               </dd>
@@ -242,6 +261,25 @@ dd.padding-bottom {
                 <li class="list-group-item">
                   <dl>
                     <dt>Location of MSF response</dt>
+                    <dd class="bottom-margined">
+                      <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventRespAddress">
+                    </dd>
+                    <dd class="bottom-margined">
+                      <div class="row">
+                        <div class="col-sm-2">
+                          <label for="editEventRespAddressLat">OR</label>
+                        </div>
+                        <div class="col-sm-4">
+                          <input type="text" class="form-control input-sm" value="" id="editEventRespAddressLat" placeholder="Latitude">
+                        </div>
+                        <div class="col-sm-4">
+                          <input type="text" class="form-control input-sm" value="" id="editEventRespAddressLng" placeholder="Longitude">
+                        </div>
+                        <div class="col-sm-2">
+                          <button type="button" class="btn btn-info btn-sm" id="editEventRespAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                        </div>
+                      </div>
+                    </dd>
                     <dd>
                       <div id="msfResponseMap" style="width: 100%; height: 380px;"></div>
                     </dd>
@@ -862,6 +900,20 @@ var vm = new Vue({
           eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false}).setView(eventDefaultLatLng, 13);
           eventMap.scrollWheelZoom.disable();
 
+          //Bind Autocomplete to inputs:
+          function bindAutocompletes()
+          {
+            if ((!google)||(!google.maps))
+              {
+                setTimeout(bindAutocompletes,200);
+                console.log('not ready, retrying in 0.2s...');
+                return;
+              }
+            bindACInputToMap(eventMap,'editEventAddress',true);
+          }
+
+          bindAutocompletes();
+
           var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
 
           /*
@@ -885,6 +937,22 @@ var vm = new Vue({
 
           msfResponseMap = L.map('msfResponseMap',{dragging: !L.Browser.mobile, tap:false}).setView(msfResponseMarkerLatLng, 13);
           msfResponseMap.scrollWheelZoom.disable();
+
+          //Bind Autocomplete to inputs:
+          function bindRespAutocompletes()
+          {
+            if ((!google)||(!google.maps))
+              {
+                setTimeout(bindRespAutocompletes,200);
+                console.log('not ready, retrying in 0.2s...');
+                return;
+              }
+            bindACInputToMap(msfResponseMap,'editEventRespAddress',true);
+          }
+
+          bindRespAutocompletes();
+
+
 
           var msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap);
 

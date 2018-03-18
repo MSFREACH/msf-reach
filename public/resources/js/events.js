@@ -15,6 +15,20 @@ var MAX_RADIUS= 5;
 
 var computerTriggered = false;
 var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false}).setView([-6.8, 108.7], 7);
+//Bind Autocomplete to inputs:
+function bindAutocompletes()
+{
+  if ((!google)||(!google.maps))
+    {
+      setTimeout(bindAutocompletes,200);
+      console.log('not ready, retrying in 0.2s...');
+      return;
+    }
+  bindACInputToMap(mainMap,'eventAddress');
+}
+
+bindAutocompletes();
+
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;

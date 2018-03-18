@@ -472,8 +472,26 @@
           <div class="col-md-8">
             <span style="font-weight:bold;">Double click on approximate location of event on map to create a new event.</span>
             <div class="form-section">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <label for="mapAddressLat">OR locate by coordinates:</label>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" class="form-control" value="" id="mapAddressLat" placeholder="Latitude">
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" class="form-control" value="" id="mapAddressLng" placeholder="Longitude">
+                </div>
+                <div class="col-sm-5">
+                  <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
               </div>
               <div class="form-group" >
                 Contact search category
