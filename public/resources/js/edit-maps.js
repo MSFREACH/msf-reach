@@ -36,15 +36,15 @@ var mapEditEvents = function(err, events){
         var severityStr = '';
 
         if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
 
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
         }
@@ -55,7 +55,7 @@ var mapEditEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
@@ -67,24 +67,6 @@ var mapEditEvents = function(err, events){
             popupContent.substr(0,popupContent.length-4);
         }
 
-        var eventDiv = '';
-        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
-            eventDiv = '#watchingEventProperties';
-        } else {
-            eventDiv = '#ongoingEventProperties';
-        }
-        $(eventDiv).append(
-            '<div class="list-group-item">' +
-      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
-      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type: ' + feature.properties.type + '<br>' +
-      statusStr +
-      notificationStr +
-      totalPopulationStr +
-      affectedPopulationStr +
-      '</div>'
-        );
 
         if (feature.properties && feature.properties.popupContent) {
             popupContent += feature.properties.popupContent;

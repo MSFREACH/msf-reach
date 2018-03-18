@@ -13,7 +13,8 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 var MAX_RADIUS= 5;
 
 
-var mainMap = L.map('map').setView([-6.8, 108.7], 7);
+var computerTriggered = false;
+var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false}).setView([-6.8, 108.7], 7);
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
@@ -26,18 +27,12 @@ var clipboard = new Clipboard('.btn');
 
 var labels = {
     'exploratory_details': 'Exploratory details',
-    'operational_center': 'Operational Center',
     'other_orgs': 'Other organisations',
     'capacity': 'Capacity',
     'deployment': 'Deployment details',
-    'name': 'Event name',
     'region': 'Region',
     'incharge_position': 'In charge position',
-    'incharge_name': 'In charge name',
-    'sharepoint_link': 'SharePoint Link',
-    'msf_response_medical_material_total': 'Number of medical supplies',
-    'msf_response_non_medical_material_total': 'Number of non-medical supplies',
-    'ext_capacity_who': 'Ext capacity on the ground (name)'
+    'incharge_name': 'In charge name'
 };
 
 var unpackMetadata = function(metadata) {
@@ -47,43 +42,8 @@ var unpackMetadata = function(metadata) {
             result += '<dt>'+labels[property]+':</dt><dd>'+metadata[property]+'</dd>';
         }
     }
-    if (metadata.hasOwnProperty('percentage_population_affected')) {
-        if (metadata.percentage_population_affected!=='NaN') {
-            result += '<dt>percentage_population_affected: </dt><dd>'+metadata.percentage_population_affected+'</dd>';
-        }
-    }
-    if (metadata.hasOwnProperty('msf_resource_visa_requirement')) {
-        result += '<dt>Visa requirement:</dt>';
-        $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
-            if(val)
-                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';
-        });
-        if (metadata.msf_resource_visa_requirement.description)
-            result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
-    }
-    if (metadata.hasOwnProperty('msf_response_medical_material')) {
-        result += '<dt>Medical requirements:</dt><dd>';
-        for (var i =0; i < metadata.msf_response_medical_material.length; i++) {
-            result += metadata.msf_response_medical_material[i] + '<br>';
-        }
-        result += '</dd>';
-        result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
-        if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
-            result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
-        }
-    }
-    if (metadata.hasOwnProperty('msf_response_non_medical_material')) {
-        result += '<dt>Medical requirements:</dt><dd>';
-        for (var i =0; i < metadata.msf_response_non_medical_material.length; i++) { // eslint-disable-line no-redeclare
-            result += metadata.msf_response_non_medical_material[i] + '<br>';
-        }
-        result += '</dd>';
-        result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
-        if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
-            result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
-        }
-    }
-    else {
+
+    if (!(metadata.hasOwnProperty('msf_response_non_medical_material'))) {
         if (metadata.hasOwnProperty('nonMedicalMaterials')) {
             result += '<dt>Medical Materials</dt><dd>'+metadata.nonMedicalMaterials+'</dd>';
         }
@@ -153,6 +113,9 @@ var printEventProperties = function(err, eventProperties){
 
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
+    vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
+    vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
+    vmEventDetails.$mount('#eventVApp');
 
 
 
@@ -197,10 +160,10 @@ var printEventProperties = function(err, eventProperties){
                 }
             } else {
                 if (currentEventProperties.hasOwnProperty('type')) {
-                    searchTerm = currentEventProperties.type.replace(',','');
+                    searchTerm = currentEventProperties.type.replace(/_/g,' ').replace(/,/g,' ');
                 }
                 if (currentEventProperties.hasOwnProperty('sub_type')) {
-                    searchTerm = currentEventProperties.metadata.sub_type.replace(',','');
+                    searchTerm += currentEventProperties.metadata.sub_type.replace(/_/g,' ').replace(/,/g,' ');
                 }
                 if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
                     searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
@@ -225,48 +188,6 @@ var printEventProperties = function(err, eventProperties){
     if (err){
         $('#eventProperties').append(err);
     } else {
-        var propertiesTable = '';
-        propertiesTable += '<table class="table">';
-        //['id', 'status', 'type', 'created'];
-        propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
-        propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
-        propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
-        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
-        propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
-
-        if (eventProperties.metadata.notification)
-        {
-            var notStr=(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
-            propertiesTable += '<tr><td>Latest notification: </td><td>'+ notStr +'</td></tr>';
-        }
-        else
-            propertiesTable += '<tr><td>Latest notification:  </td><td>(none)</td></tr>';
-        propertiesTable += '<tr><td>Severity </td><td>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</td></tr>';
-        propertiesTable += '<tr><td>Person In charge </td><td>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</td></tr>';
-        propertiesTable += '<tr><td>Sharepoint Link </td><td>'+eventProperties.metadata.sharepoint_link+'</td></tr>';
-        //propertiesTable += '<tr><td> </td><td>'++'</td></tr>';
-        propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
-
-
-
-
-
-        // Create unique link to this event
-        var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
-        // Create unique report link for this event
-        eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
-        // Add unique link to this event
-        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
-        // Add unique link to report to this event
-        propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-text=\''+eventReportLink+'\'>Copy link</button></td></tr>';
-        // Add user metadata
-        if (eventProperties.metadata.user) {
-            propertiesTable += '<tr><td>Creator</td><td>'+eventProperties.metadata.user+'</td></tr>';
-        }
-        if (eventProperties.metadata.user_edit) {
-            propertiesTable += '<tr><td>Edits</td><td>'+eventProperties.metadata.user_edit+'</td></tr>';
-        }
-
         // Pre-fil edit modal
         $('#inputName').val(eventProperties.metadata.name);
         if (typeof(eventProperties.metadata.event_status)!=='undefined') {
@@ -281,10 +202,6 @@ var printEventProperties = function(err, eventProperties){
             $('#inputNotification').val(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification);
         }
 
-        // Append output to body
-        propertiesTable += '</table>';
-
-        $('#eventProperties').html(propertiesTable);
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
@@ -293,11 +210,7 @@ var printEventProperties = function(err, eventProperties){
 
 
 
-        if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
 
-            $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
-
-        }
         var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
@@ -415,16 +328,15 @@ var mapAllEvents = function(err, events){
         var severityStr = '';
 
         if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
-
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
-        if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
+        if (icon_name.includes('epidemiological')) {
             icon_name = 'epidemic';
         }
 
@@ -434,7 +346,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
@@ -446,7 +358,7 @@ var mapAllEvents = function(err, events){
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type: ' + feature.properties.type + '<br>' +
+    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
       statusStr +
       notificationStr +
       totalPopulationStr +
@@ -634,7 +546,7 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined'){
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
                 popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
@@ -835,6 +747,18 @@ var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
 };
 
+mainMap.on('overlayadd', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'on');
+    }
+});
+
+
+mainMap.on('overlayremove', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'off');
+    }
+});
 
 /**
 * Function to get all events from the API
@@ -937,16 +861,49 @@ $(function() {
             translate(translateObj);
         });
 });
+var editCategory='general';
+var vmEventDetails = new Vue({
 
-mainMap.on('overlayadd', function (layersControlEvent) {
-    if (!computerTriggered) {
-        Cookies.set(layersControlEvent.name,'on');
-    }
-});
+    data: {
+        severityColors: severityColors,
+        severityLongTexts: severityLongTexts,
+        msfTypeOfProgrammes:msfTypeOfProgrammes,
+    },
+    mounted:function(){
+        $('.msf-loader').hide();
+        //console.log('mounted event instance.');
+        //console.log(this.event);
 
-
-mainMap.on('overlayremove', function (layersControlEvent) {
-    if (!computerTriggered) {
-        Cookies.set(layersControlEvent.name,'off');
+    },
+    methods:{
+        getTypeOfProgramme:function(val)
+        {
+            var filtered= msfTypeOfProgrammes.filter(function(e){
+                return e.value==val;
+            });
+            return filtered[0].text;
+        },
+        formatDateOnly:function(value) {
+            if (value) {
+                return moment(value).format('YYYY-MM-DD');
+            }
+        },
+        editEvent:function(category){
+            editCategory=category;
+            onEditEvent();
+            $( '#editModal' ).modal('show');
+        }
+    },
+    computed:{
+        notStr:function(){
+            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+        },
+        eventLink:function(){
+            return WEB_HOST + 'events/?eventId=' + this.event.id;
+        },
+        eventReportLink:function()
+        {
+            return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+        }
     }
 });

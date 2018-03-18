@@ -41,8 +41,8 @@ const TSR = () =>
 
                         if (inAsiaBBox([currentDataCoords[1],currentDataCoords[0]])) {
                             // extract coords
-                            feature.geometry.coordinates.push(currentDataCoords[0]);
                             feature.geometry.coordinates.push(currentDataCoords[1]);
+                            feature.geometry.coordinates.push(currentDataCoords[0]);
                             // extract properties
                             feature.properties.source = 'Tropical Storm Risk';
                             feature.properties.title = 'Storm - ' + storm + ' in ' + basin;

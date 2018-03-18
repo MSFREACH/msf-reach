@@ -85,15 +85,15 @@ var mapAllEvents = function(err, events){
         var severityStr = '';
 
         if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
 
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
         }
@@ -104,7 +104,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
@@ -127,7 +127,7 @@ var mapAllEvents = function(err, events){
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type: ' + feature.properties.type + '<br>' +
+      'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
       statusStr +
       notificationStr +
       totalPopulationStr +
@@ -166,17 +166,14 @@ var mapAllEvents = function(err, events){
 /**
 * Function to get contacts
 **/
-var getContacts = function(callback,term,peer_or_associate){
+var getContacts = function(callback,term,type){
 
     var url = '/api/contacts/?geoformat='+GEOFORMAT;
     if (term) {
         url += '&search='+term;
     }
-    if (peer_or_associate==='peer') {
-        url=url+'&msf_peer=true';
-    }
-    if (peer_or_associate==='associate') {
-        url=url+'&msf_associate=true';
+    if (type) {
+        url=url+'&type='+type;
     }
     $.getJSON(url, function( data ){
         callback(data.result);
@@ -204,22 +201,40 @@ var getMissions = function(callback){
     });
 };
 
+var allFeedFeatures=[];
+var totalFeedsSaved=0;
 
 var tableFeeds = function(feeds) {
     for(var i = 0; i <= feeds.features.length; i++) {
-        var feature = feeds.features[i];
-        if (feature) {
-            $('#rssFeeds').append(
-                '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
-        'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
-        'Source: ' + feature.properties.source + '<br>' +
-        'Updated: ' + feature.properties.updated + '<br>' +
-        'Summary: ' + feature.properties.summary.trim() + '<br>' +
-        '</div>'
-            );
-        }
+        allFeedFeatures.push(feeds.features[i]);
     }
+    totalFeedsSaved++;
+    if (totalFeedsSaved ==1)
+        $('#rssFeeds').html('<div class="msf-loader"></div>');
+    if (totalFeedsSaved == TOTAL_FEEDS)
+    {
+        $('#rssFeeds').html('');
+        allFeedFeatures.sort(function(a,b){
+            return new Date(b.properties.updated) - new Date(a.properties.updated);
+        });
+        $.each(allFeedFeatures,function(i,feature){
+            if (feature) {
+                $('#rssFeeds').append(
+                    '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
+         'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
+         'Source: ' + feature.properties.source + '<br>' +
+         'Updated: ' + (new Date(feature.properties.updated)).toISOString().replace('T', ' ').replace('Z',' GMT') + '<br>' +
+         'Summary: ' + feature.properties.summary.trim() + '<br>' +
+         '</div>'
+                );
+            }
+        });
+
+
+    }
+
 };
+
 
 /**
 * Function to return an icon for mission in popupContent
@@ -496,7 +511,7 @@ var getContact = function(id) {
 };
 
 // Create map
-var mainMap = L.map('mainMap').setView([20, 110], 4);
+var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false}).setView([20, 110], 4);
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
@@ -565,6 +580,7 @@ getFeeds('/api/hazards/usgs', tableFeeds);
 getFeeds('/api/hazards/tsr', tableFeeds);
 getFeeds('/api/hazards/gdacs', tableFeeds);
 getFeeds('/api/hazards/ptwc', tableFeeds);
+var TOTAL_FEEDS=5;
 
 var displayVideo = function(video) {
 
@@ -589,22 +605,19 @@ mainMap.on('dblclick', function(dblclickEvent) {
 });
 
 $('#contSearchTerm').on('input',function(){
-    if ($('#radio_msf_peer').is(':checked')) {
-        getContacts(mapContacts,this.value,'peer');
-    } else if ($('#radio_msf_associate').is(':checked')) {
-        getContacts(mapContacts,this.value,'associate');
+    if ($('#inputContactType').val()!=='') {
+        getContacts(mapContacts,this.value,$('#inputContactType').val());
     } else {
         getContacts(mapContacts,this.value);
     }
+
 });
 
 $('#inputContactType').on('change',function(){
-    if ($('#radio_msf_peer').is(':checked')) {
-        getContacts(mapContacts,this.value,'peer');
-    } else if ($('#radio_msf_associate').is(':checked')) {
-        getContacts(mapContacts,this.value,'associate');
+    if ($('#contSearchTerm').val()!=='') {
+        getContacts(mapContacts,$('#contSearchTerm').val(),this.value);
     } else {
-        getContacts(mapContacts,this.value);
+        getContacts(mapContacts,null,this.value);
     }
 });
 

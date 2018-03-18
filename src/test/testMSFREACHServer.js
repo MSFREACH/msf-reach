@@ -182,6 +182,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .set('Cookie', 'jwt=' + token)
                         .send({
                             'status': 'inactive',
+                            'type': 'earthquake',
                             'metadata': {
                                 'updated_by': 'integrated tester',
                                 'name': 'Iran_earthquake_2017'

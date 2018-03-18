@@ -12,7 +12,6 @@
 
 #sidepane {
   padding-top:15px;
-  max-height: 92vh;
   overflow-y: auto;
   padding-bottom:5px;
 }
@@ -33,13 +32,13 @@
 }
 /*
 .panel-heading a:after {
-    font-family:'Glyphicons Halflings';
-    content:"\e114";
-    float: right;
-    color: grey;
+font-family:'Glyphicons Halflings';
+content:"\e114";
+float: right;
+color: grey;
 }
 .panel-heading a.collapsed:after {
-    content:"\e080";
+content:"\e080";
 }
 */
 
@@ -74,12 +73,12 @@ textarea {
 
 
 .form-section {
-    display: none;
-    height:100%;
+  display: none;
+  height:100%;
 }
 
 .form-section.current{
-    display: inherit;
+  display: inherit;
 }
 
 .form-navigation .previous
@@ -93,22 +92,22 @@ textarea {
 
 
 .rtype-container {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
-    width: 100%;
-    background-color: white;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: 100%;
+  background-color: white;
 }
 
 .rtype-item {
-    background-color: black;
-    text-align: center;
-    color:white;
-    width: 40%;
-    margin: 10px;
-    cursor:pointer;
-    border:3px solid white;
+  background-color: black;
+  text-align: center;
+  color:white;
+  width: 40%;
+  margin: 10px;
+  cursor:pointer;
+  border:3px solid white;
 }
 
 .rtype-selected{
@@ -127,19 +126,40 @@ textarea {
 }
 
 div.pac-container {
-   z-index: 1050 !important;
+  z-index: 1050 !important;
 }
 @media (min-width: 768px)
 {
-.dl-horizontal dd
-{
-  margin-left: 220px; 
-}
-.dl-horizontal dt
-{
+  .dl-horizontal dd
+  {
+    margin-left: 220px;
+  }
+  .dl-horizontal dt
+  {
     white-space: normal;
     width: 200px;
+  }
+
+
+}
+
+[v-cloak]
+{
+  display:none;
 }
 
 
+.msf-loader {
+    position:relative;
+    border: 5px solid #f3f3f3; /* Light grey */
+    border-top: 5px solid black; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
