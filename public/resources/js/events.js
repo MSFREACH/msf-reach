@@ -915,20 +915,21 @@ var vmEventDetails = new Vue({
 
         $('#contSearchTerm').on('input',function(){
             if ($('#inputContactType').val()!=='') {
-                thGetContacts(mapContacts,this.value,$('#inputContactType').val());
+                thGetContacts(this.value,$('#inputContactType').val());
             } else {
-                thGetContacts(mapContacts,this.value);
+                thGetContacts(this.value);
             }
 
         });
 
         $('#inputContactType').on('change',function(){
             if ($('#contSearchTerm').val()!=='') {
-                thGetContacts(mapContacts,$('#contSearchTerm').val(),this.value);
+                thGetContacts($('#contSearchTerm').val(),this.value);
             } else {
-                thGetContacts(mapContacts,null,this.value);
+                thGetContacts(null,this.value);
             }
         });
+
 
 
     },

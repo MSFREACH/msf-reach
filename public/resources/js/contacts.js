@@ -78,7 +78,7 @@ var getContacts = function(term,type){
     var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
     url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
     if (type) {
-        url=url+'&type=type';
+        url=url+'&type='+type;
     }
     $.getJSON(url, function (data){
         loadContacts(null, data.result.features);
@@ -111,17 +111,17 @@ mainMap.on('moveend', function(){thGetContacts($('#contSearchTerm').val());});
 
 $('#contSearchTerm').on('input',function(){
     if ($('#inputContactType').val()!=='') {
-        thGetContacts(mapContacts,this.value,$('#inputContactType').val());
+        thGetContacts(this.value,$('#inputContactType').val());
     } else {
-        thGetContacts(mapContacts,this.value);
+        thGetContacts(this.value);
     }
 
 });
 
 $('#inputContactType').on('change',function(){
     if ($('#contSearchTerm').val()!=='') {
-        thGetContacts(mapContacts,$('#contSearchTerm').val(),this.value);
+        thGetContacts($('#contSearchTerm').val(),this.value);
     } else {
-        thGetContacts(mapContacts,null,this.value);
+        thGetContacts(null,this.value);
     }
 });
