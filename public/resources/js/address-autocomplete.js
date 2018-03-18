@@ -31,10 +31,10 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             targetMap.setView([foundLatLng.lat, foundLatLng.lng],(addrDetailLevel > 3) ? 17 : 7);
             if (!justLocate)
             {
-              if(targetMap.msf_marker)
-              targetMap.removeLayer(targetMap.msf_marker);
-              targetMap.msf_latlng = foundLatLng;
-              targetMap.msf_marker = L.marker(foundLatLng).addTo(targetMap);
+                if(targetMap.msf_marker)
+                    targetMap.removeLayer(targetMap.msf_marker);
+                targetMap.msf_latlng = foundLatLng;
+                targetMap.msf_marker = L.marker(foundLatLng).addTo(targetMap);
             }
             $('#'+inputId+'Lat').val(foundLatLng.lat.toFixed(7));
             $('#'+inputId+'Lng').val(foundLatLng.lng.toFixed(7));
@@ -43,24 +43,24 @@ function bindACInputToMap(targetMap,inputId,justLocate)
     });
 
     $('#'+inputId+'Locate').on('click',function(){
-      var eLat=Number($('#'+inputId+'Lat').val());
-      var eLng=Number($('#'+inputId+'Lng').val());
-      //validation:
-      if ((!eLat)||(!eLng)||(eLat<-90)||(eLat>90)||(eLng<-180)||(eLng>180))
+        var eLat=Number($('#'+inputId+'Lat').val());
+        var eLng=Number($('#'+inputId+'Lng').val());
+        //validation:
+        if ((!eLat)||(!eLng)||(eLat<-90)||(eLat>90)||(eLng<-180)||(eLng>180))
         {
-          alert("Invalid coordinates entered.");
-          return;
+            alert('Invalid coordinates entered.');
+            return;
         }
-      $('#'+inputId).val('');
-      var enteredLatLng={lat: eLat, lng: eLng };
-      targetMap.setView([enteredLatLng.lat, enteredLatLng.lng], 17);
-      if (!justLocate)
-      {
-        if(targetMap.msf_marker)
-        targetMap.removeLayer(targetMap.msf_marker);
-        targetMap.msf_latlng = enteredLatLng;
-        targetMap.msf_marker = L.marker(enteredLatLng).addTo(targetMap);
-      }
+        $('#'+inputId).val('');
+        var enteredLatLng={lat: eLat, lng: eLng };
+        targetMap.setView([enteredLatLng.lat, enteredLatLng.lng], 17);
+        if (!justLocate)
+        {
+            if(targetMap.msf_marker)
+                targetMap.removeLayer(targetMap.msf_marker);
+            targetMap.msf_latlng = enteredLatLng;
+            targetMap.msf_marker = L.marker(enteredLatLng).addTo(targetMap);
+        }
     });
 }
 

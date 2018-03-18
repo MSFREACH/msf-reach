@@ -18,13 +18,13 @@ var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false}).setView([-6.
 //Bind Autocomplete to inputs:
 function bindAutocompletes()
 {
-  if ((!google)||(!google.maps))
+    if ((!google)||(!google.maps))
     {
-      setTimeout(bindAutocompletes,200);
-      console.log('not ready, retrying in 0.2s...');
-      return;
+        setTimeout(bindAutocompletes,200);
+        //console.log('not ready, retrying in 0.2s...');
+        return;
     }
-  bindACInputToMap(mainMap,'eventAddress');
+    bindACInputToMap(mainMap,'eventAddress');
 }
 
 bindAutocompletes();
