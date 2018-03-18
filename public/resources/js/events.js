@@ -810,7 +810,7 @@ function makeApiRequest(endpoint, data, type, authNeeded) {
 // Translate
 function translate(data) {
     makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
-        resp
+        resp, data
     ) {
         if (resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '') {
             $('#searchTerm').val(data.textToTranslate); // just return original
