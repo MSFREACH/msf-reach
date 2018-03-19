@@ -15,7 +15,7 @@ function drag(ev) {
 function dropSaveTweet(ev) {
     ev.preventDefault();
     var tweetDivId = ev.dataTransfer.getData('tweetDivId');
-    var tweetEventReportLink = vmEventDetails.computed.eventReportLink().replace('&', '%26');
+    var tweetEventReportLink = eventReportLink.replace('&', '%26');
     $('#savedTweets').prepend(document.getElementById(tweetDivId));
     $('#'+tweetDivId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+tweetDivId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
 
@@ -27,6 +27,7 @@ function dropSaveTweet(ev) {
     }
     var body = {
         'status':'active',
+        'type': currentEventProperties.type,
         'metadata':{'saved_tweets':currentEventProperties.metadata.saved_tweets}
     };
     $.ajax({
