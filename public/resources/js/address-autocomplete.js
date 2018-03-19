@@ -53,7 +53,7 @@ function bindACInputToMap(targetMap,inputId,justLocate)
         }
         $('#'+inputId).val('');
         var enteredLatLng={lat: eLat, lng: eLng };
-        targetMap.setView([enteredLatLng.lat, enteredLatLng.lng], 7);
+        targetMap.setView([enteredLatLng.lat, enteredLatLng.lng], 6);
         if (!justLocate)
         {
             if(targetMap.msf_marker)
