@@ -27,12 +27,12 @@ function dropSaveTweet(ev) {
     }
     var body = {
         'status':'active',
+        'type': currentEventProperties.type,
         'metadata':{'saved_tweets':currentEventProperties.metadata.saved_tweets}
     };
     $.ajax({
         type: 'PUT',
         url: '/api/events/' + currentEventProperties.id,
-        type: currentEventProperties.type,
         data: JSON.stringify(body),
         contentType: 'application/json'
     }).done(function( data, textStatus, req ){
