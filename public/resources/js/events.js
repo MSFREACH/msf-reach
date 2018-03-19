@@ -810,11 +810,9 @@ function makeApiRequest(endpoint, data, type, authNeeded) {
 // Translate
 function translate(data) {
     makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
-        resp, data
+        resp
     ) {
-        if (resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '') {
-            $('#searchTerm').val(data.textToTranslate); // just return original
-        } else {
+        if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
             $('#btnSearchTwitter').trigger('click');
         }
@@ -909,8 +907,9 @@ var vmEventDetails = new Vue({
                     targetLang: $(this).val()
                 };
 
-
-                translate(translateObj);
+                if (translateObj.textToTranslate !== '') {
+                    translate(translateObj);
+                }
             });
 
         $('#contSearchTerm').on('input',function(){
