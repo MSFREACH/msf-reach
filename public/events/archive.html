@@ -136,6 +136,7 @@ var vm = new Vue({
 
         var body = {
           status: "inactive",
+          type: this.event.type,
           metadata: metadata,
           location: {
             lat: currentEventGeometry.coordinates[1],
