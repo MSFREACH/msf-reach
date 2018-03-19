@@ -821,23 +821,7 @@ function translate(data) {
     });
 }
 
-// On document ready
-$(function() {
-    window.makeApiRequest = makeApiRequest;
-    var translationObj = {};
 
-    $('#translateLanguageSelection')
-    // Bind translate function to translate button
-        .on('change', function() {
-            var translateObj = {
-                textToTranslate: $('searchTerm').val(),
-                targetLang: $(this).val()
-            };
-
-
-            translate(translateObj);
-        });
-});
 var editCategory='general';
 var vmEventDetails = new Vue({
 
@@ -905,7 +889,7 @@ var vmEventDetails = new Vue({
         // Bind translate function to translate button
             .on('change', function() {
                 var translateObj = {
-                    textToTranslate: $('searchTerm').val(),
+                    textToTranslate: $('#searchTerm').val(),
                     targetLang: $(this).val()
                 };
 
