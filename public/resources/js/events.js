@@ -815,6 +815,8 @@ function translate(data) {
         if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
             $('#btnSearchTwitter').trigger('click');
+        } else {
+            $('#searchTerm').val('(no translation found)');
         }
     });
 }
