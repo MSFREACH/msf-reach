@@ -15,6 +15,20 @@ var MAX_RADIUS= 5;
 
 var computerTriggered = false;
 var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false}).setView([-6.8, 108.7], 7);
+//Bind Autocomplete to inputs:
+function bindAutocompletes()
+{
+    if ((!google)||(!google.maps))
+    {
+        setTimeout(bindAutocompletes,200);
+        //console.log('not ready, retrying in 0.2s...');
+        return;
+    }
+    bindACInputToMap(mainMap,'eventAddress');
+}
+
+bindAutocompletes();
+
 
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
@@ -145,44 +159,7 @@ var printEventProperties = function(err, eventProperties){
             }];
     }
 
-    // Add to Twitter search "AI"
-    $(document).ready(function(){
-        var searchTerm = '';
-        if (currentEventProperties) {
-            if (currentEventProperties.metadata.name) {
-                if (currentEventProperties.metadata.name.includes('_')) {
-                    elements = currentEventProperties.metadata.name.split('_');
-                    for (var i = 0; i < elements.length-1; i++) {
-                        searchTerm += elements[i] + ' ';
-                    }
-                } else {
-                    searchTerm = currentEventProperties.metadata.name;
-                }
-            } else {
-                if (currentEventProperties.hasOwnProperty('type')) {
-                    searchTerm = currentEventProperties.type.replace(/_/g,' ').replace(/,/g,' ');
-                }
-                if (currentEventProperties.hasOwnProperty('sub_type')) {
-                    searchTerm += currentEventProperties.metadata.sub_type.replace(/_/g,' ').replace(/,/g,' ');
-                }
-                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
-                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
-                }
-            }
-            if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += ' ' + currentEventProperties.metadata.country;
-            }
-            $('#searchTerm').val(searchTerm);
-        }
-        $('#btnSearchTwitter').trigger('click');
 
-        $('#searchTerm').keyup(function(event){
-            if(event.keyCode == 13){
-                $('#btnSearchTwitter').trigger('click');
-            }
-        });
-
-    });
 
     // If called with err, print that instead
     if (err){
@@ -221,7 +198,7 @@ var printEventProperties = function(err, eventProperties){
         if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
             $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
                 $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
-                var tweetEventReportLink = eventReportLink.replace('&', '%26');
+                var tweetEventReportLink = vmEventDetails.eventReportLink.replace('&', '%26');
                 $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
                 twttr.widgets.load();
             });
@@ -793,7 +770,7 @@ getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 
 // Enter an API key from the Google API Console:
 //   https://console.developers.google.com/apis/credentials
-const GoogleApiKey = 'AIzaSyAhhKWjsykF_ljVvn-P1o4l6aeE0tGjZOI';
+const GoogleApiKey = 'AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g';
 
 // Set endpoints
 const GoogleEndpoints = {
@@ -835,32 +812,16 @@ function translate(data) {
     makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
         resp
     ) {
-        if (resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '') {
-            $('#searchTerm').val(data.textToTranslate); // just return original
-        } else {
+        if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
             $('#btnSearchTwitter').trigger('click');
+        } else {
+            $('#searchTerm').val('(no translation found)');
         }
     });
 }
 
-// On document ready
-$(function() {
-    window.makeApiRequest = makeApiRequest;
-    var translationObj = {};
 
-    $('#translateLanguageSelection')
-    // Bind translate function to translate button
-        .on('change', function() {
-            var translateObj = {
-                textToTranslate: $('searchTerm').val(),
-                targetLang: $(this).val()
-            };
-
-
-            translate(translateObj);
-        });
-});
 var editCategory='general';
 var vmEventDetails = new Vue({
 
@@ -873,6 +834,88 @@ var vmEventDetails = new Vue({
         $('.msf-loader').hide();
         //console.log('mounted event instance.');
         //console.log(this.event);
+
+        // Search Twitter
+        $('#btnSearchTwitter').click(function() {
+            if ($('#searchTerm').val() !== '') {
+                var search = $('#searchTerm').val();
+                getTweets(search);
+
+            }
+        });
+
+
+        var searchTerm = '';
+
+        if (currentEventProperties) {
+            if (currentEventProperties.metadata.name) {
+                if (currentEventProperties.metadata.name.includes('_')) {
+                    elements = currentEventProperties.metadata.name.split('_');
+                    for (var i = 0; i < elements.length-1; i++) {
+                        searchTerm += elements[i] + ' ';
+                    }
+                } else {
+                    searchTerm = currentEventProperties.metadata.name;
+                }
+            } else {
+                if (currentEventProperties.hasOwnProperty('type')) {
+                    searchTerm = currentEventProperties.type.replace(/_/g,' ').replace(/,/g,' ');
+                }
+                if (currentEventProperties.hasOwnProperty('sub_type')) {
+                    searchTerm += currentEventProperties.metadata.sub_type.replace(/_/g,' ').replace(/,/g,' ');
+                }
+                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
+                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                }
+            }
+            if (currentEventProperties.metadata.hasOwnProperty('country')) {
+                searchTerm += ' ' + currentEventProperties.metadata.country;
+            }
+            $('#searchTerm').val(searchTerm);
+        }
+        $('#btnSearchTwitter').trigger('click');
+
+        $('#searchTerm').keyup(function(event){
+            if(event.keyCode == 13){
+                $('#btnSearchTwitter').trigger('click');
+            }
+        });
+
+
+        window.makeApiRequest = makeApiRequest;
+        var translationObj = {};
+
+        $('#translateLanguageSelection')
+        // Bind translate function to translate button
+            .on('change', function() {
+                var translateObj = {
+                    textToTranslate: $('#searchTerm').val(),
+                    targetLang: $(this).val()
+                };
+
+                if (translateObj.textToTranslate !== '') {
+                    translate(translateObj);
+                }
+            });
+
+        $('#contSearchTerm').on('input',function(){
+            if ($('#inputContactType').val()!=='') {
+                thGetContacts(this.value,$('#inputContactType').val());
+            } else {
+                thGetContacts(this.value);
+            }
+
+        });
+
+        $('#inputContactType').on('change',function(){
+            if ($('#contSearchTerm').val()!=='') {
+                thGetContacts($('#contSearchTerm').val(),this.value);
+            } else {
+                thGetContacts(null,this.value);
+            }
+        });
+
+
 
     },
     methods:{

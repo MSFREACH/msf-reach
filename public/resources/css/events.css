@@ -1,5 +1,5 @@
 #map {
-  height: 90vh;
+  height: 85vh;
 }
 
 #title {
@@ -162,4 +162,11 @@ div.pac-container {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+#mapContainer{
+  padding-top:15px;
+}
+.bottom-margined {
+  margin-bottom: 5px;
 }

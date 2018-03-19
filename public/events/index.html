@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>Events &middot; MSF REACH</title>
 
@@ -98,6 +98,20 @@
               <h5>1. Please select the location of your information on the map:</h5>
               <div class="form-group">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
+              </div>
+              <div class="row bottom-margined">
+                <div class="col-sm-1">
+                  <label for="mapAddressLat">OR:</label>
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control input-sm" value="" id="mapAddressLat" placeholder="Latitude">
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control input-sm" value="" id="mapAddressLng" placeholder="Longitude">
+                </div>
+                <div class="col-sm-2">
+                  <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
               </div>
               <div id="newReportMap"></div>
             </div>
@@ -662,7 +676,7 @@
                           <dt>Description:</dt>
                           <dd>{{event.metadata.msf_resource_visa_requirement.description}}</dd>
                           <dt>Budget:</dt>
-                          <dd v-for="(item, index) in event.metadata.msf_resource_budget"><i>Amount:</i>{{item.amount}}, <i>From:</i>{{item.from_who}} </dd>
+                          <dd v-for="(item, index) in event.metadata.msf_resource_budget"><span v-if="(item.from_who) || (item.amount>0)" ><i>Amount:</i>{{item.amount}}, <i>From:</i>{{item.from_who}}</span><span v-else></span> </dd>
                           <dt>Institutional Donors:</dt>
                           <dd>{{event.metadata.msf_resource_institutional_donors}}</dd>
                         </dl>
@@ -936,6 +950,25 @@
 
 <!-- Map -->
 <div id="mapContainer" class="col-md-6">
+  <div class="row bottom-margined">
+      <div class="col-sm-12">
+        <input type="text" class="form-control" placeholder="Search address/location..." id="eventAddress">
+      </div>
+  </div>
+  <div class="row bottom-margined">
+    <div class="col-sm-4">
+      <label for="mapAddressLat">OR locate by coordinates:</label>
+    </div>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" value="" id="eventAddressLat" placeholder="Latitude">
+    </div>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" value="" id="eventAddressLng" placeholder="Longitude">
+    </div>
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-info btn-sm" id="eventAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+  </div>
   <div id="map"></div>
 </div>
 </div> <!-- Row -->
@@ -957,7 +990,7 @@
 <!--Twitter-->
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <!--Google translate-->
-<script src="https://www.google.com/jsapi?key=AIzaSyCeWNJ8HV03xo4qIFY12Y7UgESu75nlB8k"></script>
+<script src="https://www.google.com/jsapi?key=AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g"></script>
 
 <script src="/lib/countrySelect.min.js"></script>
 
@@ -984,7 +1017,7 @@
 <script src="/resources/js/new-report.js"></script>
 <script src="/report/reportcard.js"></script>
 <script src="/resources/js/address-autocomplete.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g&libraries=places&callback=initGoogle" async defer></script>
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
 
