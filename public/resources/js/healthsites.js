@@ -1,3 +1,4 @@
+/*eslint no-unused-vars: off*/
 
 var healthsitesLayer;
 
@@ -5,10 +6,7 @@ var healthsitesLayer;
 * Function to map data from healthsites.io
 * @param {Object} sites - GeoJSON Object containing site details
 */
-var mapHealthSites = function(err, healthsites){
-    console.log(
-        "mapping health sites"
-    );
+var mapHealthSites = function(err, healthsites) {
 
     // Add popups
     function onEachFeature(feature, layer) {
@@ -32,14 +30,14 @@ var mapHealthSites = function(err, healthsites){
 
 
     healthsitesLayer = L.markerClusterGroup({
-            maxClusterRadius:MAX_RADIUS,
-            iconCreateFunction: function(cluster) {
-                var childCount = cluster.getChildCount();
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
 
-                return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-healthsites' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-healthsites' , iconSize: new L.Point(40, 40) });
 
-            }
         }
+    }
     ).addLayer(L.geoJSON(healthsites, {
         pointToLayer: function (feature, latlng) {
 
@@ -67,26 +65,25 @@ var mapHealthSites = function(err, healthsites){
 var getHealthSites = function(latlngbounds, callback){
     var minLng = latlngbounds.getWest(), maxLng = latlngbounds.getEast();
     var minLat = latlngbounds.getSouth(), maxLat = latlngbounds.getNorth();
-    var extents = 'extent=' + String(minLng) + ',' + String(minLat) + ',' + String(maxLng) + ','+ String(maxLat)
+    var extents = 'extent=' + String(minLng) + ',' + String(minLat) + ',' + String(maxLng) + ','+ String(maxLat);
     if (typeof(country)!=='undefined' && country !== '') {
         q = '&country='+country;
     }
     var doneGettingSites = false, page = 1;
     var sitesFeatures = {
-        "type": "FeatureCollection",
-        "features": []
+        'type': 'FeatureCollection',
+        'features': []
     };
     var deferreds = [];
     for (page = 1; page < 5; page++) {
         deferreds.push(
-        $.getJSON('/api/proxy/https://healthsites.io/api/v1/healthsites/facilities?'+extents+'&format=' + GEOFORMAT + '&page='+String(page), function ( data ){
-            if (!data.features.length==0) {
-                sitesFeatures.features = sitesFeatures.features.concat(data.features);
-            }
-        })); // todo: add a fail case back in
+            $.getJSON('/api/proxy/https://healthsites.io/api/v1/healthsites/facilities?'+extents+'&format=' + GEOFORMAT + '&page='+String(page), function ( data ){
+                if (!data.features.length==0) {
+                    sitesFeatures.features = sitesFeatures.features.concat(data.features);
+                }
+            })); // todo: add a fail case back in
     }
     $.when.apply(null, deferreds).done(function() {
-        console.log(sitesFeatures);
         callback(null, sitesFeatures);
     });
 
