@@ -45,6 +45,7 @@ export default {
     COMPRESS: process.env.COMPRESS === 'true' || false,
     CORS: process.env.CORS === 'true' || false,
     CORS_HEADERS: process.env.CORS_HEADERS || ['Link'],
+    CORSANYWHERE_WHITELIST: process.env.CORSANYWHERE_WHITELIST || '',
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
     PGHOST: process.env.PGHOST || '127.0.0.1',
     PGDATABASE: process.env.PGDATABASE || 'msf_reach',

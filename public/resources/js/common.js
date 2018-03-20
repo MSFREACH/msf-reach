@@ -46,6 +46,8 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
+var MAX_RADIUS= 5;
+
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
     Cookies.set('- access','on'); // default
@@ -74,6 +76,10 @@ if (Cookies.get('Ongoing MSF Projects')==='undefined') {
     Cookies.set('Ongoing MSF Projects','on');
 }
 
+if (Cookies.get('Health Sites')==='undefined') {
+    Cookies.set('Health Sites','on');
+}
+
 /**
 * Function to get feeds
 **/
@@ -83,7 +89,7 @@ var getFeeds = function(url, callback) {
     }).fail(function(err) {
         if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
             alert('session expired');
-        } 
+        }
     });
 };
 

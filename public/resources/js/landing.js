@@ -511,7 +511,21 @@ var getContact = function(id) {
 };
 
 // Create map
-var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false}).setView([20, 110], 4);
+var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
+
+// To get healthsites loaded, need to first add load event and then setView separately
+
+mainMap.on('load', function(loadEvent) {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
+mainMap.setView([20, 110], 4);
+
+
+mainMap.on('zoomend', function(zoomEvent)  {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {

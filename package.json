@@ -48,6 +48,7 @@
     "compression": "^1.7.2",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
+    "cors-anywhere": "^0.4.1",
     "dbgeo": "^1.1.0",
     "dms-conversion": "^3.0.0",
     "dotenv": "^5.0.1",
