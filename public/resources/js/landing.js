@@ -104,7 +104,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
@@ -127,7 +127,7 @@ var mapAllEvents = function(err, events){
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
       notificationStr +
       totalPopulationStr +

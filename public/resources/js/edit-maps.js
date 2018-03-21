@@ -55,7 +55,7 @@ var mapEditEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type,feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
     notificationStr +

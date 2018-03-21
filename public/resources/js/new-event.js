@@ -125,21 +125,25 @@ $(function(){
 					*/
                 }
             };
-            $.ajax({
-                type: 'POST',
-                url: '/api/events',
-                data: JSON.stringify(body),
-                contentType: 'application/json'
-            }).done(function( data, textStatus, req ){
-                // var eventId = data.result.objects.output.geometries[0].properties.id;
-                $('#newEventModal').modal('hide');
-                refreshLandingPage();
-            }).fail(function (reqm, textStatus, err){
-                if (reqm.responseText.includes('expired')) {
-                    alert('session expired');
-                } else {
-                    alert('error creating event' + err);
-                }});
+            if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type === '') {
+                alert('ensure subtype(s) is/are selected');
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/events',
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                }).done(function( data, textStatus, req ){
+                    // var eventId = data.result.objects.output.geometries[0].properties.id;
+                    $('#newEventModal').modal('hide');
+                    refreshLandingPage();
+                }).fail(function (reqm, textStatus, err){
+                    if (reqm.responseText.includes('expired')) {
+                        alert('session expired');
+                    } else {
+                        alert('error creating event' + err);
+                    }});
+            }
         }
     });
 

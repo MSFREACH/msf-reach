@@ -15,6 +15,10 @@ $(function() {
     });
 });
 
+var typeStr = function(type, sub_type) {
+    return result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ') + (sub_type ? (', ' + sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '');
+}
+
 var severityColors=['green','orange','red'];
 var severityTexts=['low','med','high'];
 var severityLongTexts=['low','medium','high'];
@@ -83,7 +87,7 @@ var getFeeds = function(url, callback) {
     }).fail(function(err) {
         if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
             alert('session expired');
-        } 
+        }
     });
 };
 
