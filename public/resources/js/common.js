@@ -50,7 +50,7 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
-var MAX_RADIUS= 5;
+var MAX_RADIUS= 200;
 
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {

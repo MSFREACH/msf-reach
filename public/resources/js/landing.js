@@ -404,12 +404,20 @@ var mapContacts = function(contacts ){
         computerTriggered=false;
     }
 
-    MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: contactIcon});
-        },
-        onEachFeature: onEachFeature
-    });
+    MSFContactsLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+            return new L.DivIcon({ html: '<div><span style="color:red;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+        }
+    }).addLayer(
+        L.geoJSON(msfContact(contacts,true), {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {icon: contactIcon});
+            },
+            onEachFeature: onEachFeature
+        })
+    );
 
     nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
         pointToLayer: function (feature, latlng) {
