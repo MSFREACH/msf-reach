@@ -130,6 +130,7 @@ var printEventProperties = function(err, eventProperties){
     vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
     vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
     vmEventDetails.$mount('#eventVApp');
+    eventReportLink=vmEventDetails.eventReportLink;
 
 
 
