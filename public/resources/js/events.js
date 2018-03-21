@@ -944,10 +944,10 @@ var vmEventDetails = new Vue({
         },
         eventLink:function(){
             return WEB_HOST + 'events/?eventId=' + this.event.id;
-        }/*
+        },
         eventReportLink:function()
         {
             return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
-        }*/
+        }
     }
 });
