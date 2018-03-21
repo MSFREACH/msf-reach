@@ -8,7 +8,7 @@
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "start": "node dist",
     "prestart": "npm run -s build",
-    "mocha": "nyc mocha --compilers js:babel-core/register src/test/testMSFREACHServer.js",
+    "mocha": "nyc mocha --timeout 5000 --compilers js:babel-core/register src/test/testMSFREACHServer.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "eslint src && eslint public && npm run-script mocha"
   },
