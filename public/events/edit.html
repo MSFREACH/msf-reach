@@ -1110,20 +1110,24 @@ var vm = new Vue({
       }
       body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
       body.metadata['notification'] = currentEventProperties.metadata.notification;
-      $.ajax({
-        type: "PUT",
-        url: "/api/events/" + currentEventId,
-        data: JSON.stringify(body),
-        contentType: 'application/json'
-      }).done(function(data, textStatus, req) {
-        window.location.href = '/events/?eventId=' + currentEventId;
-      }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-          alert("session expired");
-        } else {
-          alert('error: '+ err.responseText);
-        }
-      });
+      if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
+          alert('ensure subtype(s) is/are selected');
+      } else {
+          $.ajax({
+            type: "PUT",
+            url: "/api/events/" + currentEventId,
+            data: JSON.stringify(body),
+            contentType: 'application/json'
+          }).done(function(data, textStatus, req) {
+            window.location.href = '/events/?eventId=' + currentEventId;
+          }).fail(function(err) {
+            if (err.responseText.includes('expired')) {
+              alert("session expired");
+            } else {
+              alert('error: '+ err.responseText);
+            }
+          });
+      }
     },
     addOtherOrg() {
       this.event.metadata.ext_other_organizations.push({

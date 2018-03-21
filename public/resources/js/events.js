@@ -336,7 +336,7 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
@@ -348,7 +348,7 @@ var mapAllEvents = function(err, events){
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + type.replace(/_/g,' ').replace(/,/g,', ') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
       notificationStr +
       totalPopulationStr +
@@ -871,12 +871,7 @@ var vmEventDetails = new Vue({
                     searchTerm = currentEventProperties.metadata.name;
                 }
             } else {
-                if (currentEventProperties.hasOwnProperty('type')) {
-                    searchTerm = currentEventProperties.type.replace(/_/g,' ').replace(/,/g,' ');
-                }
-                if (currentEventProperties.hasOwnProperty('sub_type')) {
-                    searchTerm += currentEventProperties.metadata.sub_type.replace(/_/g,' ').replace(/,/g,' ');
-                }
+                searchTerm = typeStr(currentEventProperties.type, currentEventProperties.metadata.sub_type);
                 if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
                     searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
                 }
