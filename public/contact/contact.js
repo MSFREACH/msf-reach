@@ -48,9 +48,9 @@ $(function () {
                 return;
             }
         }
-        if (cInd==STARTPAGEINDEX && Cookies.get('operator')) {
+        if (cInd==STARTPAGEINDEX && localStorage.getItem('username')) {
             if (!$('#inputPermissionAcknowledge').is(':checked')) {
-                alert('Please tick the acknowldgement box to continue.');
+                alert('Please tick the acknowledgement box to continue.');
                 return;
             }
         }
