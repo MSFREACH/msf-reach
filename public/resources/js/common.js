@@ -17,7 +17,7 @@ $(function() {
 
 var typeStr = function(type, sub_type) {
     return result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ') + (sub_type ? (', ' + sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '');
-}
+};
 
 var severityColors=['green','orange','red'];
 var severityTexts=['low','med','high'];
