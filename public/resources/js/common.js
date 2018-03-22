@@ -16,7 +16,17 @@ $(function() {
 });
 
 var typeStr = function(type, sub_type) {
-    return result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ') + (sub_type ? (', ' + sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '');
+    var result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
+    console.log("res" + result);
+    if (result !== '') {
+      console.log('RES2')
+      result += ', ';
+      result += sub_type ? (sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
+    } else {
+      console.log('RES3')
+      result += sub_type ? (sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
+    }
+    return result;
 };
 
 var severityColors=['green','orange','red'];
