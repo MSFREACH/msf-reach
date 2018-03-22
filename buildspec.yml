@@ -10,4 +10,8 @@ phases:
 
 artifacts:
   files:
+<<<<<<< HEAD
     - dist/**/*
+=======
+    - '**/*'
+>>>>>>> master
