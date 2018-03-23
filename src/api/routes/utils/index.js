@@ -56,7 +56,7 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
     });
 
-    api.post('/updateimagelabels',(req,res,next)=>{
+    api.post('/updateimagelabels', (req,res,next)=>{
 
         let params=req.body;
         //make sure keys are identical

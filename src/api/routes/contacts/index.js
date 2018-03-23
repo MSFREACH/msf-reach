@@ -4,7 +4,7 @@ import { Router } from 'express';
 import contacts from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import BaseJoi from 'joi';
@@ -15,7 +15,7 @@ import validate from 'celebrate';
 export default ({ config, db, logger }) => {
     let api = Router();
 
-    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/', ensureGetAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 search: Joi.string().min(1),
@@ -43,7 +43,7 @@ export default ({ config, db, logger }) => {
             })
     );
 
-    api.get('/:id', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/:id', ensureGetAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 params: { id: Joi.number().integer().min(1).required() }
@@ -62,7 +62,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new contact record in the database
-    api.post('/',
+    api.post('/', ensureAuthenticated,
         validate({
             body: Joi.object().keys({
                 // TODO - create a Joi validation schema for contact properties

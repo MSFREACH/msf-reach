@@ -48,6 +48,7 @@ const ensureAuthenticated = (req, res, next) => {
             return next();
         }
         res.redirect('/login');
+        $('#403modal').modal('show');
         return;
     }
     //we must be using jwt, call express-jwt middleware
@@ -66,6 +67,38 @@ const ensureAuthenticated = (req, res, next) => {
             return next();
         }
         res.redirect('/login');
+        $('#403modal').modal('show');
+        return;
+    });
+};
+
+const ensureGetAuthenticated = (req, res, next) => {
+    if(!config.AUTH){
+        return next(); //If we are not using auth then carry on
+    }
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        res.redirect('/login');
+        $('#403modal').modal('show');
+    }
+    //we must be using jwt, call express-jwt middleware
+    jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
+        /*Left this here in case you really need it for anything.
+        if (err.name === 'UnauthorizedError') {
+            res.redirect('/login');
+            return
+        }
+        else if (err) {
+            next(err);
+            return
+        }
+        */
+        if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
+            return next();
+        }
+        res.redirect('/login');
+        $('#403modal').modal('show');
         return;
     });
 };
@@ -114,5 +147,5 @@ const inAsiaBBox = (coords) => {
 };
 
 module.exports = {
-    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, inAsiaBBox
+    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated, inAsiaBBox
 };

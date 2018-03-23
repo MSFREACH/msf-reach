@@ -4,7 +4,7 @@ import { Router } from 'express';
 import reports from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -14,7 +14,7 @@ export default ({ config, db, logger }) => {
     let api = Router();
 
     // Get a list of all reports
-    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/', ensureGetAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
@@ -32,7 +32,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Get a single report
-    api.get('/:id', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/:id', ensureGetAuthenticated, cacheResponse('1 minute'),
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             query: {
@@ -50,7 +50,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new report record in the database
-    api.post('/',
+    api.post('/', ensureAuthenticated,
         validate({
             body: Joi.object().keys({
                 eventId: Joi.number().integer().min(1).required(),
