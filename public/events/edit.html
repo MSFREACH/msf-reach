@@ -790,6 +790,14 @@ var msfResponseMap;
 var eventMapLayerControl;
 var msfResponseMapLayerControl;
 
+var zoomToBounds = function(bounds) {
+    console.log("cc3")
+    console.log(bounds);
+    var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
+    eventMap.fitBounds(rBounds);
+    msfResponseMap.fitBounds(rBounds);
+}
+
 var vm = new Vue({
   el: "#editEventVue",
   data: {
@@ -897,7 +905,9 @@ var vm = new Vue({
 
 
           /** << eventMap */
-          eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false}).setView(eventDefaultLatLng, 13);
+          eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false});
+
+
           eventMap.scrollWheelZoom.disable();
 
           //Bind Autocomplete to inputs:
@@ -935,7 +945,7 @@ var vm = new Vue({
             msfResponseMarkerLatLng = [this.event.metadata.msf_response_location.coordinates[1], this.event.metadata.msf_response_location.coordinates[0]];
           }
 
-          msfResponseMap = L.map('msfResponseMap',{dragging: !L.Browser.mobile, tap:false}).setView(msfResponseMarkerLatLng, 13);
+          msfResponseMap = L.map('msfResponseMap',{dragging: !L.Browser.mobile, tap:false});
           msfResponseMap.scrollWheelZoom.disable();
 
           //Bind Autocomplete to inputs:
@@ -1001,6 +1011,7 @@ var vm = new Vue({
               maxZoom: 19,
               attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
           });
+
     switch (Cookies.get('MapLayer')) {
     case 'Satellite':
         eventMapboxSatellite.addTo(eventMap);
@@ -1077,10 +1088,24 @@ var vm = new Vue({
     });
 
 
+
+
+
       setTimeout(function() {
-        eventMap.invalidateSize();
-        msfResponseMap.invalidateSize();
+        eventMap.invalidateSize(true);
+        msfResponseMap.invalidateSize(true);
+        if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
+          console.log('cc')
+          console.log(currentEventProperties.metadata.bounds);
+          zoomToBounds(currentEventProperties.metadata.bounds);
+        } else {
+          eventMap.setView(eventDefaultLatLng, 13);
+          msfResponseMap.setView(eventDefaultLatLng, 13);
+        }
+
       }, 300);
+
+
     });
   },
   methods: {
