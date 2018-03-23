@@ -33,8 +33,13 @@ bindAutocompletes();
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
-var zoomToEvent = function(latlng) {
+var zoomToEventPoint = function(latlng) {
     mainMap.setView(latlng, 5);
+};
+
+var zoomToEventBounds = function(bounds) {
+    var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
+    mainMap.fitBounds(rBounds);
 };
 
 var clipboard = new Clipboard('.btn');
@@ -218,7 +223,12 @@ var currentEventGeometry = null;
 var getEvent = function(eventId, callback){
     $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Zoom to location
-        zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]]);
+
+        if (data.result.features[0].properties.metadata.hasOwnProperty('bounds')) {
+            zoomToEventBounds(data.result.features[0].properties.metadata.bounds);
+        } else {
+            zoomToEventPoint([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]]);
+        }
         // Print output to page
         currentEventGeometry = data.result.features[0].geometry;
         callback(null, data.result.features[0].properties);

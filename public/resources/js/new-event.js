@@ -95,6 +95,7 @@ $(function(){
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),
                     'sub_type': sub_type,
+                    'bounds': mainMap.getBounds(),
                     'event_datetime': $('#inputEvDateTime').val(),
                     'event_status': $('#inputEvStatus').val(),
                     'incharge_name': $('#inputInChargeName').val(),
