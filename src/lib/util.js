@@ -48,7 +48,6 @@ const ensureAuthenticated = (req, res, next) => {
             return next();
         }
         res.redirect('/login');
-        $('#403modal').modal('show');
         return;
     }
     //we must be using jwt, call express-jwt middleware
@@ -67,7 +66,7 @@ const ensureAuthenticated = (req, res, next) => {
             return next();
         }
         res.redirect('/login');
-        $('#403modal').modal('show');
+        return;
     });
 };
 
@@ -79,7 +78,6 @@ const ensureGetAuthenticated = (req, res, next) => {
         return next();
     } else {
         res.redirect('/login');
-        $('#403modal').modal('show');
     }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
@@ -97,7 +95,7 @@ const ensureGetAuthenticated = (req, res, next) => {
             return next();
         }
         res.redirect('/login');
-        $('#403modal').modal('show');
+        return;
     });
 };
 
