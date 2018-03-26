@@ -68,7 +68,6 @@ const ensureAuthenticated = (req, res, next) => {
         }
         res.redirect('/login');
         $('#403modal').modal('show');
-        return;
     });
 };
 
@@ -99,7 +98,6 @@ const ensureGetAuthenticated = (req, res, next) => {
         }
         res.redirect('/login');
         $('#403modal').modal('show');
-        return;
     });
 };
 

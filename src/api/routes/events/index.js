@@ -34,7 +34,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Get a single event
-    api.get('/:id',ensureGetAuthenticated, cacheResponse('1 minute'),
+    api.get('/:id', ensureGetAuthenticated, cacheResponse('1 minute'),
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             query: {
