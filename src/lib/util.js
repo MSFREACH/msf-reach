@@ -48,6 +48,7 @@ const ensureAuthenticated = (req, res, next) => {
             return next();
         }
         // res.status(403).render();
+        res.redirect('/login');
         return;
     }
     //we must be using jwt, call express-jwt middleware
@@ -65,7 +66,7 @@ const ensureAuthenticated = (req, res, next) => {
         if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
             return next();
         }
-        // res.status(403).render();
+        res.redirect('/login');
         return;
     });
 };
