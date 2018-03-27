@@ -15,7 +15,7 @@ export default ({ logger }) => {
     let api = Router();
 
     // Get a list of all reports
-    api.get('/', ensureGetAuthenticated, cacheResponse('1 minute'),
+    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 searchString: Joi.string().required()
