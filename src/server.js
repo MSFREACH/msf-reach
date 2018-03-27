@@ -74,11 +74,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                                 u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                             }
                             else {
-                                //return done(new Error('not in operators group'));
-                                res.redirect('/login');
-                                res.status(403);
-                                return;
-
+                                return done(new Error('not in operators group'));
                             }
                         }
                         users.push(u);
@@ -112,10 +108,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         if(jwtClaims.groups){
                             u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                         } else {
-                            // return done(new Error('not in operators group'));
-                            res.redirect('/login');
-                            res.status(403);
-                            return;
+                            return done(null, null);
                         }
                         users.push(u);
                         return done(null, u);
