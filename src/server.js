@@ -85,39 +85,39 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             });
         }
         );
-        // const getAuthenticationStrategy = new OIDCStrategy({
-        //     identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/.well-known/openid-configuration`,
-        //     clientID: config.AZURE_AD_CLIENT_ID,
-        //     redirectUrl: config.AZURE_AD_RETURN_URL,
-        //     allowHttpForRedirectUrl: !config.REDIRECT_HTTP,
-        //     responseType: 'id_token', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
-        //     responseMode: 'form_post', //This is recommended by MS
-        // },
-        // function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
-        //     if (!profile.oid) {
-        //         return done(new Error('No oid found'), null);
-        //     }
-        //     process.nextTick(function () {
-        //         findByOid(profile.oid, function(err, user) {
-        //             if (err) {
-        //                 return done(err);
-        //             }
-        //             if (!user) {
-        //                 // "Auto-registration"
-        //                 var u = profile;
-        //                 if(jwtClaims.groups){
-        //                     u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
-        //                 } else {
-        //                     return done(new Error('not in operators group'));
-        //                 }
-        //                 users.push(u);
-        //                 return done(null, u);
-        //             }
-        //             return done(null, user);
-        //         });
-        //     });
-        // }
-        // );
+        const getAuthenticationStrategy = new OIDCStrategy({
+            identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/.well-known/openid-configuration`,
+            clientID: config.AZURE_AD_CLIENT_ID,
+            redirectUrl: config.AZURE_AD_RETURN_URL,
+            allowHttpForRedirectUrl: !config.REDIRECT_HTTP,
+            responseType: 'id_token', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
+            responseMode: 'form_post', //This is recommended by MS
+        },
+        function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
+            if (!profile.oid) {
+                return done(new Error('No oid found'), null);
+            }
+            process.nextTick(function () {
+                findByOid(profile.oid, function(err, user) {
+                    if (err) {
+                        return done(err);
+                    }
+                    if (!user) {
+                        // "Auto-registration"
+                        var u = profile;
+                        if(jwtClaims.groups){
+                            u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
+                        } else {
+                            return done(new Error('not in operators group'));
+                        }
+                        users.push(u);
+                        return done(null, u);
+                    }
+                    return done(null, user);
+                });
+            });
+        }
+        );
         passport.serializeUser(function(user, done) {
             done(null, user.oid);
         });
@@ -127,9 +127,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             });
         });
 
-        // passport.use('local.one', authenticationStrategy);
-        // passport.use('local.two', getAuthenticationStrategy);
-        passport.use(authenticationStrategy);
+        passport.use('local.one', authenticationStrategy);
+        passport.use('local.two', getAuthenticationStrategy);
+        //passport.use(authenticationStrategy);
         app.use(cookieParser()); //This must be used for passport-azure-ad
         app.use(bodyParser.urlencoded({ extended : true })); //This must be used for passport-azure-ad and come before app.use(passport.initialize());
         app.use(passport.initialize());
@@ -190,7 +190,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         res.redirect('/');
                     });
                 app.post('/auth/openid/return',
-                    passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
+                    passport.authenticate('azuread-openidconnect', 'local.two', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
