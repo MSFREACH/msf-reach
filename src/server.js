@@ -108,7 +108,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         if(jwtClaims.groups){
                             u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                         } else {
-                            return done('For edit access, please contact us <a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                            return done('403 Forbidden: For edit access, please contact us, lucie.gueuning@hongkong.msf.org Lucie Gueuning</a>');
                         }
                         users.push(u);
                         return done(null, u);
