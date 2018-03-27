@@ -77,7 +77,7 @@ const ensureGetAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     } else {
-        res.redirect('/login');
+        res.status(403).render();
     }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
@@ -94,7 +94,7 @@ const ensureGetAuthenticated = (req, res, next) => {
         if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
             return next();
         }
-        res.redirect('/login');
+        res.status(403).render();
         return;
     });
 };
