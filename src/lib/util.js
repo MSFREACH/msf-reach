@@ -47,7 +47,7 @@ const ensureAuthenticated = (req, res, next) => {
         if (req.isAuthenticated()) {
             return next();
         }
-        res.status(403).render();
+        // res.status(403).render();
         return;
     }
     //we must be using jwt, call express-jwt middleware
@@ -65,7 +65,7 @@ const ensureAuthenticated = (req, res, next) => {
         if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
             return next();
         }
-        res.status(403).render();
+        // res.status(403).render();
         return;
     });
 };
@@ -74,10 +74,12 @@ const ensureGetAuthenticated = (req, res, next) => {
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
-    if (req.isAuthenticated()) {
-        return next();
-    } else {
-        res.status(403).render();
+    if(config.AZURE_AD_TENANT_NAME) {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        // res.status(403).render();
+        return;
     }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
@@ -94,7 +96,7 @@ const ensureGetAuthenticated = (req, res, next) => {
         if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
             return next();
         }
-        res.status(403).render();
+        // res.status(403).render();
         return;
     });
 };
