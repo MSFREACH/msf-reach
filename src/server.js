@@ -108,7 +108,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         if(jwtClaims.groups){
                             u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                         } else {
-                            return done(null, null);
+                            return done(null, 'For edit access, please contact us');
                         }
                         users.push(u);
                         return done(null, u);
