@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 // Import any required utility functions
-import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated, ensureGetAuthenticated } from '../../../lib/util';
 
 import { PDC } from '../../../lib/pdc-georss.js';
 import { USGS } from '../../../lib/usgs-georss.js';
@@ -15,7 +15,7 @@ export default ({ logger }) => {
     let api = Router();
 
     // Get a list of all reports
-    api.get('/pdc', ensureAuthenticated, cacheResponse('10 minutes'),
+    api.get('/pdc', ensureGetAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => PDC()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});

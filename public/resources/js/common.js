@@ -10,6 +10,9 @@ $(function() {
                 if (window.location.pathname !== '/login/') {
                     window.location.href = '/login/';
                 }
+            },
+            403: function () {
+                $('#403modal').modal('show');
             }
         }
     });

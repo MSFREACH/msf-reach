@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 import { Router } from 'express';
 
 // Import any required utility functions
-import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated, ensureGetAuthenticated } from '../../../lib/util';
 
 import { searchTwitter, embedTweet } from '../../../lib/twitter.js';
 

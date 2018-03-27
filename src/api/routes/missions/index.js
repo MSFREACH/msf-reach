@@ -4,7 +4,7 @@ import { Router } from 'express';
 import missions from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
