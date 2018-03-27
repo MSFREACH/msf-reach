@@ -57,7 +57,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             responseType: 'id_token', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
             responseMode: 'form_post', //This is recommended by MS
         },
-        function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
+        function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done, res){
             if (!profile.oid) {
                 return done(new Error('No oid found'), null);
             }
@@ -74,7 +74,11 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                                 u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                             }
                             else {
-                                return done(new Error('not in operators group'));
+                                //return done(new Error('not in operators group'));
+                                res.redirect('/login');
+                                res.status(403);
+                                return;
+
                             }
                         }
                         users.push(u);
@@ -98,7 +102,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 return done(new Error('No oid found'), null);
             }
             process.nextTick(function () {
-                findByOid(profile.oid, function(err, user) {
+                findByOid(profile.oid, function(err, user, res) {
                     if (err) {
                         return done(err);
                     }
@@ -108,7 +112,10 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         if(jwtClaims.groups){
                             u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                         } else {
-                            return done(new Error('not in operators group'));
+                            // return done(new Error('not in operators group'));
+                            res.redirect('/login');
+                            res.status(403);
+                            return;
                         }
                         users.push(u);
                         return done(null, u);
