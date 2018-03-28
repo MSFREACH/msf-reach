@@ -60,7 +60,7 @@ export default (config, db, logger) => ({
                 .catch(err => reject(err));
         }),
 
-        /**
+    /**
     		* Create a historical mission entry
         * @function createMission
     		* @param {Object} body - all the details
