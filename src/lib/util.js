@@ -107,6 +107,7 @@ const handleResponse = (data, req, res) => {
         res.status(200).json({ statusCode: 200, result: data });
 };
 
+// Define Asia bbox for use in filtering hazards data
 const inAsiaBBox = (coords) => {
     let lat = Number(coords[0]);
     let lng = Number(coords[1]);
