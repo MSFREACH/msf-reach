@@ -108,7 +108,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         if(jwtClaims.groups){
                             u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                         } else {
-                            return done('403 Forbidden: For edit access, please contact us, lucie.gueuning@hongkong.msf.org Lucie Gueuning');
+                            return done(new Error('not in operators group, get auth used'));
                         }
                         users.push(u);
                         return done(null, u);
@@ -127,9 +127,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             });
         });
 
-        passport.use('local.one', authenticationStrategy);
-        passport.use('local.two', getAuthenticationStrategy);
-        //passport.use(authenticationStrategy);
+        // passport.use('local.one', authenticationStrategy);
+        // passport.use('local.two', getAuthenticationStrategy);
+        passport.use(getAuthenticationStrategy);
         app.use(cookieParser()); //This must be used for passport-azure-ad
         app.use(bodyParser.urlencoded({ extended : true })); //This must be used for passport-azure-ad and come before app.use(passport.initialize());
         app.use(passport.initialize());
@@ -185,12 +185,12 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             // Mount the routes
             if(config.AZURE_AD_TENANT_NAME){
                 app.get('/login',
-                    passport.authenticate('local.two', { failureRedirect: '/login'}),
+                    passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res) {
                         res.redirect('/');
                     });
                 app.post('/auth/openid/return',
-                    passport.authenticate('local.two', { failureRedirect: '/login'}),
+                    passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
