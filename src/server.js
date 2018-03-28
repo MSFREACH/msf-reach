@@ -105,11 +105,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                     if (!user) {
                         // "Auto-registration"
                         var u = profile;
-                        if(jwtClaims.groups){
-                            u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
-                        } else {
-                            return done(new Error('not in operators group, get auth used'));
-                        }
+
                         users.push(u);
                         return done(null, u);
                     }
