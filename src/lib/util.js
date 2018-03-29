@@ -56,6 +56,7 @@ const ensureAuthenticated = (req, res, next) => {
         */
 
         if (req.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {  //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
+        if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {  //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
         return next();
         }
         res.redirect('/login');
