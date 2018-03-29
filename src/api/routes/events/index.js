@@ -15,7 +15,7 @@ export default ({ config, db, logger }) => {
     let api = Router();
 
     // Get a list of all events
-    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/', ensureGetAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
@@ -34,7 +34,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Get a single event
-    api.get('/:id', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/:id', ensureGetAuthenticated, cacheResponse('1 minute'),
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             query: {

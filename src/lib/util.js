@@ -41,7 +41,7 @@ const ensureAuthenticated = (req, res, next) => {
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
-    if(config.AZURE_AD_TENANT_NAME){ //Check if we are using azure ad auth
+    if(config.AZURE_AD_OPERATORS_GROUP_ID){ //Check if we are using azure ad auth
         /* passport.authenticate runs req.login which sets the user object on req
 		req.isAuthenticated checks the req object for a user attribute, its part of express. */
         if (req.isAuthenticated()) {
