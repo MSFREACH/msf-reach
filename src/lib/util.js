@@ -41,14 +41,16 @@ const ensureAuthenticated = (req, res, next) => {
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
-    if(config.AZURE_AD_OPERATORS_GROUP_ID){ //Check if we are using azure ad auth
-        /* passport.authenticate runs req.login which sets the user object on req
-		req.isAuthenticated checks the req object for a user attribute, its part of express. */
-        if (req.isAuthenticated()) {
-            return next();
+    if(jwtClaims.groups) {
+        if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) { //Check if we are using azure ad auth
+            /* passport.authenticate runs req.login which sets the user object on req
+            req.isAuthenticated checks the req object for a user attribute, its part of express. */
+            if (req.isAuthenticated()) {
+                return next();
+            }
+            res.redirect('/login');
+            return;
         }
-        res.redirect('/login');
-        return;
     }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
