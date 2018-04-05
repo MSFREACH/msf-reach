@@ -41,7 +41,7 @@ const ensureAuthenticated = (req, res, next) => {
     req.user = req.session.user;
     alert(req.user);
     alert(req.user.groups);
-    alert(req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID);
+    alert(req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID));
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
