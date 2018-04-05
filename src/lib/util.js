@@ -56,11 +56,11 @@ const ensureAuthenticated = (req, res, next, jwtClaims) => {
         */
 
             // distinguish if user is an operator and is authenticated
-        //if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {  //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
+        //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
         if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
             return next();
         }
-        res.redirect('/login');
+        res.status(403).render();
         return;
     });
 };
