@@ -42,9 +42,6 @@ const ensureAuthenticated = (req, res, next, jwtClaims) => {
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
-    if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
-        return next();
-    }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
         /*Left this here in case you really need it for anything.
@@ -60,8 +57,8 @@ const ensureAuthenticated = (req, res, next, jwtClaims) => {
 
             // distinguish if user is an operator and is authenticated
         //if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {  //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
-            if (req.isAuthenticated()) {
-        return next();
+        if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
+            return next();
         }
         res.redirect('/login');
         return;
