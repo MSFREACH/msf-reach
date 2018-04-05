@@ -37,12 +37,12 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
     }
 });
 
-const ensureAuthenticated = (req, res, next) => {
+const ensureAuthenticated = (req, res, next, jwtClaims) => {
     req.user = req.session.user;
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
-    if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
+    if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
         return next();
     }
     //we must be using jwt, call express-jwt middleware
