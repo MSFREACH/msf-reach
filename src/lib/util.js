@@ -39,13 +39,12 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 
 const ensureAuthenticated = (req, res, next) => {
     req.user = req.session.user;
-    window.alert(req.user);
-    window.alert(req.user.groups);
-    window.alert(req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID));
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
-
+    if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
+        return next();
+    }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
         /*Left this here in case you really need it for anything.
