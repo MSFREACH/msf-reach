@@ -530,8 +530,7 @@ mainMap.on('load', function(loadEvent) {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
 
-mainMap.setView([20, 110], 4);
-
+mainMap.setView([7.5, 115.6628], 4);
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
