@@ -39,6 +39,9 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 
 const ensureAuthenticated = (req, res, next) => {
     req.user = req.session.user;
+    alert(req.user);
+    alert(req.user.groups);
+    alert(req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID);
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
@@ -57,7 +60,8 @@ const ensureAuthenticated = (req, res, next) => {
         */
 
             // distinguish if user is an operator and is authenticated
-        if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {  //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
+        //if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {  //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
+            if (req.isAuthenticated()) {
         return next();
         }
         res.redirect('/login');
