@@ -97,6 +97,9 @@ var mapAllEvents = function(err, events){
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
         }
+        if (feature.properties.type.toLowerCase().includes('natural_hazard')) {
+          icon_name = feature.properties.metadata.sub_type.includes(',') ? feature.properties.metadata.sub_type.split(',')[0].toLowerCase() : feature.properties.metadata.sub_type.toLowerCase();
+        }
 
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
