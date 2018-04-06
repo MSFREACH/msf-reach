@@ -10,11 +10,23 @@
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
-var MAX_RADIUS= 5;
 
 
 var computerTriggered = false;
-var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false}).setView([-6.8, 108.7], 7);
+var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false});
+
+mainMap.on('load', function(loadEvent) {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
+mainMap.setView([-6.8, 108.7], 7);
+
+
+mainMap.on('zoomend', function(zoomEvent)  {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
+
 //Bind Autocomplete to inputs:
 function bindAutocompletes()
 {

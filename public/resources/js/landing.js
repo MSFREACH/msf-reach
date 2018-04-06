@@ -97,6 +97,9 @@ var mapAllEvents = function(err, events){
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
         }
+        if (feature.properties.type.toLowerCase().includes('natural_hazard')) {
+            icon_name = feature.properties.metadata.sub_type.includes(',') ? feature.properties.metadata.sub_type.split(',')[0].toLowerCase() : feature.properties.metadata.sub_type.toLowerCase();
+        }
 
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
@@ -404,12 +407,20 @@ var mapContacts = function(contacts ){
         computerTriggered=false;
     }
 
-    MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: contactIcon});
-        },
-        onEachFeature: onEachFeature
-    });
+    MSFContactsLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+            return new L.DivIcon({ html: '<div><span style="color:red;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+        }
+    }).addLayer(
+        L.geoJSON(msfContact(contacts,true), {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {icon: contactIcon});
+            },
+            onEachFeature: onEachFeature
+        })
+    );
 
     nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
         pointToLayer: function (feature, latlng) {
@@ -511,7 +522,20 @@ var getContact = function(id) {
 };
 
 // Create map
-var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false}).setView([20, 110], 4);
+var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
+
+// To get healthsites loaded, need to first add load event and then setView separately
+
+mainMap.on('load', function(loadEvent) {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
+mainMap.setView([7.5, 115.6628], 4);
+
+mainMap.on('zoomend', function(zoomEvent)  {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
