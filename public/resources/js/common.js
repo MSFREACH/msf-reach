@@ -57,6 +57,8 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
+var MAX_RADIUS= 200;
+
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
     Cookies.set('- access','on'); // default
@@ -83,6 +85,10 @@ if (typeof(Cookies.get('MapLayer')) === 'undefined') {
 
 if (Cookies.get('Ongoing MSF Projects')==='undefined') {
     Cookies.set('Ongoing MSF Projects','on');
+}
+
+if (Cookies.get('Health Sites')==='undefined') {
+    Cookies.set('Health Sites','on');
 }
 
 /**
