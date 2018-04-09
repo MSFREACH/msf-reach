@@ -12,7 +12,9 @@ var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 
-var computerTriggered = false;
+var computerTriggered = false; // keep track of events that are computer triggered so we can deal just with human triggered ones
+
+// set up the map:
 var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false});
 
 mainMap.on('load', function(loadEvent) {
@@ -23,7 +25,7 @@ mainMap.setView([-6.8, 108.7], 7);
 
 
 mainMap.on('zoomend', function(zoomEvent)  {
-    getHealthSites(mainMap.getBounds(),mapHealthSites);
+    getHealthSites(mainMap.getBounds(),mapHealthSites); // load healthsites based on map bounds on each zoom / pan event
 });
 
 
@@ -41,14 +43,24 @@ function bindAutocompletes()
 
 bindAutocompletes();
 
-
+// keep track of the first time we load missions and contacts (used in code for updating based on map extents)
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
+/**
+* function for zooming to a point
+* @function zoomToEventPoint
+* @param {Object} latlng - coords to zoom to, Leaflet latlng object http://leafletjs.com/reference-1.3.0.html#latlng
+*/
 var zoomToEventPoint = function(latlng) {
     mainMap.setView(latlng, 5);
 };
 
+/**
+* function for zooming to event bounds (coming out of event data)
+* @function zoomToEventBounds
+* @param {Object} bounds - coords to zoom to, object with ._southWest etc bounds
+*/
 var zoomToEventBounds = function(bounds) {
     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
     mainMap.fitBounds(rBounds);
@@ -56,6 +68,7 @@ var zoomToEventBounds = function(bounds) {
 
 var clipboard = new Clipboard('.btn');
 
+// long form of labels:
 var labels = {
     'exploratory_details': 'Exploratory details',
     'other_orgs': 'Other organisations',
@@ -65,6 +78,12 @@ var labels = {
     'incharge_position': 'In charge position',
     'incharge_name': 'In charge name'
 };
+
+/**
+* function for unpacking metadata into a table
+* @function unpackMetadata
+* @param {Object} metadata - metadata to transform into html table elements
+*/
 
 var unpackMetadata = function(metadata) {
     var result = '';
@@ -84,6 +103,7 @@ var unpackMetadata = function(metadata) {
 
 /**
 * Function to return an icon for mission in popupContent
+* @function missionPopupIcon
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
@@ -130,14 +150,20 @@ var missionPopupIcon = function(missionType) {
     return html;
 };
 
-
+/**
+* Function for map reduction of notification array
+* @function reduceNotificationArray
+* @param {String} acc - accumulator
+* @param
 var reduceNotificationArray = function(acc, elem) {
     return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
 };
 
 /**
 * Function to print a list of event details to web page
+* @function printEventProperties
 * @param {Object} eventProperties - Object containing event details
+* @param {Object} err - error object, null if no error
 */
 var printEventProperties = function(err, eventProperties){
 
@@ -224,14 +250,14 @@ var printEventProperties = function(err, eventProperties){
     }
 };
 
+var currentEventGeometry = null; // for storing current event geometry
+
 /**
 * Function to get event details from API
+* @function getEvent
 * @param {Number} eventId - Unique event ID to fetch
 * @param {Function} callback - Function to call once data returned
-* @returns {String} err - Error message if any, else none
-* @returns {Object} eventProperties - Event properties unless error
 */
-var currentEventGeometry = null;
 var getEvent = function(eventId, callback){
     $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Zoom to location
@@ -256,7 +282,10 @@ var getEvent = function(eventId, callback){
 
 /**
 * Function to get reports for an event
+* @function getReports
 * @param {Number} eventId - UniqueId of event
+* @param {Object} mapForReports - map to put the reports on
+* @param {Object} callback - mapping callback function once reports are loaded
 **/
 var getReports = function(eventId, mapForReports, callback){
     $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
@@ -272,6 +301,12 @@ var getReports = function(eventId, mapForReports, callback){
 
 var reportMarkers = [];
 
+/**
+* Function to get reports for an event
+* @function openReportPopup
+* @param {Object} mapForReports - map to put the reports on
+* @param {Object} callback - mapping callback function once reports are loaded
+**/
 function openReportPopup(id) {
     for (var i in reportMarkers){
         var markerID = reportMarkers[i].options.id;
@@ -410,6 +445,7 @@ var mapAllEvents = function(err, events){
 
 /**
 * Function to add contacts to map
+* @function mapContacts
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
 var mapContacts = function(contacts) {
@@ -501,6 +537,8 @@ var mapContacts = function(contacts) {
 
 /**
 * Function to get contacts
+* @function initGetContacts
+* @param {function} callback - function to process contact data once loaded
 **/
 var initGetContacts = function(callback){
     $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
@@ -515,6 +553,7 @@ var initGetContacts = function(callback){
 };
 
 /**
+* -- comment progress marker
 * Function to get missions
 **/
 var initGetMissions = function(callback){

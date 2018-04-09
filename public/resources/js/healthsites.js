@@ -4,7 +4,9 @@ var healthsitesLayer;
 
 /**
 * Function to map data from healthsites.io
-* @param {Object} sites - GeoJSON Object containing site details
+* @function mapHealthSites
+# @param {Object} err - error object, null if no error
+* @param {Object} healthsites - GeoJSON Object containing site details
 */
 var mapHealthSites = function(err, healthsites) {
 
@@ -61,7 +63,12 @@ var mapHealthSites = function(err, healthsites) {
 };
 
 
-
+/**
+* Function to map data from healthsites.io
+* @function mapHealthSites
+# @param {Object} err - error object, null if no error
+* @param {Object} latlngbounds - Leaflet LatLngBounds object http://leafletjs.com/reference-1.3.0.html#latlngbounds
+*/
 var getHealthSites = function(latlngbounds, callback){
     var minLng = latlngbounds.getWest(), maxLng = latlngbounds.getEast();
     var minLat = latlngbounds.getSouth(), maxLat = latlngbounds.getNorth();

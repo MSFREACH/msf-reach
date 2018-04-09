@@ -7,17 +7,20 @@
 */
 
 // Constants
-var GEOFORMAT='geojson';
+var GEOFORMAT='geojson'; // use geojson as preferred goepsatial data format
+
+// mapping from short type names to longer names
 var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
     {'epidemiological':'Disease Outbreak'}, {'search_and_rescue':'Search & rescue'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+// setup variables to store contact layers
 var MSFContactsLayer, nonMSFContactsLayer;
 
-
+// set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
-    value: 2,
+    value: 2, // default: 2
     min: 1,
     max: 3,
     step: 1
@@ -48,11 +51,13 @@ $( '#inputSeverityScale' ).slider({
     });
 
 
-
+// set up the variable for holding the events layer
 var eventsLayer;
 
 /**
 * Function to map and print a table of events
+* @function mapAllEvents
+* @param {Object} err - error object, null if no error
 * @param {Object} events - GeoJSON Object containing event details
 */
 var mapAllEvents = function(err, events){
@@ -104,8 +109,8 @@ var mapAllEvents = function(err, events){
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
-    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
+    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
+    'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
@@ -115,6 +120,7 @@ var mapAllEvents = function(err, events){
     affectedPopulationStr;
 
 
+        // make sure there's no trailing <br> from above
         if (popupContent.endsWith('<br>')) {
             popupContent.substr(0,popupContent.length-4);
         }
@@ -168,6 +174,10 @@ var mapAllEvents = function(err, events){
 
 /**
 * Function to get contacts
+* @function getContacts
+* @param {function} callback - callback to run once contacts are fetched
+* @param {String} term - search term
+* @param {String} type - contact type to filter by
 **/
 var getContacts = function(callback,term,type){
 
@@ -191,6 +201,8 @@ var getContacts = function(callback,term,type){
 
 /**
 * Function to get missions
+* @function getMissions
+* @param {function} callback - callback function to run once missions are loaded
 **/
 var getMissions = function(callback){
     $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
@@ -207,6 +219,11 @@ var getMissions = function(callback){
 var allFeedFeatures=[];
 var totalFeedsSaved=0;
 
+/**
+* function to put the feed data into the table
+* @function tableFeeds
+* @param {Object} feeds - feed data (geojson format)
+*/
 var tableFeeds = function(feeds) {
     for(var i = 0; i <= feeds.features.length; i++) {
         allFeedFeatures.push(feeds.features[i]);
@@ -241,7 +258,8 @@ var tableFeeds = function(feeds) {
 
 /**
 * Function to return an icon for mission in popupContent
-* @param {String} type - type of disaster
+# @function missionPopupIcon
+* @param {String} missionType - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
     var type = typeof(missionType)!=='undefined' ? missionType.toLowerCase() : '';
@@ -286,12 +304,14 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
+* @function mapMissions
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
 
     function onEachFeature(feature, layer) {
 
+        // generate popup content:
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
@@ -342,6 +362,7 @@ var mapMissions = function(missions ){
 
 /**
 * Function to add contacts to map
+* @function mapContacts
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
 var mapContacts = function(contacts ){
@@ -440,6 +461,11 @@ var mapContacts = function(contacts ){
 
 };
 
+/**
+* function to show mission data modal on click
+* @function onMissionLinkClick
+* @param {String} id - id number (as a String)
+*/
 var onMissionLinkClick = function(id) {
     $.getJSON('/api/missions/' + id, function(data) {
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
@@ -454,11 +480,21 @@ var onMissionLinkClick = function(id) {
     });
 };
 
+/**
+* function to show contact info modal on click
+* @function onContactLinkClick
+* @param {String} id - id number (as a String)
+*/
 var onContactLinkClick = function(id) {
     $('#contactDetailsModal').on('shown.bs.modal');
     getContact(id);
 };
 
+/**
+* function to convert ISO date string to locale string with basic handling of non-isoDate format
+* @function convertToLocaleDate
+* @param {String} isoDate - ISO date string
+*/
 var convertToLocaleDate= function (isoDate) {
     if (isoDate)
         return (new Date(isoDate)).toLocaleString();
@@ -467,6 +503,12 @@ var convertToLocaleDate= function (isoDate) {
 };
 
 var contactInfo = {};
+
+/**
+* function for getting details of an individual contact
+* @function getContact
+* @param {String} id - id number (as a String)
+*/
 var getContact = function(id) {
     $.getJSON('/api/contacts/' + id, function(contact) {
         contactInfo = contact.result ? contact.result.properties : {};
@@ -589,8 +631,8 @@ var overlayMaps = {};
 
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
+// get and map data:
 getAllEvents(mapAllEvents);
-
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
@@ -598,7 +640,6 @@ getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 getMissions(mapMissions);
 getContacts(mapContacts);
-
 getFeeds('/api/hazards/pdc', tableFeeds);
 getFeeds('/api/hazards/usgs', tableFeeds);
 getFeeds('/api/hazards/tsr', tableFeeds);
