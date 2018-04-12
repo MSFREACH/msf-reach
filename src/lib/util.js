@@ -73,16 +73,15 @@ const ensureAuthenticated = (req, res, next, jwtClaims) => {
         // }
 
         if(jwtClaims.groups){
-            if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
-                return next();
-            }
-            else {
-                res.status(403).render();
-                return;
-            }
-        } else {
             res.redirect('/login');
             return;
+            // if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
+            //     return next();
+            // }
+            // else {
+            //     res.status(403).render();
+            //     return;
+            // }
         }
 
     });
