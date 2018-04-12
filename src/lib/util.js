@@ -85,6 +85,7 @@ const ensureAuthenticated = (req, res, next) => {
             //     return;
             // }
         // }
+        return next();
 
     });
 };
