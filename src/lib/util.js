@@ -40,15 +40,27 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 const ensureAuthenticated = (req, res, next, jwtClaims) => {
     req.user = req.session.user;
     if(!config.AUTH){
-        return next(); //If we are not using auth then carry on
+        return Error('!config.auth');
+        //return next(); //If we are not using auth then carry on
     }
-    if(jwtClaims.groups){
-        if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
-            return next();
+    if(config.AZURE_AD_TENANT_NAME) {
+        if (req.isAuthenticated()) {
+            return Error('azure ad tenant');
+            //return next();
         }
-            res.status(403).render();
-            return;
+        return Error('azure ad tenant return');
+        //return;
     }
+
+    // if(jwtClaims.groups){
+    //     if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
+    //         return next();
+    //     }
+    //         res.status(403).render();
+    //         return;
+    // }
+
+
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
         /*Left this here in case you really need it for anything.
@@ -73,11 +85,13 @@ const ensureAuthenticated = (req, res, next, jwtClaims) => {
 
         if(jwtClaims.groups){
             if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
-                return next();
+                //return next();
+                return Error('jwt claims');
             }
             else {
                 res.status(403).render();
-                return;
+                return Error('403');
+                //return;
             }
         }
 
