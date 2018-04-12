@@ -19,6 +19,7 @@ const cacheResponse = (duration) => cache(duration, ((config.CACHE && config.CAC
 const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
     secret: config.AWS_COGNITO_PEM, // RSA Public Key
     // Extract the JWT from cookie in requests
+    /*
     getToken: function fromHeader(req) {
         let jwt; // token from client (to check)
         if (req.headers.cookie) {
@@ -33,6 +34,14 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
         }
         else {
             return new Error({name: 'UnauthorizedError'});
+        }
+    }
+    */
+    function(req, res) {
+        if (!req.user.admin) {
+            return res.sendStatus(401);
+        } else {
+            res.sendStatus(200);
         }
     }
 });
