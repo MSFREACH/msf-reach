@@ -1,6 +1,6 @@
 // Import dependencies
 import Promise from 'bluebird';
-import expressJWT from 'express-jwt';
+import jwt from 'express-jwt';
 // import jwks from 'jwks-rsa'; // See TODO below regarding Auth0 mechanism
 import dbgeo from 'dbgeo';
 
@@ -16,7 +16,8 @@ let cache = apicache.middleware;
 const cacheResponse = (duration) => cache(duration, ((config.CACHE && config.CACHE==true) ? (req, res) => (res.statusCode === 200):(req,res) => false)); // eslint-disable-line no-unused-vars
 
 // Configure our JWT checker
-const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
+const jwtCheck = jwt({
+    //algorithm: config.AWS_COGNITO_ALGORITHM,
     secret: config.AWS_COGNITO_PEM, // RSA Public Key
     // Extract the JWT from cookie in requests
     /*
@@ -37,13 +38,13 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
         }
     }
     */
-    function(req, res) {
-        // if (!req.user.admin) {
-        //     return res.sendStatus(401);
-        // } else {
-            res.sendStatus(200);
-        //}
-    }
+    // function(req, res) {
+    //     if (!req.user.displayName === 'REACH TEST') {
+    //         return res.sendStatus(403);
+    //     } else {
+    //         res.sendStatus(200);
+    //     }
+    // }
 });
 
 const ensureAuthenticated = (req, res, next) => {
