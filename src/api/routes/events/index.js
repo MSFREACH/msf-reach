@@ -67,7 +67,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
 
-            res.status(403).send(JSON.stringify(req.user.groups));
+            res.status(200).send(JSON.stringify(req.user.groups));
             // if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
             // if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
             //     events(config, db, logger).createEvent(req.body)
