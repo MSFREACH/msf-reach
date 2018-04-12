@@ -66,10 +66,10 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-                res.myData = {};
-                res.myData.configGroups = {configGroups: config.AZURE_AD_OPERATORS_GROUP_ID};
+                res.locals.groups = config.AZURE_AD_OPERATORS_GROUP_ID;
+                res.locals.requser = req.user;
             // if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
-            if (config.AZURE_AD_OPERATORS_GROUP_ID !== '') {
+            // if (config.AZURE_AD_OPERATORS_GROUP_ID !== '') {
                 events(config, db, logger).createEvent(req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
@@ -78,7 +78,7 @@ export default ({ config, db, logger }) => {
                     /* istanbul ignore next */
                     next(err);
                 });
-            }
+            // }
         }
     );
 
