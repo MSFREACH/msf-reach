@@ -129,7 +129,10 @@ $(function(){
                 type: 'POST',
                 url: '/api/events',
                 data: JSON.stringify(body),
-                contentType: 'application/json'
+                contentType: 'application/json',
+                success: function(response) {
+                    console.log(response);
+                }
             }).done(function( data, textStatus, req ){
                 // var eventId = data.result.objects.output.geometries[0].properties.id;
                 console.log(data);
