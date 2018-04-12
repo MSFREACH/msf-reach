@@ -66,8 +66,10 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-        
-            if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
+                res.myData = {};
+                res.myData.configGroups = {configGroups: config.AZURE_AD_OPERATORS_GROUP_ID};
+            // if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
+            if (config.AZURE_AD_OPERATORS_GROUP_ID !== '') {
                 events(config, db, logger).createEvent(req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
