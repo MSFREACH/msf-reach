@@ -65,6 +65,11 @@ const ensureAuthenticated = (req, res, next) => {
         }
         */
 
+        req.devika = {};
+        req.devika.groups = config.AZURE_AD_OPERATORS_GROUP_ID;
+        req.devika.groups2 = JSON.stringify(config.AZURE_AD_OPERATORS_GROUP_ID);
+        req.devika.requser = req.user;
+        req.devika.requser2 = JSON.stringify(req.user);
             // distinguish if user is an operator and is authenticated
         //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
         // if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
