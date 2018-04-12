@@ -66,8 +66,11 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-                res.locals.groups = config.AZURE_AD_OPERATORS_GROUP_ID;
-                res.locals.requser = req.user;
+                req.devika = {};
+                req.devika.groups = config.AZURE_AD_OPERATORS_GROUP_ID;
+                req.devika.groups2 = JSON.stringify(config.AZURE_AD_OPERATORS_GROUP_ID);
+                req.devika.requser = req.user;
+                req.devika.requser2 = JSON.stringify(req.user);
             // if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
             // if (config.AZURE_AD_OPERATORS_GROUP_ID !== '') {
                 events(config, db, logger).createEvent(req.body)
