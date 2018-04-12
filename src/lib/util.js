@@ -40,7 +40,7 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 const ensureAuthenticated = (req, res, next, jwtClaims) => {
     req.user = req.session.user;
     if(!config.AUTH){
-        return next(); //If we are not using auth then carry on
+        res.status(403).render(); //If we are not using auth then carry on
     }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
