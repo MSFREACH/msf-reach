@@ -38,11 +38,11 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
     }
     */
     function(req, res) {
-        if (!req.user.admin) {
-            return res.sendStatus(401);
-        } else {
+        // if (!req.user.admin) {
+        //     return res.sendStatus(401);
+        // } else {
             res.sendStatus(200);
-        }
+        //}
     }
 });
 
