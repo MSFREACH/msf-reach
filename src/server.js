@@ -73,9 +73,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                             if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
                                 u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
                             }
-                            else {
-                                return done(new Error('not in operators group'));
-                            }
+                            // else {
+                            //     return done(new Error('not in operators group'));
+                            // }
                         }
                         users.push(u);
                         return done(null, u);
@@ -181,12 +181,12 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             // Mount the routes
             if(config.AZURE_AD_TENANT_NAME){
                 app.get('/login',
-                    passport.authenticate('local.two', { failureRedirect: '/login'}),
+                    passport.authenticate('local.one', { failureRedirect: '/login'}),
                     function(req, res) {
                         res.redirect('/');
                     });
                 app.post('/auth/openid/return',
-                    passport.authenticate('local.two', { failureRedirect: '/login'}),
+                    passport.authenticate('local.one', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
