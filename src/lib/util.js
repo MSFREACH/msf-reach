@@ -39,6 +39,8 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 
 const ensureAuthenticated = (req, res, next, jwtClaims) => {
     req.user = req.session.user;
+    return next();
+
     // if(!config.AUTH){
     //     return next(); //If we are not using auth then carry on
     // }
@@ -72,9 +74,9 @@ const ensureAuthenticated = (req, res, next, jwtClaims) => {
         //     return;
         // }
 
-        if(jwtClaims.groups){
-            res.redirect('/login');
-            return;
+        // if(jwtClaims.groups){
+        //     res.redirect('/login');
+        //     return;
             // if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
             //     return next();
             // }
@@ -82,7 +84,7 @@ const ensureAuthenticated = (req, res, next, jwtClaims) => {
             //     res.status(403).render();
             //     return;
             // }
-        }
+        // }
 
     });
 };

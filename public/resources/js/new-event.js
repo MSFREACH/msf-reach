@@ -132,6 +132,9 @@ $(function(){
                 contentType: 'application/json'
             }).done(function( data, textStatus, req ){
                 // var eventId = data.result.objects.output.geometries[0].properties.id;
+                console.log(data);
+                console.log(textStatus);
+                console.log(req);
                 $('#newEventModal').modal('hide');
                 refreshLandingPage();
             }).fail(function (reqm, textStatus, err){
