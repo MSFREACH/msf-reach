@@ -52,7 +52,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new event record in the database
-    api.post('/', ensureAuthenticated,
+    api.post('/', jwtCheck,
         validate({
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
@@ -66,7 +66,8 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            events(config, db, logger).createEvent(req.body)
+            if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
+                events(config, db, logger).createEvent(req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */
@@ -74,6 +75,7 @@ export default ({ config, db, logger }) => {
                     /* istanbul ignore next */
                     next(err);
                 });
+            }
         }
     );
 

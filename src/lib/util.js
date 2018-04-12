@@ -37,9 +37,9 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
     }
 });
 
-const ensureAuthenticated = (req, res, next, jwtClaims) => {
-    req.user = req.session.user;
-    return next();
+const ensureAuthenticated = (req, res, next) => {
+    // req.user = req.session.user;
+    // return next();
 
     // if(!config.AUTH){
     //     return next(); //If we are not using auth then carry on
@@ -174,5 +174,5 @@ const inAsiaBBox = (coords) => {
 };
 
 module.exports = {
-    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated, inAsiaBBox
+    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated, inAsiaBBox, jwtCheck
 };
