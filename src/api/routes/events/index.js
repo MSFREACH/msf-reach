@@ -52,7 +52,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new event record in the database
-    api.post('/', jwtCheck,
+    api.post('/', ensureAuthenticated,
         validate({
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),

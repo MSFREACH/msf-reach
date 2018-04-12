@@ -17,10 +17,10 @@ const cacheResponse = (duration) => cache(duration, ((config.CACHE && config.CAC
 
 // Configure our JWT checker
 const jwtCheck = jwt({
-    //algorithm: config.AWS_COGNITO_ALGORITHM,
-    secret: 'public_key', // RSA Public Key
+    algorithm: config.AWS_COGNITO_ALGORITHM,
+    secret: config.AWS_COGNITO_PEM, // RSA Public Key
     // Extract the JWT from cookie in requests
-    /*
+
     getToken: function fromHeader(req) {
         let jwt; // token from client (to check)
         if (req.headers.cookie) {
@@ -37,7 +37,7 @@ const jwtCheck = jwt({
             return new Error({name: 'UnauthorizedError'});
         }
     }
-    */
+
     // function(req, res) {
     //     if (!req.user.displayName === 'REACH TEST') {
     //         return res.sendStatus(403);
@@ -64,7 +64,7 @@ const ensureAuthenticated = (req, res, next) => {
 
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
-        /*Left this here in case you really need it for anything.
+        //Left this here in case you really need it for anything.
         if (err.name === 'UnauthorizedError') {
             res.redirect('/login');
             return
@@ -73,13 +73,13 @@ const ensureAuthenticated = (req, res, next) => {
             next(err);
             return
         }
-        */
 
-        req.devika = {};
-        req.devika.groups = config.AZURE_AD_OPERATORS_GROUP_ID;
-        req.devika.groups2 = JSON.stringify(config.AZURE_AD_OPERATORS_GROUP_ID);
-        req.devika.requser = req.user;
-        req.devika.requser2 = JSON.stringify(req.user);
+
+        // req.devika = {};
+        // req.devika.groups = config.AZURE_AD_OPERATORS_GROUP_ID;
+        // req.devika.groups2 = JSON.stringify(config.AZURE_AD_OPERATORS_GROUP_ID);
+        // req.devika.requser = req.user;
+        // req.devika.requser2 = JSON.stringify(req.user);
             // distinguish if user is an operator and is authenticated
         //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
         // if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
