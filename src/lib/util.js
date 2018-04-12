@@ -39,15 +39,15 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 
 const ensureAuthenticated = (req, res, next, jwtClaims) => {
     req.user = req.session.user;
-    if(!config.AUTH){
-        return next(); //If we are not using auth then carry on
-    }
-    if(config.AZURE_AD_TENANT_NAME) {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        return;
-    }
+    // if(!config.AUTH){
+    //     return next(); //If we are not using auth then carry on
+    // }
+    // if(config.AZURE_AD_TENANT_NAME) {
+    //     if (req.isAuthenticated()) {
+    //         return next();
+    //     }
+    //     return;
+    // }
 
 
     //we must be using jwt, call express-jwt middleware
