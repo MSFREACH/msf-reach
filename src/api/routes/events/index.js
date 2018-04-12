@@ -5,7 +5,7 @@ import events from './model';
 import missions from './../missions/model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureGetAuthenticated, jwtCheck } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -52,7 +52,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new event record in the database
-    api.post('/', ensureAuthenticated,
+    api.post('/', jwtCheck,
         validate({
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
@@ -66,19 +66,17 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-
-            res.status(200).send(JSON.stringify(req.user.groups));
-            // if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
-            // if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
-            //     events(config, db, logger).createEvent(req.body)
-            //     .then((data) => handleGeoResponse(data, req, res, next))
-            //     .catch((err) => {
-            //         /* istanbul ignore next */
-            //         logger.error(err);
-            //         /* istanbul ignore next */
-            //         next(err);
-            //     });
-            // }
+        
+            if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1 && req.isAuthenticated()) {
+                events(config, db, logger).createEvent(req.body)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+            }
         }
     );
 
