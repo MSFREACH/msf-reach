@@ -108,6 +108,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         if(jwtClaims.groups){
                             if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
                                 u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
+                                config.USER_IS_OPERATOR = true;
+                            } else {
+                                config.USER_IS_OPERATOR = false;
                             }
                         }
 
