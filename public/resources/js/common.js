@@ -12,7 +12,7 @@ $(function() {
                 }
             },
             403: function() {
-                alert('please contact us for operator (write) access');
+                $('#operatorAccessModel').modal();
             }
         }
     });
