@@ -38,8 +38,6 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 });
 
 const ensureAuthenticated = (req, res, next) => {
-    console.log(req);
-    console.log(req.user);
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
@@ -71,6 +69,39 @@ const ensureAuthenticated = (req, res, next) => {
         return;
     });
 };
+
+const ensureAuthenticatedWrite = (req, res, next) => {
+    if(!config.AUTH){
+        return next(); //If we are not using auth then carry on
+    }
+    if(config.AZURE_AD_TENANT_NAME){ //Check if we are using azure ad auth
+        /* passport.authenticate runs req.login which sets the user object on req
+		req.isAuthenticated checks the req object for a user attribute, its part of express. */
+        if (req.isAuthenticated() && req.user._json.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
+            return next();
+        }
+        return res.status(403).send('forbidden');
+    }
+    //we must be using jwt, call express-jwt middleware
+    jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
+        /*Left this here in case you really need it for anything.
+        if (err.name === 'UnauthorizedError') {
+            res.redirect('/login');
+            return
+        }
+        else if (err) {
+            next(err);
+            return
+        }
+        */
+        if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
+            return next();
+        }
+        res.redirect('/login');
+        return;
+    });
+};
+
 
 
 // Setup dbgeo
@@ -118,5 +149,5 @@ const inAsiaBBox = (coords) => {
 };
 
 module.exports = {
-    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, inAsiaBBox
+    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, inAsiaBBox
 };
