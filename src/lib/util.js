@@ -78,7 +78,7 @@ const ensureAuthenticatedWrite = (req, res, next) => {
         /* passport.authenticate runs req.login which sets the user object on req
 		req.isAuthenticated checks the req object for a user attribute, its part of express. */
         if (req.isAuthenticated()) {
-            if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID)) {
+            if (req.user.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
                 return next();
             } else {
                 res.status(403);
