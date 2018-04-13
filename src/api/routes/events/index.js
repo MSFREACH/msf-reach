@@ -5,7 +5,7 @@ import events from './model';
 import missions from './../missions/model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
