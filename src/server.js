@@ -69,14 +69,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                     if (!user) {
                         // "Auto-registration"
                         var u = profile;
-                        if(jwtClaims.groups){
-                            if (jwtClaims.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
-                                u.groups = jwtClaims.groups; //Add groups from jwtclaims to our user GRP-APP-REACH-OPERATORS =
-                            }
-                            else {
-                                return done(new Error('not in operators group'));
-                            }
-                        }
                         users.push(u);
                         return done(null, u);
                     }

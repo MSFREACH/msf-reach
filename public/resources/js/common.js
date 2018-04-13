@@ -10,6 +10,13 @@ $(function() {
                 if (window.location.pathname !== '/login/') {
                     window.location.href = '/login/';
                 }
+            },
+            403: function() {
+                var current_modal = jQuery('.modal.in').attr('id'); // modalID or undefined
+                if (current_modal) { // modal is active
+                  $('#' + current_modal).modal('hide'); // close modal
+                }
+                $('#operatorAccessModel').modal('show');
             }
         }
     });

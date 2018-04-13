@@ -146,8 +146,6 @@ $(function(){
                 }).fail(function (reqm, textStatus, err){
                     if (reqm.responseText.includes('expired')) {
                         alert('session expired');
-                    } else {
-                        alert('error creating event' + err);
                     }});
             }
         }

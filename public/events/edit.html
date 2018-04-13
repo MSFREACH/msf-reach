@@ -1148,8 +1148,6 @@ var vm = new Vue({
           }).fail(function(err) {
             if (err.responseText.includes('expired')) {
               alert("session expired");
-            } else {
-              alert('error: '+ err.responseText);
             }
           });
       }
