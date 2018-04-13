@@ -104,6 +104,7 @@ const ensureAuthenticatedWrite = (req, res, next) => {
 
 
 
+
 // Setup dbgeo
 dbgeo.defaults = {
     outputFormat: config.GEO_FORMAT_DEFAULT,
