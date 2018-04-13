@@ -10,6 +10,9 @@ $(function() {
                 if (window.location.pathname !== '/login/') {
                     window.location.href = '/login/';
                 }
+            },
+            403: function() {
+                alert('please contact us for operator (write) access');
             }
         }
     });
