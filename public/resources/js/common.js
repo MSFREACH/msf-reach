@@ -12,7 +12,11 @@ $(function() {
                 }
             },
             403: function() {
-                $('#operatorAccessModel').modal();
+                var current_modal = jQuery('.modal.in').attr('id'); // modalID or undefined
+                if (current_modal) { // modal is active
+                  $('#' + current_modal).modal('hide'); // close modal
+                }
+                $('#operatorAccessModel').modal('show');
             }
         }
     });
