@@ -38,6 +38,8 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
 });
 
 const ensureAuthenticated = (req, res, next) => {
+    console.log(req);
+    console.log(req.user);
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
