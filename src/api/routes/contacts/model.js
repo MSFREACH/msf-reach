@@ -15,7 +15,7 @@ export default (config, db, logger) => ({
     * @param {string} msf_peer - ditto, for msf peers
     * @param {string} type - category of contact to filter on
     */
-    all: (search,bounds,msf_associate,msf_peer,type) => new Promise((resolve, reject) => {
+    all: (search,bounds,oid,msf_associate,msf_peer,type) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, properties, the_geom
      FROM ${config.TABLE_CONTACTS}
@@ -29,16 +29,17 @@ export default (config, db, logger) => ({
       OR properties ->> 'email' ILIKE $1
       OR properties ->> 'email2' ILIKE $1
       OR properties ->> 'speciality' ILIKE $1)) AND
+      ($7 IS NULL OR (ad_oid = $7 and private = true)) AND
       ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
-      ($7 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
-      ($8 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
-      ($9 IS NULL OR properties ->> 'type' ILIKE $9)
+      ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
+      ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
+      ($10 IS NULL OR properties ->> 'type' ILIKE $9)
      ORDER BY id`;
 
         // Format search string for Postgres
         let text = (!search) ? null : '%'+search+'%'	;
         let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
-        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax, msf_associate, msf_peer, type ];
+        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax, oid, msf_associate, msf_peer, type ];
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
