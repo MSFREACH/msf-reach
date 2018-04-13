@@ -14,7 +14,7 @@ import responseTime from 'response-time';
 import morgan from 'morgan'; // Express logging
 import passport from 'passport';
 import { OIDCStrategy } from 'passport-azure-ad';
-import { ensureAuthenticated } from './lib/util';
+import { ensureAuthenticated, ensureGetAuthenticated } from './lib/util';
 
 import nocache from 'nocache';
 
@@ -197,7 +197,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
                         res.redirect('/authreturn');
                     });
-                app.use('/authreturn', [ensureAuthenticated, express.static(config.STATIC_AUTH_RETURN_PATH)]);//Page used to store our user in localstorage and redirect to / after auth return from azure
+                app.use('/authreturn', [ensureGetAuthenticated, express.static(config.STATIC_AUTH_RETURN_PATH)]);//Page used to store our user in localstorage and redirect to / after auth return from azure
             } else {
                 app.use('/login', express.static(config.STATIC_AUTH_PATH));
             }
@@ -230,7 +230,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
             // Mount the API. authentication specified within routes
             app.use('/api', routes({ config, db, logger }));
-            app.use('/', [ensureAuthenticated, express.static(config.STATIC_PATH)]);
+            app.use('/', [ensureGetAuthenticated, express.static(config.STATIC_PATH)]);
 
             // App is ready to go, resolve the promise
             resolve(app);
