@@ -52,7 +52,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new event record in the database
-    api.post('/',ensureAuthenticated,
+    api.post('/',ensureAuthenticatedWrite,
         validate({
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
@@ -78,7 +78,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update an event record in the database
-    api.put('/:id',ensureAuthenticated,
+    api.put('/:id',ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
