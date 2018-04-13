@@ -4,7 +4,7 @@ import { Router } from 'express';
 import reports from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -77,7 +77,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update an event record in the database
-    api.post('/:id', ensureAuthenticated,
+    api.post('/:id', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
