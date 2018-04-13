@@ -70,8 +70,6 @@ const ensureAuthenticated = (req, res, next) => {
     });
 };
 
-<<<<<<< HEAD
-=======
 const ensureAuthenticatedWrite = (req, res, next) => {
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
@@ -106,7 +104,7 @@ const ensureAuthenticatedWrite = (req, res, next) => {
 
 
 
->>>>>>> dev
+
 // Setup dbgeo
 dbgeo.defaults = {
     outputFormat: config.GEO_FORMAT_DEFAULT,
