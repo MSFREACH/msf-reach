@@ -5,7 +5,7 @@ import events from './model';
 import missions from './../missions/model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import Joi from 'joi';
@@ -52,7 +52,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new event record in the database
-    api.post('/',ensureAuthenticatedWrite,
+    api.post('/',ensureAuthenticated,
         validate({
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
