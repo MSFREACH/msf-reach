@@ -72,17 +72,17 @@ export default (config, db, logger) => ({
     * Create a new contact
     * @param {object} body Body of request with contact details
     */
-    createContact: (body) => new Promise((resolve, reject) => {
+    createContact: (ad_oid, body) => new Promise((resolve, reject) => {
 
         // Setup query
         let query = `INSERT INTO ${config.TABLE_CONTACTS}
-     (created_at, properties, the_geom)
-     VALUES (now(), $1, ST_SetSRID(ST_Point($2,$3),4326))
+     (created_at, ad_oid, private, properties, the_geom)
+     VALUES (now(), $1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
      RETURNING id, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
-        let values = [ body.properties, body.location.lng, body.location.lat ];
+        let values = [ body.properties, ad_oid, body.private, body.location.lng, body.location.lat ];
 
         // Execute
         logger.debug(query, values);

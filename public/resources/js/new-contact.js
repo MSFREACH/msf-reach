@@ -88,6 +88,9 @@ function postContact() {
 
     if (Cookies.get('operator') === 'true') {
         body.properties['operator_entered'] = true;
+        if ($('#inputPrivate').is(':checked')) {
+            body['private'] = true;
+        }
     } else {
         body.properties['operator_entered'] = false;
     }
