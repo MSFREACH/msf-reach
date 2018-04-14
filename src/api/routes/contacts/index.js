@@ -78,7 +78,7 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            contacts(config, db, logger).createContact(req.user.ad_oid, req.body)
+            contacts(config, db, logger).createContact((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */

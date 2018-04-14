@@ -82,7 +82,7 @@ export default (config, db, logger) => ({
      the_geom`;
 
         // Setup values
-        let values = [ body.properties, ad_oid, body.private, body.location.lng, body.location.lat ];
+        let values = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
 
         // Execute
         logger.debug(query, values);
