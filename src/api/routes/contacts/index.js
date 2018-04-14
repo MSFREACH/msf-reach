@@ -37,7 +37,7 @@ export default ({ config, db, logger }) => {
             ymin: req.query.latmin,
             xmax: req.query.lngmax,
             ymax: req.query.latmax
-        },(req.hasOwnProperty(user) && req.user.hasOwnProperty(oid)) ? req.user.oid : null, req.query.msf_associate,req.query.msf_peer,req.query.type).then((data) => handleGeoResponse(data, req, res, next))
+        },(req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.query.msf_associate,req.query.msf_peer,req.query.type).then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
                 logger.error(err);
