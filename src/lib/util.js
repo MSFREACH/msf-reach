@@ -102,8 +102,19 @@ const ensureAuthenticatedWrite = (req, res, next) => {
     });
 };
 
-
-
+const addUser = (req, res, next) => {
+    if(!config.AUTH){
+        return next(); //If we are not using auth then carry on
+    }
+    if(config.AZURE_AD_TENANT_NAME){ //Check if we are using azure ad auth
+        /* passport.authenticate runs req.login which sets the user object on req
+		req.isAuthenticated checks the req object for a user attribute, its part of express. */
+        req.isAuthenticated();
+        return next();
+    } else { // we are using Cognito
+        return next();
+    }
+};
 
 // Setup dbgeo
 dbgeo.defaults = {
@@ -150,5 +161,5 @@ const inAsiaBBox = (coords) => {
 };
 
 module.exports = {
-    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, inAsiaBBox
+    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, addUser, inAsiaBBox
 };
