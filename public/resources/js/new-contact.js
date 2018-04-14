@@ -86,15 +86,15 @@ function postContact() {
         }
     };
 
-    if (Cookies.get('operator') === 'true') {
-        body.properties['operator_entered'] = true;
+    if (localStorage.getItem('username')!=null) {
+        body.properties['msf_entered'] = true;
         if ($('#inputPrivate').is(':checked')) {
             body['private'] = true;
         } else {
             body['private'] = false;
         }
     } else {
-        body.properties['operator_entered'] = false;
+        body.properties['msf_entered'] = false;
         body['private'] = false;
     }
 
