@@ -90,6 +90,8 @@ function postContact() {
         body.properties['operator_entered'] = true;
         if ($('#inputPrivate').is(':checked')) {
             body['private'] = true;
+        } else {
+            body['private'] = false;
         }
     } else {
         body.properties['operator_entered'] = false;
