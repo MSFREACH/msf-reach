@@ -95,6 +95,7 @@ function postContact() {
         }
     } else {
         body.properties['operator_entered'] = false;
+        body['private'] = false;
     }
 
     if ($('#inputContactCell').val()) {
