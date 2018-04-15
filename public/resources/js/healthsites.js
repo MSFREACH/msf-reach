@@ -12,7 +12,7 @@ var mapHealthSites = function(err, healthsites) {
 
     // Add popups
     function onEachFeature(feature, layer) {
-        var popupContent = 'Type: ' + (feature.properties.hasOwnProperty('type') ? feature.properties.type : feature.properties.nature-of-facility) + '<br />' +
+        var popupContent = 'Type: ' + (feature.properties.hasOwnProperty('type') ? feature.properties.type : feature.properties['nature-of-facility']) + '<br />' +
             'Name: ' + feature.properties.name + '<br />' +
             'Date modified: ' + feature.properties.name + '<br />' +
             'Source: <a href="' + feature.properties.source_url + '">'+feature.properties.source+'</a><br />';
