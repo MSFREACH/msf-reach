@@ -79,8 +79,6 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            console.log(req);
-            console.log(req.user);
             contacts(config, db, logger).createContact((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
