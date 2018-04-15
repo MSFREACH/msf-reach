@@ -29,7 +29,7 @@ export default (config, db, logger) => ({
       OR properties ->> 'email' ILIKE $1
       OR properties ->> 'email2' ILIKE $1
       OR properties ->> 'speciality' ILIKE $1)) AND
-      ($7 IS NULL OR (ad_oid = $7 and private = true)) AND
+      ($7 IS NULL OR (ad_oid = $7 and private = true) OR private = false) AND
       ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
       ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
       ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
