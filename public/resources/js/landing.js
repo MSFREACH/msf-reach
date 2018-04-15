@@ -572,7 +572,8 @@ mainMap.on('load', function(loadEvent) {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
 
-mainMap.setView([7.5, 115.6628], 4);
+mainMap.fitBounds([[-13, 84],[28,148]]);
+mainMap.setMaxBounds([[-13, 84],[28,148]]);
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
