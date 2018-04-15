@@ -4,7 +4,7 @@ import { Router } from 'express';
 import contacts from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser } from '../../../lib/util';
 
 // Import validation dependencies
 import BaseJoi from 'joi';
@@ -37,7 +37,7 @@ export default ({ config, db, logger }) => {
             ymin: req.query.latmin,
             xmax: req.query.lngmax,
             ymax: req.query.latmax
-        },req.query.msf_associate,req.query.msf_peer,req.query.type).then((data) => handleGeoResponse(data, req, res, next))
+        },(req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.query.msf_associate,req.query.msf_peer,req.query.type).then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
                 logger.error(err);
@@ -66,9 +66,10 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new contact record in the database
-    api.post('/',
+    api.post('/', addUser,
         validate({
             body: Joi.object().keys({
+                private: Joi.boolean(),
                 // TODO - create a Joi validation schema for contact properties
                 properties: Joi.object().required(),
                 location: Joi.object().required().keys({
@@ -78,7 +79,9 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            contacts(config, db, logger).createContact(req.body)
+            console.log(req);
+            console.log(req.user);
+            contacts(config, db, logger).createContact((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */

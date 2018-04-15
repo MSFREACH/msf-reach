@@ -11,3 +11,7 @@ phases:
 artifacts:
   files:
     - '**/*'
+
+cache:
+  paths:
+    - '/root/.npm/**/*'
