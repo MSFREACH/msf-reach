@@ -275,7 +275,7 @@ describe('Cognicity Server Testing Harness', function() {
                             'eventId': eventId,
                             'status': 'confirmed',
                             'created': '2017-05-22T20:35Z',
-                            'reportkey': '123',
+                            'reportkey': 'this-is-a-thirty-six-character-strin',
                             'location': {
                                 'lat': -6.10,
                                 'lng': 108.7
