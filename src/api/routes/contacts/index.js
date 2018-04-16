@@ -97,8 +97,15 @@ export default ({ config, db, logger }) => {
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);
-                    /* istanbul ignore next */
-                    next(err);
+                    // In this case we want to explicity return a 409
+                    if (err.message === 'Contact already exists'){
+                        res.status(409).json({ statusCode: 409, message: err.message});
+                    }
+                    // Handle all other errors as normal
+                    else {
+                        /* istanbul ignore next */
+                        next(err);
+                    }
                 });
         }
     );

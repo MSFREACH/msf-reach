@@ -484,6 +484,29 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
+                // Rejects a new contact if email exists already
+                it('Reject creation of existing contact (POST /contact)', function(done) {
+                    test.httpAgent(app)
+                        .post('/api/contacts')
+                        .send({
+                            'properties':{
+                                'address': '1 The Street',
+                                'title': 'King',
+                                'name': 'Joe Bloggs',
+                                'gender': 'Male',
+                                'cell': '+1 234',
+                                'email': 'joe@email.com'
+                            },
+                            'private': true,
+                            'location': {
+                                'lat': 45,
+                                'lng': 140
+                            }
+                        })
+                        .expect(409);
+                    done();
+                });
+
                 // Can delete contacts
                 it('Delete a contact (delete /contact)', function(done) {
                     test.httpAgent(app)

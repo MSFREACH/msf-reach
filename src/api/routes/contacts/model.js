@@ -93,9 +93,8 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(queryValidate, valuesValidate);
 
-        db.oneOrNone(queryValidate, valuesValidate).timeout(config.PGTIMEOUT)
+        db.manyOrNone(queryValidate, valuesValidate).timeout(config.PGTIMEOUT)
             .then((data) => {
-                console.log(data); // eslint-disable-line
                 if (data && data.length > 0) {
                     reject(new Error('Contact already exists'));
                 }
