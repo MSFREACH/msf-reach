@@ -91,6 +91,7 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
+            // TODO - reject request if no OID provided.
             contacts(config, db, logger).createContact((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
@@ -143,7 +144,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Delete a contact's record from the database
-    api.delete('/:id', jwtCheck,
+    api.delete('/:id', ensureAuthenticated,
         validate({
             params: { id: Joi.number().integer().min(1).required() }
         }),

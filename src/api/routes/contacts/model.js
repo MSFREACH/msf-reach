@@ -74,23 +74,40 @@ export default (config, db, logger) => ({
     */
     createContact: (ad_oid, body) => new Promise((resolve, reject) => {
 
-        // Setup query
-        let query = `INSERT INTO ${config.TABLE_CONTACTS}
+        // Setup query - check user doesn't already exist
+        let queryValidate = `SELECT id FROM ${config.TABLE_CONTACTS}
+          WHERE properties->>'email' = $1;`;
+
+        let valuesValidate = body.properties.email;
+
+        // Setup query - insert new user
+        let queryInsert = `INSERT INTO ${config.TABLE_CONTACTS}
      (created_at, ad_oid, private, properties, the_geom)
      VALUES (now(), $1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
      RETURNING id, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
-        let values = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
+        let valuesInsert = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
 
         // Execute
-        logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, created_at:data.created_at,
-                updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
-                properties:data.properties, the_geom:data.the_geom }))
-            .catch((err) => reject(err));
+        logger.debug(queryValidate, valuesValidate);
+
+        db.oneOrNone(queryValidate, valuesValidate).timeout(config.PGTIMEOUT)
+            .then((data) => {
+                console.log(data); // eslint-disable-line
+                if (data && data.length > 0) {
+                    reject(new Error('Contact already exists'));
+                }
+                else {
+                    logger.debug(queryInsert, valuesInsert);
+                    db.oneOrNone(queryInsert, valuesInsert).timeout(config.PGTIMEOUT)
+                        .then((data) => resolve({ id: data.id, created_at:data.created_at,
+                            updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
+                            properties:data.properties, the_geom:data.the_geom }))
+                        .catch((err) => reject(err));
+                }
+            }).catch((err) => reject(err));
     }),
 
     /**

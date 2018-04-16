@@ -466,6 +466,7 @@ describe('Cognicity Server Testing Harness', function() {
                                 'cell': '+1 234',
                                 'email': 'joe@email.com'
                             },
+                            'private': true,
                             'location': {
                                 'lat': 45,
                                 'lng': 140
