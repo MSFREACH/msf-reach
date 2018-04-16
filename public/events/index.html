@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>Events &middot; MSF REACH</title>
 
@@ -77,6 +77,25 @@
 </head>
 <body>
 
+  <!-- Operator access modal -->
+  <div class="modal fade" id="operatorAccessModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabelOperator">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabelOperator">Operator access</h4>
+        </div>
+        <div class="modal-body" id="OperatorModalBody">
+          <p>You do not have the permission, please contact <a href="mailto:lucie.gueuning@hongkong.msf.org">us</a> for edit access.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <!-- report creation modal -->
   <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewReportModalLabel" id="newReportModal">
     <div class="modal-dialog modal-sm">
@@ -99,15 +118,29 @@
               <div class="form-group">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
               </div>
+              <div class="row bottom-margined">
+                <div class="col-sm-1">
+                  <label for="mapAddressLat">OR:</label>
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control input-sm" value="" id="mapAddressLat" placeholder="Latitude">
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control input-sm" value="" id="mapAddressLng" placeholder="Longitude">
+                </div>
+                <div class="col-sm-2">
+                  <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
+              </div>
               <div id="newReportMap"></div>
             </div>
             <div class="form-section">
               <h5>2. Please help us best assess the situation by helping us sort your report.</h5>
               <div class="rtype-container">
-                <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>describe</i></div>
-                <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>request</i></div>
-                <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>share</i></div>
-                <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>warn</i></div>
+                <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>Location / Damage</i></div>
+                <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>Population / Medical</i></div>
+                <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>Details / Relevance</i></div>
+                <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>Incident / Caution</i></div>
               </div>
               <p>Please select one category. There is an opportunity to submit another report card for another category after submission of this one.</p>
             </div>
@@ -440,9 +473,6 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#" id="username"></a></li>
-            <li role="separator" class="divider"></li>
-            <li><a id="logout" href="/login">LOGOUT</a><li>
-
             </ul>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -456,29 +486,247 @@
             <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
             <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
-            <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Missions</a></li>
+            <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF projects</a></li>
+            <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Mission History</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
-          <div class="tab-content">
+          <div class="msf-loader"></div>
+          <div class="tab-content" id="eventVApp" v-cloak>
+
             <div id="event" class="tab-pane fade in active">
-              <div id="eventProperties"></div>
+              <div>
+                <table class="table">
+                  <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
+                  <tr><td>Country</td><td> {{ event.metadata.country }}</td></tr>
+                  <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
+                  <tr><td>Type</td><td> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
+                  <tr><td>Event date and Time</td><td> {{ event.metadata.event_datetime || event.created_at }}</td></tr>
+
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>
+
+                  <tr v-else><td>Latest notification:  </td><td>(none)</td></tr>
+                  <tr><td>Severity </td><td> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
+                  <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
+                  <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
+                  <tr><td>Last updated at</td><td> {{ event.updated_at.split('T')[0] }}</td></tr>
+
+
+
+
+                  <tr><td>Event link</td><td><a id='eventLink'  :href='eventLink' target='_blank'>{{ eventLink }}</a></td><td><button class='btn btn-primary' data-clipboard-target='#eventLink'>Copy link</button></td></tr>
+
+                  <tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td>
+                    <td><a style="display:none;" id='reportLink' :href='eventReportLink' target='_blank'> {{ eventReportLink }} </a><button class='btn btn-primary' :data-clipboard-text='eventReportLink'>Copy link</button></td></tr>
+
+
+                    <tr v-if='event.metadata.user'><td>Creator</td><td> {{ event.metadata.user }}</td></tr>
+                    <tr v-if='event.metadata.user_edit'><td>Edits</td><td>{{ event.metadata.user_edit }}</td></tr>
+                  </table>
+
+
+              </div>
               <div class="panel-group" id="accordion">
                 <div class="panel panel-default" id="panel4">
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
-                    <h4 class="panel-title">
                       <a data-toggle="collapse" data-target="#collapseNotif"
                       href="#collapseNotif" class="collapsed">
                       Notifications
                       </a>
-                    </h4>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('general')">Edit</button>
                   </div>
                   <div id="collapseNotif" class="panel-collapse collapse in">
                     <div class="panel-body" >
-                      <div id="eventNotifications"></div>
+                      <div id="eventNotifications">
+
+                            <table v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
+                              <thead><tr><td>Time</td><td>Notification</td></tr></thead>
+                              <tbody>
+                                <tr v-for="elem in event.metadata.notification">
+                                  <td>{{ (new Date(elem.notification_time*1000)).toLocaleString() }}</td>
+                                  <td> {{ elem.notification }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResp" >
+                      <a data-toggle="collapse" data-target="#collapseResp"
+                      href="#collapseResp" class="collapsed">
+                      Response
+                      </a>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('response')">Edit</button>
+                  </div>
+                  <div id="collapseResp" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                            <dl class="dl-horizontal">
+                              <dt>Type of programmes:</dt>
+                              <dd v-for="item in event.metadata.msf_response_types_of_programmes" >
+                                <span class="label label-primary" >
+                                     {{ getTypeOfProgramme(item) }}
+                                </span>&nbsp;
+                              </dd>
+                              <dt>MSF Response:</dt>
+                              <dd>
+                                {{event.metadata.msf_response}}
+                              </dd>
+                              <dt>Start Date:</dt>
+                              <dd>
+                                {{formatDateOnly(event.metadata.start_date_msf_response)}}
+                              </dd>
+                              <dt>End Date:</dt>
+                              <dd>
+                                {{formatDateOnly(event.metadata.end_date_msf_response)}}
+                              </dd>
+                              <dt>
+                                Location of MSF Response:
+                              </dt>
+                              <dd>
+                                <a @click="editEvent('response')">Edit</a>
+                              </dd>
+                              <dt>Operational Centre:</dt>
+                              <dd>
+                                {{event.metadata.operational_center}}
+                              </dd>
+                              <dt>
+                                Medical Material:
+                              </dt>
+                                  <dd v-for="item in event.metadata.msf_response_medical_material">
+                                    {{item}}
+                                  </dd>
+                                  <dd><b>Total:</b> {{event.metadata.msf_response_medical_material_total}}</dd>
+                                  <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_medical_material_date_arrival)}}</dd>
+                              <dt>
+                                Non-Medical Material:
+                              </dt>
+                              <dd v-for="item in event.metadata.msf_response_non_medical_material">
+                                {{item}}
+                              </dd>
+                              <dd><b>Total:</b> {{event.metadata.msf_response_non_medical_material_total}}</dd>
+                              <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_non_medical_material_date_arrival)}}</dd>
+
+
+                            </dl>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtCapacity" >
+                      <a data-toggle="collapse" data-target="#collapseExtCapacity"
+                      href="#collapseExtCapacity" class="collapsed">
+                      External Capacity
+                      </a>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('externalcap')">Edit</button>
+                  </div>
+                  <div id="collapseExtCapacity" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                            <dl class="dl-horizontal">
+                              <dt>Analysis of capacity on the ground:</dt>
+                              <dd>{{event.metadata.ext_capacity_type_in_ground =='medical' ? 'Medical' : 'Non-Medical'}}</dd>
+                              <dd>{{event.metadata.capacity}}</dd>
+                              <dd>{{event.metadata.ext_capacity_by_humanitarian}}</dd>
+                              <dd>{{event.metadata.ext_capacity_action_plan}}</dd>
+                              <dd>{{event.metadata.ext_capacity_who}}</dd>
+                              <dt>Other organizations:</dt>
+                              <section v-for="(item, index) in event.metadata.ext_other_organizations">
+                                <dd>{{item.name + ' - ' + item.deployment + ' - '+ formatDateOnly(item.arrival_date) }}</dd>
+                              </section>
+
+                            </dl>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel panel-default" >
+                      <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#medFigures" >
+                        <a data-toggle="collapse" data-target="#medFigures"
+                        href="#medFigures" class="collapsed">
+                        Medical Figures
+                      </a>
+                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('medfigures')">Edit</button>
+                    </div>
+                    <div id="medFigures" class="panel-collapse collapse">
+                      <div class="panel-body" >
+                        <div>
+                          <dl class="dl-horizontal">
+                            <dt>Figures:</dt>
+                            <dd v-for="(item, index) in event.metadata.keyMSFFigures">{{item.category.replace(/_/g,' ') }} , <i>value:</i> {{item.value}}</dd>
+                            <dt>Population in total for zone impacted:</dt>
+                            <dd>{{event.metadata.population_total}}</dd>
+                            <dt>Description:</dt>
+                            <dd>{{event.metadata.population_total_description}}</dd>
+                            <dt>Population affected:</dt>
+                            <dd>{{event.metadata.population_affected}}</dd>
+                            <dt>Description:</dt>
+                            <dd>{{event.metadata.population_affected_description}}</dd>
+                            <dt>Percentage of people affected:</dt>
+                            <dd>{{event.metadata.percentage_population_affected}}</dd>
+                          </dl>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default" >
+                    <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#resourceCollapse" >
+                      <a data-toggle="collapse" data-target="#resourceCollapse" href="#resourceCollapse" class="collapsed">
+                      Staff Resources
+                    </a>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('resources')">Edit</button>
+                  </div>
+                  <div id="resourceCollapse" class="panel-collapse collapse">
+                    <div class="panel-body" >
+                      <div>
+                        <dl class="dl-horizontal">
+                          <dt>Staff list — human resources:</dt>
+                          <dd>{{event.metadata.msf_resource_staff_list}}</dd>
+                          <dt>Expatriate:</dt>
+                          <dd>{{event.metadata.msf_resource_staff_expatriate}}</dd>
+                          <dt>National staff:</dt>
+                          <dd>{{event.metadata.msf_resource_staff_national}}</dd>
+                          <dt>Visa requirement:</dt>
+                          <dd v-for="item in event.metadata.msf_resource_visa_requirement.nationality"><span v-if="item.name"> {{item.name}} , <i>required:</i> {{item.is_required}} </span><span v-else>No</span></dd>
+                          <dt>Description:</dt>
+                          <dd>{{event.metadata.msf_resource_visa_requirement.description}}</dd>
+                          <dt>Budget:</dt>
+                          <dd v-for="(item, index) in event.metadata.msf_resource_budget"><span v-if="(item.from_who) || (item.amount>0)" ><i>Amount:</i>{{item.amount}}, <i>From:</i>{{item.from_who}}</span><span v-else></span> </dd>
+                          <dt>Institutional Donors:</dt>
+                          <dd>{{event.metadata.msf_resource_institutional_donors}}</dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default" >
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#reflectionCollapse" >
+                    <a data-toggle="collapse" data-target="#reflectionCollapse"
+                    href="#reflectionCollapse" class="collapsed">
+                    Reflection
+                  </a>
+                  <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('reflection')">Edit</button>
+                </div>
+                <div id="reflectionCollapse" class="panel-collapse collapse">
+                  <div class="panel-body" >
+                    <div>
+                      <dl class="dl-horizontal">
+                        <dt>Practical Details / Recommendations:</dt>
+                        <dd>{{event.metadata.msf_ref_com_practical_details_recomm}}</dd>
+                        <dt>Reflection / Comments on intervention:</dt>
+                        <dd>{{event.metadata.msf_ref_com_reflection_comments}}</dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
               <div class="panel panel-default" id="panel3">
                 <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseThree">
                   <h4 class="panel-title">
@@ -513,7 +761,7 @@
             </div>
           </div>
       </div>
-      <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="onEditEvent()">Edit</button>
+      <button class="btn btn-primary"  @click="editEvent('general')">Edit</button>
       <!-- Button trigger modal -->
       <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Close</button>
     </div>
@@ -654,8 +902,28 @@
       <div class="row">
         <div class="col-md-12" >
           <h4>Contacts</h4>
+          <div class="form-group" >
+            <label for="inputContactType" style="text-transform:uppercase;">Category</label>
+            <select class="form-control" style="color:black;" id="inputContactType" >
+              <option value="" selected>(no category filtering)</option>
+              <option value="Current MSF Staff">Current MSF Staff</option>
+              <option value="Supplier">Supplier</option>
+              <option value="United Nations">United Nations</option>
+              <option value="Government">Government</option>
+              <option value="Other NGO">Other NGO</option>
+              <option value="Academic">Academic</option>
+              <option value="Private Medical Practice">Private Medical Practice</option>
+            </select>
+          </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone or Email ...">
+            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ... ..."><br />
+            <!--<table><tr><td>
+            <input type="radio" id="radio_msf_peer"
+             name="msf_relationship" value="msf_peer">
+            <label for="radio_msf_peer">MSF Peers only</label></td><td>
+            <input type="radio" id="radio_msf_associate"
+             name="msf_relationship" value="msf_associate">
+            <label for="msf_associate">MSF Associates only</label></td></tr></table>-->
           </div>
           <div id="contactsContainer" style="height:70vh;overflow:auto;"></div>
         </div>
@@ -669,6 +937,14 @@
             <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
           </div>
           <div id="missionsContainer"></div>
+        </div>
+      </div>
+    </div>
+    <div id="ongoingEvents" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-12" >
+          <h4>Ongoing MSF Projects in the same country</h4>
+          <div id ="ongoingEventsContainer" style="height:70vh;"></div>
         </div>
       </div>
     </div>
@@ -693,6 +969,25 @@
 
 <!-- Map -->
 <div id="mapContainer" class="col-md-6">
+  <div class="row bottom-margined">
+      <div class="col-sm-12">
+        <input type="text" class="form-control" placeholder="Search address/location..." id="eventAddress">
+      </div>
+  </div>
+  <div class="row bottom-margined">
+    <div class="col-sm-4">
+      <label for="mapAddressLat">OR locate by coordinates:</label>
+    </div>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" value="" id="eventAddressLat" placeholder="Latitude">
+    </div>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" value="" id="eventAddressLng" placeholder="Longitude">
+    </div>
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-info btn-sm" id="eventAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+  </div>
   <div id="map"></div>
 </div>
 </div> <!-- Row -->
@@ -714,13 +1009,14 @@
 <!--Twitter-->
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <!--Google translate-->
-<script src="https://www.google.com/jsapi?key=AIzaSyCeWNJ8HV03xo4qIFY12Y7UgESu75nlB8k"></script>
+<script src="https://www.google.com/jsapi?key=AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g"></script>
 
 <script src="/lib/countrySelect.min.js"></script>
 
 <!-- VueJs + plug-ins -->
 <script src="/lib/vue/vue.min.js"></script>
 <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
+
 
 <!-- Get query parameter from URL -->
 <!-- Ask the server for reports from specific event -->
@@ -740,14 +1036,15 @@
 <script src="/resources/js/new-report.js"></script>
 <script src="/report/reportcard.js"></script>
 <script src="/resources/js/address-autocomplete.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g&libraries=places&callback=initGoogle" async defer></script>
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
-
-<script src="/resources/js/events.js"></script>
+<script src="/resources/js/healthsites.js"></script>
 
 <!-- events common variables -->
 <script src="/events/common.js"></script>
+<script src="/resources/js/events.js"></script>
+
 <script src="/resources/js/contacts.js"></script>
 <script src="/resources/js/missions.js"></script>
 <script>
@@ -790,6 +1087,17 @@ $('#missionsTab').on('click', function(e){
 });
 
 $('#eventTab').on('click', function(e){
+  if (mapOn === 0) {
+    $('#mapContainer').toggle();
+    $('#mapContainer').addClass('col-md-6');
+    $('#sidepane').removeClass('col-md-12');
+    $('#sidepane').addClass('col-md-6');
+    mapOn = 1;
+    setTimeout(function(){mainMap.invalidateSize()}, 400);
+  }
+});
+
+$('#ongoingEventsTab').on('click', function(e){
   if (mapOn === 0) {
     $('#mapContainer').toggle();
     $('#mapContainer').addClass('col-md-6');
@@ -844,7 +1152,6 @@ var getContact = function(id) {
     $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
     $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
 
-    // fiddle booleans to 'yes'/'no'
     contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
     contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
 

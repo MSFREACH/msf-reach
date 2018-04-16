@@ -70,13 +70,16 @@ var loadContacts = function(err, contacts) {
 };
 
 // Perform GET call to get contacts
-var getContacts = function(term){
+var getContacts = function(term,type){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
     var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
     var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
     var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
     var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
     url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+    if (type) {
+        url=url+'&type='+type;
+    }
     $.getJSON(url, function (data){
         loadContacts(null, data.result.features);
         //remap contacts
@@ -107,5 +110,18 @@ mainMap.on('moveend', function(){thGetContacts($('#contSearchTerm').val());});
 
 
 $('#contSearchTerm').on('input',function(){
-    thGetContacts(this.value);
+    if ($('#inputContactType').val()!=='') {
+        thGetContacts(this.value,$('#inputContactType').val());
+    } else {
+        thGetContacts(this.value);
+    }
+
+});
+
+$('#inputContactType').on('change',function(){
+    if ($('#contSearchTerm').val()!=='') {
+        thGetContacts($('#contSearchTerm').val(),this.value);
+    } else {
+        thGetContacts(null,this.value);
+    }
 });

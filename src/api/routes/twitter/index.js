@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 import { Router } from 'express';
 
 // Import any required utility functions
-import { cacheResponse, jwtCheck } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
 
 import { searchTwitter, embedTweet } from '../../../lib/twitter.js';
 
@@ -14,8 +14,8 @@ import validate from 'celebrate';
 export default ({ logger }) => {
     let api = Router();
 
-    // Get a list of all reports
-    api.get('/', jwtCheck, cacheResponse('1 minute'),
+    // Get a list of all tweets matching the searchString
+    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
         validate({
             query: {
                 searchString: Joi.string().required()

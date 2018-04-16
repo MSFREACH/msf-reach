@@ -10,31 +10,48 @@ export default (config, db, logger) => ({
     /**
     * Return contacts
     * @function all - returns contacts, optionally filtered by string
-    * @param {String} search - optional string search against name, email, cell
+    * @param {string} search - optional string search against name, email, phone numbers, employer, or speciality
+    * @param {string} msf_associate - optional "true"/"false" to search for msf_associates or not
+    * @param {string} msf_peer - ditto, for msf peers
+    * @param {string} type - category of contact to filter on
     */
-    all: (search,bounds) => new Promise((resolve, reject) => {
+    all: (search,bounds,oid,msf_associate,msf_peer,type) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, properties, the_geom
      FROM ${config.TABLE_CONTACTS}
      WHERE ($1 IS NULL OR (
       properties ->> 'name' ILIKE $1
       OR properties ->> 'cell' ILIKE $1
-      OR properties ->> 'type' ILIKE $1
-      OR properties ->> 'speciality' ILIKE $1
-      OR properties ->> 'email' ILIKE $1)) AND
-      ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) )
+      OR properties ->> 'home' ILIKE $1
+      OR properties ->> 'work' ILIKE $1
+      OR properties ->> 'fax' ILIKE $1
+      OR properties ->> 'employer' ILIKE $1
+      OR properties ->> 'email' ILIKE $1
+      OR properties ->> 'email2' ILIKE $1
+      OR properties ->> 'speciality' ILIKE $1)) AND
+      ($7 IS NULL OR (ad_oid = $7 and private = true) OR private = false) AND
+      ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
+      ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
+      ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
+      ($10 IS NULL OR properties ->> 'type' ILIKE $9)
      ORDER BY id`;
 
         // Format search string for Postgres
         let text = (!search) ? null : '%'+search+'%'	;
         let hasBounds= (bounds.xmin && bounds.ymin && bounds.xmax && bounds.ymax);
-        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax ];
+        let values = [ text, hasBounds, bounds.xmin,bounds.ymin,bounds.xmax, bounds.ymax, oid, msf_associate, msf_peer, type ];
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))
             .catch((err) => reject(err));
     }),
+
+    /**
+     * get an individual contact
+     * @function byId
+     * @param {integer} id - id of contact
+     */
 
     byId: (id) => new Promise((resolve, reject) => {
         // Setup query
@@ -55,17 +72,17 @@ export default (config, db, logger) => ({
     * Create a new contact
     * @param {object} body Body of request with contact details
     */
-    createContact: (body) => new Promise((resolve, reject) => {
+    createContact: (ad_oid, body) => new Promise((resolve, reject) => {
 
         // Setup query
         let query = `INSERT INTO ${config.TABLE_CONTACTS}
-     (created_at, properties, the_geom)
-     VALUES (now(), $1, ST_SetSRID(ST_Point($2,$3),4326))
+     (created_at, ad_oid, private, properties, the_geom)
+     VALUES (now(), $1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
      RETURNING id, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
-        let values = [ body.properties, body.location.lng, body.location.lat ];
+        let values = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
 
         // Execute
         logger.debug(query, values);

@@ -7,16 +7,20 @@
 */
 
 // Constants
-var GEOFORMAT='geojson';
+var GEOFORMAT='geojson'; // use geojson as preferred goepsatial data format
+
+// mapping from short type names to longer names
 var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
     {'epidemiological':'Disease Outbreak'}, {'search_and_rescue':'Search & rescue'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+// setup variables to store contact layers
+var MSFContactsLayer, nonMSFContactsLayer;
 
-
+// set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
-    value: 2,
+    value: 2, // default: 2
     min: 1,
     max: 3,
     step: 1
@@ -47,11 +51,13 @@ $( '#inputSeverityScale' ).slider({
     });
 
 
-
+// set up the variable for holding the events layer
 var eventsLayer;
 
 /**
 * Function to map and print a table of events
+* @function mapAllEvents
+* @param {Object} err - error object, null if no error
 * @param {Object} events - GeoJSON Object containing event details
 */
 var mapAllEvents = function(err, events){
@@ -84,26 +90,29 @@ var mapAllEvents = function(err, events){
         var severityStr = '';
 
         if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
 
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
         if (feature.properties.type.toLowerCase().includes('epidemiological')) {
             icon_name = 'epidemic';
+        }
+        if (feature.properties.type.toLowerCase().includes('natural_hazard')) {
+            icon_name = feature.properties.metadata.sub_type.includes(',') ? feature.properties.metadata.sub_type.split(',')[0].toLowerCase() : feature.properties.metadata.sub_type.toLowerCase();
         }
 
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
-    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
+    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
+    'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
@@ -111,6 +120,7 @@ var mapAllEvents = function(err, events){
     affectedPopulationStr;
 
 
+        // make sure there's no trailing <br> from above
         if (popupContent.endsWith('<br>')) {
             popupContent.substr(0,popupContent.length-4);
         }
@@ -126,7 +136,7 @@ var mapAllEvents = function(err, events){
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
       'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-      'Type: ' + feature.properties.type + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
       notificationStr +
       totalPopulationStr +
@@ -164,9 +174,21 @@ var mapAllEvents = function(err, events){
 
 /**
 * Function to get contacts
+* @function getContacts
+* @param {function} callback - callback to run once contacts are fetched
+* @param {String} term - search term
+* @param {String} type - contact type to filter by
 **/
-var getContacts = function(callback){
-    $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
+var getContacts = function(callback,term,type){
+
+    var url = '/api/contacts/?geoformat='+GEOFORMAT;
+    if (term) {
+        url += '&search='+term;
+    }
+    if (type) {
+        url=url+'&type='+type;
+    }
+    $.getJSON(url, function( data ){
         callback(data.result);
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
@@ -179,6 +201,8 @@ var getContacts = function(callback){
 
 /**
 * Function to get missions
+* @function getMissions
+* @param {function} callback - callback function to run once missions are loaded
 **/
 var getMissions = function(callback){
     $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
@@ -192,26 +216,50 @@ var getMissions = function(callback){
     });
 };
 
+var allFeedFeatures=[];
+var totalFeedsSaved=0;
 
+/**
+* function to put the feed data into the table
+* @function tableFeeds
+* @param {Object} feeds - feed data (geojson format)
+*/
 var tableFeeds = function(feeds) {
     for(var i = 0; i <= feeds.features.length; i++) {
-        var feature = feeds.features[i];
-        if (feature) {
-            $('#rssFeeds').append(
-                '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
-        'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
-        'Source: ' + feature.properties.source + '<br>' +
-        'Updated: ' + feature.properties.updated + '<br>' +
-        'Summary: ' + feature.properties.summary.trim() + '<br>' +
-        '</div>'
-            );
-        }
+        allFeedFeatures.push(feeds.features[i]);
     }
+    totalFeedsSaved++;
+    if (totalFeedsSaved ==1)
+        $('#rssFeeds').html('<div class="msf-loader"></div>');
+    if (totalFeedsSaved == TOTAL_FEEDS)
+    {
+        $('#rssFeeds').html('');
+        allFeedFeatures.sort(function(a,b){
+            return new Date(b.properties.updated) - new Date(a.properties.updated);
+        });
+        $.each(allFeedFeatures,function(i,feature){
+            if (feature) {
+                $('#rssFeeds').append(
+                    '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
+         'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
+         'Source: ' + feature.properties.source + '<br>' +
+         'Updated: ' + (new Date(feature.properties.updated)).toISOString().replace('T', ' ').replace('Z',' GMT') + '<br>' +
+         'Summary: ' + feature.properties.summary.trim() + '<br>' +
+         '</div>'
+                );
+            }
+        });
+
+
+    }
+
 };
+
 
 /**
 * Function to return an icon for mission in popupContent
-* @param {String} type - type of disaster
+# @function missionPopupIcon
+* @param {String} missionType - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
     var type = typeof(missionType)!=='undefined' ? missionType.toLowerCase() : '';
@@ -256,6 +304,7 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
+* @function mapMissions - function to map mission histories
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
@@ -271,7 +320,7 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0){
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
                 popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
@@ -296,22 +345,53 @@ var mapMissions = function(missions ){
         popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
-    var missionsLayer = L.geoJSON(missions, {
+    var missionsLayerOn = mainMap.hasLayer(missionsClusters);
+
+    if (missionsClusters)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(missionsClusters);
+        layerControl.removeLayer(missionsClusters);
+        computerTriggered=false;
+    }
+
+    missionsClusters = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-missions-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+
+        }
+    });
+
+
+    missionsLayer = L.geoJSON(missions, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: missionIcon});
         },
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Mission Histories')==='on') {
-        missionsLayer.addTo(mainMap);
+
+    missionsClusters.addLayer(missionsLayer);
+
+    if (missionsLayerOn || firstMissionsLoad ) {
+        if (Cookies.get('Missions')==='on') {
+            missionsClusters.addTo(mainMap);
+        }
+        firstMissionsLoad = false;
     }
-    layerControl.addOverlay(missionsLayer, 'Mission Histories');
+
+
+    layerControl.addOverlay(missionsClusters, 'Missions');
+
 };
 
 
 /**
 * Function to add contacts to map
+* @function mapContacts
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
 var mapContacts = function(contacts ){
@@ -360,19 +440,51 @@ var mapContacts = function(contacts ){
     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
     });
 
-    var MSFContactsLayer = L.geoJSON(msfContact(contacts,true), {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: contactIcon});
-        },
-        onEachFeature: onEachFeature
-    });
+    if (MSFContactsLayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(MSFContactsLayer);
+        layerControl.removeLayer(MSFContactsLayer);
+        computerTriggered=false;
+    }
 
-    var nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+
+    if (nonMSFContactsLayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(nonMSFContactsLayer);
+        layerControl.removeLayer(nonMSFContactsLayer);
+        computerTriggered=false;
+    }
+
+    MSFContactsLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+        }
+    }).addLayer(
+        L.geoJSON(msfContact(contacts,true), {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {icon: contactIcon});
+            },
+            onEachFeature: onEachFeature
+        })
+    );
+
+    nonMSFContactsLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+        }
+    }).addLayer(L.geoJSON(msfContact(contacts,false), {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: contactIcon});
         },
         onEachFeature: onEachFeature
-    });
+    })
+    );
 
     if (Cookies.get('- MSF Staff')==='on') {
         MSFContactsLayer.addTo(mainMap);
@@ -385,6 +497,11 @@ var mapContacts = function(contacts ){
 
 };
 
+/**
+* function to show mission data modal on click
+* @function onMissionLinkClick
+* @param {String} id - id number (as a String)
+*/
 var onMissionLinkClick = function(id) {
     $.getJSON('/api/missions/' + id, function(data) {
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
@@ -399,11 +516,21 @@ var onMissionLinkClick = function(id) {
     });
 };
 
+/**
+* function to show contact info modal on click
+* @function onContactLinkClick
+* @param {String} id - id number (as a String)
+*/
 var onContactLinkClick = function(id) {
     $('#contactDetailsModal').on('shown.bs.modal');
     getContact(id);
 };
 
+/**
+* function to convert ISO date string to locale string with basic handling of non-isoDate format
+* @function convertToLocaleDate
+* @param {String} isoDate - ISO date string
+*/
 var convertToLocaleDate= function (isoDate) {
     if (isoDate)
         return (new Date(isoDate)).toLocaleString();
@@ -412,6 +539,12 @@ var convertToLocaleDate= function (isoDate) {
 };
 
 var contactInfo = {};
+
+/**
+* function for getting details of an individual contact
+* @function getContact
+* @param {String} id - id number (as a String)
+*/
 var getContact = function(id) {
     $.getJSON('/api/contacts/' + id, function(contact) {
         contactInfo = contact.result ? contact.result.properties : {};
@@ -467,7 +600,21 @@ var getContact = function(id) {
 };
 
 // Create map
-var mainMap = L.map('mainMap').setView([20, 110], 4);
+var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
+
+// To get healthsites loaded, need to first add load event and then setView separately
+
+mainMap.on('load', function(loadEvent) {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
+mainMap.fitBounds([[-13, 84],[28,148]]);
+mainMap.setMaxBounds([[-15, 86],[26,150]]);
+
+mainMap.on('zoomend', function(zoomEvent)  {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
@@ -521,21 +668,21 @@ var overlayMaps = {};
 
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
+// get and map data:
 getAllEvents(mapAllEvents);
-
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getMissions(mapMissions);
+//getMissions(mapMissions);
 getContacts(mapContacts);
-
 getFeeds('/api/hazards/pdc', tableFeeds);
 getFeeds('/api/hazards/usgs', tableFeeds);
 getFeeds('/api/hazards/tsr', tableFeeds);
 getFeeds('/api/hazards/gdacs', tableFeeds);
 getFeeds('/api/hazards/ptwc', tableFeeds);
+var TOTAL_FEEDS=5;
 
 var displayVideo = function(video) {
 
@@ -551,18 +698,56 @@ var displayVideo = function(video) {
 
 };
 
-mainMap.on('overlayadd', function (layersControlEvent) {
-    Cookies.set(layersControlEvent.name,'on');
-});
-
-mainMap.on('overlayremove', function (layersControlEvent) {
-    Cookies.set(layersControlEvent.name,'off');
-});
-
 var autocompleteMap=mainMap;
 
 var latlng;
 mainMap.on('dblclick', function(dblclickEvent) {
     latlng = dblclickEvent.latlng;
     $('#newEventModal').modal('show');
+});
+
+$('#contSearchTerm').on('input',function(){
+    if ($('#inputContactType').val()!=='') {
+        getContacts(mapContacts,this.value,$('#inputContactType').val());
+    } else {
+        getContacts(mapContacts,this.value);
+    }
+
+});
+
+$('#inputContactType').on('change',function(){
+    if ($('#contSearchTerm').val()!=='') {
+        getContacts(mapContacts,$('#contSearchTerm').val(),this.value);
+    } else {
+        getContacts(mapContacts,null,this.value);
+    }
+});
+
+mainMap.on('overlayadd', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'on');
+    }
+});
+
+
+mainMap.on('overlayremove', function (layersControlEvent) {
+    if (!computerTriggered) {
+        Cookies.set(layersControlEvent.name,'off');
+    }
+});
+
+$('#landing_tabs').on('click', 'a[data-toggle="tab"]', function(e) {
+    e.preventDefault();
+
+    var $link = $(this);
+
+    if (!$link.parent().hasClass('active')) {
+
+        //remove active class from other tab-panes
+        $('.tab-content:not(.' + $link.attr('href').replace('#','') + ') .tab-pane').removeClass('active');
+
+        // activate tab-pane for active section
+        $('.tab-content.' + $link.attr('href').replace('#','') + ' .tab-pane:first').addClass('active');
+    }
+
 });

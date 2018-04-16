@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>MSF REACH</title>
 
@@ -28,6 +28,10 @@
     <!-- Leaflet groups -->
     <link rel="stylesheet" href="/lib/leaflet/leaflet.groupedlayercontrol.min.css"/>
 
+    <!-- Leaflet marker clusters -->
+    <link rel="stylesheet" href="/lib/leaflet/MarkerCluster.css"/>
+    <link rel="stylesheet" href="/lib/leaflet/MarkerCluster.Default.css"/>
+
     <!-- Local -->
     <link rel="stylesheet" href="resources/css/landing.css"/>
 
@@ -42,6 +46,24 @@
 
   </head>
   <body>
+
+    <!-- Operator access modal -->
+    <div class="modal fade" id="operatorAccessModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabelOperator">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabelOperator">Operator access</h4>
+          </div>
+          <div class="modal-body" id="OperatorModalBody">
+            <p>You do not have the permission, please contact <a href="mailto:lucie.gueuning@hongkong.msf.org">us</a> for edit access.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- event creation modal -->
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewEventModalLabel" id="newEventModal">
@@ -58,7 +80,6 @@
 
                 <!-- Side pane -->
                 <div id="newEventSidepane" class="col-sm-12">
-                  <h4 id="title">Add event metadata</h4>
                   <div id="geocodingNotice"><strong>Note that the event coordinates (only) are sent to Google for geocoding events to country</strong></div>
                   <div id="newEventProperties">
                         <div class="panel panel-default" style="margin-bottom:0px;">
@@ -69,18 +90,47 @@
                             </div>
                             <div class="form-group">
                               <label for="selectType">Event Type</label>
-                              <select class="form-control" id="selectType"> <!--Supplement an id here instead of using 'name'-->
-                                <option value="" disabled selected>Please select ...</option>
-                                <option value="conflict">Armed Conflict</option>
-                                <option value="natural_hazard">Natural Disaster </option>
-                                <option value="epidemiological">Disease Outbreak </option>
-                                <option value="search_and_rescue">Search & Rescue</option>
-                                <option value="displacement">Displacement</option>
-                                <option value="malnutrition">Malnutrition</option>
-                                <option value="other">Other</option>
-                              </select>
+
+
+                                <div>
+                                    <input class="newEventTypeBox" id="selectType0" type="checkbox" value="conflict" /><label class="eventBox">&nbsp Armed Conflict</label><br>
+                                    <input class="newEventTypeBox" id="selectType1" type="checkbox" value="epidemiological" /><label class="eventBox">&nbsp Disease Outbreak</label><br>
+                                    <div id="divDisease" style="display:none; margin-left: 20px;">
+                                        <input class="newSubEventTypeBox" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox">&nbsp Cholera</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox">&nbsp Ebola</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType2" type="checkbox" value="Dengue" /><label class="eventBox">&nbsp Dengue</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType3" type="checkbox" value="Malaria" /><label class="eventBox">&nbsp Malaria</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType4" type="checkbox" value="Measles" /><label class="eventBox">&nbsp Measles</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType5" type="checkbox" value="Meningococcal Meningitis" /><label class="eventBox">&nbsp Meningococcal Meningitis</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType6" type="checkbox" value="Yellow Fever" /><label class="eventBox">&nbsp Yellow Fever</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType7" type="checkbox" value="Other Disease" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                        <div class="form-group" id="divOtherDisease"  style="display:none;">
+                                            <input type="text" id="diseaseType8" class="form-control" placeholder="(Specify)" >
+                                        </div>
+                                    </div>
+                                    <input class="newEventTypeBox" id="selectType2" type="checkbox" value="displacement" /><label class="eventBox">&nbsp Displacement</label><br>
+                                    <input class="newEventTypeBox" id="selectType3" type="checkbox" value="malnutrition" /><label class="eventBox">&nbsp Malnutrition</label><br>
+                                    <input class="newEventTypeBox" id="selectType4" type="checkbox" value="natural_hazard" /><label class="eventBox">&nbsp Natural Disaster</label><br>
+                                    <div id="divNaturalDisaster" style="display:none; margin-left: 20px;">
+                                        <input class="newSubEventTypeBox" id="disasterType0" type="checkbox" value="drought" /><label class="eventBox">&nbsp Drought</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType1" type="checkbox" value="earthquake" /><label class="eventBox">&nbsp Earthquake</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType2" type="checkbox" value="flood" /><label class="eventBox">&nbsp Flood</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType3" type="checkbox" value="tsunami" /><label class="eventBox">&nbsp Tsunami</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType4" type="checkbox" value="typhoon" /><label class="eventBox">&nbsp Typhoon</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType5" type="checkbox" value="volcano" /><label class="eventBox">&nbsp Volcano</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType6" type="checkbox" value="landslides" /><label class="eventBox">&nbsp Landslides</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType7" type="checkbox" value="other disaster" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                        <div class="form-group" id="divOtherDisaster"  style="display:none;">
+                                            <input type="text" id="disasterType8" class="form-control" placeholder="(Specify)" >
+                                        </div>
+                                    </div>
+                                    <input class="newEventTypeBox" id="selectType5" type="checkbox" value="search_and_rescue" /><label class="eventBox">&nbsp Search & Rescue</label><br>
+                                    <input class="newEventTypeBox" id="selectType6" type="checkbox" value="other" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                </div>
+
+
                             </div>
-                            <div class="form-group" id="divNaturalDisaster" style="display:none;">
+                            <!--<div class="form-group" id="divNaturalDisaster" style="display:none;">
                               <select class="form-control" id="inputDisasterType">
                                 <option value="" disabled selected>Please select ...</option>
                                 <option value="drought">Drought</option>
@@ -105,7 +155,7 @@
                                 <option value="Yellow Fever">Yellow Fever</option>
                                 <option value="">Other</option>
                               </select>
-                            </div>
+                            </div>-->
                             <div class="form-group" id="divOther"  style="display:none;">
                               <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
                             </div>
@@ -128,12 +178,12 @@
                               <input type="text" id="inputInChargePosition" class="form-control" placeholder="Position" >
                             </div>
                             <div class="form-group">
-                              <label for="inputSeverity">Severity</label>
+                              <label for="inputSeverity">Severity details</label>
                               <input type="text" id="inputSeverity" class="form-control" placeholder="Severity details ..." >
-                              <label for="inputSeverityScale" style="vertical-align:top;margin-top:5px;"> Scale </label><div style="display:inline-block;margin-left:10%;" id="inputSeverityScale"></div>
+                              <label for="inputSeverityScale" style="vertical-align:top;margin-top:5px;">Severity scale</label><div style="display:inline-block;margin-left:10%;" id="inputSeverityScale"></div>
                             </div>
                             <div class="form-group">
-                              <label for="inputSecurity">Security Details</label>
+                              <label for="inputSecurity">Security details</label>
                               <textarea class="form-control" rows="1" id="inputSecurity" placeholder="Security details ..." required></textarea>
                             </div>
                             <div class="form-group">
@@ -363,6 +413,59 @@
           </div>
         </div>
       </div> -->
+
+      <!-- About modal -->
+      <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAbout">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabelAbout">About MSF-REACH</h4>
+            </div>
+            <div class="modal-body" id="AboutModalBody">
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
+                    <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
+                      <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
+                    </div>
+                    <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
+                    <div class="list-group-item list-group-item-action" style="display:none;" id="tic_video" >
+                      <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/-Kfodflm3M8?autoplay=0"></iframe>
+                    </div>
+                    <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action"><i>&bull;</i> Partnership and confidentiality</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- FAQ modal -->
+      <div class="modal fade" id="FAQ" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFAQ">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabelFAQ">Frequently Asked Questions</h4>
+            </div>
+            <div class="modal-body" id="FAQModalBody">
+              <p><span style="font-weight:bold;">What is REACH?</span><br />
+              REACH is a platform designed to combine institutional data with crowd-sourced information (including social media, instant messaging, and relevant RSS feeds) in real-time to monitor and manage natural disasters in Southeast Asia.</p>
+              <p><span style="font-weight:bold;">Who is responsible for the platform?</span><br />
+              REACH was initiated by the MSF HK Emergency Response Support Unit (ERSU), in collaboration with the London-based software development cooperative User Group Inc. LLP and Across the Cloud Pty Ltd. ERSU manages the platform and makes it available for operational usage to colleagues throughout the Movement.</p>
+              <p><span style="font-weight:bold;">Who pays for REACH?</span><br />
+              REACH is currently in its second stage of development, which is funded by a TIC Incubator grant. The first phase of development was funded by ERSU in Hong Kong. Additional funding would be required to better scale the platform to geographies beyond Southeast Asia, and to better support the wide range of missions that MSF conducts, including further work to extend the inbuilt AI capabilities.
+              <p><span style="font-weight:bold;">Who can access REACH?</span><br />
+              In its current phase, REACH can gather, sort, display and management real-time disaster information in Southeast Asia. Members of the movement who want to use the tool to this end should contact ERSU with requests for “Editor” access. However, soon, all members of the Movement will be able to login to a “View Only” set of features. </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
@@ -379,72 +482,131 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="username"></span> <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a href="#" id="username"></a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a id="logout" href="/login">LOGOUT</a><li>
+                    <li><a href="#about" data-toggle="modal" data-target="#about">About MSF-REACH</a></li>
+                    <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
                   </ul>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
-
-
-        <div class="col-md-8">
-            <h6>Double click on approximate location of event on map to create a new event.</h6>
+      <div class="container-fluid" style="margin-top:5px;">
+        <div class="row">
+          <div class="col-md-8">
+            <span style="font-weight:bold;">Double click on approximate location of event on map to create a new event.</span>
             <div class="form-section">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
-              </div>
-              <div id="mainMap" style="height:80vh;"></div>
-            </div>
-        </div>
-
-        <div id="sidepane" class="col-md-4" >
-          <ul class="nav nav-tabs">
-            <li role="presentation"><a id="toolboxTab" data-toggle="tab" href="#toolbox">Toolbox</a></li>
-            <li role="presentation"><a id="infoTab" data-toggle="tab" href="#info">Info</a></li>
-            <li role="presentation"><a id="feedTab" data-toggle="tab" href="#feed">RSS Feeds</a></li>
-            <li role="presentation" class="active"><a id="watchingTab" data-toggle="tab" href="#watchingEvent">Monitoring and Assessment</a></li>
-            <li role="presentation"><a id="ongoingTab" data-toggle="tab" href="#ongoingEvent">Ongoing MSF projects</a></li>
-          </ul>
-          <div class="tab-content msf-tab" >
-            <div id="watchingEvent" class="tab-pane fade in active">
-                <div id="watchingEventProperties" class="list-group">
-                </div>
-            </div>
-            <div id="ongoingEvent" class="tab-pane fade">
-                <div id="ongoingEventProperties" class="list-group">
-                </div>
-            </div>
-            <div id="toolbox" class="tab-pane fade">
-              <div class="list-group">
-                  <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
-              </div>
-            </div>
-            <div id="info" class="tab-pane fade">
-              <div class="list-group">
-                  <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
-                  <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
-                    <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
                   </div>
-                  <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
-                  <div class="list-group-item list-group-item-action" style="display:none;" id="tic_video" >
-                    <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/-Kfodflm3M8?autoplay=0"></iframe>
-                  </div>
-                  <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action"><i>&bull;</i> Partnership and confidentiality</a>
-              </div>
-            </div>
-
-            <div id="feed" class="tab-pane fade">
-                <div id="rssFeeds" class="list-group">
-
                 </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <label for="mapAddressLat">OR locate by coordinates:</label>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" class="form-control" value="" id="mapAddressLat" placeholder="Latitude">
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" class="form-control" value="" id="mapAddressLng" placeholder="Longitude">
+                </div>
+                <div class="col-sm-5">
+                  <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
+              </div>
+              <div id="mainMap" style="height:65vh;"></div>
             </div>
           </div>
-        </div>
 
+          <div id="sidepane" class="col-md-4" >
+
+            <ul class="nav nav-tabs" id="landing_tabs">
+              <!--top level tabs-->
+              <li class="active"><a href="#event" data-toggle="tab">EVENT STATUS</a></li>
+              <li><a href="#contact" data-toggle="tab">CONTACTS</a></li>
+            </ul>
+
+            <!--top level tab content-->
+            <div class="tab-content">
+                <!--event tab menu-->
+                <div id="event" class="tab-pane active">
+                    <ul class="nav nav-tabs" id="event_tabs">
+                        <li class="active"><a href="#event_monitoring" data-toggle="tab">Monitoring & Assessment</a></li>
+                        <li><a href="#event_ongoing" data-toggle="tab">Ongoing Projects</a></li>
+                        <li><a href="#event_missions" data-toggle="tab">Mission Histories</a></li>
+                        <li><a href="#event_RSS" data-toggle="tab">RSS Feeds</a></li>
+                    </ul>
+                </div>
+
+                <!--contact tab menu-->
+                <div id="contact" class="tab-pane">
+                    <ul class="nav nav-tabs" id="contact_tabs">
+                        <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
+                        <li><a href="#contact_search" data-toggle="tab">Search</a></li>
+                    </ul>
+                </div>
+             </div>
+
+          <!--event tab content-->
+          <div class="tab-content">
+              <div id="event_monitoring" class="tab-pane">
+                <div id="watchingEventProperties" class="list-group">
+                </div>
+              </div>
+              <div id="event_ongoing" class="tab-pane">
+                <div id="ongoingEventProperties" class="list-group">
+                </div>
+              </div>
+              <div id="event_missions" class="tab-pane">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
+                </div>
+                <div id="missionsContainer"></div>
+              </div>
+              <div id="event_RSS" class="tab-pane">
+                <div id="rssFeeds" class="list-group">
+                </div>
+              </div>
+          </div>
+
+          <!--contact tab content-->
+          <div class="tab-content">
+
+            <div id="contact_new" class="tab-pane">
+              <div id="newContact">
+                <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
+              </div>
+            </div>
+
+            <div id="contact_search" class="tab-pane">
+              <div class="form-group" >
+                Contact search category
+                  <select class="form-control" style="color:black;" id="inputContactType" >
+                    <option value="" selected>(no category filtering)</option>
+                    <option value="Current MSF Staff">Current MSF Staff</option>
+                    <option value="Supplier">Supplier</option>
+                    <option value="United Nations">United Nations</option>
+                    <option value="Government">Government</option>
+                    <option value="Other NGO">Other NGO</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Private Medical Practice">Private Medical Practice</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
+              </div>
+            </div>
+
+          </div>
+
+
+
+
+          </div>
+      </div>
     <script src="/lib/lodash.min.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="lib/jquery/jquery-3.3.1.min.js"></script>
@@ -461,13 +623,16 @@
     <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
 
     <!-- Get query parameter from URL -->
-    <!-- Ask the server for reports from specific event -->
-    <!-- Display event details -->
-    <!-- Display map with points -->
     <script src="lib/getQueryVariable/getQueryVariable.js"></script>
+
+    <!-- Display event details -->
+
+    <!-- Display map with points, nav elements -->
     <script src="lib/leaflet/leaflet.js"></script>
     <script src="/lib/leaflet/leaflet.groupedlayercontrol.min.js"></script>
+    <script src="/lib/leaflet/leaflet.markercluster.js"></script>
     <script src="resources/js/common.js"></script>
+    <script src="resources/js/healthsites.js"></script>
     <script src="resources/js/landing.js"></script>
     <script src="resources/js/nav.js"></script>
 
@@ -477,8 +642,11 @@
     <!-- new events script -->
     <script src="resources/js/new-event.js"></script>
 
+    <script src="resources/js/missions.js"></script>
+
+    <!-- Google autocomplete -->
     <script src="/resources/js/address-autocomplete.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g&libraries=places&callback=initGoogle" async defer></script>
 
   </body>
 </html>

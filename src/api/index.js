@@ -17,6 +17,7 @@ import hazards from './routes/hazards';
 import utils from './routes/utils';
 import missions from './routes/missions';
 import contacts from './routes/contacts';
+import proxy from './routes/proxy'; // for adding cors
 
 export default ({ config, db, logger }) => {
     let api = Router();
@@ -34,6 +35,7 @@ export default ({ config, db, logger }) => {
     api.use('/utils', utils({ config, db, logger }) );
     api.use('/missions', missions({ config, db, logger }));
     api.use('/contacts', contacts({ config, db, logger }));
+    api.use('/proxy', proxy({config, logger}));
 
     // Handle validation errors (wording of messages can be overridden using err.isJoi)
     api.use(validate.errors());

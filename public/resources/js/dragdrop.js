@@ -27,6 +27,7 @@ function dropSaveTweet(ev) {
     }
     var body = {
         'status':'active',
+        'type': currentEventProperties.type,
         'metadata':{'saved_tweets':currentEventProperties.metadata.saved_tweets}
     };
     $.ajax({

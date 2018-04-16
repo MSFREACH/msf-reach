@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 // Import any required utility functions
-import { cacheResponse, jwtCheck } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
 
 import { PDC } from '../../../lib/pdc-georss.js';
 import { USGS } from '../../../lib/usgs-georss.js';
@@ -15,7 +15,7 @@ export default ({ logger }) => {
     let api = Router();
 
     // Get a list of all reports
-    api.get('/pdc', jwtCheck, cacheResponse('10 minutes'),
+    api.get('/pdc', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => PDC()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -28,7 +28,8 @@ export default ({ logger }) => {
             })
     );
 
-    api.get('/usgs', jwtCheck, cacheResponse('10 minutes'),
+    // The following get methods get hazards from different data sources
+    api.get('/usgs', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => USGS()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -41,7 +42,7 @@ export default ({ logger }) => {
             })
     );
 
-    api.get('/tsr', jwtCheck, cacheResponse('10 minutes'),
+    api.get('/tsr', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => TSR()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -54,7 +55,7 @@ export default ({ logger }) => {
             })
     );
 
-    api.get('/gdacs', jwtCheck, cacheResponse('10 minutes'),
+    api.get('/gdacs', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => GDACS()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -67,7 +68,7 @@ export default ({ logger }) => {
             })
     );
 
-    api.get('/ptwc', jwtCheck, cacheResponse('10 minutes'),
+    api.get('/ptwc', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => PTWC()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});

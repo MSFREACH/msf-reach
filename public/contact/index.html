@@ -51,6 +51,9 @@
               <div class="form-group" style="text-align:center;margin-bottom:20px; display:none;" id="permission">
                 <label class="checkbox-inline"><input type="checkbox" name="input permission" id="inputPermissionAcknowledge">I acknowledge I have permission from contacts I am entering to enter their information.</label>
               </div>
+              <div class="form-group" style="text-align:center;margin-bottom:20px; display:none;" id="private">
+                <label class="checkbox-inline"><input type="checkbox" name="input permission" id="inputPrivate">I wish to keep this data private for my use in MSF.</label>
+              </div>
               <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
@@ -98,6 +101,11 @@
                     <option value="female">female</option>
                     <option value="">other</option>
                   </select>
+                </div>
+                <div class="form-group" style="display:none;" id="sharepoint">
+                  <div style="height:20px"></div>
+                  <label for="inputContactSharepoint" style="text-transform:uppercase;">Sharepoint link</label>
+                  <input maxlength="50" placeholder="Sharepoint link for meeting notes..." class="form-control" style="color:black;" id="inputContactSharepoint">
                 </div>
                 <div class="form-group" id="divOtherGender" style="display:none;">
                   <label for="inputContactOtherGender" style="text-transform:uppercase;">Other gender</label>
@@ -284,10 +292,11 @@
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
   <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script type="text/javascript" src="/resources/js/common.js"></script>
+
   <!-- Cookies -->
   <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script type="text/javascript" src="/resources/js/common.js"></script>
 
   <!-- Get query parameter from URL -->
   <!-- Ask the server for reports from specific event -->
@@ -300,7 +309,7 @@
   <script src="/resources/js/new-contact.js"></script>
   <script src="contact.js"></script>
   <script src="/resources/js/address-autocomplete.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5DR_fuQKdLK_6GRMOHOhKBniLYxUUhNw&libraries=places&callback=initGoogle" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g&libraries=places&callback=initGoogle" async defer></script>
 </body>
 
 </html>

@@ -10,37 +10,76 @@
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
-var MAX_RADIUS= 5;
 
 
-var mainMap = L.map('map').setView([-6.8, 108.7], 7);
+var computerTriggered = false; // keep track of events that are computer triggered so we can deal just with human triggered ones
 
-var computerTriggered = false;
+// set up the map:
+var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false});
 
-var firstContactsLoad = true;
-var firstMissionsLoad = true;
+mainMap.on('load', function(loadEvent) {
+    getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
 
-var zoomToEvent = function(latlng) {
+mainMap.setView([-6.8, 108.7], 7);
+
+
+mainMap.on('zoomend', function(zoomEvent)  {
+    getHealthSites(mainMap.getBounds(),mapHealthSites); // load healthsites based on map bounds on each zoom / pan event
+});
+
+
+//Bind Autocomplete to inputs:
+function bindAutocompletes()
+{
+    if ((!google)||(!google.maps))
+    {
+        setTimeout(bindAutocompletes,200);
+        //console.log('not ready, retrying in 0.2s...');
+        return;
+    }
+    bindACInputToMap(mainMap,'eventAddress');
+}
+
+bindAutocompletes();
+
+/**
+* function for zooming to a point
+* @function zoomToEventPoint
+* @param {Object} latlng - coords to zoom to, Leaflet latlng object http://leafletjs.com/reference-1.3.0.html#latlng
+*/
+var zoomToEventPoint = function(latlng) {
     mainMap.setView(latlng, 5);
+};
+
+/**
+* function for zooming to event bounds (coming out of event data)
+* @function zoomToEventBounds
+* @param {Object} bounds - coords to zoom to, object with ._southWest etc bounds
+*/
+var zoomToEventBounds = function(bounds) {
+    var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
+    mainMap.fitBounds(rBounds);
 };
 
 var clipboard = new Clipboard('.btn');
 
+// long form of labels:
 var labels = {
     'exploratory_details': 'Exploratory details',
-    'operational_center': 'Operational Center',
     'other_orgs': 'Other organisations',
     'capacity': 'Capacity',
     'deployment': 'Deployment details',
-    'name': 'Event name',
     'region': 'Region',
     'incharge_position': 'In charge position',
-    'incharge_name': 'In charge name',
-    'sharepoint_link': 'SharePoint Link',
-    'msf_response_medical_material_total': 'Number of medical supplies',
-    'msf_response_non_medical_material_total': 'Number of non-medical supplies',
-    'ext_capacity_who': 'Ext capacity on the ground (name)'
+    'incharge_name': 'In charge name'
 };
+
+/**
+* function for unpacking metadata into a table
+* @function unpackMetadata
+* @param {Object} metadata - metadata to transform into html table elements
+*/
 
 var unpackMetadata = function(metadata) {
     var result = '';
@@ -49,43 +88,8 @@ var unpackMetadata = function(metadata) {
             result += '<dt>'+labels[property]+':</dt><dd>'+metadata[property]+'</dd>';
         }
     }
-    if (metadata.hasOwnProperty('percentage_population_affected')) {
-        if (metadata.percentage_population_affected!=='NaN') {
-            result += '<dt>percentage_population_affected: </dt><dd>'+metadata.percentage_population_affected+'</dd>';
-        }
-    }
-    if (metadata.hasOwnProperty('msf_resource_visa_requirement')) {
-        result += '<dt>Visa requirement:</dt>';
-        $.each(metadata.msf_resource_visa_requirement.nationality,function(i,val){
-            if(val)
-                result += '<dd>'+val.name+', <i>required</i>: '+val.is_required+'</dd>';
-        });
-        if (metadata.msf_resource_visa_requirement.description)
-            result += '<dd> Description: '+ metadata.msf_resource_visa_requirement.description+'</dd>';
-    }
-    if (metadata.hasOwnProperty('msf_response_medical_material')) {
-        result += '<dt>Medical requirements:</dt><dd>';
-        for (var i =0; i < metadata.msf_response_medical_material.length; i++) {
-            result += metadata.msf_response_medical_material[i] + '<br>';
-        }
-        result += '</dd>';
-        result += '<dt>Number of medical requirements:</dt><dd>' + metadata.msf_response_medical_material_total +'</dd>';
-        if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
-            result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
-        }
-    }
-    if (metadata.hasOwnProperty('msf_response_non_medical_material')) {
-        result += '<dt>Medical requirements:</dt><dd>';
-        for (var i =0; i < metadata.msf_response_non_medical_material.length; i++) { // eslint-disable-line no-redeclare
-            result += metadata.msf_response_non_medical_material[i] + '<br>';
-        }
-        result += '</dd>';
-        result += '<dt>Number of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_total +'</dd>';
-        if (metadata.hasOwnProperty('msf_response_non_medical_material_date_arrival') && metadata.msf_response_non_medical_material_date_arrival && metadata.msf_response_non_medical_material_date_arrival.includes('T')) {
-            result += '<dt>Arrival of non-medical requirements:</dt><dd>' + metadata.msf_response_non_medical_material_date_arrival.split('T')[0]+'</dd>';
-        }
-    }
-    else {
+
+    if (!(metadata.hasOwnProperty('msf_response_non_medical_material'))) {
         if (metadata.hasOwnProperty('nonMedicalMaterials')) {
             result += '<dt>Medical Materials</dt><dd>'+metadata.nonMedicalMaterials+'</dd>';
         }
@@ -95,6 +99,7 @@ var unpackMetadata = function(metadata) {
 
 /**
 * Function to return an icon for mission in popupContent
+* @function missionPopupIcon
 * @param {String} type - type of disaster
 **/
 var missionPopupIcon = function(missionType) {
@@ -141,22 +146,35 @@ var missionPopupIcon = function(missionType) {
     return html;
 };
 
-
+/**
+* Function for map reduction of notification array
+* @function reduceNotificationArray
+* @param {String} acc - accumulator
+* @param
 var reduceNotificationArray = function(acc, elem) {
     return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
 };
 
 /**
 * Function to print a list of event details to web page
+* @function printEventProperties
 * @param {Object} eventProperties - Object containing event details
+* @param {Object} err - error object, null if no error
 */
 var printEventProperties = function(err, eventProperties){
 
 
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
+    vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
+    vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
+    vmEventDetails.$mount('#eventVApp');
+    eventReportLink=vmEventDetails.eventReportLink;
+
+
 
     if (currentEventProperties.metadata.country) {
+        getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
         $.getJSON({
             url: '/resources/js/country-to-language-mapping.json'
         }).done(function(result) {
@@ -181,91 +199,12 @@ var printEventProperties = function(err, eventProperties){
             }];
     }
 
-    // Add to Twitter search "AI"
-    $(document).ready(function(){
-        var searchTerm = '';
-        if (currentEventProperties) {
-            if (currentEventProperties.metadata.name) {
-                if (currentEventProperties.metadata.name.includes('_')) {
-                    elements = currentEventProperties.metadata.name.split('_');
-                    for (var i = 0; i < elements.length-1; i++) {
-                        searchTerm += elements[i] + ' ';
-                    }
-                } else {
-                    searchTerm = currentEventProperties.metadata.name;
-                }
-            } else {
-                if (currentEventProperties.hasOwnProperty('type')) {
-                    searchTerm = currentEventProperties.type.replace(',','');
-                }
-                if (currentEventProperties.hasOwnProperty('sub_type')) {
-                    searchTerm = currentEventProperties.metadata.sub_type.replace(',','');
-                }
-                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
-                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
-                }
-            }
-            if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += ' ' + currentEventProperties.metadata.country;
-            }
-            $('#searchTerm').val(searchTerm);
-        }
-        $('#btnSearchTwitter').trigger('click');
 
-        $('#searchTerm').keyup(function(event){
-            if(event.keyCode == 13){
-                $('#btnSearchTwitter').trigger('click');
-            }
-        });
-
-    });
 
     // If called with err, print that instead
     if (err){
         $('#eventProperties').append(err);
     } else {
-        var propertiesTable = '';
-        propertiesTable += '<table class="table">';
-        //['id', 'status', 'type', 'created'];
-        propertiesTable += '<tr><td>Name</td><td>'+eventProperties.metadata.name+'</td></tr>';
-        propertiesTable += '<tr><td>Country</td><td>'+eventProperties.metadata.country+'</td></tr>';
-        propertiesTable += '<tr><td>Status</td><td>'+(eventProperties.metadata.event_status || 'monitoring')+'</td></tr>';
-        propertiesTable += '<tr><td>Type</td><td>'+eventProperties.type+' '+eventProperties.metadata.sub_type+'</td></tr>';
-        propertiesTable += '<tr><td>Event date and Time</td><td>'+(eventProperties.metadata.event_datetime || eventProperties.created_at)+'</td></tr>';
-
-        if (eventProperties.metadata.notification)
-        {
-            var notStr=(eventProperties.metadata.notification.length > 0) ? eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification+' @ ' + (new Date(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
-            propertiesTable += '<tr><td>Latest notification: </td><td>'+ notStr +'</td></tr>';
-        }
-        else
-            propertiesTable += '<tr><td>Latest notification:  </td><td>(none)</td></tr>';
-        propertiesTable += '<tr><td>Severity </td><td>'+(typeof(eventProperties.metadata.severity_scale) !== 'undefined' ? 'scale: ' + severityLabels[eventProperties.metadata.severity_scale-1] + '<br>' : '')+ eventProperties.metadata.severity+'</td></tr>';
-        propertiesTable += '<tr><td>Person In charge </td><td>'+eventProperties.metadata.incharge_name+', '+eventProperties.metadata.incharge_position+'</td></tr>';
-        propertiesTable += '<tr><td>Sharepoint Link </td><td>'+eventProperties.metadata.sharepoint_link+'</td></tr>';
-        //propertiesTable += '<tr><td> </td><td>'++'</td></tr>';
-        propertiesTable += '<tr><td>Last updated at</td><td>'+eventProperties.updated_at.split('T')[0]+'</td></tr>';
-
-
-
-
-
-        // Create unique link to this event
-        var eventLink = WEB_HOST + 'events/?eventId=' + eventProperties.id;
-        // Create unique report link for this event
-        eventReportLink = WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
-        // Add unique link to this event
-        propertiesTable += '<tr><td>Event link</td><td><a id=\'eventLink\'  href=\''+eventLink+'\' target=\'_blank\'>'+eventLink+'</a></td><td><button class=\'btn btn-primary  \' data-clipboard-target=\'#eventLink\'>Copy link</button></td></tr>';
-        // Add unique link to report to this event
-        propertiesTable += '<tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td><td><a style="display:none;" id=\'reportLink\' href=\''+eventReportLink+'\' target=\'_blank\'>'+eventReportLink+'</a><button class=\'btn btn-primary\' data-clipboard-text=\''+eventReportLink+'\'>Copy link</button></td></tr>';
-        // Add user metadata
-        if (eventProperties.metadata.user) {
-            propertiesTable += '<tr><td>Creator</td><td>'+eventProperties.metadata.user+'</td></tr>';
-        }
-        if (eventProperties.metadata.user_edit) {
-            propertiesTable += '<tr><td>Edits</td><td>'+eventProperties.metadata.user_edit+'</td></tr>';
-        }
-
         // Pre-fil edit modal
         $('#inputName').val(eventProperties.metadata.name);
         if (typeof(eventProperties.metadata.event_status)!=='undefined') {
@@ -280,10 +219,6 @@ var printEventProperties = function(err, eventProperties){
             $('#inputNotification').val(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification);
         }
 
-        // Append output to body
-        propertiesTable += '</table>';
-
-        $('#eventProperties').html(propertiesTable);
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
@@ -292,11 +227,7 @@ var printEventProperties = function(err, eventProperties){
 
 
 
-        if (typeof(eventProperties.metadata.notification) !== 'undefined' && eventProperties.metadata.notification.length > 0 ) {
 
-            $('#eventNotifications').append('<table class="table"><thead><tr><td>Time</td><td>Notification</td></tr></thead><tbody>'+eventProperties.metadata.notification.reduceRight(reduceNotificationArray,'')+'</tbody></table>');
-
-        }
         var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
@@ -315,18 +246,23 @@ var printEventProperties = function(err, eventProperties){
     }
 };
 
+var currentEventGeometry = null; // for storing current event geometry
+
 /**
 * Function to get event details from API
+* @function getEvent
 * @param {Number} eventId - Unique event ID to fetch
 * @param {Function} callback - Function to call once data returned
-* @returns {String} err - Error message if any, else none
-* @returns {Object} eventProperties - Event properties unless error
 */
-var currentEventGeometry = null;
 var getEvent = function(eventId, callback){
     $.getJSON('/api/events/' + eventId + '?geoformat=' + GEOFORMAT, function ( data ){
     // Zoom to location
-        zoomToEvent([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]]);
+
+        if (data.result.features[0].properties.metadata.hasOwnProperty('bounds')) {
+            zoomToEventBounds(data.result.features[0].properties.metadata.bounds);
+        } else {
+            zoomToEventPoint([data.result.features[0].geometry.coordinates[1],data.result.features[0].geometry.coordinates[0]]);
+        }
         // Print output to page
         currentEventGeometry = data.result.features[0].geometry;
         callback(null, data.result.features[0].properties);
@@ -342,7 +278,10 @@ var getEvent = function(eventId, callback){
 
 /**
 * Function to get reports for an event
+* @function getReports
 * @param {Number} eventId - UniqueId of event
+* @param {Object} mapForReports - map to put the reports on
+* @param {Object} callback - mapping callback function once reports are loaded
 **/
 var getReports = function(eventId, mapForReports, callback){
     $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
@@ -358,6 +297,12 @@ var getReports = function(eventId, mapForReports, callback){
 
 var reportMarkers = [];
 
+/**
+* Function to get reports for an event
+* @function openReportPopup
+* @param {Object} mapForReports - map to put the reports on
+* @param {Object} callback - mapping callback function once reports are loaded
+**/
 function openReportPopup(id) {
     for (var i in reportMarkers){
         var markerID = reportMarkers[i].options.id;
@@ -367,6 +312,17 @@ function openReportPopup(id) {
             break;
         }
     }
+}
+
+
+function openEventPopup(id)
+{
+    eventsLayer.eachLayer(function(layer){
+        if (layer.feature.properties.id == id)
+        {
+            layer.openPopup(mainMap.center);
+        }
+    });
 }
 
 /**
@@ -403,16 +359,15 @@ var mapAllEvents = function(err, events){
         var severityStr = '';
 
         if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity comment: ' + feature.properties.metadata.severity + '<br>';
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
         }
         if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += severityLabels[feature.properties.metadata.severity-1] + '<br>';
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
         }
 
-
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type;
-        if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
+        if (icon_name.includes('epidemiological')) {
             icon_name = 'epidemic';
         }
 
@@ -422,12 +377,25 @@ var mapAllEvents = function(err, events){
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
     'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type: ' + type.replace('_',' ') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
     notificationStr +
     totalPopulationStr +
     affectedPopulationStr;
+
+        $('#ongoingEventsContainer').append(
+            '<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
+      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+      statusStr +
+      notificationStr +
+      totalPopulationStr +
+      affectedPopulationStr +
+      '</div>'
+        );
 
 
         if (feature.properties && feature.properties.popupContent) {
@@ -473,6 +441,7 @@ var mapAllEvents = function(err, events){
 
 /**
 * Function to add contacts to map
+* @function mapContacts
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
 var mapContacts = function(contacts) {
@@ -537,7 +506,7 @@ var mapContacts = function(contacts) {
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
 
-            return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
 
         }
     });
@@ -564,6 +533,8 @@ var mapContacts = function(contacts) {
 
 /**
 * Function to get contacts
+* @function initGetContacts
+* @param {function} callback - function to process contact data once loaded
 **/
 var initGetContacts = function(callback){
     $.getJSON('/api/contacts/?geoformat=' + GEOFORMAT, function( data ){
@@ -578,6 +549,7 @@ var initGetContacts = function(callback){
 };
 
 /**
+* -- comment progress marker
 * Function to get missions
 **/
 var initGetMissions = function(callback){
@@ -609,7 +581,7 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined'){
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
                 popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
@@ -649,7 +621,7 @@ var mapMissions = function(missions ){
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
 
-            return new L.DivIcon({ html: '<div><span style="color:black;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-missions-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
 
         }
     });
@@ -823,17 +795,40 @@ mainMap.on('overlayremove', function (layersControlEvent) {
     }
 });
 
+/**
+* Function to get all events from the API
+* @param {Function} callback - Function to call once data returned
+* @returns {String} err - Error message if any, else none
+* @returns {Object} events - Events as GeoJSON FeatureCollection
+*/
+var getEventsByCountry = function(country, callback){
+    var q;
+    if (typeof(country)!=='undefined' && country !== '') {
+        q = '&country='+country;
+    }
+    $.getJSON('/api/events/?status=active'+q+'&geoformat=' + GEOFORMAT, function ( data ){
+    // Print output to page
+        callback(null, data.result);
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            callback(err.responseText, null);
+        }
+    });
+};
+
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getAllEvents(mapAllEvents);
+
 
 
 // Enter an API key from the Google API Console:
 //   https://console.developers.google.com/apis/credentials
-const GoogleApiKey = 'AIzaSyAhhKWjsykF_ljVvn-P1o4l6aeE0tGjZOI';
+const GoogleApiKey = 'AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g';
 
 // Set endpoints
 const GoogleEndpoints = {
@@ -875,29 +870,137 @@ function translate(data) {
     makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
         resp
     ) {
-        if (resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '') {
-            $('#searchTerm').val(data.textToTranslate); // just return original
-        } else {
+        if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
             $('#btnSearchTwitter').trigger('click');
+        } else {
+            $('#searchTerm').val('(no translation found)');
         }
     });
 }
 
-// On document ready
-$(function() {
-    window.makeApiRequest = makeApiRequest;
-    var translationObj = {};
 
-    $('#translateLanguageSelection')
-    // Bind translate function to translate button
-        .on('change', function() {
-            var translateObj = {
-                textToTranslate: $('searchTerm').val(),
-                targetLang: $(this).val()
-            };
+var editCategory='general';
+var vmEventDetails = new Vue({
 
+    data: {
+        severityColors: severityColors,
+        severityLongTexts: severityLongTexts,
+        msfTypeOfProgrammes:msfTypeOfProgrammes,
+    },
+    mounted:function(){
+        $('.msf-loader').hide();
+        //console.log('mounted event instance.');
+        //console.log(this.event);
 
-            translate(translateObj);
+        // Search Twitter
+        $('#btnSearchTwitter').click(function() {
+            if ($('#searchTerm').val() !== '') {
+                var search = $('#searchTerm').val();
+                getTweets(search);
+
+            }
         });
+
+
+        var searchTerm = '';
+
+        if (currentEventProperties) {
+            if (currentEventProperties.metadata.name) {
+                if (currentEventProperties.metadata.name.includes('_')) {
+                    elements = currentEventProperties.metadata.name.split('_');
+                    for (var i = 0; i < elements.length-1; i++) {
+                        searchTerm += elements[i] + ' ';
+                    }
+                } else {
+                    searchTerm = currentEventProperties.metadata.name;
+                }
+            } else {
+                searchTerm = typeStr(currentEventProperties.type, currentEventProperties.metadata.sub_type);
+                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
+                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                }
+            }
+            if (currentEventProperties.metadata.hasOwnProperty('country')) {
+                searchTerm += ' ' + currentEventProperties.metadata.country;
+            }
+            $('#searchTerm').val(searchTerm);
+        }
+        $('#btnSearchTwitter').trigger('click');
+
+        $('#searchTerm').keyup(function(event){
+            if(event.keyCode == 13){
+                $('#btnSearchTwitter').trigger('click');
+            }
+        });
+
+
+        window.makeApiRequest = makeApiRequest;
+        var translationObj = {};
+
+        $('#translateLanguageSelection')
+        // Bind translate function to translate button
+            .on('change', function() {
+                var translateObj = {
+                    textToTranslate: $('#searchTerm').val(),
+                    targetLang: $(this).val()
+                };
+
+                if (translateObj.textToTranslate !== '') {
+                    translate(translateObj);
+                }
+            });
+
+        $('#contSearchTerm').on('input',function(){
+            if ($('#inputContactType').val()!=='') {
+                thGetContacts(this.value,$('#inputContactType').val());
+            } else {
+                thGetContacts(this.value);
+            }
+
+        });
+
+        $('#inputContactType').on('change',function(){
+            if ($('#contSearchTerm').val()!=='') {
+                thGetContacts($('#contSearchTerm').val(),this.value);
+            } else {
+                thGetContacts(null,this.value);
+            }
+        });
+
+        eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+
+
+    },
+    methods:{
+        getTypeOfProgramme:function(val)
+        {
+            var filtered= msfTypeOfProgrammes.filter(function(e){
+                return e.value==val;
+            });
+            return filtered[0].text;
+        },
+        formatDateOnly:function(value) {
+            if (value) {
+                return moment(value).format('YYYY-MM-DD');
+            }
+        },
+        editEvent:function(category){
+            editCategory=category;
+            onEditEvent();
+            $( '#editModal' ).modal('show');
+        }
+    },
+    computed:{
+        notStr:function(){
+            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+        },
+        eventLink:function(){
+            return WEB_HOST + 'events/?eventId=' + this.event.id;
+        },
+        eventReportLink:function()
+        {
+            return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+        }
+    }
 });

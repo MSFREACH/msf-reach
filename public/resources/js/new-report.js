@@ -16,15 +16,18 @@ var NRmapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/sat
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
+// base maps
 var NRbaseMaps = {
     'Terrain': NRmapboxTerrain,
     'Satellite' : NRmapboxSatellite
 };
 
+// setup overlay maps and controls
 var NRoverlayMaps = {};
 
 var NRlayerControl = L.control.layers(NRbaseMaps, NRoverlayMaps, {'position':'topright'}).addTo(newReportMap);
 
+// tie to modal display
 $('#newReportModal').on('shown.bs.modal', function() {
     _.defer(newReportMap.invalidateSize.bind(newReportMap));
 });
@@ -34,7 +37,10 @@ $('#newReportModal').on('hidden.bs.modal', function() {
 });
 
 
-
+/**
+ * refresh event page to show the details of the new report
+ * @function refreshEventPage
+ */
 var refreshEventPage = function() {
     var saveCookies = {'- access': Cookies.get('- access'),
         '- needs': Cookies.get('- needs'),
@@ -58,22 +64,28 @@ var refreshEventPage = function() {
 };
 
 
-var marker;
-var latlng = null;
+// define what happens on click
 newReportMap.on('click', function(e) {
-    if(marker)
-        newReportMap.removeLayer(marker);
-    latlng = e.latlng; // e is an event object (MouseEvent in this case)
-    marker = L.marker(e.latlng).addTo(newReportMap);
+    if(this.msf_marker)
+        newReportMap.removeLayer(this.msf_marker);
+    this.msf_latlng = e.latlng; // e is an event object (MouseEvent in this case)
+    this.msf_marker = L.marker(e.latlng).addTo(newReportMap);
 });
 
+/**
+ * post a new report
+ * @function postReport
+ * @param {integer} eventID - relevant event ID
+ * @param {string} reportKey
+ * @param {string} imgLink - optional url for uploaded report image
+ */
 function postReport(eventID,reportKey,imgLink) {
     var body = {
         'eventId': eventID,
         'status': 'unconfirmed',
         'created': new Date().toISOString(),
         'reportkey': reportKey,
-        'location':latlng,
+        'location':newReportMap.msf_latlng,
         'content':{
             'report_tag': $('.rtype-selected').attr('data-msf-value'),
             'username/alias':$('#inputReportUserName').val(),
@@ -103,7 +115,7 @@ function postReport(eventID,reportKey,imgLink) {
     });
 }
 
-
+// create a report on click:
 $('#createReport').on('click', function (e) {
     var eventId, reportKey;
 
@@ -122,7 +134,7 @@ $('#createReport').on('click', function (e) {
 
     var imgLink='';
 
-    if (latlng !== null ) {
+    if (newReportMap.msf_latlng !== null ) {
         $('#divProgress').html('Submitting your report...');
         var files=document.getElementById('inputImageUpload').files;
 

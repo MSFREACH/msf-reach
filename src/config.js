@@ -1,14 +1,39 @@
 require('dotenv').config({silent: true});
 
+var types = 'conflict,epidemiological,displacement,malnutrition,natural_hazard,search_and_rescue,other';
+types = types.split(',');
+
+//get all possible combinations of types in correct order
+function powerSet( list ){
+    var set = [],
+        listSize = list.length,
+        combinationsCount = (1 << listSize);
+
+    for (var i = 1; i < combinationsCount ; i++ ){
+        var combination = [];
+        for (var j=0;j<listSize;j++){
+            if ((i & (1 << j))){
+                combination.push(list[j]);
+            }
+        }
+        set.push(combination.join());
+    }
+    return set;
+}
+
 export default {
     AUTH: process.env.AUTH === 'true' || false,
+    AZURE_AD_TENANT_NAME: process.env.AZURE_AD_TENANT_NAME || '',
+    AZURE_AD_CLIENT_ID: process.env.AZURE_AD_CLIENT_ID || '',
+    AZURE_AD_RETURN_URL: process.env.AZURE_AD_RETURN_URL || '',
+    AZURE_AD_OPERATORS_GROUP_ID: process.env.AZURE_AD_OPERATORS_GROUP_ID || '',
     APP_NAME: process.env.APP_NAME || 'msf-reach',
     API_KEY: process.env.API_KEY || '',
     API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
     API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
     API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
-    API_EVENT_TYPES: (process.env.API_EVENT_TYPES || 'natural_hazard,conflict,epidemiological,search_and_rescue,displacement,malnutrition,other').split(','),
+    API_EVENT_TYPES: powerSet(types),
     API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'unconfirmed,confirmed').split(','),
     AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
     AWS_COGNITO_ALGORITHM: process.env.AWS_COGNITO_ALGORITHM || 'RS256',
@@ -20,6 +45,7 @@ export default {
     COMPRESS: process.env.COMPRESS === 'true' || false,
     CORS: process.env.CORS === 'true' || false,
     CORS_HEADERS: process.env.CORS_HEADERS || ['Link'],
+    CORSANYWHERE_WHITELIST: process.env.CORSANYWHERE_WHITELIST || '',
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
     PEER_GUID_TIMEOUT: process.env.PEER_GUID_TIMEOUT || 3600,
     PGHOST: process.env.PGHOST || '127.0.0.1',
@@ -48,10 +74,12 @@ export default {
     REDIRECT_HTTP: process.env.REDIRECT_HTTP === 'true' || false,
     RESPONSE_TIME: process.env.RESPONSE_TIME === 'true' || false,
     SECURE_AUTH0: process.env.SECURE_AUTH0 === 'true' || false,
+    SESSION_SECRET: process.env.SESSION_SECRET || 'you should change this',
     SMTP_USER: process.env.SMTP_USER || '',
     SMTP_PASS: process.env.SMTP_PASS || '',
     STATIC_PATH: process.env.STATIC_PATH || 'public',
     STATIC_AUTH_PATH: process.env.STATIC_AUTH_PATH || 'public/login',
+    STATIC_AUTH_RETURN_PATH: process.env.STATIC_AUTH_RETURN_PATH || 'public/authreturn',
     STATIC_REPORT_PATH: process.env.STATIC_REPORT_PATH || 'public/report',
     STATIC_CONTACT_PATH: process.env.STATIC_CONTACT_PATH || 'public/contact',
     STATIC_RESOURCES_PATH: process.env.STATIC_RESOURCES_PATH || 'public/resources',

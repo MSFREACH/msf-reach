@@ -10,10 +10,32 @@ $(function() {
                 if (window.location.pathname !== '/login/') {
                     window.location.href = '/login/';
                 }
+            },
+            403: function() {
+                var current_modal = jQuery('.modal.in').attr('id'); // modalID or undefined
+                if (current_modal) { // modal is active
+                    $('#' + current_modal).modal('hide'); // close modal
+                }
+                $('#operatorAccessModel').modal('show');
             }
         }
     });
 });
+
+var typeStr = function(type, sub_type) {
+    var result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
+    if (result !== '') {
+        result += ', ';
+        result += sub_type ? (sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
+    } else {
+        result += sub_type ? (sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
+    }
+    return result;
+};
+
+var severityColors=['green','orange','red'];
+var severityTexts=['low','med','high'];
+var severityLongTexts=['low','medium','high'];
 
 var severityLabels = ['<span style="color:green">low</span>',
     '<span style="color:orange">med</span>',
@@ -34,11 +56,15 @@ var reportsContactsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 
+var computerTriggered = false;
+
 var PDCHazardsLayer;
 var TSRHazardsLayer;
 var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
+
+var MAX_RADIUS= 250;
 
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
@@ -68,6 +94,14 @@ if (Cookies.get('Ongoing MSF Projects')==='undefined') {
     Cookies.set('Ongoing MSF Projects','on');
 }
 
+if (Cookies.get('Health Sites')==='undefined') {
+    Cookies.set('Health Sites','on');
+}
+
+// keep track of the first time we load missions and contacts (used in code for updating based on map extents)
+var firstContactsLoad = true;
+var firstMissionsLoad = true;
+
 /**
 * Function to get feeds
 **/
@@ -75,10 +109,8 @@ var getFeeds = function(url, callback) {
     $.getJSON(url, function( data ){
         callback(data.result);
     }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
+        if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
             alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
         }
     });
 };
@@ -191,7 +223,7 @@ var GDACSHazardIcon = function(GDACSProperties) {
         iconUrl += 'cyclone_';
         break;
     default:
-        console.log('error in GDACS data'); // eslint-disable-line no-console
+        return L.icon({'iconUrl':'404.svg'}); // eslint-disable-line no-console
     }
     switch(GDACSProperties.level) {
     case 'green':

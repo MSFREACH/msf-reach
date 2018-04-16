@@ -54,6 +54,10 @@ newEventMap.on('click', function(e) {
 
 */
 
+/**
+ * refresh the landing page to show up a new event
+ * @function refreshLandingPage
+ */
 var refreshLandingPage = function() {
     var saveCookie = Cookies.get('Ongoing MSF Projects');
     mainMap.removeLayer(eventsLayer);
@@ -66,8 +70,9 @@ var refreshLandingPage = function() {
     $('watchingTab').tab('show');
 };
 
-
+// various input related functions
 $(function(){
+    // set up #inputEvDateTime as a date time picker element
     $( '#inputEvDateTime' ).datetimepicker({
         //controlType: 'select',
         changeMonth: true,
@@ -76,23 +81,26 @@ $(function(){
         yearRange: '1900:' + new Date().getFullYear()
     });
 
-
+    // create a new event - get the values and store them using a POST
     $('#createEvent').on('click', function (e) {
 
         if (latlng === null){
             alert('Please select the epicenter of the event using the map.');
         }
         else {
-            var sub_type = $('#inputDisasterType').val() || $('#inputDiseaseType').val()  || $('#inputOther').val();
+            var sub_type = $('input[class=newSubEventTypeBox]:checked').map(
+                function () {return this.value;}).get().join(',');
             var body = {
                 'status': 'active',
-                'type': $('#selectType').val(),
+                'type': $('input[class=newEventTypeBox]:checked').map(
+                    function () {return this.value;}).get().join(','),
                 'created_at': new Date().toISOString(),
                 'location': latlng,
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),
                     'sub_type': sub_type,
+                    'bounds': mainMap.getBounds(),
                     'event_datetime': $('#inputEvDateTime').val(),
                     'event_status': $('#inputEvStatus').val(),
                     'incharge_name': $('#inputInChargeName').val(),
@@ -123,21 +131,23 @@ $(function(){
 					*/
                 }
             };
-            $.ajax({
-                type: 'POST',
-                url: '/api/events',
-                data: JSON.stringify(body),
-                contentType: 'application/json'
-            }).done(function( data, textStatus, req ){
-                // var eventId = data.result.objects.output.geometries[0].properties.id;
-                $('#newEventModal').modal('hide');
-                refreshLandingPage();
-            }).fail(function (reqm, textStatus, err){
-                if (reqm.responseText.includes('expired')) {
-                    alert('session expired');
-                } else {
-                    alert('error creating event' + err);
-                }});
+            if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type === '') {
+                alert('ensure subtype(s) is/are selected');
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/events',
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                }).done(function( data, textStatus, req ){
+                    // var eventId = data.result.objects.output.geometries[0].properties.id;
+                    $('#newEventModal').modal('hide');
+                    refreshLandingPage();
+                }).fail(function (reqm, textStatus, err){
+                    if (reqm.responseText.includes('expired')) {
+                        alert('session expired');
+                    }});
+            }
         }
     });
 
@@ -146,24 +156,56 @@ $(function(){
     });
 
 
-    $('#selectType').change(function(){
-        $('#divNaturalDisaster').toggle(this.value == 'natural_hazard');
-        if (this.value != 'natural_hazard') $('#inputDisasterType').val('');
+    //hide/show div containers of subtypes and other text input if their relevant checkbox is true
+    $('.newEventTypeBox').change(function () {
+        //console.log(this.checked);
+        //console.log($(this).attr('id'));
 
-        $('#divDisease').toggle(this.value == 'epidemiological');
-        if (this.value != 'epidemiological')
-            $('#inputDiseaseType').val('');
+        //console.log($('input[class=newEventTypeBox]:checked').map(
+        //    function () {return this.value;}).get().join(', '));
 
+        if($(this).attr('id') == 'selectType4') {
+            $('#divNaturalDisaster').css('display', (this.checked ? '' : 'none'));
+        }
 
-        $('#divOther').toggle(this.value == 'other');
-        //$("#inputName").val(this.value.replace('_',' ')+" "+$("#inputEvDateTime").val());
+        if($(this).attr('id') == 'selectType1') {
+            $('#divDisease').css('display', (this.checked ? '' : 'none'));
+        }
+
+        if($(this).attr('id') == 'selectType6') {
+            $('#divOther').css('display', (this.checked ? '' : 'none'));
+        }
     });
 
+    $('.newSubEventTypeBox').change(function () {
+        if($(this).attr('id') == 'diseaseType7') {
+            $('#divOtherDisease').css('display', (this.checked ? '' : 'none'));
+            var diseaseTxt = $('#diseaseType8').val();
+            $(this).val(diseaseTxt);
+        }
 
-    $('#inputDisasterType , #inputDiseaseType').change(function(){
-        $('#divOther').toggle(!this.value);
-        if (this.value)
-            $('#inputOther').val('');
+        if($(this).attr('id') == 'disasterType7') {
+            $('#divOtherDisaster').css('display', (this.checked ? '' : 'none'));
+            var disasterTxt = $('#disasterType8').val();
+            $(this).val(disasterTxt);
+        }
+    });
+
+    $('.form-control').focusout(function () {
+
+        //console.log($(this).attr('id'));
+
+        if($(this).attr('id') == 'disasterType8') {
+            var disasterTxt = $(this).val();
+            $('#disasterType7').val(disasterTxt);
+            //console.log(disasterTxt);
+        }
+
+        if($(this).attr('id') == 'diseaseType8') {
+            var diseaseTxt = $(this).val();
+            $('#diseaseType7').val(diseaseTxt);
+            //console.log(diseaseTxt);
+        }
     });
 
 

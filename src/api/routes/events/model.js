@@ -14,17 +14,15 @@ export default (config, db, logger) => ({
     /**
 	 * Return all events
 	 * @param {String} Status of event { active | inactive }
-
+   * @param {String} Country filter for event
 	 */
-    all: (status) => new Promise((resolve, reject) => {
+    all: (status, country) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
 			FROM ${config.TABLE_EVENTS}
-			WHERE ($1 is null or status = $1)
+			WHERE ($1 is null or status = $1) AND ($2 is null or metadata->>'country' = $2)
 			ORDER BY updated_at DESC`;
-
-        let values = [ status ];
-
+        let values = [ status, country ];
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))
@@ -117,12 +115,13 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_EVENTS}
 			SET status = $1,
       updated_at = now(),
+            type = $4,
 			metadata = metadata || $2
 			WHERE id = $3
 			RETURNING type, created_at, updated_at, report_key, metadata, the_geom`;
 
         // Setup values
-        let values = [ body.status, body.metadata, id ];
+        let values = [ body.status, body.metadata, id, body.type ];
 
         // Execute
         logger.debug(query, values);

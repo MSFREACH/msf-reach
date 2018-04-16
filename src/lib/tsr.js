@@ -5,6 +5,8 @@ import rp from 'request-promise';
 import { parseDms } from 'dms-conversion';
 import { inAsiaBBox } from './util.js';
 
+// scrape data from Tropical Storm Risk site and return geojson with desired properties
+
 const TSR = () =>
     new Promise((resolve, reject) => {
         let HOST = 'http://www.tropicalstormrisk.com/tracker/dynamic';
@@ -41,8 +43,8 @@ const TSR = () =>
 
                         if (inAsiaBBox([currentDataCoords[1],currentDataCoords[0]])) {
                             // extract coords
-                            feature.geometry.coordinates.push(currentDataCoords[0]);
                             feature.geometry.coordinates.push(currentDataCoords[1]);
+                            feature.geometry.coordinates.push(currentDataCoords[0]);
                             // extract properties
                             feature.properties.source = 'Tropical Storm Risk';
                             feature.properties.title = 'Storm - ' + storm + ' in ' + basin;

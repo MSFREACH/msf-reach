@@ -1,9 +1,20 @@
 .marker-cluster-msf-contacts {
 	background-color: rgba(237,28,36,0.6);
 }
+.marker-cluster-msf-contacts-text{
+	color:white;
+}
 .marker-cluster-msf-missions{
 	background-color: rgba(204, 204, 204, 0.6);
 }
+.marker-cluster-msf-missions-text{
+	color:black;
+}
+
+.marker-cluster-healthsites{
+	background-color: rgba(190,190,190, 0.6);
+}
+
 
 .marker-cluster-small {
 	background-color: rgba(181, 226, 140, 0.6);
