@@ -517,22 +517,6 @@
                   <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
                 </div>
               </div>
-              <div class="form-group" >
-                Contact search category
-                  <select class="form-control" style="color:black;" id="inputContactType" >
-                    <option value="" selected>(no category filtering)</option>
-                    <option value="Current MSF Staff">Current MSF Staff</option>
-                    <option value="Supplier">Supplier</option>
-                    <option value="United Nations">United Nations</option>
-                    <option value="Government">Government</option>
-                    <option value="Other NGO">Other NGO</option>
-                    <option value="Academic">Academic</option>
-                    <option value="Private Medical Practice">Private Medical Practice</option>
-                  </select>
-              </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
-              </div>
               <div id="mainMap" style="height:65vh;"></div>
             </div>
           </div>
@@ -541,16 +525,16 @@
 
             <ul class="nav nav-tabs" id="landing_tabs">
               <!--top level tabs-->
-              <li><a href="#event" data-toggle="tab">EVENT STATUS</a></li>
+              <li class="active"><a href="#event" data-toggle="tab">EVENT STATUS</a></li>
               <li><a href="#contact" data-toggle="tab">CONTACTS</a></li>
             </ul>
 
             <!--top level tab content-->
             <div class="tab-content">
                 <!--event tab menu-->
-                <div id="event" class="tab-pane">
+                <div id="event" class="tab-pane active">
                     <ul class="nav nav-tabs" id="event_tabs">
-                        <li><a href="#event_monitoring" data-toggle="tab">Monitoring & Assessment</a></li>
+                        <li class="active"><a href="#event_monitoring" data-toggle="tab">Monitoring & Assessment</a></li>
                         <li><a href="#event_ongoing" data-toggle="tab">Ongoing Projects</a></li>
                         <li><a href="#event_missions" data-toggle="tab">Mission Histories</a></li>
                         <li><a href="#event_RSS" data-toggle="tab">RSS Feeds</a></li>
@@ -560,7 +544,8 @@
                 <!--contact tab menu-->
                 <div id="contact" class="tab-pane">
                     <ul class="nav nav-tabs" id="contact_tabs">
-                        <li><a href="#contact_new" data-toggle="tab">New</a></li>
+                        <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
+                        <li><a href="#contact_search" data-toggle="tab">Search</a></li>
                     </ul>
                 </div>
              </div>
@@ -589,6 +574,25 @@
             <div id="contact_new" class="tab-pane">
               <div id="newContact">
                 <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
+              </div>
+            </div>
+
+            <div id="contact_search" class="tab-pane">
+              <div class="form-group" >
+                Contact search category
+                  <select class="form-control" style="color:black;" id="inputContactType" >
+                    <option value="" selected>(no category filtering)</option>
+                    <option value="Current MSF Staff">Current MSF Staff</option>
+                    <option value="Supplier">Supplier</option>
+                    <option value="United Nations">United Nations</option>
+                    <option value="Government">Government</option>
+                    <option value="Other NGO">Other NGO</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Private Medical Practice">Private Medical Practice</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
               </div>
             </div>
 
