@@ -561,6 +561,10 @@
                 </div>
               </div>
               <div id="event_missions" class="tab-pane">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
+                </div>
+                <div id="missionsContainer"></div>
               </div>
               <div id="event_RSS" class="tab-pane">
                 <div id="rssFeeds" class="list-group">
@@ -637,6 +641,8 @@
 
     <!-- new events script -->
     <script src="resources/js/new-event.js"></script>
+
+    <script src="resources/js/missions.js"></script>
 
     <!-- Google autocomplete -->
     <script src="/resources/js/address-autocomplete.js"></script>

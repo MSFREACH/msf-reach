@@ -304,14 +304,13 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
-* @function mapMissions
+* @function mapMissions - function to map mission histories
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
 
     function onEachFeature(feature, layer) {
 
-        // generate popup content:
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
@@ -321,7 +320,7 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0){
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
                 popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
@@ -346,17 +345,47 @@ var mapMissions = function(missions ){
         popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
-    var missionsLayer = L.geoJSON(missions, {
+    var missionsLayerOn = mainMap.hasLayer(missionsClusters);
+
+    if (missionsClusters)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(missionsClusters);
+        layerControl.removeLayer(missionsClusters);
+        computerTriggered=false;
+    }
+
+    missionsClusters = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+
+            return new L.DivIcon({ html: '<div><span style="color:black;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+
+        }
+    });
+
+
+    missionsLayer = L.geoJSON(missions, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: missionIcon});
         },
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Mission Histories')==='on') {
-        missionsLayer.addTo(mainMap);
+
+    missionsClusters.addLayer(missionsLayer);
+
+    if (missionsLayerOn || firstMissionsLoad ) {
+        if (Cookies.get('Missions')==='on') {
+            missionsClusters.addTo(mainMap);
+        }
+        firstMissionsLoad = false;
     }
-    layerControl.addOverlay(missionsLayer, 'Mission Histories');
+
+
+    layerControl.addOverlay(missionsClusters, 'Missions');
+
 };
 
 
@@ -639,7 +668,7 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getMissions(mapMissions);
+//getMissions(mapMissions);
 getContacts(mapContacts);
 getFeeds('/api/hazards/pdc', tableFeeds);
 getFeeds('/api/hazards/usgs', tableFeeds);
