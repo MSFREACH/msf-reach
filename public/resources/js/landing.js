@@ -472,12 +472,19 @@ var mapContacts = function(contacts ){
         })
     );
 
-    nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+    nonMSFContactsLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+        }
+    }).addLayer(L.geoJSON(msfContact(contacts,false), {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: contactIcon});
         },
         onEachFeature: onEachFeature
-    });
+    })
+    );
 
     if (Cookies.get('- MSF Staff')==='on') {
         MSFContactsLayer.addTo(mainMap);
