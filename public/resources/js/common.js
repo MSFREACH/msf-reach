@@ -98,6 +98,10 @@ if (Cookies.get('Health Sites')==='undefined') {
     Cookies.set('Health Sites','on');
 }
 
+// keep track of the first time we load missions and contacts (used in code for updating based on map extents)
+var firstContactsLoad = true;
+var firstMissionsLoad = true;
+
 /**
 * Function to get feeds
 **/

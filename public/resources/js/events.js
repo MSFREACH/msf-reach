@@ -43,10 +43,6 @@ function bindAutocompletes()
 
 bindAutocompletes();
 
-// keep track of the first time we load missions and contacts (used in code for updating based on map extents)
-var firstContactsLoad = true;
-var firstMissionsLoad = true;
-
 /**
 * function for zooming to a point
 * @function zoomToEventPoint
