@@ -730,17 +730,17 @@ mainMap.on('overlayremove', function (layersControlEvent) {
 });
 
 $('#landing_tabs').on('click', 'a[data-toggle="tab"]', function(e) {
-      e.preventDefault();
+    e.preventDefault();
 
-      var $link = $(this);
+    var $link = $(this);
 
-      if (!$link.parent().hasClass('active')) {
+    if (!$link.parent().hasClass('active')) {
 
         //remove active class from other tab-panes
         $('.tab-content:not(.' + $link.attr('href').replace('#','') + ') .tab-pane').removeClass('active');
 
         // activate tab-pane for active section
         $('.tab-content.' + $link.attr('href').replace('#','') + ' .tab-pane:first').addClass('active');
-      }
+    }
 
 });
