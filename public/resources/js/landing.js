@@ -360,7 +360,7 @@ var mapMissions = function(missions ){
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
 
-            return new L.DivIcon({ html: '<div><span style="color:black;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-missions-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
 
         }
     });
@@ -461,7 +461,7 @@ var mapContacts = function(contacts ){
         maxClusterRadius:MAX_RADIUS,
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
-            return new L.DivIcon({ html: '<div><span style="color:red;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
         }
     }).addLayer(
         L.geoJSON(msfContact(contacts,true), {
