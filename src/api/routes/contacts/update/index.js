@@ -8,7 +8,7 @@ stored against the user in the database. A one-time link can be sent to users us
 import { Router } from 'express';
 
 // Import our data model
-import peers from './model';
+import update from './model';
 import contacts from '../model'; // parent contact model
 import mail from '../../../../lib/mailer';
 
@@ -30,7 +30,7 @@ export default ({ config, db, logger }) => {
         }),
         (req ,res, next) => {
             // Request GUID from database
-            peers(config, db, logger).requestGUID(req.query.email)
+            update(config, db, logger).requestGUID(req.query.email)
                 .then((data) => {
                     if (data !== null){
                         logger.info('Email user ' + data.guid);
@@ -39,7 +39,7 @@ export default ({ config, db, logger }) => {
                     }
                     else {
                         // Email did not exist in database
-                        logger.info('Peer contact not found, ' + req.query.email);
+                        logger.info('Contact not found, ' + req.query.email);
                         res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'error: email not found' });
                     }
                 })
@@ -66,7 +66,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
             // Validate the GUID against the email
-            peers(config, db, logger).validateGUID(req.query.email, req.query.guid)
+            update(config, db, logger).validateGUID(req.query.email, req.query.guid)
                 .then((data) => {
                     if (data !== null){
                         // Validation successful, update contact using ID
@@ -104,7 +104,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
             // Validate the GUID against the email
-            peers(config, db, logger).validateGUID(req.query.email, req.query.guid)
+            update(config, db, logger).validateGUID(req.query.email, req.query.guid)
                 .then((data) => {
                     if (data !== null){
                     // Validation successful, update contact using ID
