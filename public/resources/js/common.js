@@ -163,7 +163,7 @@ var mapPDCHazards = function(hazards){
 var hazardFeature = function(feature, layer) {
     var popupContent = '<strong><a href=\''+feature.properties.link+'\' target=_blank>' + feature.properties.title +'</a></strong>' + '<BR>Source: '+ feature.properties.source + '<BR>Summary: '+ feature.properties.summary +'<BR>Updated: ' + feature.properties.updated;
 
-    layer.bindPopup(popupContent);
+    layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
 };
 
 var mapTSRHazards = function(hazards){
