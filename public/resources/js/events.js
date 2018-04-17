@@ -402,7 +402,7 @@ var mapAllEvents = function(err, events){
             popupContent += feature.properties.popupContent;
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     eventsLayer = L.geoJSON(events, {
@@ -411,8 +411,7 @@ var mapAllEvents = function(err, events){
                 return L.marker(latlng, {icon: L.icon({
                     iconUrl: '/resources/images/icons/event_types/selected_event.svg',
                     iconSize:     [50, 50], // size of the icon
-                    iconAnchor: [25, 50],
-                    popupAnchor: [0, -40]
+                    iconAnchor: [25, 50]
                     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
                     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
                 })});
@@ -421,8 +420,7 @@ var mapAllEvents = function(err, events){
                 return L.marker(latlng, {icon: L.icon({
                     iconUrl: '/resources/images/icons/event_types/open_event.svg',
                     iconSize:     [50, 50], // size of the icon
-                    iconAnchor: [25, 50],
-                    popupAnchor: [0, -40]
+                    iconAnchor: [25, 50]
                     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
                     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
                 })});
@@ -479,7 +477,7 @@ var mapContacts = function(contacts) {
       '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     // MSF Icons
@@ -593,7 +591,7 @@ var mapMissions = function(missions ){
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     // MSF Icons
