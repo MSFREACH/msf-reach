@@ -76,6 +76,7 @@ export default ({ config, db, logger }) => {
         validate({
             body: Joi.object().keys({
                 properties: Joi.object().required().keys({
+                    // could probably tighten some of these up
                     address: Joi.string().allow(''),
                     title: Joi.string().allow(''),
                     otherNames: Joi.string().allow(''),
