@@ -54,7 +54,7 @@ html, body { height: 100% }
     background-color: #f5f5f5;
 }
 .msf-tab{
-  height: CALC(100vh - 225px);
+  height: CALC(100vh - 200px);
   overflow-y:scroll;
 }
 
@@ -94,8 +94,8 @@ div.pac-container {
     100% { transform: rotate(360deg); }
 }
 
-#event_RSS {
-  height: CALC(100vh - 225px);
+.tab-pane-box {
+  height: CALC(100vh - 200px);
   overflow-y:scroll;
-  border:1px solid red;
+  border:1px solid black;
 }
