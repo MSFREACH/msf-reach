@@ -79,23 +79,42 @@ if (typeof(Cookies.get('- security')) === 'undefined') {
 if (typeof(Cookies.get('- contacts')) === 'undefined') {
     Cookies.set('- contacts','on'); // default
 }
-if (typeof(Cookies.get('Contacts')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
-if (typeof(Cookies.get('Missions')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
 
+if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
+    Cookies.set('Mission Histories','off'); // default
+}
 if (typeof(Cookies.get('MapLayer')) === 'undefined') {
     Cookies.set('MapLayer','Terrain'); // default
 }
 
-if (Cookies.get('Ongoing MSF Projects')==='undefined') {
+if (typeof(Cookies.get('Ongoing MSF Projects'))==='undefined') {
     Cookies.set('Ongoing MSF Projects','on');
 }
-
-if (Cookies.get('Health Sites')==='undefined') {
+if (typeof(Cookies.get('Health Sites'))==='undefined') {
     Cookies.set('Health Sites','on');
+}
+
+if (typeof(Cookies.get('- MSF Staff'))==='undefined') {
+    Cookies.set('- MSF Staff','on');
+}
+if (typeof(Cookies.get('- other contacts'))==='undefined') {
+    Cookies.set('- other contacts','on');
+}
+
+if (typeof(Cookies.get('- PDC'))==='undefined') {
+    Cookies.set('- PDC','on');
+}
+if (typeof(Cookies.get('- TSR'))==='undefined') {
+    Cookies.set('- TSR','on');
+}
+if (typeof(Cookies.get('- GDACS'))==='undefined') {
+    Cookies.set('- MSF Staff','on');
+}
+if (typeof(Cookies.get('- PTWC'))==='undefined') {
+    Cookies.set('- PTWC','on');
+}
+if (typeof(Cookies.get('- USGS'))==='undefined') {
+    Cookies.set('- USGS','on');
 }
 
 // keep track of the first time we load missions and contacts (used in code for updating based on map extents)
