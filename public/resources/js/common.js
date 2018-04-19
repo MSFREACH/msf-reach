@@ -91,14 +91,14 @@ if (typeof(Cookies.get('Ongoing MSF Projects'))==='undefined') {
     Cookies.set('Ongoing MSF Projects','on');
 }
 if (typeof(Cookies.get('Health Sites'))==='undefined') {
-    Cookies.set('Health Sites','on');
+    Cookies.set('Health Sites','off');
 }
 
 if (typeof(Cookies.get('- MSF Staff'))==='undefined') {
     Cookies.set('- MSF Staff','on');
 }
 if (typeof(Cookies.get('- other contacts'))==='undefined') {
-    Cookies.set('- other contacts','on');
+    Cookies.set('- other contacts','off');
 }
 
 if (typeof(Cookies.get('- PDC'))==='undefined') {
