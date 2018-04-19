@@ -4,7 +4,7 @@ import { Router } from 'express';
 import contacts from './model';
 
 // Import peers subroute
-import peers from './peers';
+import peers from './update';
 
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser } from '../../../lib/util';
