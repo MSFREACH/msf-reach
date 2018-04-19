@@ -283,12 +283,20 @@
               <div class="bg-success">Record History</div>
               <div class="form-group">
                 <label>Created on:</label>
-              </span> <span class="filed"></span>
+                <span class="filed"></span>
             </div>
             <div class="form-group">
               <label>Last updated on:</label>
-            </span> <span class="updated"></span>
-          </div>
+              <span class="updated"></span>
+            </div>
+            <div class="form-group" id="privateContactDiv">
+              <label>Private?</label>
+              <span class="private" id="privateContact"></span>
+            </div>
+            <div class="form-group" id="shareWithDiv">
+              <label>Share with</label>
+              <input type="text" name="sharewith_email">
+            </div>
           <div class="form-group">
             <label>Last email sent on:</label>
           </span> <span class="last_email"></span>
@@ -1136,8 +1144,12 @@ $('#countryDetailsTab').on('click', function(e){
 });
 
 
+var currentContactId = 0;
 var onContactLinkClick = function(id) {
+  $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
+  $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
   $('#contactDetailsModal').on('shown.bs.modal');
+  currentContactId = id;
   getContact(id);
 };
 
@@ -1152,6 +1164,14 @@ var getContact = function(id) {
   $.getJSON("/api/contacts/" + id, function(contact) {
     contactInfo = contact.result ? contact.result.properties : {};
     //$('#contactDetailsModal').find('div.form-group').hide();
+    $("span.private").html(
+    '<select id="privateContact">'+
+      '<option value="true">yes</option>' +
+      '<option value="false">no</option>' +
+    '</select>'
+    );
+    $('#privateContact').val(contact.result.private);
+
     $("span.filed").html(convertToLocaleDate(contact.result.created_at));
     $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
     $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
@@ -1199,6 +1219,29 @@ var getContact = function(id) {
     }
   });
 };
+
+$('#sharewith_email').keyup(function(event){
+    if(event.keyCode == 13){
+        var email = $('#sharewith_email').val();
+        var url = 'https://graph.microsoft.com/v1.0/users/'+email;
+        $.getJSON(url, function(data) {
+            $.ajax({
+                type: "PATCH",
+                url: "/api/contacts/" + currentContactId,
+                data: JSON.stringify({"oid":data.id}),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                alert("shared");
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert("session expired");
+                  }
+            });
+        }).fail(function(err) {
+            alert("MSF user not found, check email address");
+        });
+    }
+});
 </script>
 
 </body>
