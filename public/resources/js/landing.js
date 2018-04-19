@@ -148,7 +148,7 @@ var mapAllEvents = function(err, events){
             popupContent += feature.properties.popupContent;
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     eventsLayer = L.geoJSON(events, {
@@ -156,8 +156,7 @@ var mapAllEvents = function(err, events){
             return L.marker(latlng, {icon: L.icon({
                 iconUrl: '/resources/images/icons/event_types/open_event.svg',
                 iconSize:     [50, 50], // size of the icon
-                iconAnchor: [25, 50],
-                popupAnchor: [0, -40]
+                iconAnchor: [25, 50]
                 //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
                 //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
             })});
@@ -304,14 +303,13 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
-* @function mapMissions
+* @function mapMissions - function to map mission histories
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
 
     function onEachFeature(feature, layer) {
 
-        // generate popup content:
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
@@ -321,7 +319,7 @@ var mapMissions = function(missions ){
             popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
-            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0){
+            if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
                 popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
@@ -333,7 +331,7 @@ var mapMissions = function(missions ){
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     // MSF Icons
@@ -342,21 +340,50 @@ var mapMissions = function(missions ){
 
         iconSize:     [50, 50], // size of the icon
         opacity: 0.8,
-        iconAnchor:   [25, 50], // point of the icon which will correspond to marker's location
-        popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
+        iconAnchor:   [25, 50] // point of the icon which will correspond to marker's location
     });
 
-    var missionsLayer = L.geoJSON(missions, {
+    var missionsLayerOn = mainMap.hasLayer(missionsClusters);
+
+    if (missionsClusters)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(missionsClusters);
+        layerControl.removeLayer(missionsClusters);
+        computerTriggered=false;
+    }
+
+    missionsClusters = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-missions-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+
+        }
+    });
+
+
+    missionsLayer = L.geoJSON(missions, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: missionIcon});
         },
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Mission Histories')==='on') {
-        missionsLayer.addTo(mainMap);
+
+    missionsClusters.addLayer(missionsLayer);
+
+    if (missionsLayerOn || firstMissionsLoad ) {
+        if (Cookies.get('Missions')==='on') {
+            missionsClusters.addTo(mainMap);
+        }
+        firstMissionsLoad = false;
     }
-    layerControl.addOverlay(missionsLayer, 'Mission Histories');
+
+
+    layerControl.addOverlay(missionsClusters, 'Missions');
+
 };
 
 
@@ -382,7 +409,7 @@ var mapContacts = function(contacts ){
       '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     // function returns list of msf staff contacts if msf is true, else other contacts
@@ -432,7 +459,7 @@ var mapContacts = function(contacts ){
         maxClusterRadius:MAX_RADIUS,
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
-            return new L.DivIcon({ html: '<div><span style="color:red;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
         }
     }).addLayer(
         L.geoJSON(msfContact(contacts,true), {
@@ -443,12 +470,19 @@ var mapContacts = function(contacts ){
         })
     );
 
-    nonMSFContactsLayer = L.geoJSON(msfContact(contacts,false), {
+    nonMSFContactsLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+        }
+    }).addLayer(L.geoJSON(msfContact(contacts,false), {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: contactIcon});
         },
         onEachFeature: onEachFeature
-    });
+    })
+    );
 
     if (Cookies.get('- MSF Staff')==='on') {
         MSFContactsLayer.addTo(mainMap);
@@ -572,7 +606,8 @@ mainMap.on('load', function(loadEvent) {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
 
-mainMap.setView([7.5, 115.6628], 4);
+mainMap.fitBounds([[-13, 84],[28,148]]);
+mainMap.setMaxBounds([[-15, 86],[26,150]]);
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
@@ -638,7 +673,7 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getMissions(mapMissions);
+//getMissions(mapMissions);
 getContacts(mapContacts);
 getFeeds('/api/hazards/pdc', tableFeeds);
 getFeeds('/api/hazards/usgs', tableFeeds);
@@ -697,4 +732,20 @@ mainMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'off');
     }
+});
+
+$('#landing_tabs').on('click', 'a[data-toggle="tab"]', function(e) {
+    e.preventDefault();
+
+    var $link = $(this);
+
+    if (!$link.parent().hasClass('active')) {
+
+        //remove active class from other tab-panes
+        $('.tab-content:not(.' + $link.attr('href').replace('#','') + ') .tab-pane').removeClass('active');
+
+        // activate tab-pane for active section
+        $('.tab-content.' + $link.attr('href').replace('#','') + ' .tab-pane:first').addClass('active');
+    }
+
 });

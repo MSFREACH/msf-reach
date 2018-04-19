@@ -43,10 +43,6 @@ function bindAutocompletes()
 
 bindAutocompletes();
 
-// keep track of the first time we load missions and contacts (used in code for updating based on map extents)
-var firstContactsLoad = true;
-var firstMissionsLoad = true;
-
 /**
 * function for zooming to a point
 * @function zoomToEventPoint
@@ -406,7 +402,7 @@ var mapAllEvents = function(err, events){
             popupContent += feature.properties.popupContent;
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     eventsLayer = L.geoJSON(events, {
@@ -415,8 +411,7 @@ var mapAllEvents = function(err, events){
                 return L.marker(latlng, {icon: L.icon({
                     iconUrl: '/resources/images/icons/event_types/selected_event.svg',
                     iconSize:     [50, 50], // size of the icon
-                    iconAnchor: [25, 50],
-                    popupAnchor: [0, -40]
+                    iconAnchor: [25, 50]
                     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
                     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
                 })});
@@ -425,8 +420,7 @@ var mapAllEvents = function(err, events){
                 return L.marker(latlng, {icon: L.icon({
                     iconUrl: '/resources/images/icons/event_types/open_event.svg',
                     iconSize:     [50, 50], // size of the icon
-                    iconAnchor: [25, 50],
-                    popupAnchor: [0, -40]
+                    iconAnchor: [25, 50]
                     //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
                     //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
                 })});
@@ -483,7 +477,7 @@ var mapContacts = function(contacts) {
       '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     // MSF Icons
@@ -510,7 +504,7 @@ var mapContacts = function(contacts) {
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
 
-            return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-contacts-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-contacts' , iconSize: new L.Point(40, 40) });
 
         }
     });
@@ -597,7 +591,7 @@ var mapMissions = function(missions ){
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     // MSF Icons
@@ -625,7 +619,7 @@ var mapMissions = function(missions ){
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
 
-            return new L.DivIcon({ html: '<div><span style="color:black;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
+            return new L.DivIcon({ html: '<div><span class="marker-cluster-msf-missions-text"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-msf-missions' , iconSize: new L.Point(40, 40) });
 
         }
     });

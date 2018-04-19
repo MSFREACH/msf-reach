@@ -64,7 +64,7 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
-var MAX_RADIUS= 200;
+var MAX_RADIUS= 250;
 
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
@@ -91,14 +91,14 @@ if (typeof(Cookies.get('Ongoing MSF Projects'))==='undefined') {
     Cookies.set('Ongoing MSF Projects','on');
 }
 if (typeof(Cookies.get('Health Sites'))==='undefined') {
-    Cookies.set('Health Sites','on');
+    Cookies.set('Health Sites','off');
 }
 
 if (typeof(Cookies.get('- MSF Staff'))==='undefined') {
     Cookies.set('- MSF Staff','on');
 }
 if (typeof(Cookies.get('- other contacts'))==='undefined') {
-    Cookies.set('- other contacts','on');
+    Cookies.set('- other contacts','off');
 }
 
 if (typeof(Cookies.get('- PDC'))==='undefined') {
@@ -116,6 +116,10 @@ if (typeof(Cookies.get('- PTWC'))==='undefined') {
 if (typeof(Cookies.get('- USGS'))==='undefined') {
     Cookies.set('- USGS','on');
 }
+
+// keep track of the first time we load missions and contacts (used in code for updating based on map extents)
+var firstContactsLoad = true;
+var firstMissionsLoad = true;
 
 /**
 * Function to get feeds
@@ -178,7 +182,7 @@ var mapPDCHazards = function(hazards){
 var hazardFeature = function(feature, layer) {
     var popupContent = '<strong><a href=\''+feature.properties.link+'\' target=_blank>' + feature.properties.title +'</a></strong>' + '<BR>Source: '+ feature.properties.source + '<BR>Summary: '+ feature.properties.summary +'<BR>Updated: ' + feature.properties.updated;
 
-    layer.bindPopup(popupContent);
+    layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
 };
 
 var mapTSRHazards = function(hazards){

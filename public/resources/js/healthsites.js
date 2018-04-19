@@ -17,7 +17,7 @@ var mapHealthSites = function(err, healthsites) {
             'Date modified: ' + feature.properties.name + '<br />' +
             'Source: <a href="' + feature.properties.source_url + '">'+feature.properties.source+'</a><br />';
 
-        layer.bindPopup(popupContent);
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     if (healthsitesLayer)
@@ -45,8 +45,7 @@ var mapHealthSites = function(err, healthsites) {
 
             return L.marker(latlng, {icon: L.icon({
                 iconUrl: '/resources/images/icons/pin.svg',
-                iconSize:     [35, 35], // size of the icon
-                popupAnchor: [0, -10]
+                iconSize:     [35, 35] // size of the icon
                 //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
                 //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
             })});
