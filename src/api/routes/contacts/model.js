@@ -147,14 +147,36 @@ export default (config, db, logger) => ({
     }),
 
     /**
-    * Set a contact's last email sent value to now
+    * Set a contact sharedWith field
     * @param {integer} id - ID of contact
-    * @param {string} oid - uuid of user to share with
+    * @param {string} oid - uuid of user to share with (appended to list)
     */
     shareWith: (id, oid) => new Promise((resolve, reject) => {
 
     // Setup query
         let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || '["$1"]'::jsonb)) where id=$2;`;
+
+        // Setup values
+        let values = [ oid, id ];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), created_at:data.created_at,
+                updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
+                properties:data.properties, the_geom:data.the_geom }))
+            .catch((err) => reject(err));
+    }),
+
+    /**
+    * Change privacy of a contact
+    * @param {integer} id - ID of contact
+    * @param {string} private - privacy setting
+    */
+    privacy: (id, oid) => new Promise((resolve, reject) => {
+
+    // Setup query
+        let query = `update ${config.TABLE_CONTACTS} set private=$1 where id=$2;`;
 
         // Setup values
         let values = [ oid, id ];

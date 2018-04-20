@@ -130,7 +130,7 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    // Update a contact's last_email_sent_at record in the database
+    // Update a contact's sharedWith record in the database
     api.patch('/:id/share', ensureAuthenticated,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
@@ -149,5 +149,26 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
+
+    // Update a contact's sharedWith record in the database
+    api.patch('/:id/private', ensureAuthenticated,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                privacy: Joi.boolean().require()
+            })
+        }),
+        (req, res, next) => {
+            contacts(config, db, logger).privacy(req.params.id, req.body.privacy)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
     return api;
 };

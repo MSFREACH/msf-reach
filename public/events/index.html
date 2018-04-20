@@ -1227,11 +1227,12 @@ $('#sharewith_email').keyup(function(event){
         $.getJSON(url, function(data) {
             $.ajax({
                 type: "PATCH",
-                url: "/api/contacts/" + currentContactId,
+                url: "/api/contacts/" + currentContactId + "/share",
                 data: JSON.stringify({"oid":data.id}),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
                 alert("shared");
+                $('#sharewith_email').val();
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
                     alert("session expired");
@@ -1241,6 +1242,17 @@ $('#sharewith_email').keyup(function(event){
             alert("MSF user not found, check email address");
         });
     }
+});
+
+$('#privateContact').change(function() {
+    $.ajax({
+      type: 'PATCH',
+      url: '/api/contacts' + currentContactId + "/private",
+      data: JSON.stringify({"private": this.value})
+      contentType: 'application/json'
+    }).fail(function(err) {
+        alert('privacy not set due to error');
+    });
 });
 </script>
 
