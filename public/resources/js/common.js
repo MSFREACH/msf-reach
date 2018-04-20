@@ -675,7 +675,7 @@ $('#privateContact').change(function() {
     $.ajax({
         type: 'PATCH',
         url: '/api/contacts/' + currentContactId + '/private',
-        data: JSON.stringify({'privacy': this.value}),
+        data: JSON.stringify({'privacy': $('#privateContact').val()}),
         contentType: 'application/json'
     }).fail(function(err) {
         alert('privacy not set due to error');
