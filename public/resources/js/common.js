@@ -651,24 +651,21 @@ var getContact = function(id) {
 $('#sharewith_email').keyup(function(event){
     if(event.keyCode == 13){
         var email = $('#sharewith_email').val();
-        var url = 'https://graph.microsoft.com/v1.0/users/'+email;
-        $.getJSON(url, function(data) {
-            $.ajax({
-                type: 'PATCH',
-                url: '/api/contacts/' + currentContactId + '/share',
-                data: JSON.stringify({'oid':data.id}),
-                contentType: 'application/json'
-            }).done(function(data, textStatus, req) {
-                alert('shared');
-                $('#sharewith_email').val();
-            }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                    alert('session expired');
-                }
-            });
+
+        $.ajax({
+            type: 'PATCH',
+            url: '/api/contacts/' + currentContactId + '/share',
+            data: JSON.stringify({'email':email}),
+            contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+            alert('shared');
+            $('#sharewith_email').val();
         }).fail(function(err) {
-            alert('MSF user not found, check email address');
+            if (err.responseText.includes('expired')) {
+                alert('session expired');
+            }
         });
+
     }
 });
 

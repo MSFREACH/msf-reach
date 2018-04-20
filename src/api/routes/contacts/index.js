@@ -4,7 +4,7 @@ import { Router } from 'express';
 import contacts from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser, getUserData } from '../../../lib/util';
 
 // Import validation dependencies
 import BaseJoi from 'joi';
@@ -131,22 +131,30 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact's sharedWith record in the database
-    api.patch('/:id/share', ensureAuthenticated,
+    api.patch('/:id/share', passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                oid: Joi.string().uuid()
+                email: Joi.string().email().required()
             })
         }),
         (req, res, next) => {
-            contacts(config, db, logger).shareWith(req.params.id, req.body.oid)
-                .then((data) => handleGeoResponse(data, req, res, next))
-                .catch((err) => {
-                    /* istanbul ignore next */
-                    logger.error(err);
-                    /* istanbul ignore next */
+            console.log(req.user); // eslint-disable-line no-console
+            getUserData(req.user.accessToken, req.params.email, (err, user) => {
+                if (!err) {
+                    contacts(config, db, logger).shareWith(req.params.id, user.body.oid)
+                        .then((data) => handleGeoResponse(data, req, res, next))
+                        .catch((err) => {
+                            /* istanbul ignore next */
+                            logger.error(err);
+                            /* istanbul ignore next */
+                            next(err);
+                        });
+
+                } else {
                     next(err);
-                });
+                }
+            });
         }
     );
 
