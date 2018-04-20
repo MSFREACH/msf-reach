@@ -652,11 +652,12 @@ $('#sharewith_email').keyup(function(event){
     if(event.keyCode == 13){
         var email = $('#sharewith_email').val();
         var url = '/api/contacts/useridbyemail/'+email;
-        $.getJSON(url, function(data) {
+        $.getJSON(url, function(userdata) {
+            console.log(userdata);
             $.ajax({
                 type: 'PATCH',
-                url: '/api/contacts/' + currentContactId,
-                data: JSON.stringify({'oid':data.id}),
+                url: '/api/contacts/' + currentContactId + '/share',
+                data: JSON.stringify({'oid':userdata.id}),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
                 alert('shared');

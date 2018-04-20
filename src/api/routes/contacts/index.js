@@ -186,7 +186,7 @@ export default ({ config, db, logger }) => {
             }, function(err, res) {
                 if(err){
                     logger.error(err);
-                    next(err);
+                    response.status(404).send(res);
                 }
                 else{
                     //console.log('res: ' + res);
