@@ -151,6 +151,8 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
+                        console.log('REQ');
+                        console.log(req);
 
                         let option = {
                             method:'POST',
@@ -163,7 +165,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                                 client_id: config.AZURE_AD_CLIENT_ID,
                                 resource:'https://graph.windows.net',
                                 client_secret: config.SESSION_SECRET,
-                                code: req.body.code,
+                                code: req.user.code,
                                 redirect_uri: config.AZURE_AD_RETURN_URL
                             }
                         };
