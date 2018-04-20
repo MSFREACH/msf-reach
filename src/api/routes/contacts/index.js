@@ -132,7 +132,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact's sharedWith record in the database
-    api.patch('/:id/share', passport.authenticate('azuread-openidconnect', { failureRedirect: '/login' }),
+    api.patch('/:id/share', ensureAuthenticated),
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
