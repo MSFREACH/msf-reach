@@ -161,5 +161,5 @@ const inAsiaBBox = (coords) => {
 };
 
 module.exports = {
-    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, addUser, inAsiaBBox, getUserData
+    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, addUser, inAsiaBBox
 };
