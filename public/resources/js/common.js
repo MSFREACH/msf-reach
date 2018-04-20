@@ -653,11 +653,10 @@ $('#sharewith_email').keyup(function(event){
         var email = $('#sharewith_email').val();
         var url = '/api/contacts/useridbyemail/'+email;
         $.getJSON(url, function(userdata) {
-            console.log(userdata);
             $.ajax({
                 type: 'PATCH',
                 url: '/api/contacts/' + currentContactId + '/share',
-                data: JSON.stringify({'oid':userdata.id}),
+                data: JSON.stringify({'oid':JSON.parse(userdata).body.id}),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
                 alert('shared');
