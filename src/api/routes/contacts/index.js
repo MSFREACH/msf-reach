@@ -155,7 +155,7 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                privacy: Joi.boolean().require()
+                privacy: Joi.boolean().required()
             })
         }),
         (req, res, next) => {
