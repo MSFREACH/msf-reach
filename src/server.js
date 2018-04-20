@@ -165,12 +165,14 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                                 client_id: config.AZURE_AD_CLIENT_ID,
                                 resource:'https://graph.windows.net',
                                 client_secret: config.SESSION_SECRET,
-                                code: req.user.code,
+                                code: req.body.code,
                                 redirect_uri: config.AZURE_AD_RETURN_URL
                             }
                         };
                         //console.log(option);
                         request(option,function(err,res,body){
+                            console.log("body");
+                            console.log(body);
                             req.user.access_token = JSON.parse(body).access_token;
                         });
 
