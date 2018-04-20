@@ -3,6 +3,7 @@ import Promise from 'bluebird';
 // Express middleware and http
 import express from 'express';
 import http from 'http';
+import request from 'request';
 
 // Import express middlewares
 import expressSession from 'express-session';
