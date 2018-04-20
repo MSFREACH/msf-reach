@@ -177,7 +177,7 @@ export default ({ config, db, logger }) => {
             params: { email: Joi.string().email().required() }
         }),
         function(req, response){
-            request.get('https://graph.windows.net/users/'+req.params.email, {
+            request.get('https://graph.microsoft.com/v1.0/users/'+req.params.email, {
                 'headers': {
                     'Authorization': 'Bearer ' + req.user.access_token,
                     'Content-Type': 'application/json'
