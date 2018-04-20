@@ -29,7 +29,7 @@ export default (config, db, logger) => ({
       OR properties ->> 'email' ILIKE $1
       OR properties ->> 'email2' ILIKE $1
       OR properties ->> 'speciality' ILIKE $1)) AND
-      ($7 IS NULL OR (ad_oid = $7 and private = true) OR private = false) AND
+      ($7 IS NULL OR (ad_oid = $7 and private = true) OR ((properties->>'sharedWith')::jsonb ? $7) OR private = false) AND
       ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
       ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
       ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
@@ -155,10 +155,12 @@ export default (config, db, logger) => ({
     shareWith: (id, oid) => new Promise((resolve, reject) => {
 
     // Setup query
-        let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || '["$1"]'::jsonb)) where id=$2;`;
+        let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || ($1)::jsonb)) where id=$2
+        RETURNING  created_at, updated_at, last_email_sent_at, properties,
+        the_geom`;
 
         // Setup values
-        let values = [ oid, id ];
+        let values = [ JSON.stringify(oid), id ];
 
         // Execute
         logger.debug(query, values);
