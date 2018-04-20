@@ -163,7 +163,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                             form:{
                                 grant_type:'authorization_code',
                                 client_id: config.AZURE_AD_CLIENT_ID,
-                                resource:'https://graph.windows.net',
+                                resource:'https://graph.microsoft.com',
                                 client_secret: config.SESSION_SECRET,
                                 code: req.body.code,
                                 redirect_uri: config.AZURE_AD_RETURN_URL
