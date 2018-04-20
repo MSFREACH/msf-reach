@@ -672,7 +672,7 @@ $('#sharewith_email').keyup(function(event){
 $('#privateContact').change(function() {
     $.ajax({
         type: 'PATCH',
-        url: '/api/contacts' + currentContactId + '/private',
+        url: '/api/contacts/' + currentContactId + '/private',
         data: JSON.stringify({'private': this.value}),
         contentType: 'application/json'
     }).fail(function(err) {
