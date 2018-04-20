@@ -576,3 +576,109 @@ var getAllEvents = function(callback){
         }
     });
 };
+
+var currentContactId = 0;
+var onContactLinkClick = function(id) {
+    $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
+    $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
+    $('#contactDetailsModal').on('shown.bs.modal');
+    currentContactId = id;
+    getContact(id);
+};
+
+var contactInfo = {};
+
+var getContact = function(id) {
+    $.getJSON('/api/contacts/' + id, function(contact) {
+        contactInfo = contact.result ? contact.result.properties : {};
+        //$('#contactDetailsModal').find('div.form-group').hide();
+        $('span.private').html(
+            '<select id="privateContact">'+
+      '<option value="true">yes</option>' +
+      '<option value="false">no</option>' +
+    '</select>'
+        );
+        $('#privateContact').val(contact.result.private);
+
+        $('span.filed').html(convertToLocaleDate(contact.result.created_at));
+        $('span.updated').html(convertToLocaleDate(contact.result.updated_at));
+        $('span.last_email').html(convertToLocaleDate(contact.result.last_email_sent_at));
+
+        contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
+        contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
+
+        // if web address
+        if (contact.result.properties.web) {
+            // prepend http:// to web (don't assume https, assume redirection)
+            if (!contact.result.properties.web.startsWith('http')) {
+                contact.result.properties.web = 'http://' + contact.result.properties.web;
+            }
+            // make it a link
+            contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
+        }
+
+        // also hyperlink emails
+        if (contact.result.properties.email) {
+            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
+        }
+        if (contact.result.properties.email2) {
+            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
+        }
+
+        _(contact.result.properties).forIn(function(value, key) {
+            // console.log("Key:", key, "Value", value);
+            $('span.' + key).html(value);
+            $('span.' + key).parent().toggle(!!(value));
+
+        });
+        if (contact.result.properties.type === 'Current MSF Staff') {
+            $('#msf_details').show();
+            $('#employment_details').hide();
+        } else {
+            $('#msf_details').hide();
+            $('#employment_details').show();
+        }
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            // Catch condition where no data returned
+            alert('error: ' + err.responseText);
+        }
+    });
+};
+
+$('#sharewith_email').keyup(function(event){
+    if(event.keyCode == 13){
+        var email = $('#sharewith_email').val();
+        var url = 'https://graph.microsoft.com/v1.0/users/'+email;
+        $.getJSON(url, function(data) {
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/contacts/' + currentContactId + '/share',
+                data: JSON.stringify({'oid':data.id}),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                alert('shared');
+                $('#sharewith_email').val();
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        }).fail(function(err) {
+            alert('MSF user not found, check email address');
+        });
+    }
+});
+
+$('#privateContact').change(function() {
+    $.ajax({
+        type: 'PATCH',
+        url: '/api/contacts' + currentContactId + '/private',
+        data: JSON.stringify({'private': this.value}),
+        contentType: 'application/json'
+    }).fail(function(err) {
+        alert('privacy not set due to error');
+    });
+});
