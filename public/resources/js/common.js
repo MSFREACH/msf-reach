@@ -656,7 +656,7 @@ $('#sharewith_email').keyup(function(event){
             $.ajax({
                 type: 'PATCH',
                 url: '/api/contacts/' + currentContactId + '/share',
-                data: JSON.stringify({'oid':JSON.parse(userdata).body.id}),
+                data: JSON.stringify({'oid':JSON.parse(userdata.body).id}),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
                 alert('shared');
