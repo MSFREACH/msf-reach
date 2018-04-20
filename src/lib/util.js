@@ -160,15 +160,6 @@ const inAsiaBBox = (coords) => {
     return (lat> -12.5611 && lat < 82.5005 && lng > 19.6381 && lng < 180.0000);
 };
 
-const getUserData = (accessToken, email, callback) => {
-    request
-        .get('https://graph.microsoft.com/users/'+email)
-        .set('Authorization', 'Bearer ' + accessToken)
-        .end((err, res) => {
-            callback(err, res);
-        });
-};
-
 module.exports = {
     cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, addUser, inAsiaBBox, getUserData
 };

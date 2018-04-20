@@ -651,21 +651,23 @@ var getContact = function(id) {
 $('#sharewith_email').keyup(function(event){
     if(event.keyCode == 13){
         var email = $('#sharewith_email').val();
-
-        $.ajax({
-            type: 'PATCH',
-            url: '/api/contacts/' + currentContactId + '/share',
-            data: JSON.stringify({'email':email}),
-            contentType: 'application/json'
-        }).done(function(data, textStatus, req) {
-            alert('shared');
-            $('#sharewith_email').val();
+        var url = '/api/contacts/useridbyemail/'+email;
+        $.getJSON(url, function(data) {
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/contacts/' + currentContactId,
+                data: JSON.stringify({'oid':data.id}),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                alert('shared');
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
         }).fail(function(err) {
-            if (err.responseText.includes('expired')) {
-                alert('session expired');
-            }
+            alert('MSF user not found, check email address');
         });
-
     }
 });
 

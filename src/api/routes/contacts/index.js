@@ -2,10 +2,9 @@ import { Router } from 'express';
 
 // Import our data model
 import contacts from './model';
-import passport from 'passport';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser, getUserData } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser } from '../../../lib/util';
 
 // Import validation dependencies
 import BaseJoi from 'joi';
@@ -136,26 +135,18 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                email: Joi.string().email().required()
+                oid: Joi.string().uuid()
             })
         }),
         (req, res, next) => {
-            console.log(req.user); // eslint-disable-line no-console
-            getUserData(req.user.accessToken, req.params.email, (err, user) => {
-                if (!err) {
-                    contacts(config, db, logger).shareWith(req.params.id, user.body.oid)
-                        .then((data) => handleGeoResponse(data, req, res, next))
-                        .catch((err) => {
-                            /* istanbul ignore next */
-                            logger.error(err);
-                            /* istanbul ignore next */
-                            next(err);
-                        });
-
-                } else {
+            contacts(config, db, logger).shareWith(req.params.id, req.body.oid)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
                     next(err);
-                }
-            });
+                });
         }
     );
 
@@ -178,6 +169,28 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
+
+    api.get('/useridbyemail/:email',ensureAuthenticated,
+        validate({
+            params: { email: Joi.string().email().required() }
+        }),
+        function(req, response){
+            request.get('https://graph.windows.net/users/'+req.params.email, {
+                'headers': {
+                    'Authorization': 'Bearer ' + req.user.access_token,
+                    'Content-Type': 'application/json'
+                }
+            }, function(err, res) {
+                if(err){
+                    logger.error(err);
+                    next(err);
+                }
+                else{
+                    //console.log('res: ' + res);
+                    response.send(res);
+                }
+            });
+        });
 
     return api;
 };
