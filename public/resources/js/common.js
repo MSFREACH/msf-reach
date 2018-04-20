@@ -659,6 +659,7 @@ $('#sharewith_email').keyup(function(event){
                 data: JSON.stringify({'oid':JSON.parse(userdata.body).id}),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
+                $('#sharewith_email').val(''); // clear entry
                 alert('shared');
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
