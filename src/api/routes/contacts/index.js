@@ -3,6 +3,8 @@ import { Router } from 'express';
 // Import our data model
 import contacts from './model';
 
+import request from 'request';
+
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser } from '../../../lib/util';
 
