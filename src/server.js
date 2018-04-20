@@ -156,7 +156,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
                         let option = {
                             method:'POST',
-                            uri:`https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}/oauth2/token`,
+                            uri:`https://login.microsoftonline.com/${config.AZURE_AD_CLIENT_ID}/oauth2/token`,
                             headers:{
                                 'Content-Type':'application/x-www-form-urlencoded'
                             },
