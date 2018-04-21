@@ -3,6 +3,9 @@ send emails
 **/
 
 import nodemailer from 'nodemailer';
+import hbs from 'nodemailer-express-handlebars';
+
+
 
 export default ( config, logger ) => ({
 
@@ -21,6 +24,15 @@ export default ( config, logger ) => ({
 
         const transport = nodemailer.createTransport(smtpConfig);
 
+        const options={
+            viewEngine: {},
+            viewPath: '../../public/etemplates/',
+            extName: '.hbs'
+        };
+
+        //attach the plugin to the nodemailer transporter
+        transport.use('compile', hbs(options));
+
         const mailOptions = {
             from: 'MSF-REACH <admin@msf-reach.org>', // sender address
             to: recipient,
@@ -37,8 +49,10 @@ export default ( config, logger ) => ({
                 reject(error);
             }
             else
+            {
                 logger.info('Email %s sent: %s', info.messageId, info.response);
-            resolve(info); // fixme probably want to resolve something useful
+                resolve(info); // fixme probably want to resolve something useful
+            }
         });
     })
 });
