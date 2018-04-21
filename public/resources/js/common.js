@@ -600,17 +600,21 @@ var getContact = function(id) {
         );
         $('#privateContact').val(String(contact.result.private));
         $('#privateContact').change(function() {
-            $.ajax({
-                type: 'PATCH',
-                url: '/api/contacts/' + id + '/private',
-                data: JSON.stringify({'privacy': $('#privateContact').val()}),
-                contentType: 'application/json'
-            }).fail(function(err) {
-                if (err.status===403) { // forbidden
-                  alert('you can only set to private contacts that you have entered');
-                }
-                alert('privacy not set due to error');
-            });
+            if ($('#privateContact').val() === 'true') {
+                alert('cannot set public contact private');
+            } else {
+                $.ajax({
+                    type: 'PATCH',
+                    url: '/api/contacts/' + id + '/private',
+                    data: JSON.stringify({'privacy': $('#privateContact').val()}),
+                    contentType: 'application/json'
+                }).fail(function(err) {
+                    if (err.status===403) { // forbidden
+                      alert('you can only set to private contacts that you have entered');
+                    }
+                    alert('privacy not set due to error');
+                });
+            }
         });
 
         $('span.filed').html(convertToLocaleDate(contact.result.created_at));
