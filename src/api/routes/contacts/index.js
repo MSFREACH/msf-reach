@@ -81,7 +81,6 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            console.log(req.user);
             contacts(config, db, logger).createContact((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
@@ -158,7 +157,7 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                privacy: Joi.boolean().invalid(false),required()
+                privacy: Joi.boolean().invalid(false).required()
             })
         }),
         (req, res, next) => {
@@ -183,7 +182,6 @@ export default ({ config, db, logger }) => {
             params: { email: Joi.string().email().required() }
         }),
         function(req, response){
-            console.log(req);
             request.get('https://graph.microsoft.com/v1.0/users/'+req.params.email, {
                 'headers': {
                     'Authorization': 'Bearer ' + req.user.access_token,

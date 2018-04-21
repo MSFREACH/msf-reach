@@ -151,9 +151,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
-                        console.log('REQ');
-                        console.log(req);
-
                         let option = {
                             method:'POST',
                             uri:`https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/oauth2/token`,
@@ -171,8 +168,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         };
                         //console.log(option);
                         request(option,function(err,res,body){
-                            console.log('body');
-                            console.log(body);
                             req.user.access_token = JSON.parse(body).access_token;
                         });
 

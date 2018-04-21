@@ -610,7 +610,7 @@ var getContact = function(id) {
                     contentType: 'application/json'
                 }).fail(function(err) {
                     if (err.status===403) { // forbidden
-                      alert('you can only set to private contacts that you have entered');
+                        alert('you can only set to private contacts that you have entered');
                     }
                     alert('privacy not set due to error');
                 });
