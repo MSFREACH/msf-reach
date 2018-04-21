@@ -167,7 +167,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.one(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id), ad_oid: oid, private: data.private, created_at:data.created_at,
+            .then((data) => resolve({ id: String(id), ad_oid: requestor_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
