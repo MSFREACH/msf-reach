@@ -629,11 +629,3 @@
 	margin-left: -12px;
 	border-right-color: #fff;
 	}
-
-.leaflet-control-layers-group-element {
-	font-size: 90%;
-}
-
-.leaflet-control-layers-element-selector {
-	margin-left: 10px !important;
-}
