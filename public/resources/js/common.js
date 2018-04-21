@@ -80,8 +80,8 @@ if (typeof(Cookies.get('- contacts')) === 'undefined') {
     Cookies.set('- contacts','on'); // default
 }
 
-if (typeof(Cookies.get('Mission Histories')) === 'undefined') {
-    Cookies.set('Mission Histories','off'); // default
+if (typeof(Cookies.get('MSF Past Responses')) === 'undefined') {
+    Cookies.set('MSF Past Responses','off'); // default
 }
 if (typeof(Cookies.get('MapLayer')) === 'undefined') {
     Cookies.set('MapLayer','Terrain'); // default

@@ -303,7 +303,7 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
-* @function mapMissions - function to map mission histories
+* @function mapMissions - function to map MSF Past Responses
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){

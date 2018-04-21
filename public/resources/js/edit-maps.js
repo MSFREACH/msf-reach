@@ -179,12 +179,12 @@ var mapEditMissions = function(missions ){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Mission Histories')==='on') {
+    if (Cookies.get('MSF Past Responses')==='on') {
         eventMissionsLayer.addTo(eventMap);
         msfResponseMissionsLayer.addTo(msfResponseMap);
     }
-    eventMapLayerControl.addOverlay(eventMissionsLayer, 'Mission Histories');
-    msfResponseMapLayerControl.addOverlay(msfResponseMissionsLayer, 'Mission Histories');
+    eventMapLayerControl.addOverlay(eventMissionsLayer, 'MSF Past Responses');
+    msfResponseMapLayerControl.addOverlay(msfResponseMissionsLayer, 'MSF Past Responses');
 
 };
 
