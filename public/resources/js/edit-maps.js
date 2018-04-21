@@ -3,7 +3,9 @@
 var eventsLayer;
 
 /**
-* Function to map and print a table of events
+* Function to add events to the edit maps
+* @function mapEditEvents
+* @param {Object} err - error object, null if no error
 * @param {Object} events - GeoJSON Object containing event details
 */
 var mapEditEvents = function(err, events){
@@ -121,7 +123,8 @@ var mapEditEvents = function(err, events){
 };
 
 /**
-* Function to add missions to map
+* Function to add missions to the edit maps
+* @function mapEditMissions
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapEditMissions = function(missions ){
@@ -187,7 +190,8 @@ var mapEditMissions = function(missions ){
 
 
 /**
-* Function to add contacts to map
+* Function to add contacts to the edit maps
+* @function mapEditContacts
 * @param {Object} contacts - GeoJson FeatureCollection containing contact points
 **/
 var mapEditContacts = function(contacts ){
@@ -281,7 +285,11 @@ var mapEditContacts = function(contacts ){
 
 };
 
-
+/**
+* Function to add PDC hazards to the edit maps
+* @function mapEditPDCHazards
+* @param {Object} hazards - GeoJson FeatureCollection containing hazard points
+**/
 var mapEditPDCHazards = function(hazards){
 
     eventPDCHazardsLayer = L.geoJSON(hazards, {
@@ -309,6 +317,11 @@ var mapEditPDCHazards = function(hazards){
 
 };
 
+/**
+* Function to add TSR hazards to the edit maps
+* @function mapEditTSRHazards
+* @param {Object} contacts - GeoJson FeatureCollection containing hazard points
+**/
 var mapEditTSRHazards = function(hazards){
 
     eventTSRHazardsLayer = L.geoJSON(hazards, {
@@ -341,9 +354,10 @@ var mapEditTSRHazards = function(hazards){
 
 };
 
-/*
-* Function to add PTWC hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing PTWC hazard points
+/**
+* Function to add PTWC hazards to the edit maps
+* @function mapEditPTWCHazards
+* @param {Object} contacts - GeoJson FeatureCollection containing hazard points
 **/
 var mapEditPTWCHazards = function(hazards){
     eventPTWCHazardsLayer = L.geoJSON(hazards, {
@@ -376,9 +390,10 @@ var mapEditPTWCHazards = function(hazards){
 
 };
 
-/*
-* Function to add GDACS hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing GDACS hazard points
+/**
+* Function to add GDACS hazards to the edit maps
+* @function mapEditGDACSHazards
+* @param {Object} contacts - GeoJson FeatureCollection containing hazard points
 **/
 var mapEditGDACSHazards = function(hazards){
     eventGDACSHazardsLayer = L.geoJSON(hazards, {
@@ -404,9 +419,10 @@ var mapEditGDACSHazards = function(hazards){
 
 };
 
-/*
-* Function to add USGS hazards to map
-* @param {Object} hazards - GeoJson FeatureCollection containing USGS hazard points
+/**
+* Function to add USGS hazards to the edit maps
+* @function mapEditUSGSHazards
+* @param {Object} contacts - GeoJson FeatureCollection containing hazard points
 **/
 var mapEditUSGSHazards = function(hazards){
 
@@ -430,4 +446,4 @@ var mapEditUSGSHazards = function(hazards){
 };
 
 
-var latlng;
+var latlng; // store latlng

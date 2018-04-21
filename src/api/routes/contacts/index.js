@@ -3,6 +3,8 @@ import { Router } from 'express';
 // Import our data model
 import contacts from './model';
 
+import request from 'request';
+
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser } from '../../../lib/util';
 
@@ -129,5 +131,74 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
+
+    // Update a contact's sharedWith record in the database
+    api.patch('/:id/share', ensureAuthenticated,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                oid: Joi.string().uuid()
+            })
+        }),
+        (req, res, next) => {
+            contacts(config, db, logger).shareWith(req.params.id, req.user.oid, req.body.oid)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // Update a contact's privacy record in the database
+    api.patch('/:id/private', ensureAuthenticated,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                privacy: Joi.boolean().invalid(true).required()
+            })
+        }),
+        (req, res, next) => {
+            contacts(config, db, logger).privacy(req.params.id, req.user.oid, req.body.privacy)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    if (err.message === 'No data returned from the query.') {
+                        // contact doesn't belong to us
+                        res.send(403)('forbidden');
+                    } else {
+                        /* istanbul ignore next */
+                        logger.error(err);
+                        /* istanbul ignore next */
+                        next(err);
+                    }
+                });
+        }
+    );
+
+    // wrapper around MS Graph /users API
+    api.get('/useridbyemail/:email',ensureAuthenticated,
+        validate({
+            params: { email: Joi.string().email().required() }
+        }),
+        function(req, response){
+            request.get('https://graph.microsoft.com/v1.0/users/'+req.params.email, {
+                'headers': {
+                    'Authorization': 'Bearer ' + req.user.access_token,
+                    'Content-Type': 'application/json'
+                }
+            }, function(err, res) {
+                if(err){
+                    logger.error(err);
+                    response.status(404).send(res);
+                }
+                else{
+                    //console.log('res: ' + res);
+                    response.send(res);
+                }
+            });
+        });
+
     return api;
 };

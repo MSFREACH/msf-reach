@@ -21,9 +21,7 @@
   color:yellow;
 }
 
-.table {
-  margin-top:15px;
-}
+
 
 .panel-heading a {
   font-size:14px;
@@ -169,4 +167,11 @@ div.pac-container {
 }
 .bottom-margined {
   margin-bottom: 5px;
+}
+
+#eventVApp{
+  height: CALC(100vh - 150px);
+  overflow-y: scroll;
+  border:1px ridge ;
+  padding:0px 5px 5px;
 }

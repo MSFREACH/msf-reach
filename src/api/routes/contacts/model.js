@@ -29,7 +29,7 @@ export default (config, db, logger) => ({
       OR properties ->> 'email' ILIKE $1
       OR properties ->> 'email2' ILIKE $1
       OR properties ->> 'speciality' ILIKE $1)) AND
-      ($7 IS NULL OR (ad_oid = $7 and private = true) OR private = false) AND
+      ($7 IS NULL OR (ad_oid = $7 and private = true) OR ((properties->>'sharedWith')::jsonb ? $7) OR private = false) AND
       ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
       ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
       ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
@@ -55,7 +55,7 @@ export default (config, db, logger) => ({
 
     byId: (id) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, created_at, updated_at, last_email_sent_at, properties, the_geom
+        let query = `SELECT id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties, the_geom
      FROM ${config.TABLE_CONTACTS}
      WHERE id = $1`;
 
@@ -78,16 +78,17 @@ export default (config, db, logger) => ({
         let query = `INSERT INTO ${config.TABLE_CONTACTS}
      (created_at, ad_oid, private, properties, the_geom)
      VALUES (now(), $1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
-     RETURNING id, created_at, updated_at, last_email_sent_at, properties,
+     RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
+        body.properties['sharedWith'] = [];
         let values = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
 
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, created_at:data.created_at,
+            .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
@@ -104,7 +105,7 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_CONTACTS}
    SET properties = properties || $1, updated_at = now()
    WHERE id = $2
-   RETURNING  created_at, updated_at, last_email_sent_at, properties,
+   RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
    the_geom`;
 
         // Setup values
@@ -114,7 +115,7 @@ export default (config, db, logger) => ({
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
         // TODO - why is id forced to a String()?
-            .then((data) => resolve({ id: String(id), created_at:data.created_at,
+            .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
@@ -131,7 +132,7 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_CONTACTS}
      SET last_email_sent_at = $2
      WHERE id = $1
-     RETURNING  created_at, updated_at, last_email_sent_at, properties,
+     RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
@@ -144,5 +145,57 @@ export default (config, db, logger) => ({
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
+    }),
+
+    /**
+    * Set a contact sharedWith field
+    * @param {integer} id - ID of contact
+    * @param {integer} requestor_oid - ID of requestor, checked against ad_oid
+    * @param {string} dst_oid - uuid of user to share with (appended to list)
+    */
+    shareWith: (id, requestor_oid, dst_oid) => new Promise((resolve, reject) => {
+
+    // Setup query
+        let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || ($1)::jsonb)) where id=$2
+        and ad_oid = $3
+        RETURNING private, created_at, updated_at, last_email_sent_at, properties,
+        the_geom`;
+
+        // Setup values
+        let values = [ JSON.stringify(dst_oid), id, requestor_oid ];
+
+        // Execute
+        logger.debug(query, values);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), ad_oid: requestor_oid, private: data.private, created_at:data.created_at,
+                updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
+                properties:data.properties, the_geom:data.the_geom }))
+            .catch((err) => reject(err));
+    }),
+
+    /**
+    * Change privacy of a contact
+    * @param {integer} id - ID of contact
+    * @param {ad_oid} ad_oid - ID of user
+    * @param {string} private - privacy setting
+    */
+    privacy: (id, ad_oid, privacy) => new Promise((resolve, reject) => {
+
+    // Setup query
+        let query = `update ${config.TABLE_CONTACTS} set private=$1 where id=$2 and ad_oid=$3
+        RETURNING ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
+        the_geom`;
+
+        // Setup values
+        let values = [ privacy, id, ad_oid ];
+
+        // Execute
+        logger.debug(query, values);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
+                updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
+                properties:data.properties, the_geom:data.the_geom }))
+            .catch((err) => reject(err));
     })
+
 });

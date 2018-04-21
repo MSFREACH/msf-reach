@@ -3,6 +3,7 @@ import Promise from 'bluebird';
 // Express middleware and http
 import express from 'express';
 import http from 'http';
+import request from 'request';
 
 // Import express middlewares
 import expressSession from 'express-session';
@@ -52,10 +53,11 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         const authenticationStrategy = new OIDCStrategy({
             identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/.well-known/openid-configuration`,
             clientID: config.AZURE_AD_CLIENT_ID,
+            clientSecret: config.SESSION_SECRET,
             redirectUrl: config.AZURE_AD_RETURN_URL,
             allowHttpForRedirectUrl: !config.REDIRECT_HTTP,
-            responseType: 'id_token', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
-            responseMode: 'form_post', //This is recommended by MS
+            responseType: 'id_token code', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
+            responseMode: 'form_post' //This is recommended by MS
         },
         function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
             if (!profile.oid) {
@@ -149,6 +151,26 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
+                        let option = {
+                            method:'POST',
+                            uri:`https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/oauth2/token`,
+                            headers:{
+                                'Content-Type':'application/x-www-form-urlencoded'
+                            },
+                            form:{
+                                grant_type:'authorization_code',
+                                client_id: config.AZURE_AD_CLIENT_ID,
+                                resource:'https://graph.microsoft.com',
+                                client_secret: config.SESSION_SECRET,
+                                code: req.body.code,
+                                redirect_uri: config.AZURE_AD_RETURN_URL
+                            }
+                        };
+                        //console.log(option);
+                        request(option,function(err,res,body){
+                            req.user.access_token = JSON.parse(body).access_token;
+                        });
+
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
                         res.redirect('/authreturn');
