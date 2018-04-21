@@ -174,21 +174,22 @@ export default (config, db, logger) => ({
     /**
     * Change privacy of a contact
     * @param {integer} id - ID of contact
+    * @param {ad_oid} ad_oid - ID of user
     * @param {string} private - privacy setting
     */
-    privacy: (id, oid) => new Promise((resolve, reject) => {
+    privacy: (id, ad_oid, privacy) => new Promise((resolve, reject) => {
 
     // Setup query
-        let query = `update ${config.TABLE_CONTACTS} set private=$1 where id=$2
+        let query = `update ${config.TABLE_CONTACTS} set private=$1 where id=$2 and ad_oid=$3
         RETURNING ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
         the_geom`;
 
         // Setup values
-        let values = [ oid, id ];
+        let values = [ privacy, id, ad_oid ];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+        db.one(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve({ id: String(id), ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))

@@ -161,7 +161,7 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            contacts(config, db, logger).privacy(req.params.id, req.body.privacy)
+            contacts(config, db, logger).privacy(req.params.id, req.user.oid, req.body.privacy)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */
