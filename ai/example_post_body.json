@@ -8,7 +8,7 @@
         "exploratory_details": "Some situational details",
         "incharge_position": "Area Leader",
         "security_details": "Safe in town",
-        "capacity": "Not sure what this should be",
+        "capacity": "No external medical capacity on the ground",
         "non_medical_materials": [
             {
                 "type": "non-medical kit",
@@ -38,7 +38,7 @@
         "user": "Ms. Event Enterer",
         "event_status": "monitoring",
         "other_orgs": "Local Community Health Center",
-        "deployment": "What does this look like?"
+        "deployment": "MSF immunisation specialists deployed"
     },
     "created_at": "2018-04-20T10:00:00.000Z",
     "location": [ 105.194, 9.330 ],
