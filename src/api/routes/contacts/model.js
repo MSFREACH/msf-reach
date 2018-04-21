@@ -150,21 +150,23 @@ export default (config, db, logger) => ({
     /**
     * Set a contact sharedWith field
     * @param {integer} id - ID of contact
-    * @param {string} oid - uuid of user to share with (appended to list)
+    * @param {integer} requestor_oid - ID of requestor, checked against ad_oid
+    * @param {string} dst_oid - uuid of user to share with (appended to list)
     */
-    shareWith: (id, oid) => new Promise((resolve, reject) => {
+    shareWith: (id, requestor_oid, dst_oid) => new Promise((resolve, reject) => {
 
     // Setup query
         let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || ($1)::jsonb)) where id=$2
+        and ad_oid = $3
         RETURNING private, created_at, updated_at, last_email_sent_at, properties,
         the_geom`;
 
         // Setup values
-        let values = [ JSON.stringify(oid), id ];
+        let values = [ JSON.stringify(dst_oid), id, requestor_oid ];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+        db.one(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve({ id: String(id), ad_oid: oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))

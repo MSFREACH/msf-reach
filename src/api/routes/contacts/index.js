@@ -141,7 +141,7 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            contacts(config, db, logger).shareWith(req.params.id, req.body.oid)
+            contacts(config, db, logger).shareWith(req.params.id, req.user.oid, req.body.oid)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */
