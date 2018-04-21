@@ -152,12 +152,12 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    // Update a contact's sharedWith record in the database
+    // Update a contact's privacy record in the database
     api.patch('/:id/private', ensureAuthenticated,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                privacy: Joi.boolean().invalid(false).required()
+                privacy: Joi.boolean().invalid(true).required()
             })
         }),
         (req, res, next) => {
