@@ -164,10 +164,15 @@ export default ({ config, db, logger }) => {
             contacts(config, db, logger).privacy(req.params.id, req.user.oid, req.body.privacy)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
-                    /* istanbul ignore next */
-                    logger.error(err);
-                    /* istanbul ignore next */
-                    next(err);
+                    if (err.message === 'No data returned from the query.') {
+                        // contact doesn't belong to us
+                        res.send(403)('forbidden');
+                    } else {
+                        /* istanbul ignore next */
+                        logger.error(err);
+                        /* istanbul ignore next */
+                        next(err);
+                    }
                 });
         }
     );

@@ -171,7 +171,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         };
                         //console.log(option);
                         request(option,function(err,res,body){
-                            console.log("body");
+                            console.log('body');
                             console.log(body);
                             req.user.access_token = JSON.parse(body).access_token;
                         });

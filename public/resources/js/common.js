@@ -606,6 +606,9 @@ var getContact = function(id) {
                 data: JSON.stringify({'privacy': $('#privateContact').val()}),
                 contentType: 'application/json'
             }).fail(function(err) {
+                if (err.status===403) { // forbidden
+                  alert('you can only set to private contacts that you have entered');
+                }
                 alert('privacy not set due to error');
             });
         });
