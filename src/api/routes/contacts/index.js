@@ -177,6 +177,7 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    // wrapper around MS Graph /users API
     api.get('/useridbyemail/:email',ensureAuthenticated,
         validate({
             params: { email: Joi.string().email().required() }
