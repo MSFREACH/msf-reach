@@ -681,6 +681,8 @@ $('#sharewith_email').keyup(function(event){
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
                     alert('session expired');
+                } else {
+                    alert('failed, are you sure you own the record?');
                 }
             });
         }).fail(function(err) {
