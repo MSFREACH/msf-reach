@@ -155,15 +155,12 @@ export default (config, db, logger) => ({
     shareWith: (id, oid) => new Promise((resolve, reject) => {
 
     // Setup query
-        let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties,'{"sharedWith"}', ((properties->'sharedWith') || $1)) where id=$2
+        let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || ($1)::jsonb)) where id=$2
         RETURNING private, created_at, updated_at, last_email_sent_at, properties,
         the_geom`;
 
-
-
-
         // Setup values
-        let values = [ oid, id ];
+        let values = [ JSON.stringify(oid), id ];
 
         // Execute
         logger.debug(query, values);
