@@ -1,0 +1,210 @@
+{
+    "status": {
+        "success": true,
+        "request_id": "aa0db3e4-bbb1-4a99-b1e0-1a5a9da78b8d"
+    },
+    "results": [
+        {
+            "topic": "historical",
+            "insights": [
+                "The MSF mission to this region in 2013 required a 6-person medical team. The team was on-site for 3 months.",
+                "3 members of the 2013 team are still active as MSF volunteers.",
+                "The primary challenge for teams deployed to this region in the last 7 years has been supply chain."
+            ],
+            "geo": {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "type": "Roadblock"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                105.00732421875,
+                                9.589917307087418
+                            ]
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "type": "Roadblock"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                105.46875,
+                                9.351512670895609
+                            ]
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "type": "Field hospital"
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                104.886474609375,
+                                8.85250673734347
+                            ]
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "Previous known conflict area"
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        105.14396667480469,
+                                        8.982070816916698
+                                    ],
+                                    [
+                                        105.10757446289062,
+                                        8.970540802815867
+                                    ],
+                                    [
+                                        105.09384155273438,
+                                        8.877609123067955
+                                    ],
+                                    [
+                                        105.13847351074219,
+                                        8.857934425512106
+                                    ],
+                                    [
+                                        105.16731262207031,
+                                        8.817224814384145
+                                    ],
+                                    [
+                                        105.19134521484374,
+                                        8.826724125740427
+                                    ],
+                                    [
+                                        105.19203186035155,
+                                        8.8748954343653
+                                    ],
+                                    [
+                                        105.22842407226562,
+                                        8.861326689929978
+                                    ],
+                                    [
+                                        105.25588989257812,
+                                        8.921703746572957
+                                    ],
+                                    [
+                                        105.24833679199219,
+                                        8.974610261405399
+                                    ],
+                                    [
+                                        105.16937255859375,
+                                        8.911528536074787
+                                    ],
+                                    [
+                                        105.194091796875,
+                                        8.983427265061882
+                                    ],
+                                    [
+                                        105.17417907714844,
+                                        8.999026053657794
+                                    ],
+                                    [
+                                        105.14396667480469,
+                                        8.982070816916698
+                                    ]
+                                ]
+                            ]
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "name": "Proposed boundary line"
+                        },
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    104.84390258789062,
+                                    8.781260924757706
+                                ],
+                                [
+                                    105.07598876953125,
+                                    8.699141638850914
+                                ],
+                                [
+                                    105.12405395507812,
+                                    8.792118316164263
+                                ],
+                                [
+                                    104.94415283203125,
+                                    8.839615657078516
+                                ],
+                                [
+                                    105.0677490234375,
+                                    9.013267838540092
+                                ]
+                            ]
+                        }
+                    }
+                ]
+            },
+            "data": {
+                "contacts": [
+                    {
+                        "name": "Bernard Koucher",
+                        "location": "France",
+                        "phone": "+33 1234567"
+                    },
+                    {
+                        "name": "Jacques Bérès",
+                        "location": "France",
+                        "phone": "+33 1234567"
+                    },
+                    {
+                        "name": "Xavier Emmanuelli",
+                        "location": "France",
+                        "phone": "+33 1234567"
+                    },
+                    {
+                        "name": "Rony Brauman",
+                        "location": "France",
+                        "phone": "+33 1234567"
+                    }
+                ],
+                "supplies": [
+                    [
+                        "type",
+                        "in-region",
+                        "enroute",
+                        "on-order"
+                    ],
+                    [
+                        "water filters",
+                        1000,
+                        3000,
+                        4000
+                    ],
+                    [
+                        "mosquito nets",
+                        0,
+                        100,
+                        10000
+                    ],
+                    [
+                        "meal kits",
+                        5000,
+                        5000,
+                        0
+                    ]
+                ]
+            }
+        }
+    ]
+}
