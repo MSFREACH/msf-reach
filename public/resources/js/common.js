@@ -598,7 +598,17 @@ var getContact = function(id) {
       '<option value="false">no</option>' +
     '</select>'
         );
-        $('#privateContact').val(contact.result.private);
+        $('#privateContact').val(String(contact.result.private));
+        $('#privateContact').change(function() {
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/contacts/' + id + '/private',
+                data: JSON.stringify({'privacy': $('#privateContact').val()}),
+                contentType: 'application/json'
+            }).fail(function(err) {
+                alert('privacy not set due to error');
+            });
+        });
 
         $('span.filed').html(convertToLocaleDate(contact.result.created_at));
         $('span.updated').html(convertToLocaleDate(contact.result.updated_at));
@@ -670,15 +680,4 @@ $('#sharewith_email').keyup(function(event){
             alert('MSF user not found, check email address');
         });
     }
-});
-
-$('#privateContact').change(function() {
-    $.ajax({
-        type: 'PATCH',
-        url: '/api/contacts/' + currentContactId + '/private',
-        data: JSON.stringify({'privacy': $('#privateContact').val()}),
-        contentType: 'application/json'
-    }).fail(function(err) {
-        alert('privacy not set due to error');
-    });
 });

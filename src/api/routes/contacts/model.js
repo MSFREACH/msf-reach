@@ -55,7 +55,7 @@ export default (config, db, logger) => ({
 
     byId: (id) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, created_at, updated_at, last_email_sent_at, properties, the_geom
+        let query = `SELECT id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties, the_geom
      FROM ${config.TABLE_CONTACTS}
      WHERE id = $1`;
 
@@ -78,7 +78,7 @@ export default (config, db, logger) => ({
         let query = `INSERT INTO ${config.TABLE_CONTACTS}
      (created_at, ad_oid, private, properties, the_geom)
      VALUES (now(), $1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
-     RETURNING id, created_at, updated_at, last_email_sent_at, properties,
+     RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
@@ -88,7 +88,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, created_at:data.created_at,
+            .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
@@ -105,7 +105,7 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_CONTACTS}
    SET properties = properties || $1, updated_at = now()
    WHERE id = $2
-   RETURNING  created_at, updated_at, last_email_sent_at, properties,
+   RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
    the_geom`;
 
         // Setup values
@@ -115,7 +115,7 @@ export default (config, db, logger) => ({
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
         // TODO - why is id forced to a String()?
-            .then((data) => resolve({ id: String(id), created_at:data.created_at,
+            .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
@@ -132,7 +132,7 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_CONTACTS}
      SET last_email_sent_at = $2
      WHERE id = $1
-     RETURNING  created_at, updated_at, last_email_sent_at, properties,
+     RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
@@ -156,7 +156,7 @@ export default (config, db, logger) => ({
 
     // Setup query
         let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || ($1)::jsonb)) where id=$2
-        RETURNING  created_at, updated_at, last_email_sent_at, properties,
+        RETURNING private, created_at, updated_at, last_email_sent_at, properties,
         the_geom`;
 
         // Setup values
@@ -165,7 +165,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id), created_at:data.created_at,
+            .then((data) => resolve({ id: String(id), ad_oid: oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
@@ -179,7 +179,9 @@ export default (config, db, logger) => ({
     privacy: (id, oid) => new Promise((resolve, reject) => {
 
     // Setup query
-        let query = `update ${config.TABLE_CONTACTS} set private=$1 where id=$2;`;
+        let query = `update ${config.TABLE_CONTACTS} set private=$1 where id=$2
+        RETURNING ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
+        the_geom`;
 
         // Setup values
         let values = [ oid, id ];
@@ -187,7 +189,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id), created_at:data.created_at,
+            .then((data) => resolve({ id: String(id), ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
