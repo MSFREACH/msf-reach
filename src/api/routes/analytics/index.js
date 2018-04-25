@@ -18,7 +18,7 @@ export default ({ config, logger }) => {
     let api = Router();
 
     // Get a list of all tweets matching the searchString
-    api.post('/analyze', ensureAuthenticated, cacheResponse('1 minute'),
+    api.post('/analyze', ensureAuthenticated,
         validate({
             body: Joi.object().required()
         }),
