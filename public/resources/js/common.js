@@ -600,21 +600,7 @@ var getContact = function(id) {
         );
         $('#privateContact').val(String(contact.result.private));
         $('#privateContact').change(function() {
-            if ($('#privateContact').val() === 'true') {
-                alert('cannot set public contact private');
-            } else {
-                $.ajax({
-                    type: 'PATCH',
-                    url: '/api/contacts/' + id + '/private',
-                    data: JSON.stringify({'privacy': $('#privateContact').val()}),
-                    contentType: 'application/json'
-                }).fail(function(err) {
-                    if (err.status===403) { // forbidden
-                        alert('you can only set to private contacts that you have entered');
-                    }
-                    alert('privacy not set due to error');
-                });
-            }
+            alert('feature not supported yet');
         });
 
         $('span.filed').html(convertToLocaleDate(contact.result.created_at));
@@ -667,26 +653,6 @@ var getContact = function(id) {
 
 $('#sharewith_email').keyup(function(event){
     if(event.keyCode == 13){
-        var email = $('#sharewith_email').val();
-        var url = '/api/contacts/useridbyemail/'+email;
-        $.getJSON(url, function(userdata) {
-            $.ajax({
-                type: 'PATCH',
-                url: '/api/contacts/' + currentContactId + '/share',
-                data: JSON.stringify({'oid':JSON.parse(userdata.body).id}),
-                contentType: 'application/json'
-            }).done(function(data, textStatus, req) {
-                $('#sharewith_email').val(''); // clear entry
-                alert('shared');
-            }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                    alert('session expired');
-                } else {
-                    alert('failed, are you sure you own the record?');
-                }
-            });
-        }).fail(function(err) {
-            alert('MSF user not found, check email address');
-        });
+        alert('feature not supported yet');
     }
 });
