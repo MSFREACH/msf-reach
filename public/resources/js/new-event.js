@@ -233,6 +233,7 @@ $(function(){
 
 
 });
+var analyticsMap;
 
 var vmAnalytics = new Vue({
 
@@ -242,7 +243,9 @@ var vmAnalytics = new Vue({
     mounted: function(){
         //console.log('mounted');
         // Create map
-        var analyticsMap = L.map('analyticsMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
+        if (analyticsMap)
+          analyticsMap.remove();
+        analyticsMap = L.map('analyticsMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
 
         // To get healthsites loaded, need to first add load event and then setView separately
 
