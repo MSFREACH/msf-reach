@@ -99,3 +99,7 @@ div.pac-container {
   overflow-y:scroll;
   border:1px solid black;
 }
+
+[v-cloak] {
+  display: none;
+}
