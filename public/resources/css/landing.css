@@ -103,3 +103,11 @@ div.pac-container {
 [v-cloak] {
   display: none;
 }
+.analyticsDiv{
+  height: 70vh;
+  overflow-y: scroll;
+  border: 1px ridge;
+}
+#analyticsMap{
+  height:70vh;
+}
