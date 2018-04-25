@@ -68,7 +68,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new contact record in the database
-    api.post('/', addUser,
+    api.post('/', 
         validate({
             body: Joi.object().keys({
                 private: Joi.boolean(),
