@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 
 import { Router } from 'express';
 import rp from 'request-promise';
@@ -19,14 +18,16 @@ export default ({ config, logger }) => {
     let api = Router();
 
     // Get a list of all tweets matching the searchString
-    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
-        //validate({
-        //  }),
+    api.post('/analyze', ensureAuthenticated, cacheResponse('1 minute'),
+        validate({
+            body: Joi.object().required()
+        }),
         (req, res, next) => {
+            let eventBody=req.body;
             var options = {
                 method: 'POST',
                 uri: 'https://msf-api.vizalytics.com/event',
-                body: {
+                body: eventBody  /*{
                     'metadata': {
                         'severity': 'quite severe',
                         'population_total': 1000000,
@@ -72,7 +73,7 @@ export default ({ config, logger }) => {
                     'location': [ 105.194, 9.330 ],
                     'type': 'armed_conflict',
                     'status': 'active'
-                },
+                }*/,
                 headers: {
                     'x-api-key': config.VIZALYTICS_API_KEY,
                     'content-type': 'application/json'
@@ -82,7 +83,7 @@ export default ({ config, logger }) => {
 
             rp(options)
                 .then(function (parsedBody) {
-                    res.status(200).send(parsedBody.results[0].insights);
+                    res.status(200).send(parsedBody);
                 }).catch((err) => {
                 /* istanbul ignore next */
                     logger.error(err);
