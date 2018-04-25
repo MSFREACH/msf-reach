@@ -212,6 +212,83 @@
     </div>
 
 
+    <!-- Analytics modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewAnalyticsModalLabel" id="analyticsModal">
+      <div class="modal-dialog modal-lg ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myNewAnalyticsModalLabel">Event Analytics</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-7">
+                  <div id="submissionStatusDiv">
+
+                  </div>
+
+                  <div id="vizalyticsDiv">
+
+                  </div>
+                  <div id="analysisResultVue" v-cloak>
+                    <h4>Anlysis result:</h4>
+                    <span v-if="response.status.success" > <span class="glyphicon glyphicon-check" style="color:green;"></span> OK </span>
+                    <span v-else> <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Unsuccessful </span>
+
+                    <div class="" v-for="res in response.results">
+                      <h5> Topic: {{ res.topic }}</h5>
+                      <h5> Insights</h5>
+                      <ul>
+                        <li v-for="ins in res.insights">{{ins}}</li>
+                      </ul>
+                      <h5> Contatcs: </h5>
+                      <p class="help-block"> Below are the contacts that are located in the area of disaster </p>
+                      <ul>
+                        <li v-for="c in res.data.contacts">{{c.name}}, <i> {{c.location}}</i>, <a>{{c.phone}}</a> </li>
+                      </ul>
+                      <h5> Supplies:</h5>
+                      <table class="table table-striped">
+                        <thead>
+                          <tr v-for="head in res.data.supplies.slice(0,1)">
+                            <th v-for="h in head">{{h}}</th>
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+                          <tr v-for="row in res.data.supplies.slice(1)">
+                            <td v-for="col in row">{{col}}</td>
+
+                          </tr>
+
+                        </tbody>
+
+
+
+                      </table>
+
+
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-sm-5">
+                  <div id="analyticsMap" style="height:70vh;"></div>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Contact Page Modal -->
     <div class="modal fade" id="contactDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelContact">
       <div class="modal-dialog" role="document">
