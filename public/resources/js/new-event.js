@@ -20,6 +20,10 @@ $('#newEventModal').on('hidden.bs.modal', function() {
     $('#inputSecurity').val('');
 });
 
+$('#analyticsModal').on('shown.bs.modal', function(){
+    $('body').addClass('modal-open');
+});
+
 // Add some base tiles
 /*
 var NEmapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
@@ -244,7 +248,7 @@ var vmAnalytics = new Vue({
         //console.log('mounted');
         // Create map
         if (analyticsMap)
-          analyticsMap.remove();
+            analyticsMap.remove();
         analyticsMap = L.map('analyticsMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
 
         // To get healthsites loaded, need to first add load event and then setView separately
