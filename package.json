@@ -50,7 +50,7 @@
     "cors": "^2.8.4",
     "cors-anywhere": "^0.4.1",
     "dbgeo": "^1.1.0",
-    "dms-conversion": "AcrossTheCloud/dms-js",
+    "dms-conversion": "3.0.0",
     "dotenv": "^5.0.1",
     "express": "git+https://git@github.com/AcrossTheCloud/express.git",
     "express-jwt": "^5.3.1",
