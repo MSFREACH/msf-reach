@@ -4,7 +4,7 @@ import rp from 'request-promise';
 
 
 // Import any required utility functions
-import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
+import { ensureAuthenticated } from '../../../lib/util';
 
 
 
