@@ -77,7 +77,7 @@ const ensureAuthenticatedWrite = (req, res, next) => {
     if(config.AZURE_AD_TENANT_NAME){ //Check if we are using azure ad auth
         /* passport.authenticate runs req.login which sets the user object on req
 		req.isAuthenticated checks the req object for a user attribute, its part of express. */
-        if (req.isAuthenticated() && req.user._json.hasOwnProperty('groups') && req.user._json.groups.indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
+        if (req.isAuthenticated() && req.user._json.hasOwnProperty('groups') && JSON.parse(req.user._json.groups).indexOf(config.AZURE_AD_OPERATORS_GROUP_ID) > -1) {
             return next();
         }
         return res.status(403).send('forbidden');
@@ -106,12 +106,13 @@ const addUser = (req, res, next) => {
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
-    if(config.AZURE_AD_TENANT_NAME){ //Check if we are using azure ad auth
-        /* passport.authenticate runs req.login which sets the user object on req
-		req.isAuthenticated checks the req object for a user attribute, its part of express. */
-        req.isAuthenticated();
-        return next();
-    } else { // we are using Cognito
+    if(config.AZURE_AD_TENANT_NAME && req.body.private===true){ // are we submitting private user? If so force login
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        res.redirect('/login');
+        return;
+    } else { // we are using Cognito / don't care if contact is public
         return next();
     }
 };

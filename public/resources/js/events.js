@@ -547,8 +547,10 @@ var initGetContacts = function(callback){
 };
 
 /**
-* -- comment progress marker
 * Function to get missions
+* @function initGetMissions
+* @param {function} callback - function to process mission data once loaded
+
 **/
 var initGetMissions = function(callback){
     $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
@@ -564,6 +566,7 @@ var initGetMissions = function(callback){
 
 /**
 * Function to add missions to map
+* @function mapMissions
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
@@ -647,8 +650,6 @@ var mapMissions = function(missions ){
 
 };
 
-
-// Main function (effective)
 // Get eventId from URL
 currentEventId = getQueryVariable('eventId');
 // Only ask API where event is specified and not empty
@@ -680,7 +681,7 @@ var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
 });
 
-switch (Cookies.get('MapLayer')) {
+switch (Cookies.get('MapLayer')) { // add base map layer based on cookie setting
 case 'satellite':
     mapboxSatellite.addTo(mainMap);
     break;
@@ -698,7 +699,7 @@ var baseMaps = {
 };
 
 mainMap.on('baselayerchange', function(baselayer) {
-    Cookies.set('MapLayer',baselayer.name);
+    Cookies.set('MapLayer',baselayer.name); // update default (set in cookie)
 });
 
 var groupedOverlays = {
@@ -828,15 +829,21 @@ getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //   https://console.developers.google.com/apis/credentials
 const GoogleApiKey = 'AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g';
 
-// Set endpoints
+// Set endpoints for Google
 const GoogleEndpoints = {
     translate: '',
     detect: 'detect',
     languages: 'languages'
 };
 
-// Abstract API request function
-function makeApiRequest(endpoint, data, type, authNeeded) {
+/**
+* Abstract Google Translate API request function
+* @function makeApiRequest
+* @param {string} endpoint - specific Google translate endpoint (subpath) from GoogleEndpoints
+* @param {Object} data - data to send to Google endpoint for translation / language detection / etc.
+* @param {string} type - HTTP method
+*/
+function makeApiRequest(endpoint, data, type) {
     url = 'https://www.googleapis.com/language/translate/v2/' + endpoint;
     url += '?key=' + GoogleApiKey;
 
@@ -863,7 +870,13 @@ function makeApiRequest(endpoint, data, type, authNeeded) {
     });
 }
 
-// Translate
+/**
+* Abstract API
+* @function makeApiRequest
+* @param {string} endpoint - specific Google translate endpoint (subpath) from GoogleEndpoints
+* @param {Object} data - data to send to Google endpoint for translation / language detection / etc.
+* @param {string} type - HTTP method
+*/
 function translate(data) {
     makeApiRequest(GoogleEndpoints.translate, data, 'GET', false).then(function(
         resp
@@ -879,6 +892,8 @@ function translate(data) {
 
 
 var editCategory='general';
+
+// vue functions used for filling in event display
 var vmEventDetails = new Vue({
 
     data: {

@@ -303,7 +303,7 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
-* @function mapMissions - function to map mission histories
+* @function mapMissions - function to map MSF Past Responses
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
@@ -515,16 +515,6 @@ var onMissionLinkClick = function(id) {
 };
 
 /**
-* function to show contact info modal on click
-* @function onContactLinkClick
-* @param {String} id - id number (as a String)
-*/
-var onContactLinkClick = function(id) {
-    $('#contactDetailsModal').on('shown.bs.modal');
-    getContact(id);
-};
-
-/**
 * function to convert ISO date string to locale string with basic handling of non-isoDate format
 * @function convertToLocaleDate
 * @param {String} isoDate - ISO date string
@@ -534,67 +524,6 @@ var convertToLocaleDate= function (isoDate) {
         return (new Date(isoDate)).toLocaleString();
     else
         return '';
-};
-
-var contactInfo = {};
-
-/**
-* function for getting details of an individual contact
-* @function getContact
-* @param {String} id - id number (as a String)
-*/
-var getContact = function(id) {
-    $.getJSON('/api/contacts/' + id, function(contact) {
-        contactInfo = contact.result ? contact.result.properties : {};
-        //$('#contactDetailsModal').find('div.form-group').hide();
-        $('span.filed').html(convertToLocaleDate(contact.result.created_at));
-        $('span.updated').html(convertToLocaleDate(contact.result.updated_at));
-        $('span.last_email').html(convertToLocaleDate(contact.result.last_email_sent_at));
-
-        // fiddle booleans to 'yes'/'no'
-        contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
-        contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
-
-
-        // if web address
-        if (contact.result.properties.web) {
-            // prepend http:// to web (don't assume https, assume redirection)
-            if (!contact.result.properties.web.startsWith('http')) {
-                contact.result.properties.web = 'http://' + contact.result.properties.web;
-            }
-            // make it a link
-            contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
-        }
-
-        // also hyperlink emails
-        if (contact.result.properties.email) {
-            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
-        }
-        if (contact.result.properties.email2) {
-            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
-        }
-
-        _(contact.result.properties).forIn(function(value, key) {
-            // console.log("Key:", key, "Value", value);
-            $('span.' + key).html(value);
-            $('span.' + key).parent().toggle(!!(value));
-
-        });
-        if (contact.result.properties.type === 'Current MSF Staff') {
-            $('#msf_details').show();
-            $('#employment_details').hide();
-        } else {
-            $('#msf_details').hide();
-            $('#employment_details').show();
-        }
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            // Catch condition where no data returned
-            alert('error: ' + err.responseText);
-        }
-    });
 };
 
 // Create map

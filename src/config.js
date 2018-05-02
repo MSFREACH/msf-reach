@@ -29,6 +29,7 @@ export default {
     AZURE_AD_OPERATORS_GROUP_ID: process.env.AZURE_AD_OPERATORS_GROUP_ID || '',
     APP_NAME: process.env.APP_NAME || 'msf-reach',
     API_KEY: process.env.API_KEY || '',
+    VIZALYTICS_API_KEY: process.env.VIZALYTICS_API_KEY || '',
     API_REPORTS_TIME_WINDOW: process.env.API_REPORTS_TIME_WINDOW || 3600,
     API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,

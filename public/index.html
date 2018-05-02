@@ -212,6 +212,83 @@
     </div>
 
 
+    <!-- Analytics modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewAnalyticsModalLabel" id="analyticsModal">
+      <div class="modal-dialog modal-lg ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myNewAnalyticsModalLabel">Event Analytics</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-7 analyticsDiv">
+                  <div id="submissionStatusDiv">
+
+                  </div>
+
+                  <div id="vizalyticsDiv">
+
+                  </div>
+                  <div id="analysisResultVue" v-cloak>
+                    <h4>Anlysis result:</h4>
+                    <span v-if="response.status.success" > <span class="glyphicon glyphicon-check" style="color:green;"></span> OK </span>
+                    <span v-else> <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Unsuccessful </span>
+
+                    <div class="" v-for="res in response.results">
+                      <h5> Topic: {{ res.topic }}</h5>
+                      <h5> Insights</h5>
+                      <ul>
+                        <li v-for="ins in res.insights">{{ins}}</li>
+                      </ul>
+                      <h5> Contatcs: </h5>
+                      <p class="help-block"> Below are the contacts that are located in the area of disaster </p>
+                      <ul>
+                        <li v-for="c in res.data.contacts">{{c.name}}, <i> {{c.location}}</i>, <a>{{c.phone}}</a> </li>
+                      </ul>
+                      <h5> Supplies:</h5>
+                      <table class="table table-striped">
+                        <thead>
+                          <tr v-for="head in res.data.supplies.slice(0,1)">
+                            <th v-for="h in head">{{h}}</th>
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+                          <tr v-for="row in res.data.supplies.slice(1)">
+                            <td v-for="col in row">{{col}}</td>
+
+                          </tr>
+
+                        </tbody>
+
+
+
+                      </table>
+
+
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-sm-5">
+                  <div id="analyticsMap"></div>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Contact Page Modal -->
     <div class="modal fade" id="contactDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelContact">
       <div class="modal-dialog" role="document">
@@ -226,15 +303,23 @@
                     <div class="bg-success">Record History</div>
                     <div class="form-group">
                         <label>Created on:</label>
-                        </span> <span class="filed"></span>
+                        <span class="filed"></span>
                     </div>
                     <div class="form-group">
                         <label>Last updated on:</label>
-                        </span> <span class="updated"></span>
+                        <span class="updated"></span>
                     </div>
                     <div class="form-group">
                         <label>Last email sent on:</label>
-                        </span> <span class="last_email"></span>
+                        <span class="last_email"></span>
+                    </div>
+                    <div class="form-group" id="privateContactDiv">
+                      <label>Private?</label>
+                      <span class="private"></span>
+                    </div>
+                    <div class="form-group" id="shareWithDiv">
+                      <label>Share with</label>
+                      <input type="text" id="sharewith_email" name="sharewith_email">
                     </div>
                     <div class="bg-success">Personal Details</div>
                     <div class="form-group" style="display:none;">
@@ -519,7 +604,7 @@
                   <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
                 </div>
               </div>
-              <div id="mainMap" style="height:65vh;"></div>
+              <div id="mainMap" ></div>
             </div>
           </div>
 
@@ -538,7 +623,7 @@
                     <ul class="nav nav-tabs" id="event_tabs">
                         <li class="active"><a href="#event_monitoring" data-toggle="tab">Monitoring & Assessment</a></li>
                         <li><a href="#event_ongoing" data-toggle="tab">Ongoing Projects</a></li>
-                        <li><a href="#event_missions" data-toggle="tab">Mission Histories</a></li>
+                        <li><a href="#event_missions" data-toggle="tab">MSF Past Responses</a></li>
                         <li><a href="#event_RSS" data-toggle="tab">RSS Feeds</a></li>
                     </ul>
                 </div>
@@ -549,60 +634,63 @@
                         <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
                         <li><a href="#contact_search" data-toggle="tab">Search</a></li>
                     </ul>
+
+                    <!--contact tab content-->
+                    <div class="tab-content">
+
+                      <div id="contact_new" class="tab-pane">
+                        <div id="newContact">
+                          <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
+                        </div>
+                      </div>
+
+                      <div id="contact_search" class="tab-pane">
+                        <div class="form-group" >
+                          Contact search category
+                            <select class="form-control" style="color:black;" id="inputContactType" >
+                              <option value="" selected>(no category filtering)</option>
+                              <option value="Current MSF Staff">Current MSF Staff</option>
+                              <option value="Supplier">Supplier</option>
+                              <option value="United Nations">United Nations</option>
+                              <option value="Government">Government</option>
+                              <option value="Other NGO">Other NGO</option>
+                              <option value="Academic">Academic</option>
+                              <option value="Private Medical Practice">Private Medical Practice</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                          <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
+                        </div>
+                      </div>
+
+                    </div>
+
                 </div>
              </div>
 
           <!--event tab content-->
           <div class="tab-content msf-tab">
-              <div id="event_monitoring" class="tab-pane">
+              <div id="event_monitoring" class="tab-pane tab-pane-box active">
                 <div id="watchingEventProperties" class="list-group">
                 </div>
               </div>
-              <div id="event_ongoing" class="tab-pane">
+              <div id="event_ongoing" class="tab-pane tab-pane-box">
                 <div id="ongoingEventProperties" class="list-group">
                 </div>
               </div>
-              <div id="event_missions" class="tab-pane">
+              <div id="event_missions" class="tab-pane tab-pane-box">
                 <div class="form-group">
                   <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
                 </div>
                 <div id="missionsContainer"></div>
               </div>
-              <div id="event_RSS" class="tab-pane">
-                <div id="rssFeeds" class="list-group">
+              <div id="event_RSS" class="tab-pane tab-pane-box">
+                <div id="rssFeeds" class="list-group" style="margin-bottom:0px;">
                 </div>
               </div>
           </div>
 
-          <!--contact tab content-->
-          <div class="tab-content">
 
-            <div id="contact_new" class="tab-pane">
-              <div id="newContact">
-                <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
-              </div>
-            </div>
-
-            <div id="contact_search" class="tab-pane">
-              <div class="form-group" >
-                Contact search category
-                  <select class="form-control" style="color:black;" id="inputContactType" >
-                    <option value="" selected>(no category filtering)</option>
-                    <option value="Current MSF Staff">Current MSF Staff</option>
-                    <option value="Supplier">Supplier</option>
-                    <option value="United Nations">United Nations</option>
-                    <option value="Government">Government</option>
-                    <option value="Other NGO">Other NGO</option>
-                    <option value="Academic">Academic</option>
-                    <option value="Private Medical Practice">Private Medical Practice</option>
-                  </select>
-              </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
-              </div>
-            </div>
-
-          </div>
 
 
 
@@ -618,7 +706,6 @@
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <!-- Cookies -->
     <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
-    <script type="text/javascript" src="/resources/js/common.js"></script>
 
     <!-- VueJs + plug-ins -->
     <script src="/lib/vue/vue.min.js"></script>

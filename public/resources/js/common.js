@@ -79,23 +79,42 @@ if (typeof(Cookies.get('- security')) === 'undefined') {
 if (typeof(Cookies.get('- contacts')) === 'undefined') {
     Cookies.set('- contacts','on'); // default
 }
-if (typeof(Cookies.get('Contacts')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
-if (typeof(Cookies.get('Missions')) === 'undefined') {
-    Cookies.set('Contacts','on'); // default
-}
 
+if (typeof(Cookies.get('MSF Past Responses')) === 'undefined') {
+    Cookies.set('MSF Past Responses','off'); // default
+}
 if (typeof(Cookies.get('MapLayer')) === 'undefined') {
     Cookies.set('MapLayer','Terrain'); // default
 }
 
-if (Cookies.get('Ongoing MSF Projects')==='undefined') {
+if (typeof(Cookies.get('Ongoing MSF Projects'))==='undefined') {
     Cookies.set('Ongoing MSF Projects','on');
 }
+if (typeof(Cookies.get('Health Sites'))==='undefined') {
+    Cookies.set('Health Sites','off');
+}
 
-if (Cookies.get('Health Sites')==='undefined') {
-    Cookies.set('Health Sites','on');
+if (typeof(Cookies.get('- MSF Staff'))==='undefined') {
+    Cookies.set('- MSF Staff','on');
+}
+if (typeof(Cookies.get('- other contacts'))==='undefined') {
+    Cookies.set('- other contacts','off');
+}
+
+if (typeof(Cookies.get('- PDC'))==='undefined') {
+    Cookies.set('- PDC','on');
+}
+if (typeof(Cookies.get('- TSR'))==='undefined') {
+    Cookies.set('- TSR','on');
+}
+if (typeof(Cookies.get('- GDACS'))==='undefined') {
+    Cookies.set('- MSF Staff','on');
+}
+if (typeof(Cookies.get('- PTWC'))==='undefined') {
+    Cookies.set('- PTWC','on');
+}
+if (typeof(Cookies.get('- USGS'))==='undefined') {
+    Cookies.set('- USGS','on');
 }
 
 // keep track of the first time we load missions and contacts (used in code for updating based on map extents)
@@ -557,3 +576,117 @@ var getAllEvents = function(callback){
         }
     });
 };
+
+var currentContactId = 0;
+var onContactLinkClick = function(id) {
+    $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
+    $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
+    $('#contactDetailsModal').on('shown.bs.modal');
+    currentContactId = id;
+    getContact(id);
+};
+
+var contactInfo = {};
+
+var getContact = function(id) {
+    $.getJSON('/api/contacts/' + id, function(contact) {
+        contactInfo = contact.result ? contact.result.properties : {};
+        //$('#contactDetailsModal').find('div.form-group').hide();
+        $('span.private').html(
+            '<select id="privateContact">'+
+      '<option value="true">yes</option>' +
+      '<option value="false">no</option>' +
+    '</select>'
+        );
+        $('#privateContact').val(String(contact.result.private));
+        $('#privateContact').change(function() {
+            if ($('#privateContact').val() === 'true') {
+                alert('cannot set public contact private');
+            } else {
+                $.ajax({
+                    type: 'PATCH',
+                    url: '/api/contacts/' + id + '/private',
+                    data: JSON.stringify({'privacy': $('#privateContact').val()}),
+                    contentType: 'application/json'
+                }).fail(function(err) {
+                    if (err.status===403) { // forbidden
+                        alert('you can only set to private contacts that you have entered');
+                    }
+                    alert('privacy not set due to error');
+                });
+            }
+        });
+
+        $('span.filed').html(convertToLocaleDate(contact.result.created_at));
+        $('span.updated').html(convertToLocaleDate(contact.result.updated_at));
+        $('span.last_email').html(convertToLocaleDate(contact.result.last_email_sent_at));
+
+        contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
+        contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
+
+        // if web address
+        if (contact.result.properties.web) {
+            // prepend http:// to web (don't assume https, assume redirection)
+            if (!contact.result.properties.web.startsWith('http')) {
+                contact.result.properties.web = 'http://' + contact.result.properties.web;
+            }
+            // make it a link
+            contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
+        }
+
+        // also hyperlink emails
+        if (contact.result.properties.email) {
+            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
+        }
+        if (contact.result.properties.email2) {
+            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
+        }
+
+        _(contact.result.properties).forIn(function(value, key) {
+            // console.log("Key:", key, "Value", value);
+            $('span.' + key).html(value);
+            $('span.' + key).parent().toggle(!!(value));
+
+        });
+        if (contact.result.properties.type === 'Current MSF Staff') {
+            $('#msf_details').show();
+            $('#employment_details').hide();
+        } else {
+            $('#msf_details').hide();
+            $('#employment_details').show();
+        }
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            // Catch condition where no data returned
+            alert('error: ' + err.responseText);
+        }
+    });
+};
+
+$('#sharewith_email').keyup(function(event){
+    if(event.keyCode == 13){
+        var email = $('#sharewith_email').val();
+        var url = '/api/contacts/useridbyemail/'+email;
+        $.getJSON(url, function(userdata) {
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/contacts/' + currentContactId + '/share',
+                data: JSON.stringify({'oid':JSON.parse(userdata.body).id}),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                $('#sharewith_email').val(''); // clear entry
+                alert('shared');
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                } else {
+                    alert('failed, are you sure you own the record?');
+                }
+            });
+        }).fail(function(err) {
+            alert('MSF user not found, check email address');
+        });
+    }
+});

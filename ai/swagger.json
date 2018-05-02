@@ -1,0 +1,347 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "MSF Insight API\n",
+    "version" : "1.0.0",
+    "title" : "MSF Insight",
+    "termsOfService" : "http://vizalytics.com/terms/",
+    "contact" : {
+      "email" : "chris@vizalytics.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/VizalyticsTechnology/msf_insight/1.0.0",
+  "tags" : [ {
+    "name" : "event",
+    "description" : "Mission insights for MSF",
+    "externalDocs" : {
+      "description" : "Find out more",
+      "url" : "http://msf.vizalytics.com"
+    }
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/event" : {
+      "post" : {
+        "tags" : [ "event" ],
+        "summary" : "Get insights in response to an event",
+        "operationId" : "addEvent",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Event Details",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Event"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "EventResponse",
+            "schema" : {
+              "$ref" : "#/definitions/EventResponse"
+            }
+          },
+          "default" : {
+            "description" : "Event Response",
+            "schema" : {
+              "$ref" : "#/definitions/EventResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Event" : {
+      "type" : "object",
+      "required" : [ "created_at", "location", "metadata", "status", "type" ],
+      "properties" : {
+        "status" : {
+          "type" : "string",
+          "enum" : [ "active", "inactive" ]
+        },
+        "type" : {
+          "type" : "string",
+          "enum" : [ "armed_conflict", "disease_outbreak", "displacement", "malnutrition", "natural_disaster", "search_and_rescue", "other" ]
+        },
+        "created_at" : {
+          "type" : "string",
+          "description" : "iso8601 datestring string with timezone"
+        },
+        "location" : {
+          "type" : "array",
+          "description" : "2 element array in Longitude, Latitude order, preferably",
+          "items" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        },
+        "metadata" : {
+          "$ref" : "#/definitions/Metadata"
+        }
+      },
+      "example" : {
+        "metadata" : {
+          "severity" : "severity",
+          "medical_materials" : [ "{}", "{}" ],
+          "population_total" : 1000000,
+          "operational_center" : "OCA",
+          "incharge_name" : "incharge_name",
+          "severity_scale" : 2,
+          "exploratory_details" : "exploratory_details",
+          "incharge_position" : "incharge_position",
+          "security_details" : "security_details",
+          "capacity" : "capacity",
+          "non_medical_materials" : [ "{}", "{}" ],
+          "population_affected" : 1000,
+          "sharepoint_link" : "sharepoint_link",
+          "sub_type" : "foo",
+          "event_datetime" : "event_datetime",
+          "name" : "name",
+          "bounds" : [ [ 110.0, 8.0612 ], [ 102.5, 6.0274 ] ],
+          "user" : "user",
+          "event_status" : "monitoring",
+          "other_orgs" : "other_orgs",
+          "deployment" : "deployment"
+        },
+        "created_at" : "created_at",
+        "location" : [ 105.555, 7.1234 ],
+        "type" : "armed_conflict",
+        "status" : "active"
+      }
+    },
+    "Metadata" : {
+      "type" : "object",
+      "required" : [ "bounds", "event_datetime", "event_status", "incharge_name", "incharge_position", "name", "severity", "severity_scale", "sub_type", "user" ],
+      "properties" : {
+        "user" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "sub_type" : {
+          "type" : "string",
+          "enum" : [ "foo" ]
+        },
+        "bounds" : {
+          "type" : "array",
+          "description" : "2d array, northwest lonlat, southeast lonlat",
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "type" : "number",
+              "format" : "double"
+            }
+          }
+        },
+        "event_datetime" : {
+          "type" : "string",
+          "description" : "iso8601 datetime string with timezone"
+        },
+        "event_status" : {
+          "type" : "string",
+          "enum" : [ "monitoring", "exploration", "intervention", "completed_missions" ]
+        },
+        "incharge_name" : {
+          "type" : "string"
+        },
+        "incharge_position" : {
+          "type" : "string"
+        },
+        "severity" : {
+          "type" : "string"
+        },
+        "severity_scale" : {
+          "type" : "number",
+          "format" : "int32",
+          "minimum" : 1,
+          "maximum" : 3
+        },
+        "sharepoint_link" : {
+          "type" : "string"
+        },
+        "security_details" : {
+          "type" : "string"
+        },
+        "exploratory_details" : {
+          "type" : "string"
+        },
+        "operational_center" : {
+          "type" : "string",
+          "enum" : [ "OCA", "OCBA", "OBG", "OCB", "OCP" ]
+        },
+        "other_orgs" : {
+          "type" : "string"
+        },
+        "deployment" : {
+          "type" : "string"
+        },
+        "capacity" : {
+          "type" : "string"
+        },
+        "medical_materials" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "properties" : { }
+          }
+        },
+        "non_medical_materials" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "properties" : { }
+          }
+        },
+        "population_total" : {
+          "type" : "number",
+          "format" : "int64"
+        },
+        "population_affected" : {
+          "type" : "number",
+          "format" : "int64"
+        }
+      },
+      "example" : {
+        "severity" : "severity",
+        "medical_materials" : [ "{}", "{}" ],
+        "population_total" : 100000,
+        "operational_center" : "OCA",
+        "incharge_name" : "incharge_name",
+        "severity_scale" : 2,
+        "exploratory_details" : "exploratory_details",
+        "incharge_position" : "incharge_position",
+        "security_details" : "security_details",
+        "capacity" : "capacity",
+        "non_medical_materials" : [ "{}", "{}" ],
+        "population_affected" : 1000,
+        "sharepoint_link" : "sharepoint_link",
+        "sub_type" : "foo",
+        "event_datetime" : "event_datetime",
+        "name" : "name",
+        "bounds" : [ [ 110.0, 8.0612 ], [ 102.5, 6.0274 ] ],
+        "user" : "user",
+        "event_status" : "monitoring",
+        "other_orgs" : "other_orgs",
+        "deployment" : "deployment"
+      }
+    },
+    "EventResponse" : {
+      "required" : [ "results", "status" ],
+      "properties" : {
+        "status" : {
+          "$ref" : "#/definitions/Status"
+        },
+        "results" : {
+          "$ref" : "#/definitions/ResultsList"
+        }
+      },
+      "example" : {
+        "results" : "",
+        "status" : {
+          "success" : true,
+          "message" : "message",
+          "request_id" : "request_id"
+        }
+      }
+    },
+    "Status" : {
+      "required" : [ "success" ],
+      "properties" : {
+        "success" : {
+          "type" : "boolean"
+        },
+        "message" : {
+          "type" : "string"
+        },
+        "request_id" : {
+          "type" : "string"
+        }
+      },
+      "example" : {
+        "success" : true,
+        "message" : "message",
+        "request_id" : "request_id"
+      }
+    },
+    "ResultsList" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/Result"
+      }
+    },
+    "Result" : {
+      "type" : "object",
+      "required" : [ "topic" ],
+      "properties" : {
+        "topic" : {
+          "type" : "string"
+        },
+        "insights" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "geo" : {
+          "$ref" : "#/definitions/FeatureCollection"
+        },
+        "data" : {
+          "type" : "object",
+          "properties" : { }
+        }
+      }
+    },
+    "FeatureCollection" : {
+      "type" : "object",
+      "required" : [ "features", "type" ],
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "FeatureCollection" ]
+        },
+        "features" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Feature"
+          }
+        }
+      }
+    },
+    "Feature" : {
+      "type" : "object",
+      "required" : [ "geometry", "properties", "type" ],
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "Feature" ]
+        },
+        "properties" : {
+          "type" : "object",
+          "properties" : { }
+        },
+        "geometry" : {
+          "$ref" : "#/definitions/Geometry"
+        }
+      }
+    },
+    "Geometry" : {
+      "type" : "object",
+      "required" : [ "type" ],
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "Point", "LineString", "Polygon", "MultiPoint", "MultiLineString", "MultiPolygon" ]
+        }
+      }
+    }
+  }
+}

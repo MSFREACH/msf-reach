@@ -283,12 +283,20 @@
               <div class="bg-success">Record History</div>
               <div class="form-group">
                 <label>Created on:</label>
-              </span> <span class="filed"></span>
+                <span class="filed"></span>
             </div>
             <div class="form-group">
               <label>Last updated on:</label>
-            </span> <span class="updated"></span>
-          </div>
+              <span class="updated"></span>
+            </div>
+            <div class="form-group" id="privateContactDiv">
+              <label>Private?</label>
+              <span class="private"></span>
+            </div>
+            <div class="form-group" id="shareWithDiv">
+              <label>Share with</label>
+              <input type="text" id="sharewith_email" name="sharewith_email">
+            </div>
           <div class="form-group">
             <label>Last email sent on:</label>
           </span> <span class="last_email"></span>
@@ -1136,10 +1144,6 @@ $('#countryDetailsTab').on('click', function(e){
 });
 
 
-var onContactLinkClick = function(id) {
-  $('#contactDetailsModal').on('shown.bs.modal');
-  getContact(id);
-};
 
 var contactInfo = {};
 var convertToLocaleDate= function (isoDate) {
@@ -1148,57 +1152,7 @@ var convertToLocaleDate= function (isoDate) {
   else
   return '';
 }
-var getContact = function(id) {
-  $.getJSON("/api/contacts/" + id, function(contact) {
-    contactInfo = contact.result ? contact.result.properties : {};
-    //$('#contactDetailsModal').find('div.form-group').hide();
-    $("span.filed").html(convertToLocaleDate(contact.result.created_at));
-    $("span.updated").html(convertToLocaleDate(contact.result.updated_at));
-    $("span.last_email").html(convertToLocaleDate(contact.result.last_email_sent_at));
 
-    contact.result.properties.msf_peer = contact.result.properties.msf_peer ? 'yes' : 'no';
-    contact.result.properties.msf_associate = contact.result.properties.msf_associate ? 'yes' : 'no';
-
-    // if web address
-    if (contact.result.properties.web) {
-      // prepend http:// to web (don't assume https, assume redirection)
-      if (!contact.result.properties.web.startsWith('http')) {
-        contact.result.properties.web = 'http://' + contact.result.properties.web;
-      }
-      // make it a link
-      contact.result.properties.web = '<a href="'+contact.result.properties.web + '">'+contact.result.properties.web+'</a>';
-    }
-
-    // also hyperlink emails
-    if (contact.result.properties.email) {
-      contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>'
-    }
-    if (contact.result.properties.email2) {
-      contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>'
-    }
-
-    _(contact.result.properties).forIn(function(value, key) {
-      // console.log("Key:", key, "Value", value);
-      $("span." + key).html(value);
-      $("span." + key).parent().toggle(!!(value));
-
-    });
-    if (contact.result.properties.type === 'Current MSF Staff') {
-      $("#msf_details").show();
-      $("#employment_details").hide();
-    } else {
-      $("#msf_details").hide();
-      $("#employment_details").show();
-    }
-  }).fail(function(err) {
-    if (err.responseText.includes('expired')) {
-      alert("session expired");
-    } else {
-      // Catch condition where no data returned
-      alert('error: ' + err.responseText);
-    }
-  });
-};
 </script>
 
 </body>
