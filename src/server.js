@@ -38,10 +38,21 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         app.use(expressSession({ resave: true, saveUninitialized: false }));
     }
 
+    let users = [];
+
+    const removeUser = function(user) {
+      for (var i = 0, len = users.length; i < len; i++) {
+        if (users[i].oid === user.oid) {
+          users.splice(i,1);
+          return;
+        }
+      }
+    }
+
     if(config.AZURE_AD_TENANT_NAME){
         // array to hold signed-in users
-        let users = [];
-        let findByOid = function(id, fn) {
+
+        const findByOid = function(id, fn) {
             for (var i = 0, len = users.length; i < len; i++) {
                 var user = users[i];
                 if (user.oid === id) {
@@ -194,6 +205,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.use('/login', express.static(config.STATIC_AUTH_PATH));
             }
             app.use('/logout', function(req, res){ //Link in the navbar for logout links here when in Azure AD Auth Mode
+                removeUser(req.user);
                 req.logout(); //works for jwtcheck and passport-azure-ad, removes user object from req
                 if(!config.AUTH || config.AZURE_AD_TENANT_NAME){
                     res.send('Successfully logged out.');
