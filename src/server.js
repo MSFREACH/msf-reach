@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 // Express middleware and http
 import express from 'express';
 import http from 'http';
-import request from 'request';
+// import request from 'request';
 
 // Import express middlewares
 import expressSession from 'express-session';
@@ -153,7 +153,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
-                      /* seems we don't need this?
+                        /* seems we don't need this?
                         let option = {
                             method:'POST',
                             uri:`https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/oauth2/token`,
@@ -175,7 +175,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                             req.user.access_token = JSON.parse(body).access_token;
                         });
                         */
-
+                        console.log('marker'); //eslint-disable-line no-console
+                        console.log(req); //eslint-disable-line no-console
+                        console.log(req.user); //eslint-disable-line no-console
 
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
