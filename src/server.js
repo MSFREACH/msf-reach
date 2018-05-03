@@ -56,7 +56,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             clientSecret: config.SESSION_SECRET,
             redirectUrl: config.AZURE_AD_RETURN_URL,
             allowHttpForRedirectUrl: !config.REDIRECT_HTTP,
-            scope: ['offline_access','User.Read','User.ReadBasic.All'],
+            scope: ['profile','offline_access','User.Read','User.ReadBasic.All'],
             responseType: 'id_token code', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
             responseMode: 'form_post' //This is recommended by MS
         },
