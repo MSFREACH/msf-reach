@@ -51,11 +51,12 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             return fn(null, null);
         };
         const authenticationStrategy = new OIDCStrategy({
-            identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/.well-known/openid-configuration`,
+            identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration`,
             clientID: config.AZURE_AD_CLIENT_ID,
             clientSecret: config.SESSION_SECRET,
             redirectUrl: config.AZURE_AD_RETURN_URL,
             allowHttpForRedirectUrl: !config.REDIRECT_HTTP,
+            scope: ['offline_access','User.Read','User.ReadBasic.All'],
             responseType: 'id_token code', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
             responseMode: 'form_post' //This is recommended by MS
         },
@@ -151,6 +152,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
+                      /* seems we don't need this?
                         let option = {
                             method:'POST',
                             uri:`https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/oauth2/token`,
@@ -166,10 +168,13 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                                 redirect_uri: config.AZURE_AD_RETURN_URL
                             }
                         };
+
                         //console.log(option);
                         request(option,function(err,res,body){
                             req.user.access_token = JSON.parse(body).access_token;
                         });
+                        */
+
 
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
