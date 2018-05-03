@@ -41,13 +41,13 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     let users = [];
 
     const removeUser = function(user) {
-      for (var i = 0, len = users.length; i < len; i++) {
-        if (users[i].oid === user.oid) {
-          users.splice(i,1);
-          return;
+        for (var i = 0, len = users.length; i < len; i++) {
+            if (users[i].oid === user.oid) {
+                users.splice(i,1);
+                return;
+            }
         }
-      }
-    }
+    };
 
     if(config.AZURE_AD_TENANT_NAME){
         // array to hold signed-in users
