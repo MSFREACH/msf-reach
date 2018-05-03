@@ -207,9 +207,12 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             app.use('/logout', function(req, res){ //Link in the navbar for logout links here when in Azure AD Auth Mode
                 removeUser(req.user);
                 req.logout(); //works for jwtcheck and passport-azure-ad, removes user object from req
-                if(!config.AUTH || config.AZURE_AD_TENANT_NAME){
-                    res.redirect('https://login.microsoftonline.com/'+config.AZURE_AD_TENANT_NAME+'.onmicrosoft.com/oauth2/logout')
-                } else {
+                if(config.AZURE_AD_TENANT_NAME) {
+                    res.redirect('https://login.microsoftonline.com/'+config.AZURE_AD_TENANT_NAME+'.onmicrosoft.com/oauth2/logout');
+                } else if (!config.AUTH) {
+                    res.send('Successfully logged out.');
+                }
+                else {
                     res.redirect('/login');
                 }
             });
