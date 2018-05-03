@@ -208,7 +208,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 removeUser(req.user);
                 req.logout(); //works for jwtcheck and passport-azure-ad, removes user object from req
                 if(!config.AUTH || config.AZURE_AD_TENANT_NAME){
-                    res.send('Successfully logged out.');
+                    res.redirect('https://login.microsoftonline.com/'+config.AZURE_AD_TENANT_NAME+'.onmicrosoft.com/oauth2/logout')
                 } else {
                     res.redirect('/login');
                 }
