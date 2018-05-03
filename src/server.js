@@ -56,12 +56,13 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             clientSecret: config.SESSION_SECRET,
             redirectUrl: config.AZURE_AD_RETURN_URL,
             allowHttpForRedirectUrl: !config.REDIRECT_HTTP,
-            scope: ['profile','offline_access','User.Read','User.ReadBasic.All'],
+            scope: ['openid','profile','offline_access','User.Read','User.ReadBasic.All'],
             responseType: 'id_token code', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
             responseMode: 'form_post' //This is recommended by MS
         },
         function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
             console.log(profile); // eslint-disable-line no-console
+            console.log('access_token_debug '+access_token); // eslint-disable-line no-console
             if (!profile.oid) {
                 return done(new Error('No oid found'), null);
             }
@@ -76,6 +77,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         users.push(u);
                         return done(null, u);
                     }
+                    console.log('user_debug ' + JSON.stringify(user)); // eslint-disable-line no-console
                     return done(null, user);
                 });
             });
@@ -176,7 +178,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         });
                         */
                         console.log('marker'); //eslint-disable-line no-console
-                        console.log(req); //eslint-disable-line no-console
+                        //console.log(res); //eslint-disable-line no-console
                         console.log(req.user); //eslint-disable-line no-console
 
                         //set a cookie here and then on the static page store it in localstorage
