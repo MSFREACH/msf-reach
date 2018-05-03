@@ -70,13 +70,17 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 findByOid(profile.oid, function(err, user) {
                     if (err) {
                         return done(err);
-                    }
+                    } else
                     if (!user) {
                         // "Auto-registration"
                         var u = profile;
+                        u.access_token = access_token;
+                        u.refresh_token = refresh_token;
                         users.push(u);
                         return done(null, u);
                     }
+                    user.access_token = access_token;
+                    user.refresh_token = refresh_token;
                     console.log('user_debug ' + JSON.stringify(user)); // eslint-disable-line no-console
                     return done(null, user);
                 });
