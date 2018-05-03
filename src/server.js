@@ -61,6 +61,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             responseMode: 'form_post' //This is recommended by MS
         },
         function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
+            console.log(profile); // eslint-disable-line no-console
             if (!profile.oid) {
                 return done(new Error('No oid found'), null);
             }
