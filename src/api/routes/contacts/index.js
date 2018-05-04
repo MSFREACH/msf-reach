@@ -72,6 +72,7 @@ export default ({ config, db, logger }) => {
         validate({
             body: Joi.object().keys({
                 private: Joi.boolean(),
+                oid: Joi.string(),
                 // TODO - create a Joi validation schema for contact properties
                 properties: Joi.object().required(),
                 location: Joi.object().required().keys({
