@@ -68,7 +68,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Create a new contact record in the database
-    api.post('/', addUser,
+    api.post('/',
         validate({
             body: Joi.object().keys({
                 private: Joi.boolean(),
@@ -81,7 +81,7 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            contacts(config, db, logger).createContact((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.body)
+            contacts(config, db, logger).createContact((req.body.hasOwnProperty('oid')) ? req.body.oid : null, req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */
