@@ -86,6 +86,9 @@ function postContact() {
         }
     };
 
+    if (localStorage.getItem('oid')) {
+        body['oid'] = localStorage.getItem('oid');
+    }
     if (localStorage.getItem('username')!=null) {
         body.properties['msf_entered'] = true;
         if ($('#inputPrivate').is(':checked')) {

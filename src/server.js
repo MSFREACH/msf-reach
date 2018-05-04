@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 // Express middleware and http
 import express from 'express';
 import http from 'http';
-import request from 'request';
+// import request from 'request';
 
 // Import express middlewares
 import expressSession from 'express-session';
@@ -38,10 +38,21 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         app.use(expressSession({ resave: true, saveUninitialized: false }));
     }
 
+    let users = [];
+
+    const removeUser = function(user) {
+        for (var i = 0, len = users.length; i < len; i++) {
+            if (users[i].oid === user.oid) {
+                users.splice(i,1);
+                return;
+            }
+        }
+    };
+
     if(config.AZURE_AD_TENANT_NAME){
         // array to hold signed-in users
-        let users = [];
-        let findByOid = function(id, fn) {
+
+        const findByOid = function(id, fn) {
             for (var i = 0, len = users.length; i < len; i++) {
                 var user = users[i];
                 if (user.oid === id) {
@@ -51,11 +62,12 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             return fn(null, null);
         };
         const authenticationStrategy = new OIDCStrategy({
-            identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/.well-known/openid-configuration`,
+            identityMetadata: `https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/v2.0/.well-known/openid-configuration`,
             clientID: config.AZURE_AD_CLIENT_ID,
             clientSecret: config.SESSION_SECRET,
             redirectUrl: config.AZURE_AD_RETURN_URL,
             allowHttpForRedirectUrl: !config.REDIRECT_HTTP,
+            scope: ['openid','profile','offline_access','User.Read','User.ReadBasic.All'],
             responseType: 'id_token code', //For openID Connect auth. See: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
             responseMode: 'form_post' //This is recommended by MS
         },
@@ -67,13 +79,17 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 findByOid(profile.oid, function(err, user) {
                     if (err) {
                         return done(err);
-                    }
+                    } else
                     if (!user) {
                         // "Auto-registration"
                         var u = profile;
+                        u.access_token = access_token;
+                        u.refresh_token = refresh_token;
                         users.push(u);
                         return done(null, u);
                     }
+                    user.access_token = access_token;
+                    user.refresh_token = refresh_token;
                     return done(null, user);
                 });
             });
@@ -151,28 +167,10 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
-                        let option = {
-                            method:'POST',
-                            uri:`https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/oauth2/token`,
-                            headers:{
-                                'Content-Type':'application/x-www-form-urlencoded'
-                            },
-                            form:{
-                                grant_type:'authorization_code',
-                                client_id: config.AZURE_AD_CLIENT_ID,
-                                resource:'https://graph.microsoft.com',
-                                client_secret: config.SESSION_SECRET,
-                                code: req.body.code,
-                                redirect_uri: config.AZURE_AD_RETURN_URL
-                            }
-                        };
-                        //console.log(option);
-                        request(option,function(err,res,body){
-                            req.user.access_token = JSON.parse(body).access_token;
-                        });
 
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
+                        res.cookie('oid', req.user.oid, { maxAge: 1000 * 60 * 1 });
                         res.redirect('/authreturn');
                     });
                 app.use('/authreturn', [ensureAuthenticated, express.static(config.STATIC_AUTH_RETURN_PATH)]);//Page used to store our user in localstorage and redirect to / after auth return from azure
@@ -180,10 +178,14 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.use('/login', express.static(config.STATIC_AUTH_PATH));
             }
             app.use('/logout', function(req, res){ //Link in the navbar for logout links here when in Azure AD Auth Mode
+                removeUser(req.user);
                 req.logout(); //works for jwtcheck and passport-azure-ad, removes user object from req
-                if(!config.AUTH || config.AZURE_AD_TENANT_NAME){
+                if(config.AZURE_AD_TENANT_NAME) {
+                    res.redirect('https://login.microsoftonline.com/'+config.AZURE_AD_TENANT_NAME+'.onmicrosoft.com/oauth2/logout');
+                } else if (!config.AUTH) {
                     res.send('Successfully logged out.');
-                } else {
+                }
+                else {
                     res.redirect('/login');
                 }
             });

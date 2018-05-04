@@ -12,12 +12,15 @@
     <script>
       if(Cookies.get('userdisplayName')) {
         localStorage.setItem('username', JSON.stringify(Cookies.get('userdisplayName')).replace(/"/g, ''));
+        if (Cookies.get('oid')) {
+          localStorage.setItem('oid', Cookies.get('oid'));
+        }
         window.location.replace('/');
       } else {
         window.location.replace('/login');
       }
     </script>
   </head>
-  <body> 
+  <body>
   </body>
 </html>

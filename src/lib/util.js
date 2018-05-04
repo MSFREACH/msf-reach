@@ -45,6 +45,8 @@ const ensureAuthenticated = (req, res, next) => {
         /* passport.authenticate runs req.login which sets the user object on req
 		req.isAuthenticated checks the req object for a user attribute, its part of express. */
         if (req.isAuthenticated()) {
+            console.log(req); //eslint-disable-line no-console
+            console.log(req.user); //eslint-disable-line no-console
             return next();
         }
         res.redirect('/login');
@@ -102,21 +104,6 @@ const ensureAuthenticatedWrite = (req, res, next) => {
     });
 };
 
-const addUser = (req, res, next) => {
-    if(!config.AUTH){
-        return next(); //If we are not using auth then carry on
-    }
-    if(config.AZURE_AD_TENANT_NAME && req.body.private===true){ // are we submitting private user? If so force login
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        res.redirect('/login');
-        return;
-    } else { // we are using Cognito / don't care if contact is public
-        return next();
-    }
-};
-
 // Setup dbgeo
 dbgeo.defaults = {
     outputFormat: config.GEO_FORMAT_DEFAULT,
@@ -162,5 +149,5 @@ const inAsiaBBox = (coords) => {
 };
 
 module.exports = {
-    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, addUser, inAsiaBBox
+    cacheResponse, formatGeo, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite, inAsiaBBox
 };
