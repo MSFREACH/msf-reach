@@ -6,7 +6,7 @@ import contacts from './model';
 import request from 'request';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, addUser } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import BaseJoi from 'joi';

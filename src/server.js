@@ -72,8 +72,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
             responseMode: 'form_post' //This is recommended by MS
         },
         function(iss, sub, profile, jwtClaims, access_token, refresh_token, params, done){
-            console.log(profile); // eslint-disable-line no-console
-            console.log('access_token_debug '+access_token); // eslint-disable-line no-console
             if (!profile.oid) {
                 return done(new Error('No oid found'), null);
             }
@@ -92,7 +90,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                     }
                     user.access_token = access_token;
                     user.refresh_token = refresh_token;
-                    console.log('user_debug ' + JSON.stringify(user)); // eslint-disable-line no-console
                     return done(null, user);
                 });
             });
@@ -170,31 +167,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
-                        /* seems we don't need this?
-                        let option = {
-                            method:'POST',
-                            uri:`https://login.microsoftonline.com/${config.AZURE_AD_TENANT_NAME}.onmicrosoft.com/oauth2/token`,
-                            headers:{
-                                'Content-Type':'application/x-www-form-urlencoded'
-                            },
-                            form:{
-                                grant_type:'authorization_code',
-                                client_id: config.AZURE_AD_CLIENT_ID,
-                                resource:'https://graph.microsoft.com',
-                                client_secret: config.SESSION_SECRET,
-                                code: req.body.code,
-                                redirect_uri: config.AZURE_AD_RETURN_URL
-                            }
-                        };
-
-                        //console.log(option);
-                        request(option,function(err,res,body){
-                            req.user.access_token = JSON.parse(body).access_token;
-                        });
-                        */
-                        console.log('marker'); //eslint-disable-line no-console
-                        //console.log(res); //eslint-disable-line no-console
-                        console.log(req.user); //eslint-disable-line no-console
 
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
