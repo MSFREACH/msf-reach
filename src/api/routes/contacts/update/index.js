@@ -34,7 +34,7 @@ export default ({ config, db, logger }) => {
                 .then((data) => {
                     if (data !== null){
                         logger.info('Email user ' + data.guid);
-                        mail(config, logger).send(req.query.email, data.guid);
+                        mail(config, logger).sendContactUpdateEmail(req.query.email, data.guid);
                         res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact update link emailed to user' });
                     }
                     else {

@@ -9,7 +9,7 @@ import hbs from 'nodemailer-express-handlebars';
 
 export default ( config, logger ) => ({
 
-    send: (recipient, emContext) => new Promise((resolve, reject) => {
+    sendContactUpdateEmail: (recipient, theGUID) => new Promise((resolve, reject) => {
 
         const smtpConfig = {
             host: 'email-smtp.us-west-2.amazonaws.com',
@@ -26,18 +26,20 @@ export default ( config, logger ) => ({
 
         const options={
             viewEngine: {},
-            viewPath: '../../public/etemplates/',
+            viewPath: 'public/email-templates/',
             extName: '.hbs'
         };
 
         //attach the plugin to the nodemailer transporter
         transport.use('compile', hbs(options));
 
+        let emContext={ GUID: theGUID};
+
         const mailOptions = {
             from: 'MSF-REACH <admin@msf-reach.org>', // sender address
             to: recipient,
             subject: 'Update your MSF-REACH contact details',
-            template: 'fixme',
+            template: 'plain',
             context: emContext
         };
 
