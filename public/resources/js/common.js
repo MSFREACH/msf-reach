@@ -690,3 +690,50 @@ $('#sharewith_email').keyup(function(event){
         });
     }
 });
+
+$( "#sharewith_name" ).autocomplete({
+      source: function( request, response ) {
+        $.ajax({
+          url: "/api/usersearch/"+request,
+          success: function( data ) {
+            response($.map(data.value, function (item) {
+                return {
+                    label: item.displayName,
+                    value: item.id
+                };
+            }));
+          }
+        });
+      },
+      minLength: 3,
+      select: function( event, ui ) {
+        if (ui.item) {
+          var url = '/api/contacts/useridbyemail/'+email;
+          $.getJSON(url, function(userdata) {
+              $.ajax({
+                  type: 'PATCH',
+                  url: '/api/contacts/' + currentContactId + '/share',
+                  data: JSON.stringify({'oid':JSON.parse(userdata.body).id}),
+                  contentType: 'application/json'
+              }).done(function(data, textStatus, req) {
+                  $('#sharewith_name').val(''); // clear entry
+                  alert('shared');
+              }).fail(function(err) {
+                  if (err.responseText.includes('expired')) {
+                      alert('session expired');
+                  } else {
+                      alert('failed, are you sure you own the record?');
+                  }
+              });
+          }).fail(function(err) {
+              alert('MSF user not found, check email address');
+          });
+        }
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    });
