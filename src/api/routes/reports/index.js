@@ -53,7 +53,7 @@ export default ({ config, db, logger }) => {
     api.post('/',
         validate({
             body: Joi.object().keys({
-                eventId: Joi.number().integer().min(1).required(),
+                eventId: Joi.number().integer().min(1),
                 status: Joi.string().valid(config.API_REPORT_STATUS_TYPES).required(),
                 created: Joi.date().iso().required(),
                 reportkey: Joi.string().required(),
