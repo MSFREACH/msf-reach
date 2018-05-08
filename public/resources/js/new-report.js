@@ -92,11 +92,9 @@ function postReport(eventID,reportKey,imgLink) {
         }
     };
 
-    console.log("event ID & report key",eventID,reportKey);
-
     if (eventID && reportKey) {
-      body['eventId'] = eventID;
-      body['reportkey'] = reportKey;
+        body['eventId'] = eventID;
+        body['reportkey'] = reportKey;
     }
 
     $.ajax({
