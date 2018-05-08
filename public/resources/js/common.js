@@ -699,7 +699,8 @@ $( '#sharewith_name' ).autocomplete({
                 response($.map(JSON.parse(data.body).value, function (item) {
                     return {
                         label: item.displayName,
-                        value: item.id
+                        value: item.displayName,
+                        id: item.id
                     };
                 }));
             }
@@ -711,7 +712,7 @@ $( '#sharewith_name' ).autocomplete({
             $.ajax({
                 type: 'PATCH',
                 url: '/api/contacts/' + currentContactId + '/share',
-                data: JSON.stringify({'oid':ui.item.value}),
+                data: JSON.stringify({'oid':ui.item.id}),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
                 $('#sharewith_name').val(''); // clear entry
