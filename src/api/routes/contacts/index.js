@@ -207,7 +207,7 @@ export default ({ config, db, logger }) => {
             params: { term: Joi.string().required() }
         }),
         function(req, response){
-            request.get('https://graph.microsoft.com/v1.0/me/people/?$search='+req.params.term, {
+            request.get("https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,'"+req.params.term+"')", {
                 'headers': {
                     'Authorization': 'Bearer ' + req.user.access_token,
                     'Content-Type': 'application/json'
