@@ -204,7 +204,7 @@ export default ({ config, db, logger }) => {
     // wrapper around MS Graph /users API
     api.get('/usersearch/:term', ensureAuthenticated,
         validate({
-            params: { term: Joi.string().string().required() }
+            params: { term: Joi.string().required() }
         }),
         function(req, response){
             request.get('https://graph.microsoft.com/v1.0/me/people/?$search='+req.params.term, {
