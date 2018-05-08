@@ -6,8 +6,7 @@
 * Display and interact with event objects from events page
 */
 
-// Constants
-var GEOFORMAT = 'geojson'; // Change to topojson for prod
+
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
@@ -294,26 +293,6 @@ var getReports = function(eventId, mapForReports, callback){
         }
     });
 };
-
-var reportMarkers = [];
-
-/**
-* Function to get reports for an event
-* @function openReportPopup
-* @param {Object} mapForReports - map to put the reports on
-* @param {Object} callback - mapping callback function once reports are loaded
-**/
-function openReportPopup(id) {
-    for (var i in reportMarkers){
-        var markerID = reportMarkers[i].options.id;
-        if (markerID == id) {
-            mainMap.setView(reportMarkers[i].getLatLng());
-            reportMarkers[i].openPopup();
-            break;
-        }
-    }
-}
-
 
 function openEventPopup(id)
 {

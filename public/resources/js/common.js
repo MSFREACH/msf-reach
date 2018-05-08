@@ -1,5 +1,8 @@
 /*eslint no-unused-vars: off*/
 
+// Constants
+var GEOFORMAT = 'geojson'; // Change to topojson for prod
+
 /**
  * Monitor status code to redirect login page if session expires.
 */
@@ -120,6 +123,25 @@ if (typeof(Cookies.get('- USGS'))==='undefined') {
 // keep track of the first time we load missions and contacts (used in code for updating based on map extents)
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
+
+var reportMarkers = [];
+
+/**
+* Function to get reports for an event
+* @function openReportPopup
+* @param {Object} mapForReports - map to put the reports on
+* @param {Object} callback - mapping callback function once reports are loaded
+**/
+function openReportPopup(id) {
+    for (var i in reportMarkers){
+        var markerID = reportMarkers[i].options.id;
+        if (markerID == id) {
+            mainMap.setView(reportMarkers[i].getLatLng());
+            reportMarkers[i].openPopup();
+            break;
+        }
+    }
+}
 
 /**
 * Function to get feeds

@@ -12,11 +12,12 @@ export default (config, db, logger) => ({
    * @param {integer} id ID of event to filter reports by
 	 */
     all: (eventid) => new Promise((resolve, reject) => {
+      console.log(eventid);
         // Setup query
         let query = `SELECT id, event_id as eventId, status, created, report_key as reportkey, content, the_geom
 			FROM ${config.TABLE_REPORTS}
-			WHERE ($1 is null or event_id = $1)
-			ORDER BY created DESC`;
+			WHERE ($1 is not null and event_id = $1 and not event_id is null) or ($1 is null and event_id is null)
+			ORDER BY created DESC`; // xor
 
         let values = [ eventid ];
 

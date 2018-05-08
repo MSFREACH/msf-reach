@@ -199,6 +199,25 @@ var getContacts = function(callback,term,type){
 };
 
 /**
+* Function to get reports for an event
+* @function getReports
+* @param {Object} mapForReports - map to put the reports on
+* @param {Object} callback - mapping callback function once reports are loaded
+**/
+var getReports = function(mapForReports, callback){
+    $.getJSON('/api/reports/?geoformat=' + GEOFORMAT, function( data ){
+        callback(data.result, mapForReports);
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            alert('error: '+ err.responseText);
+        }
+    });
+};
+
+
+/**
 * Function to get missions
 * @function getMissions
 * @param {function} callback - callback function to run once missions are loaded
@@ -597,6 +616,7 @@ var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptio
 
 // get and map data:
 getAllEvents(mapAllEvents);
+getReports(mainMap, mapReports);
 getFeeds('/api/hazards/pdc',mapPDCHazards);
 getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
