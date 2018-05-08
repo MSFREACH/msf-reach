@@ -694,7 +694,7 @@ $('#sharewith_email').keyup(function(event){
 $( '#sharewith_name' ).autocomplete({
     source: function( request, response ) {
         $.ajax({
-            url: '/api/usersearch/'+request,
+            url: '/api/usersearch/'+request.term,
             success: function( data ) {
                 response($.map(data.value, function (item) {
                     return {
@@ -708,25 +708,20 @@ $( '#sharewith_name' ).autocomplete({
     minLength: 3,
     select: function( event, ui ) {
         if (ui.item) {
-            var url = '/api/contacts/useridbyemail/'+email;
-            $.getJSON(url, function(userdata) {
-                $.ajax({
-                    type: 'PATCH',
-                    url: '/api/contacts/' + currentContactId + '/share',
-                    data: JSON.stringify({'oid':JSON.parse(userdata.body).id}),
-                    contentType: 'application/json'
-                }).done(function(data, textStatus, req) {
-                    $('#sharewith_name').val(''); // clear entry
-                    alert('shared');
-                }).fail(function(err) {
-                    if (err.responseText.includes('expired')) {
-                        alert('session expired');
-                    } else {
-                        alert('failed, are you sure you own the record?');
-                    }
-                });
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/contacts/' + currentContactId + '/share',
+                data: JSON.stringify({'oid':ui.item.id}),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                $('#sharewith_name').val(''); // clear entry
+                alert('shared');
             }).fail(function(err) {
-                alert('MSF user not found, check email address');
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                } else {
+                    alert('failed, are you sure you own the record?');
+                }
             });
         }
     },
