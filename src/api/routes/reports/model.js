@@ -12,7 +12,6 @@ export default (config, db, logger) => ({
    * @param {integer} id ID of event to filter reports by
 	 */
     all: (eventid) => new Promise((resolve, reject) => {
-      console.log(eventid);
         // Setup query
         let query = `SELECT id, event_id as eventId, status, created, report_key as reportkey, content, the_geom
 			FROM ${config.TABLE_REPORTS}
