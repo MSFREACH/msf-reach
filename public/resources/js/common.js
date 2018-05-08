@@ -696,10 +696,11 @@ $( '#sharewith_name' ).autocomplete({
         $.ajax({
             url: '/api/contacts/usersearch/'+request.term,
             success: function( data ) {
-                response($.map(data.value, function (item) {
+                response($.map(JSON.parse(data.body).value, function (item) {
                     return {
                         label: item.displayName,
-                        value: item.id
+                        value: item.displayName,
+                        id: item.id
                     };
                 }));
             }
