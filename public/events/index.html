@@ -76,6 +76,13 @@
   .bg-success {
     padding: 5px;
   }
+
+  .ui-autocomplete {
+    position:absolute;
+    cursor:default;
+    z-index:2150000000 !important;
+  }
+
   </style>
 </head>
 <body>
@@ -322,7 +329,7 @@
   </div>
   <!-- Contact Page Modal -->
   <div class="modal fade" id="contactDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelContact">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog ui-front" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
