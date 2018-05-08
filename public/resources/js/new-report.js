@@ -94,6 +94,11 @@ function postReport(eventID,reportKey,imgLink) {
         }
     };
 
+    if (eventID && reportKey) {
+      body['eventId'] = eventID;
+      body['reportkey'] = reportKey;
+    }
+
     $.ajax({
         type: 'POST',
         url: '/api/reports',
@@ -127,9 +132,9 @@ $('#createReport').on('click', function (e) {
         reportKey = getQueryVariable('reportkey');
     }
 
-    if ((!eventId)||(!reportKey))
+    if ((!eventId) && (!reportKey))
     {
-        alert('EventId and/or reportKey missing. Please verify and try again.');
+        alert('EventId and reportKey missing. Please verify and try again.');
     }
 
     var imgLink='';
