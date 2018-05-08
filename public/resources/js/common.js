@@ -694,7 +694,7 @@ $('#sharewith_email').keyup(function(event){
 $( '#sharewith_name' ).autocomplete({
     source: function( request, response ) {
         $.ajax({
-            url: '/api/usersearch/'+request.term,
+            url: '/api/contacts/usersearch/'+request.term,
             success: function( data ) {
                 response($.map(data.value, function (item) {
                     return {
