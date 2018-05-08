@@ -81,10 +81,8 @@ newReportMap.on('click', function(e) {
  */
 function postReport(eventID,reportKey,imgLink) {
     var body = {
-        'eventId': eventID,
         'status': 'unconfirmed',
         'created': new Date().toISOString(),
-        'reportkey': reportKey,
         'location':newReportMap.msf_latlng,
         'content':{
             'report_tag': $('.rtype-selected').attr('data-msf-value'),
@@ -93,6 +91,8 @@ function postReport(eventID,reportKey,imgLink) {
             'image_link': imgLink
         }
     };
+
+    console.log("event ID & report key",eventID,reportKey);
 
     if (eventID && reportKey) {
       body['eventId'] = eventID;
@@ -132,9 +132,9 @@ $('#createReport').on('click', function (e) {
         reportKey = getQueryVariable('reportkey');
     }
 
-    if ((!eventId) && (!reportKey))
+    if ((eventId) && (!reportKey))
     {
-        alert('EventId and reportKey missing. Please verify and try again.');
+        alert('EventId supplied but reportKey missing. Please verify and try again.');
     }
 
     var imgLink='';
