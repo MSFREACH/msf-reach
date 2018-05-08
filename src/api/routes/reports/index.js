@@ -76,11 +76,12 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    // Update an event record in the database
+    // Update an report record in the database
     api.post('/:id', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
+                eventId: Joi.integer().min(1),
                 status: Joi.string().valid(config.API_REPORT_STATUS_TYPES).required(),
                 content: Joi.object().required()
             })
