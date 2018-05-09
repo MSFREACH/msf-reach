@@ -476,11 +476,11 @@ var mapReports = function(reports,mapForReports){
                 });
             });
 
-            
+
 
             if (!feature.properties.event_id) {
+                $('#events-for-report-'+feature.properties.id).append('<option value="">Please select...</option>')
                 $.getJSON('api/events', function(data) {
-                    console.log(data);
                     $.map(data.result.objects.output.geometries, function(item) {
                         var name = item.properties.metadata.name;
                         var event_id = item.properties.id;
@@ -489,13 +489,25 @@ var mapReports = function(reports,mapForReports){
                 });
                 $('#events-for-report-'+feature.properties.id).append('<option value="new">new event</option>');
                 $('#events-for-report-'+feature.properties.id).change(function() {
+                    console.log($(this).val());
                     var selectedVal = $(this).val();
                     if (selectedVal==='new') {
                         // store report_id
-                        report_id_for_new_event = feature.properties.id;
+                        report_id_for_new_event = $(this).attr('id').split('-').slice(-1)[0];
 
-                        // set latlng
-                        latlng = L.latLng(feature.properties.coordinates);
+                        // get coordinates
+                        var coordinates;
+
+                        $.getJSON('api/reports/'+report_id_for_new_event, function(data) {
+                            $.map(data.result.objects.output.geometries, function(item) {
+                                // set latlng
+                                console.log('item',item);
+                                latlng = L.latLng(item.coordinates.reverse());
+                            });
+                        });
+
+
+                        console.log('latlng',latlng);
 
                         // open new modal
                         $('#newEventModal').modal();
@@ -507,7 +519,7 @@ var mapReports = function(reports,mapForReports){
 
                         $.ajax({
                             type: 'POST',
-                            url: '/api/linktoevent'+feature.properties.id,
+                            url: '/api/reports/linktoevent/'+$(this).attr('id').split('-').slice(-1)[0],
                             data: JSON.stringify(body),
                             contentType: 'application/json'
                         });
@@ -863,7 +875,8 @@ var displayVideo = function(video) {
 
 var autocompleteMap=mainMap;
 
-var latlng;
+var latlng = null;
+
 mainMap.on('dblclick', function(dblclickEvent) {
     latlng = dblclickEvent.latlng;
     $('#newEventModal').modal('show');

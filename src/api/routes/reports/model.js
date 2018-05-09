@@ -104,8 +104,8 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_REPORTS}
-      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE event_id=
-      RETURNING report_id, event_id, report_key`;
+      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE event_id=$1)
+      RETURNING event_id, report_key`;
 
         // Setup values
         let values = [ event_id, report_id ];

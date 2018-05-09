@@ -64,11 +64,11 @@ export default (config, db, logger) => ({
 			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326))
 			RETURNING id, report_key, the_geom`;
         let queryTwo = `UPDATE ${config.TABLE_REPORTS}
-      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE event_id=
-      RETURNING report_id, event_id, report_key`;
+      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE event_id=$1)
+      RETURNING event_id, report_key`;
 
         // Setup values
-        let valuesOne = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat];
 
         // Execute
         logger.debug(queryOne, queryTwo, values);
@@ -92,7 +92,7 @@ export default (config, db, logger) => ({
                     }
                 }
                 db.task(async t => { //eslint-disable-line no-unused-vars
-                    let data = await db.OneOrNone(queryOne, valuesOne);
+                    let data = await db.oneOrNone(queryOne, values);
                     if (body.hasOwnProperty('report_id')) {
                         await db.one(queryTwo, [data.id, body.report_id]);
                     }
@@ -106,7 +106,7 @@ export default (config, db, logger) => ({
         } else {
 
             db.task(async t => { //eslint-disable-line no-unused-vars
-                let data = await db.OneOrNone(queryOne, values);
+                let data = await db.oneOrNone(queryOne, values);
                 if (body.hasOwnProperty('report_id')) {
                     await db.one(queryTwo, [data.id, body.report_id]);
                 }

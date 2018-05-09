@@ -50,7 +50,7 @@ var NEoverlayMaps = {};
  var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
 */
 var marker;
-var latlng = null;
+
 /*
 newEventMap.on('click', function(e) {
     if(marker)
@@ -138,6 +138,7 @@ $(function(){
 					*/
                 }
             };
+            console.log(body);
             // add report id if creating from existing report
             if (report_id_for_new_event) {
                 body['report_id'] = report_id_for_new_event;
