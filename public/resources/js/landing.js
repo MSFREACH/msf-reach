@@ -479,7 +479,7 @@ var mapReports = function(reports,mapForReports){
 
 
             if (!feature.properties.event_id) {
-                $('#events-for-report-'+feature.properties.id).append('<option value="">Please select...</option>')
+                $('#events-for-report-'+feature.properties.id).append('<option value="">Please select...</option>');
                 $.getJSON('api/events', function(data) {
                     $.map(data.result.objects.output.geometries, function(item) {
                         var name = item.properties.metadata.name;
@@ -489,7 +489,6 @@ var mapReports = function(reports,mapForReports){
                 });
                 $('#events-for-report-'+feature.properties.id).append('<option value="new">new event</option>');
                 $('#events-for-report-'+feature.properties.id).change(function() {
-                    console.log($(this).val());
                     var selectedVal = $(this).val();
                     if (selectedVal==='new') {
                         // store report_id
@@ -501,13 +500,9 @@ var mapReports = function(reports,mapForReports){
                         $.getJSON('api/reports/'+report_id_for_new_event, function(data) {
                             $.map(data.result.objects.output.geometries, function(item) {
                                 // set latlng
-                                console.log('item',item);
                                 latlng = L.latLng(item.coordinates.reverse());
                             });
                         });
-
-
-                        console.log('latlng',latlng);
 
                         // open new modal
                         $('#newEventModal').modal();

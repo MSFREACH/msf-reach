@@ -138,7 +138,7 @@ $(function(){
 					*/
                 }
             };
-            console.log(body);
+
             // add report id if creating from existing report
             if (report_id_for_new_event) {
                 body['report_id'] = report_id_for_new_event;

@@ -64,7 +64,7 @@ export default (config, db, logger) => ({
 			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326))
 			RETURNING id, report_key, the_geom`;
         let queryTwo = `UPDATE ${config.TABLE_REPORTS}
-      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE event_id=$1)
+      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE id=$1),status='unconfirmed' where id=$2
       RETURNING event_id, report_key`;
 
         // Setup values
