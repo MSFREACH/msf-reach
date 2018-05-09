@@ -898,19 +898,3 @@ mainMap.on('overlayremove', function (layersControlEvent) {
         Cookies.set(layersControlEvent.name,'off');
     }
 });
-
-$('#landing_tabs').on('click', 'a[data-toggle="tab"]', function(e) {
-    e.preventDefault();
-
-    var $link = $(this);
-
-    if (!$link.parent().hasClass('active')) {
-
-        //remove active class from other tab-panes
-        $('.tab-content:not(.' + $link.attr('href').replace('#','') + ') .tab-pane').removeClass('active');
-
-        // activate tab-pane for active section
-        $('.tab-content.' + $link.attr('href').replace('#','') + ' .tab-pane:first').addClass('active');
-    }
-
-});
