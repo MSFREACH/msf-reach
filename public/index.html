@@ -622,6 +622,7 @@
               <!--top level tabs-->
               <li class="active"><a href="#event" data-toggle="tab">EVENT STATUS</a></li>
               <li><a href="#contact" data-toggle="tab">CONTACTS</a></li>
+              <li><a href="#report" data-toggle="tab">REPORTS</a></li>
             </ul>
 
             <!--top level tab content-->
@@ -670,9 +671,14 @@
                           <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
                         </div>
                       </div>
-
                     </div>
+                </div>
 
+                <!--reports tab menu-->
+                <div id="report" class="tab-pane">
+                  <ul class="nav nav-tabs" id="report_tabs">
+                      <li><a href="#report_unassigned" data-toggle="tab">Unassigned reports</a></li>
+                  </ul>
                 </div>
              </div>
 
@@ -698,10 +704,13 @@
               </div>
           </div>
 
-
-
-
-
+          <!--reports tab content-->
+          <div class="tab-content msf-tab active">
+              <div id="report_unassigned" class="tab-pane tab-pane-box">
+                <div id="reportsContainer">
+                </div>
+              </div>
+          </div>
 
           </div>
       </div>

@@ -15,7 +15,7 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `SELECT id, event_id as eventId, status, created, report_key as reportkey, content, the_geom
 			FROM ${config.TABLE_REPORTS}
-			WHERE ($1 is not null and event_id = $1 and not event_id is null) or ($1 is null and event_id is null)
+			WHERE ($1 is not null and event_id = $1 and not event_id is null) or ($1 is null and event_id is null and status != 'ignored')
 			ORDER BY created DESC`; // xor
 
         let values = [ eventid ];

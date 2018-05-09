@@ -436,7 +436,6 @@ var mapReports = function(reports,mapForReports){
             }
 
 
-
             $('#reportsTable').append(
                 '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
               feature.properties.id +
@@ -452,6 +451,7 @@ var mapReports = function(reports,mapForReports){
               '<select id="report-'+feature.properties.id+'">'+
                 '<option value="unconfirmed">unconfirmed</option>' +
                 '<option value="confirmed">confirmed</option>' +
+                '<option value="ignored">ignored</option>' +
               '</select></td></tr>'
 
             );
@@ -474,14 +474,12 @@ var mapReports = function(reports,mapForReports){
 
         }
 
-        $('#reportsTable').append('</tbody></table>');
-
-
 
         layer.bindPopup(popupContent, {  maxWidth: 'auto' });
-    }
 
-    var points = []; // local storage for coordinates of reports (used for map bounds)
+
+
+    }
 
     // MSF Icons
     const accessIcon = L.icon({
@@ -518,7 +516,6 @@ var mapReports = function(reports,mapForReports){
             return (feature.properties.content.report_tag === 'ACCESS');
         },
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
             marker = L.marker(latlng, {icon: accessIcon, id: feature.properties.id});
             reportMarkers.push(marker);
             return marker;
@@ -580,10 +577,6 @@ var mapReports = function(reports,mapForReports){
         reportsContactsLayer.addTo(mapForReports);
     }
     layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
-
-    if (points.length > 0){
-        mapForReports.fitBounds(points, {padding: [200,200]});
-    }
 
 };
 
