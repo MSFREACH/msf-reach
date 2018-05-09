@@ -3,6 +3,13 @@
 //var newEventMap = L.map('newEventMap').setView([20, 110], 4);
 
 $('#newEventModal').on('hidden.bs.modal', function() {
+    // clear global vars
+    if (report_id_for_new_event) {
+        report_id_for_new_event = null;
+    }
+    if (latlng) {
+        latlng=null;
+    }
     // clear previous entry
     $('#selectType').val('');
     $('#inputEventName').val('');
@@ -131,6 +138,10 @@ $(function(){
 					*/
                 }
             };
+            // add report id if creating from existing report
+            if (report_id_for_new_event) {
+                body['report_id'] = report_id_for_new_event;
+            }
             if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type === '') {
                 alert('ensure subtype(s) is/are selected');
             } else {

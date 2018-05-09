@@ -18,6 +18,9 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
 // setup variables to store contact layers
 var MSFContactsLayer, nonMSFContactsLayer;
 
+// set up variable to store report ID for new event creation from unassigned report
+var report_id_for_new_event = null; // null = not creating event from unassigned report
+
 // set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
     value: 2, // default: 2
@@ -452,10 +455,11 @@ var mapReports = function(reports,mapForReports){
                 '<option value="unconfirmed">unconfirmed</option>' +
                 '<option value="confirmed">confirmed</option>' +
                 '<option value="ignored">ignored</option>' +
-              '</select></td></tr>'
-
+              '</select></td><td>' +
+              '<select id="events-for-report-'+feature.properties.id+'"></select></td></tr>'
             );
-            $('#report-'+feature.properties.id).val(feature.properties.status === 'confirmed' ? 'confirmed' : 'unconfirmed');
+
+            $('#report-'+feature.properties.id).val(feature.properties.status);
             $('#report-'+feature.properties.id).change(function() {
                 var selectedVal = $(this).val();
                 var id = $(this).attr('id').split('-')[1];
@@ -472,6 +476,44 @@ var mapReports = function(reports,mapForReports){
                 });
             });
 
+            
+
+            if (!feature.properties.event_id) {
+                $.getJSON('api/events', function(data) {
+                    console.log(data);
+                    $.map(data.result.objects.output.geometries, function(item) {
+                        var name = item.properties.metadata.name;
+                        var event_id = item.properties.id;
+                        $('#events-for-report-'+feature.properties.id).append('<option value="'+event_id+'">'+name+'</option>');
+                    });
+                });
+                $('#events-for-report-'+feature.properties.id).append('<option value="new">new event</option>');
+                $('#events-for-report-'+feature.properties.id).change(function() {
+                    var selectedVal = $(this).val();
+                    if (selectedVal==='new') {
+                        // store report_id
+                        report_id_for_new_event = feature.properties.id;
+
+                        // set latlng
+                        latlng = L.latLng(feature.properties.coordinates);
+
+                        // open new modal
+                        $('#newEventModal').modal();
+                    } else {
+                        // link report to event
+                        var body = {
+                            event_id: selectedVal
+                        };
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/linktoevent'+feature.properties.id,
+                            data: JSON.stringify(body),
+                            contentType: 'application/json'
+                        });
+                    }
+                });
+            }
         }
 
 

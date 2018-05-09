@@ -93,5 +93,27 @@ export default (config, db, logger) => ({
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve({ id: String(id), status: body.status, eventId: data.event_id, created: data.created, reportkey:data.report_key, content:data.content, the_geom:data.the_geom }))
             .catch((err) => reject(err));
+    }),
+
+    /**
+   * Update a report status
+   * @param {integer} report_id ID of report
+   * @param {object} event_id ID of event
+   */
+    linkToEvent: (report_id, event_id) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_REPORTS}
+      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE event_id=
+      RETURNING report_id, event_id, report_key`;
+
+        // Setup values
+        let values = [ event_id, report_id ];
+
+        // Execute
+        logger.debug(query, values);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ report_id: data.report_id, eventId: data.event_id, reportkey:data.report_key}))
+            .catch((err) => reject(err));
     })
 });

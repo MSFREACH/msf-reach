@@ -76,6 +76,26 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    api.post('/linktoevent/:id', ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                eventId: Joi.number().integer().min(1).required()
+            })
+        }),
+        (req, res, next) => {
+            reports(config, db, logger).linkToEvent(req.params.id, req.body.eventId)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+
+    );
+
     // Update an report record in the database
     api.post('/:id', ensureAuthenticatedWrite,
         validate({
