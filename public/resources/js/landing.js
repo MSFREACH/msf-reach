@@ -509,7 +509,7 @@ var mapReports = function(reports,mapForReports){
                     } else {
                         // link report to event
                         var body = {
-                            event_id: selectedVal
+                            eventId: selectedVal
                         };
 
                         $.ajax({
