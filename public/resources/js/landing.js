@@ -15,11 +15,12 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+
 // setup variables to store contact layers
 var MSFContactsLayer, nonMSFContactsLayer;
 
 // set up variable to store report ID for new event creation from unassigned report
-var report_id_for_new_event = null; // null = not creating event from unassigned report
+var report_id_for_event = null; // null = not creating event from unassigned report
 
 // set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
@@ -415,7 +416,7 @@ var mapMissions = function(missions ){
 var mapReports = function(reports,mapForReports){
 
     $('#reportsContainer').html(
-        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
+        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Status</th><th>Select event</th></thead><tbody>'
     );
 
     function onEachFeature(feature, layer) {
@@ -440,16 +441,12 @@ var mapReports = function(reports,mapForReports){
 
 
             $('#reportsTable').append(
-                '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
+                '<tr id="reports-table-row-'+feature.properties.id+'"><td ><a href=\'#\' onclick=\'openReportPopup(' +
               feature.properties.id +
               ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
               feature.properties.content.report_tag +
               '</td><td>' +
               feature.properties.content.description +
-              '</td><td>' +
-              feature.properties.content['username/alias'] +
-              '</td><td>' +
-              feature.properties.created.replace('T',' ') +
               '</td><td>' +
               '<select id="report-'+feature.properties.id+'">'+
                 '<option value="unconfirmed">unconfirmed</option>' +
@@ -467,6 +464,12 @@ var mapReports = function(reports,mapForReports){
                     status: selectedVal,
                     content: {} // no updates to content
                 };
+
+                if (selectedVal==='ignored') {
+                    // remove row and refresh map
+                    $('#reports-table-row-'+$(this).attr('id').split('-')[1]).remove();
+                    getReports(mainMap, mapReports);
+                }
 
                 $.ajax({
                     type: 'POST',
@@ -492,12 +495,12 @@ var mapReports = function(reports,mapForReports){
                     var selectedVal = $(this).val();
                     if (selectedVal==='new') {
                         // store report_id
-                        report_id_for_new_event = $(this).attr('id').split('-').slice(-1)[0];
+                        report_id_for_event = $(this).attr('id').split('-').slice(-1)[0];
 
                         // get coordinates
                         var coordinates;
 
-                        $.getJSON('api/reports/'+report_id_for_new_event, function(data) {
+                        $.getJSON('api/reports/'+report_id_for_event, function(data) {
                             $.map(data.result.objects.output.geometries, function(item) {
                                 // set latlng
                                 latlng = L.latLng(item.coordinates.reverse());
@@ -506,6 +509,7 @@ var mapReports = function(reports,mapForReports){
 
                         // open new modal
                         $('#newEventModal').modal();
+
                     } else {
                         // link report to event
                         var body = {
@@ -516,7 +520,11 @@ var mapReports = function(reports,mapForReports){
                             type: 'POST',
                             url: '/api/reports/linktoevent/'+$(this).attr('id').split('-').slice(-1)[0],
                             data: JSON.stringify(body),
-                            contentType: 'application/json'
+                            contentType: 'application/json',
+                            success: function(data) {
+                                $('#reports-table-row-'+report_id_for_event).remove();
+                                getReports(mainMap, mapReports);
+                            }
                         });
                     }
                 });
@@ -560,6 +568,33 @@ var mapReports = function(reports,mapForReports){
 
     });
 
+    if (accessLayer) {
+        computerTriggered=true;
+        mainMap.removeLayer(accessLayer);
+        layerControl.removeLayer(accessLayer);
+        computerTriggered=false;
+    }
+    if (needsLayer) {
+        computerTriggered=true;
+        mainMap.removeLayer(needsLayer);
+        layerControl.removeLayer(needsLayer);
+        computerTriggered=false;
+    }
+    if (contactsLayer) {
+        computerTriggered=true;
+        mainMap.removeLayer(contactsLayer);
+        layerControl.removeLayer(contactsLayer);
+        computerTriggered=false;
+    }
+    if (securityLayer) {
+        computerTriggered=true;
+        mainMap.removeLayer(securityLayer);
+        layerControl.removeLayer(securityLayer);
+        computerTriggered=false;
+    }
+
+
+
     accessLayer = L.geoJSON(reports, {
         filter: function (feature) {
             return (feature.properties.content.report_tag === 'ACCESS');
@@ -581,7 +616,6 @@ var mapReports = function(reports,mapForReports){
             return (feature.properties.content.report_tag === 'NEEDS');
         },
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
             marker = L.marker(latlng, {icon: needsIcon, id: feature.properties.id});
             reportMarkers.push(marker);
             return marker;
@@ -598,7 +632,6 @@ var mapReports = function(reports,mapForReports){
             return (feature.properties.content.report_tag === 'SECURITY');
         },
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
             marker = L.marker(latlng, {icon: securityIcon, id: feature.properties.id});
             reportMarkers.push(marker);
             return marker;
@@ -615,7 +648,6 @@ var mapReports = function(reports,mapForReports){
             return (feature.properties.content.report_tag === 'CONTACTS');
         },
         pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
             marker = L.marker(latlng, {icon: contactsIcon, id: feature.properties.id});
             reportMarkers.push(marker);
             return marker;

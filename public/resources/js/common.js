@@ -59,7 +59,8 @@ var reportsContactsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 
-var computerTriggered = false;
+var computerTriggered = false; // keep track of events that are computer triggered so we can deal just with human triggered ones
+
 
 var PDCHazardsLayer;
 var TSRHazardsLayer;

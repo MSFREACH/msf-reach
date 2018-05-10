@@ -11,7 +11,6 @@ var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 
-var computerTriggered = false; // keep track of events that are computer triggered so we can deal just with human triggered ones
 
 // set up the map:
 var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false});
