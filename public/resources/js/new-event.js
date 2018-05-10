@@ -150,6 +150,8 @@ $(function(){
             }
             if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type === '') {
                 alert('ensure subtype(s) is/are selected');
+            } else if (body.type==='') {
+                alert('ensure type(s) is/are selected');
             } else {
                 $.ajax({
                     type: 'POST',
