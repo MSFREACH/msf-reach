@@ -52,7 +52,7 @@
     "dbgeo": "^1.1.0",
     "dms-conversion": "3.1.1-alpha.1",
     "dotenv": "^5.0.1",
-    "express": "git+https://git@github.com/AcrossTheCloud/express.git",
+    "express": "^4.16.3",
     "express-jwt": "^5.3.1",
     "express-session": "^1.15.6",
     "joi": "^13.3.0",
