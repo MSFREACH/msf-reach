@@ -5,8 +5,8 @@ import { Router } from 'express';
 import { cacheResponse } from '../../../lib/util';
 
 // Import validation dependencies
-import Joi from 'joi';
-import validate from 'celebrate';
+
+import { celebrate as validate , Joi, errors } from 'celebrate';
 
 //AWS s3
 import {S3} from 'aws-sdk';

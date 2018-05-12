@@ -690,3 +690,46 @@ $('#sharewith_email').keyup(function(event){
         });
     }
 });
+
+$( '#sharewith_name' ).autocomplete({
+    source: function( request, response ) {
+        $.ajax({
+            url: '/api/contacts/usersearch/'+request.term,
+            success: function( data ) {
+                response($.map(JSON.parse(data.body).value, function (item) {
+                    return {
+                        label: item.displayName,
+                        value: item.displayName,
+                        id: item.id
+                    };
+                }));
+            }
+        });
+    },
+    minLength: 3,
+    select: function( event, ui ) {
+        if (ui.item) {
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/contacts/' + currentContactId + '/share',
+                data: JSON.stringify({'oid':ui.item.id}),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                $('#sharewith_name').val(''); // clear entry
+                alert('shared');
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                } else {
+                    alert('failed, are you sure you own the record?');
+                }
+            });
+        }
+    },
+    open: function() {
+        $( this ).removeClass( 'ui-corner-all' ).addClass( 'ui-corner-top' );
+    },
+    close: function() {
+        $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
+    }
+});

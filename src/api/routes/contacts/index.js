@@ -12,7 +12,7 @@ import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../
 import BaseJoi from 'joi';
 import Extension from 'joi-date-extensions';
 const Joi = BaseJoi.extend(Extension);
-import validate from 'celebrate';
+import { celebrate as validate , Joi2 , errors } from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();
@@ -185,6 +185,29 @@ export default ({ config, db, logger }) => {
         }),
         function(req, response){
             request.get('https://graph.microsoft.com/v1.0/users/'+req.params.email, {
+                'headers': {
+                    'Authorization': 'Bearer ' + req.user.access_token,
+                    'Content-Type': 'application/json'
+                }
+            }, function(err, res) {
+                if(err){
+                    logger.error(err);
+                    response.status(404).send(res);
+                }
+                else{
+                    //console.log('res: ' + res);
+                    response.send(res);
+                }
+            });
+        });
+
+    // wrapper around MS Graph /users API
+    api.get('/usersearch/:term', ensureAuthenticated,
+        validate({
+            params: { term: Joi.string().required() }
+        }),
+        function(req, response){
+            request.get('https://graph.microsoft.com/v1.0/users?$filter=startswith(displayName,\''+req.params.term+'\')', {
                 'headers': {
                     'Authorization': 'Bearer ' + req.user.access_token,
                     'Content-Type': 'application/json'

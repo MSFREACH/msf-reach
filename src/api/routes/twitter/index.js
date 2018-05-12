@@ -8,8 +8,8 @@ import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
 import { searchTwitter, embedTweet } from '../../../lib/twitter.js';
 
 // Import validation dependencies
-import Joi from 'joi';
-import validate from 'celebrate';
+
+import { celebrate as validate , Joi, errors } from 'celebrate';
 
 export default ({ logger }) => {
     let api = Router();

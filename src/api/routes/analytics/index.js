@@ -9,8 +9,8 @@ import { ensureAuthenticated } from '../../../lib/util';
 
 
 // Import validation dependencies
-import Joi from 'joi';
-import validate from 'celebrate';
+
+import { celebrate as validate , Joi, errors } from 'celebrate';
 
 
 

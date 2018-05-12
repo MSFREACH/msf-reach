@@ -8,8 +8,7 @@ import missions from './../missions/model';
 import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
-import Joi from 'joi';
-import validate from 'celebrate';
+import { celebrate as validate, Joi, errors } from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();
