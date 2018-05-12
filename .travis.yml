@@ -2,12 +2,12 @@ dist: trusty
 sudo: false
 language: node_js
 node_js:
-  - "8.9.3"
+  - "8.11.1"
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
   apt:
     packages:
-      - postgresql-9.6-postgis-2.3
+      - postgresql-10-postgis-2.4
 
 before_install:
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
