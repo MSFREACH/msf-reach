@@ -4,7 +4,7 @@ import { Router } from 'express';
 import errorHandler from 'api-error-handler';
 
 // Import validation dependencies
-import { celebrate as validate , Joi, errors } from 'celebrate';
+import { errors } from 'celebrate';
 
 // Get the current version
 import { version } from '../../package.json';

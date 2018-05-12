@@ -6,7 +6,7 @@ import { cacheResponse } from '../../../lib/util';
 
 // Import validation dependencies
 
-import { celebrate as validate , Joi, errors } from 'celebrate';
+import { celebrate as validate , Joi } from 'celebrate';
 
 //AWS s3
 import {S3} from 'aws-sdk';

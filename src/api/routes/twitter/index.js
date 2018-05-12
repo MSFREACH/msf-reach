@@ -9,7 +9,7 @@ import { searchTwitter, embedTweet } from '../../../lib/twitter.js';
 
 // Import validation dependencies
 
-import { celebrate as validate , Joi, errors } from 'celebrate';
+import { celebrate as validate , Joi } from 'celebrate';
 
 export default ({ logger }) => {
     let api = Router();
