@@ -15,7 +15,7 @@ phases:
       - npm run build
   post_build:
     commands:
-      - npm run coverage
+      #- npm run coverage
       - rm -rf msf-reach-schema
 
 artifacts:
