@@ -35,12 +35,12 @@ export default ({ config, db, logger }) => {
                     if (data !== null){
                         logger.info('Email user ' + data.guid);
                         mail(config, logger).sendContactUpdateEmail(req.query.email, data.guid);
-                        res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact update link emailed to user' });
+                        res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact update link emailed to user', emailExists:true });
                     }
                     else {
                         // Email did not exist in database
                         logger.info('Contact not found, ' + req.query.email);
-                        res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'error: email not found' });
+                        res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'error: email not found' , emailExists:false });
                     }
                 })
                 // Catch database errors
