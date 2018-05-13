@@ -1,5 +1,5 @@
 /*
- * model.js - database models for CogniCity MSF Server missions data
+ * model.js - database models for CogniCity MSF Server contact data
  */
 
 // Import promise support
