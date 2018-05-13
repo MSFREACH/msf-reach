@@ -100,7 +100,7 @@ export default (config, db, logger) => ({
                 }
                 else {
                     logger.debug(queryInsert, valuesInsert);
-                    db.oneOrNone(queryInsert, values).timeout(config.PGTIMEOUT)
+                    db.oneOrNone(queryInsert, valuesInsert).timeout(config.PGTIMEOUT)
                         .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                             updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                             properties:data.properties, the_geom:data.the_geom }))
