@@ -1,4 +1,4 @@
-import Promise from 'bluebird';
+import { Promise } from 'bluebird';
 
 // Express middleware and http
 import express from 'express';
