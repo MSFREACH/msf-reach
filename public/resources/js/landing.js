@@ -58,6 +58,8 @@ $( '#inputSeverityScale' ).slider({
 // set up the variable for holding the events layer
 var eventsLayer;
 
+var disease_subtypes = ['cholera', 'ebola','dengue','malaria','measles','meningococcal_meningitis','yellow_fever','other_disease_outbreak'];
+
 /**
 * Function to map and print a table of events
 * @function mapAllEvents
@@ -102,16 +104,16 @@ var mapAllEvents = function(err, events){
 
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (feature.properties.type.toLowerCase().includes('epidemiological')) {
-            icon_name = 'epidemic';
-        }
-        if (feature.properties.type.toLowerCase().includes('natural_hazard')) {
-            icon_name = feature.properties.metadata.sub_type.includes(',') ? feature.properties.metadata.sub_type.split(',')[0].toLowerCase() : feature.properties.metadata.sub_type.toLowerCase();
-        }
+        type = type.toLowerCase().replace('epidemiological','epidemic').replace('natural_hazard','');
+        var icon_names = type.split(',');
+        var icon_html = icon_names.map(function(item) {
+            if (item!=='' && disease_subtypes.indexOf(item)===-1) {
+                return '<img src="/resources/images/icons/event_types/'+item+'.svg" width="40">';
+            } else return '';
+        }).join('');
 
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
-    '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
+    '\'>'+icon_html+'</a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
     'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
