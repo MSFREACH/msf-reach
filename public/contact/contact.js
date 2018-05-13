@@ -108,6 +108,7 @@ $(function () {
               return;
           }
           $('.msf-contact-loader').show();
+          $('#checkEmailDiv').html('Verifying email ...')
 
           $.ajax({
               type: 'GET',
@@ -126,6 +127,7 @@ $(function () {
              }
                else{
                  $('#inputContactEmailRO').val($('#inputContactEmail').val());
+                 $('.form-navigation .next').html('Next');
                  navigateTo(cInd + 1);
                }
 
