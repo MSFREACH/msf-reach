@@ -57,19 +57,15 @@
               <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
-              <h4>Please enter your email to start:</h4>
-              <label style="text-transform:uppercase;text-align:left;">Email <span style="color:red;">*</span></label>
-              <div class="form-group">
+              <h4 style="padding-top:40%;">Please enter your email to start:</h4>
+              <div class="form-group" style="padding-top:5%;">
                 <input maxlength="50" placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
               </div>
-              <div class="msf-contact-loader" style="display:none;">
-
-              </div>
+              <div class="msf-contact-loader" style="display:none;"></div>
               <div class="" id="checkEmailDiv">
 
               </div>
 
-              <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
               <h4> Personal details</h4>
@@ -304,9 +300,32 @@
 
     </div>
   </div>
+
+  <!-- Update Modal -->
+  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content" id="archiveEventModalContent">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Loading contact details</h4>
+        </div>
+        <div class="modal-body" id="updateModalBody">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-msf" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
   <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
+
+  <!-- Bootstrap's JavaScript plugins -->
+  <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
 
   <!-- Cookies -->
   <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>

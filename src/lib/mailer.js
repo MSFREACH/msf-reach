@@ -33,7 +33,9 @@ export default ( config, logger ) => ({
         //attach the plugin to the nodemailer transporter
         transport.use('compile', hbs(options));
 
-        let emContext={ GUID: theGUID};
+        let uLink=config.BASE_URL+'contact/?token='+theGUID+'&email='+recipient;
+
+        let emContext={ updateLink: uLink};
 
         const mailOptions = {
             from: 'MSF-REACH <admin@msf-reach.org>', // sender address

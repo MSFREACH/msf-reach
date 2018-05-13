@@ -1,10 +1,22 @@
 var doItOnce=true;
 
-$('#permission').toggle(localStorage.getItem('username')!=null);
-$('#sharepoint').toggle(localStorage.getItem('username')!=null);
-$('#private').toggle(localStorage.getItem('username')!=null);
 
 $(function () {
+  $('#permission').toggle(localStorage.getItem('username')!=null);
+  $('#sharepoint').toggle(localStorage.getItem('username')!=null);
+  $('#private').toggle(localStorage.getItem('username')!=null);
+
+  var qGUID=getQueryVariable('token');
+  var qEmail=getQueryVariable('email');
+
+  if (qGUID && qEmail)
+  {
+    $('#updateModal').modal('show');
+    $('#updateModalBody').html(qGUID+' - '+qEmail);
+  }
+
+
+
     var $sections = $('.form-section');
 
     const STARTPAGEINDEX = 0;
@@ -89,11 +101,6 @@ $(function () {
                 return;
             }
 
-            if (!valid_email($('#inputContactEmailRO').val()))
-            {
-                alert('Please enter a valid email address to proceed.');
-                return;
-            }
             if ($('#inputContactEmail2').val() && !valid_email($('#inputContactEmail2').val())) {
                 alert('Please enter a valid second email address to proceed.');
                 return;
@@ -126,6 +133,7 @@ $(function () {
                $('.form-navigation .next').html('Try Again');
              }
                else{
+                 $('#checkEmailDiv').html('Email checked.')
                  $('#inputContactEmailRO').val($('#inputContactEmail').val());
                  $('.form-navigation .next').html('Next');
                  navigateTo(cInd + 1);
