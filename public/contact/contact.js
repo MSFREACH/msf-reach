@@ -8,9 +8,10 @@ $(function () {
     var $sections = $('.form-section');
 
     const STARTPAGEINDEX = 0;
-    const NAMESECTIONINDEX = 1;
-    const MAPSECTIONINDEX = 3;
-    const CONTACTDETAILSINDEX =4;
+    const CHECKEMAILPAGEINDEX =1;
+    const NAMESECTIONINDEX = 2;
+    const MAPSECTIONINDEX = 4;
+    const CONTACTDETAILSINDEX =5;
     function navigateTo(index) {
     // Mark the current section with the class 'current'
         $sections
@@ -88,7 +89,7 @@ $(function () {
                 return;
             }
 
-            if (!valid_email($('#inputContactEmail').val()))
+            if (!valid_email($('#inputContactEmailRO').val()))
             {
                 alert('Please enter a valid email address to proceed.');
                 return;
@@ -99,7 +100,43 @@ $(function () {
             }
         }
 
-        navigateTo(cInd + 1);
+        if (cInd==CHECKEMAILPAGEINDEX)
+        {
+          if (!valid_email($('#inputContactEmail').val()))
+          {
+              alert('Please enter a valid email address to proceed.');
+              return;
+          }
+          $('.msf-contact-loader').show();
+
+          $.ajax({
+              type: 'GET',
+              url: '/api/contacts/peers',
+              data: {
+                email: $('#inputContactEmail').val()
+              },
+              contentType: 'application/json'
+          }).done(function( data, textStatus, req ){
+             console.log(data);
+             $('.msf-contact-loader').hide();
+             if (data.emailExists)
+             {
+               $('#checkEmailDiv').html('<p> This email already exists in the database. we have sent you an email with instructions on how to update or delete this contact.');
+               $('.form-navigation .next').html('Try Again');
+             }
+               else{
+                 $('#inputContactEmailRO').val($('#inputContactEmail').val());
+                 navigateTo(cInd + 1);
+               }
+
+          }).fail(function (req, textStatus, err){
+            $('.msf-contact-loader').hide();
+              $('#checkEmailDiv').html('An error ' + err + 'occured');
+          });
+        }
+        else{
+         navigateTo(cInd + 1);
+       }
     });
 
     navigateTo(0); // Start at the beginning
