@@ -76,6 +76,13 @@
   .bg-success {
     padding: 5px;
   }
+
+  .ui-autocomplete {
+    position:absolute;
+    cursor:default;
+    z-index:2150000000 !important;
+  }
+
   </style>
 </head>
 <body>
@@ -269,9 +276,60 @@
       </div>
     </div>
   </div>
+  <!-- About modal -->
+  <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAbout">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabelAbout">About MSF-REACH</h4>
+        </div>
+        <div class="modal-body" id="AboutModalBody">
+            <div class="list-group">
+                <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
+                <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
+                  <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
+                </div>
+                <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
+                <div class="list-group-item list-group-item-action" style="display:none;" id="tic_video" >
+                  <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/-Kfodflm3M8?autoplay=0"></iframe>
+                </div>
+                <a href="/resources/docs/PartnersPrivacyPolicy.pdf" target="_blank" class="list-group-item list-group-item-action"><i>&bull;</i> Partnership and confidentiality</a>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FAQ modal -->
+  <div class="modal fade" id="FAQ" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFAQ">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabelFAQ">Frequently Asked Questions</h4>
+        </div>
+        <div class="modal-body" id="FAQModalBody">
+          <p><span style="font-weight:bold;">What is REACH?</span><br />
+          REACH is a platform designed to combine institutional data with crowd-sourced information (including social media, instant messaging, and relevant RSS feeds) in real-time to monitor and manage natural disasters in Southeast Asia.</p>
+          <p><span style="font-weight:bold;">Who is responsible for the platform?</span><br />
+          REACH was initiated by the MSF HK Emergency Response Support Unit (ERSU), in collaboration with the London-based software development cooperative User Group Inc. LLP and Across the Cloud Pty Ltd. ERSU manages the platform and makes it available for operational usage to colleagues throughout the Movement.</p>
+          <p><span style="font-weight:bold;">Who pays for REACH?</span><br />
+          REACH is currently in its second stage of development, which is funded by a TIC Incubator grant. The first phase of development was funded by ERSU in Hong Kong. Additional funding would be required to better scale the platform to geographies beyond Southeast Asia, and to better support the wide range of missions that MSF conducts, including further work to extend the inbuilt AI capabilities.
+          <p><span style="font-weight:bold;">Who can access REACH?</span><br />
+          In its current phase, REACH can gather, sort, display and management real-time disaster information in Southeast Asia. Members of the movement who want to use the tool to this end should contact ERSU with requests for “Editor” access. However, soon, all members of the Movement will be able to login to a “View Only” set of features. </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Contact Page Modal -->
   <div class="modal fade" id="contactDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelContact">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog ui-front" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -295,7 +353,7 @@
             </div>
             <div class="form-group" id="shareWithDiv">
               <label>Share with</label>
-              <input type="text" id="sharewith_email" name="sharewith_email">
+              <input type="text" id="sharewith_name" name="sharewith_name">
             </div>
           <div class="form-group">
             <label>Last email sent on:</label>
@@ -483,8 +541,9 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">SESSION <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#" id="username"></a></li>
-            </ul>
+            <li><a href="#about" data-toggle="modal" data-target="#about">About MSF-REACH</a></li>
+            <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
+            <li><a id="logout" href="/logout">logout</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->

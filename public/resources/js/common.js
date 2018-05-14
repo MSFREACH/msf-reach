@@ -1,5 +1,8 @@
 /*eslint no-unused-vars: off*/
 
+// Constants
+var GEOFORMAT = 'geojson'; // Change to topojson for prod
+
 /**
  * Monitor status code to redirect login page if session expires.
 */
@@ -56,7 +59,8 @@ var reportsContactsLayer;
 var missionsLayerControlSetUp = false;
 var contactsLayerControlSetUp = false;
 
-var computerTriggered = false;
+var computerTriggered = false; // keep track of events that are computer triggered so we can deal just with human triggered ones
+
 
 var PDCHazardsLayer;
 var TSRHazardsLayer;
@@ -64,7 +68,7 @@ var USGSHazardsLayer;
 var GDACSHazardsLayer;
 var PTWCHazardsLayer;
 
-var MAX_RADIUS= 250;
+var MAX_RADIUS= 15;
 
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
@@ -120,6 +124,25 @@ if (typeof(Cookies.get('- USGS'))==='undefined') {
 // keep track of the first time we load missions and contacts (used in code for updating based on map extents)
 var firstContactsLoad = true;
 var firstMissionsLoad = true;
+
+var reportMarkers = [];
+
+/**
+* Function to get reports for an event
+* @function openReportPopup
+* @param {Object} mapForReports - map to put the reports on
+* @param {Object} callback - mapping callback function once reports are loaded
+**/
+function openReportPopup(id) {
+    for (var i in reportMarkers){
+        var markerID = reportMarkers[i].options.id;
+        if (markerID == id) {
+            mainMap.setView(reportMarkers[i].getLatLng());
+            reportMarkers[i].openPopup();
+            break;
+        }
+    }
+}
 
 /**
 * Function to get feeds
@@ -377,188 +400,6 @@ function openHazardPopup(id)
 }
 
 /**
-* Function to add reports to map
-* @param {Object} reports - GeoJson FeatureCollection containing report points
-**/
-var mapReports = function(reports,mapForReports){
-
-    $('#reportsContainer').html(
-        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
-    );
-
-    function onEachFeature(feature, layer) {
-
-        var popupContent = '';
-        var reportsTableContent = '';
-
-        if (feature.properties && feature.properties.content) {
-            popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
-            popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
-            popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
-            popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
-            if (feature.properties.content.image_link && feature.properties.content.image_link.length > 0){
-                if (feature.properties.content.image_labels) {
-                    popupContent += 'AI image labels: ';
-                    feature.properties.content.image_labels.forEach((item) => { popupContent += item.Name + ', ';});
-                    popupContent = popupContent.substring(0,popupContent.length-2);
-                    popupContent += '<BR>';
-                }
-                popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
-            }
-
-
-
-            $('#reportsTable').append(
-                '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
-              feature.properties.id +
-              ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
-              feature.properties.content.report_tag +
-              '</td><td>' +
-              feature.properties.content.description +
-              '</td><td>' +
-              feature.properties.content['username/alias'] +
-              '</td><td>' +
-              feature.properties.created.replace('T',' ') +
-              '</td><td>' +
-              '<select id="report-'+feature.properties.id+'">'+
-                '<option value="unconfirmed">unconfirmed</option>' +
-                '<option value="confirmed">confirmed</option>' +
-              '</select></td></tr>'
-
-            );
-            $('#report-'+feature.properties.id).val(feature.properties.status === 'confirmed' ? 'confirmed' : 'unconfirmed');
-            $('#report-'+feature.properties.id).change(function() {
-                var selectedVal = $(this).val();
-                var id = $(this).attr('id').split('-')[1];
-                var body = {
-                    status: selectedVal,
-                    content: {} // no updates to content
-                };
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/api/reports/'+id,
-                    data: JSON.stringify(body),
-                    contentType: 'application/json'
-                });
-            });
-
-        }
-
-        $('#reportsTable').append('</tbody></table>');
-
-
-
-        layer.bindPopup(popupContent, {  maxWidth: 'auto' });
-    }
-
-    var points = []; // local storage for coordinates of reports (used for map bounds)
-
-    // MSF Icons
-    const accessIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/access_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    const securityIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/security_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    const contactsIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-    });
-
-    const needsIcon = L.icon({
-        iconUrl: '/resources/images/icons/reports/needs_icon.svg',
-        iconSize:     [60, 60], // size of the icon
-        iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
-
-    });
-
-    accessLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'ACCESS');
-        },
-        pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            marker = L.marker(latlng, {icon: accessIcon, id: feature.properties.id});
-            reportMarkers.push(marker);
-            return marker;
-        },
-        onEachFeature: onEachFeature
-    });
-    if (Cookies.get('- access')==='on') {
-        accessLayer.addTo(mapForReports);
-    }
-    layerControl.addOverlay(accessLayer, '- access', 'Reports');
-
-    needsLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'NEEDS');
-        },
-        pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            marker = L.marker(latlng, {icon: needsIcon, id: feature.properties.id});
-            reportMarkers.push(marker);
-            return marker;
-        },
-        onEachFeature: onEachFeature
-    });
-    if (Cookies.get('- needs')==='on') {
-        needsLayer.addTo(mapForReports);
-    }
-    layerControl.addOverlay(needsLayer, '- needs', 'Reports');
-
-    securityLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'SECURITY');
-        },
-        pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            marker = L.marker(latlng, {icon: securityIcon, id: feature.properties.id});
-            reportMarkers.push(marker);
-            return marker;
-        },
-        onEachFeature: onEachFeature
-    });
-    if (Cookies.get('- security')==='on') {
-        securityLayer.addTo(mapForReports);
-    }
-    layerControl.addOverlay(securityLayer, '- security', 'Reports');
-
-    reportsContactsLayer = L.geoJSON(reports, {
-        filter: function (feature) {
-            return (feature.properties.content.report_tag === 'CONTACTS');
-        },
-        pointToLayer: function (feature, latlng) {
-            points.push([latlng.lat, latlng.lng]);
-            marker = L.marker(latlng, {icon: contactsIcon, id: feature.properties.id});
-            reportMarkers.push(marker);
-            return marker;
-        },
-        onEachFeature: onEachFeature
-    });
-    if (Cookies.get('- contacts')==='on') {
-        reportsContactsLayer.addTo(mapForReports);
-    }
-    layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
-
-    if (points.length > 0){
-        mapForReports.fitBounds(points, {padding: [200,200]});
-    }
-
-};
-
-/**
 * Function to get all events from the API
 * @param {Function} callback - Function to call once data returned
 * @returns {String} err - Error message if any, else none
@@ -688,5 +529,48 @@ $('#sharewith_email').keyup(function(event){
         }).fail(function(err) {
             alert('MSF user not found, check email address');
         });
+    }
+});
+
+$( '#sharewith_name' ).autocomplete({
+    source: function( request, response ) {
+        $.ajax({
+            url: '/api/contacts/usersearch/'+request.term,
+            success: function( data ) {
+                response($.map(JSON.parse(data.body).value, function (item) {
+                    return {
+                        label: item.displayName,
+                        value: item.displayName,
+                        id: item.id
+                    };
+                }));
+            }
+        });
+    },
+    minLength: 3,
+    select: function( event, ui ) {
+        if (ui.item) {
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/contacts/' + currentContactId + '/share',
+                data: JSON.stringify({'oid':ui.item.id}),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                $('#sharewith_name').val(''); // clear entry
+                alert('shared');
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                } else {
+                    alert('failed, are you sure you own the record?');
+                }
+            });
+        }
+    },
+    open: function() {
+        $( this ).removeClass( 'ui-corner-all' ).addClass( 'ui-corner-top' );
+    },
+    close: function() {
+        $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
     }
 });

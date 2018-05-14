@@ -35,7 +35,7 @@ export default {
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
     API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
     API_EVENT_TYPES: powerSet(types),
-    API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'unconfirmed,confirmed').split(','),
+    API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'unconfirmed,confirmed,ignored').split(','),
     AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
     AWS_COGNITO_ALGORITHM: process.env.AWS_COGNITO_ALGORITHM || 'RS256',
     AWS_S3_REGION: process.env.AWS_S3_REGION || 'ap-southeast-2',

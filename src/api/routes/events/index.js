@@ -8,8 +8,7 @@ import missions from './../missions/model';
 import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
-import Joi from 'joi';
-import validate from 'celebrate';
+import { celebrate as validate, Joi } from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();
@@ -57,6 +56,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
+                report_id: Joi.number().min(1),
                 created_at: Joi.date().iso().required(),
                 metadata: Joi.object().required(),
                 location: Joi.object().required().keys({
