@@ -473,11 +473,11 @@ var mapReports = function(reports,mapForReports){
                     data: JSON.stringify(body),
                     contentType: 'application/json',
                     success: function(data) {
-                      /* refresh map
+                        /* refresh map
                       * - doesn't hurt for confirmed/unconfimed and
                       * calling this here will ensure ignored entries aren't put back on table
                       */ 
-                      getReports(mainMap, mapReports);
+                        getReports(mainMap, mapReports);
                     }
                 });
 
