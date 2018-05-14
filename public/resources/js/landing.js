@@ -467,18 +467,28 @@ var mapReports = function(reports,mapForReports){
                     content: {} // no updates to content
                 };
 
-                if (selectedVal==='ignored') {
-                    // remove row and refresh map
-                    $('#reports-table-row-'+$(this).attr('id').split('-')[1]).remove();
-                    getReports(mainMap, mapReports);
-                }
-
                 $.ajax({
                     type: 'POST',
                     url: '/api/reports/'+id,
                     data: JSON.stringify(body),
-                    contentType: 'application/json'
+                    contentType: 'application/json',
+                    success: function(data) {
+                      /* refresh map
+                      * - doesn't hurt for confirmed/unconfimed and
+                      * calling this here will ensure ignored entries aren't put back on table
+                      */ 
+                      getReports(mainMap, mapReports);
+                    }
                 });
+
+                if (selectedVal==='ignored') {
+
+                    // remove row
+                    $('#reports-table-row-'+$(this).attr('id').split('-')[1]).remove();
+
+                }
+
+
             });
 
 
