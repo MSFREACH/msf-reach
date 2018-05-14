@@ -20,7 +20,7 @@ export default ({ config, db, logger }) => {
                 eventId: Joi.number().integer().min(1)
             }
         }),
-        (req, res, next) => reports(config, db, logger).all(req.query.eventId)
+        (req, res, next) => reports(config, db, logger).all(req.query.hasOwnProperty('eventId') ? req.query.eventId : null)
             .then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
@@ -52,10 +52,10 @@ export default ({ config, db, logger }) => {
     api.post('/',
         validate({
             body: Joi.object().keys({
-                eventId: Joi.number().integer().min(1).required(),
+                eventId: Joi.number().integer().min(1),
                 status: Joi.string().valid(config.API_REPORT_STATUS_TYPES).required(),
                 created: Joi.date().iso().required(),
-                reportkey: Joi.string().required(),
+                reportkey: Joi.string(),
                 content: Joi.object().required(),
                 location: Joi.object().required().keys({
                     lat: Joi.number().min(-90).max(90).required(),
@@ -75,11 +75,32 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    // Update an event record in the database
+    api.post('/linktoevent/:id', ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                eventId: Joi.number().integer().min(1).required()
+            })
+        }),
+        (req, res, next) => {
+            reports(config, db, logger).linkToEvent(req.params.id, req.body.eventId)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+
+    );
+
+    // Update an report record in the database
     api.post('/:id', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
+                eventId: Joi.number().integer().min(1),
                 status: Joi.string().valid(config.API_REPORT_STATUS_TYPES).required(),
                 content: Joi.object().required()
             })

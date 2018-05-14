@@ -1,9 +1,8 @@
 import config from '../config';
-var Promise = require('bluebird');
 const AWS = require('aws-sdk');
 const lambda = new AWS.Lambda({apiVersion: '2015-03-31', region: 'us-east-1'});
 
-module.exports.addChatbotItem = (data,id,body,reportUrl,logger) => new Promise((resolve, reject) =>
+module.exports.addChatbotItem = async (data,id,body,reportUrl,logger) =>
 {
     if (typeof(body.metadata)!=='undefined' && 'name' in body.metadata && typeof(body.metadata.name) === 'string') {
         let keywords = body.metadata.name.split(/[_ ]/);
@@ -58,6 +57,6 @@ module.exports.addChatbotItem = (data,id,body,reportUrl,logger) => new Promise((
             //    console.log(err)})).catch(function(err){console.log(err)})
         }
     }
-    resolve(data);
+    return data;
 
-});
+};

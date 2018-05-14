@@ -56,6 +56,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
+                report_id: Joi.number().min(1),
                 created_at: Joi.date().iso().required(),
                 metadata: Joi.object().required(),
                 location: Joi.object().required().keys({
