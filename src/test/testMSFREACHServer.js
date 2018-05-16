@@ -186,11 +186,30 @@ describe('Cognicity Server Testing Harness', function() {
                             'metadata': {
                                 'updated_by': 'integrated tester',
                                 'name': 'Iran_earthquake_2017'
-                            },
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
+                // Can update an event, returning updated event
+                it('Update an event location (PATCH /events/updatelocation/:id)', function(done) {
+                    test.httpAgent(app)
+                        .patch('/api/events/updatelocation/' + eventId)
+                        .set('Cookie', 'jwt=' + token)
+                        .send({
                             'location': {
-                                'lat': 45,
-                                'lng': 140
-                            },
+                                'lat': 43,
+                                'lng': 130
+                            }
                         })
                         .expect(200)
                         .expect('Content-Type', /json/)

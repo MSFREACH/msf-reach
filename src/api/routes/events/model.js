@@ -131,7 +131,7 @@ export default (config, db, logger) => ({
             type = $4,
 			metadata = metadata || $2
 			WHERE id = $3
-			RETURNING type, created_at, updated_at, report_key, metadata, the_geom`;
+			RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
         // Setup values
         let values = [ body.status, body.metadata, id, body.type ];
@@ -140,7 +140,7 @@ export default (config, db, logger) => ({
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
-            .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+            .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));
     }),
 

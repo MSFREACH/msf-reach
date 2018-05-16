@@ -91,6 +91,9 @@ export default ({ config, db, logger }) => {
             events(config, db, logger).updateEvent(req.params.id, req.body)
                 .then((data) => {
                     if (req.body.status === 'inactive') {
+                        // backfill location for compatibility
+                        console.log(data); // eslint-disable-line no-console
+                        req.body['location'] = {'lat': data.lat, 'lng': data.lng};
                         missions(config, db, logger).createMission(req.body)
                             .then((data) => handleGeoResponse(data, req, res, next))
                             .catch((err) => {
