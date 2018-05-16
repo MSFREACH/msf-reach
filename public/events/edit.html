@@ -1096,7 +1096,9 @@ var vm = new Vue({
           data: JSON.stringify({location: {lat: latlng.lat, lng: latlng.lng}}),
           contentType: 'application/json'
         }).done(function(data, textStatus, req) {
-            window.location.reload(true);
+            setTimeout(function() {
+              window.location.reload(true);
+            }, 1000);
         }).fail(function(err) {
           if (err.responseText.includes('expired')) {
             alert("session expired");
