@@ -175,6 +175,29 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
+                // Can update an event location, returning updated event
+                it('Update an event location (PATCH /events/updatelocation/:id)', function(done) {
+                    test.httpAgent(app)
+                        .patch('/api/events/updatelocation/' + eventId)
+                        .set('Cookie', 'jwt=' + token)
+                        .send({
+                            'location': {
+                                'lat': 43,
+                                'lng': 130
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
                 // Can update an event, returning updated event
                 it('Update an event (PUT /events/:id)', function(done) {
                     test.httpAgent(app)
@@ -200,28 +223,6 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
-                // Can update an event, returning updated event
-                it('Update an event location (PATCH /events/updatelocation/:id)', function(done) {
-                    test.httpAgent(app)
-                        .patch('/api/events/updatelocation/' + eventId)
-                        .set('Cookie', 'jwt=' + token)
-                        .send({
-                            'location': {
-                                'lat': 43,
-                                'lng': 130
-                            }
-                        })
-                        .expect(200)
-                        .expect('Content-Type', /json/)
-                        .end(function(err, res) {
-                            if (err) {
-                                test.fail(err.message + ' ' + JSON.stringify(res));
-                            }
-                            else {
-                                done();
-                            }
-                        });
-                });
 
                 // Can get get inactive events, including one just updated
                 it('Get inactive events (GET /events/?status=inactive)', function(done) {
@@ -244,6 +245,37 @@ describe('Cognicity Server Testing Harness', function() {
                                 }
                                 // Updated event is found in output of inactive events
                                 test.value(output).is(true);
+                                done();
+                            }
+                        });
+                });
+
+                // Can get get inactive events, including one just updated
+                it('Get missions', function(done) {
+                    test.httpAgent(app)
+                        .get('/api/missions/1')
+                        .set('Cookie', 'jwt=' + token)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                            // Now http tests passed, we test specific properties of the response against known values
+                                let output = false;
+                                let lat, lng;
+                                for (let i = 0; i < res.body.result.objects.output.geometries.length; i++) {
+                                    if (res.body.result.objects.output.geometries[i].properties.id) {
+                                        output = true;
+                                        lat = res.body.result.objects.output.geometries[i].coordinates[1];
+                                        lng = res.body.result.objects.output.geometries[i].coordinates[0];
+                                    }
+                                }
+                                // Updated event is found in output of inactive events
+                                test.value(output).is(true);
+                                test.value(lat).is(43);
+                                test.value(lng).is(130); // also checks our change of location worked
                                 done();
                             }
                         });
