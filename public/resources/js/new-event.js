@@ -3,6 +3,16 @@
 //var newEventMap = L.map('newEventMap').setView([20, 110], 4);
 
 $('#newEventModal').on('hidden.bs.modal', function() {
+    // clear global vars
+    if (report_id_for_event) {
+        report_id_for_event = null;
+        // this was from a report, clear that row and refresh reports on map
+        $('#reports-table-row-'+report_id_for_event).remove();
+        getReports(mainMap, mapReports);
+    }
+    if (latlng) {
+        latlng=null;
+    }
     // clear previous entry
     $('#selectType').val('');
     $('#inputEventName').val('');
@@ -18,6 +28,8 @@ $('#newEventModal').on('hidden.bs.modal', function() {
     $('#inputSeverityScale').val('2');
     $('#inputSharepointLink').val('');
     $('#inputSecurity').val('');
+
+
 });
 
 // Add some base tiles
@@ -43,7 +55,7 @@ var NEoverlayMaps = {};
  var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
 */
 var marker;
-var latlng = null;
+
 /*
 newEventMap.on('click', function(e) {
     if(marker)
@@ -131,6 +143,11 @@ $(function(){
 					*/
                 }
             };
+
+            // add report id if creating from existing report
+            if (report_id_for_event) {
+                body['report_id'] = report_id_for_event;
+            }
             if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type === '') {
                 alert('ensure subtype(s) is/are selected');
             } else if (body.type==='') {
