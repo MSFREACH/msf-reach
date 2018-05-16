@@ -4,7 +4,7 @@ import { Router } from 'express';
 import errorHandler from 'api-error-handler';
 
 // Import validation dependencies
-import { celebrate as validate , Joi, errors } from 'celebrate';
+import celebrate from 'celebrate';
 
 // Get the current version
 import { version } from '../../package.json';
@@ -40,7 +40,7 @@ export default ({ config, db, logger }) => {
     api.use('/analytics',analytics({config,logger}));
 
     // Handle validation errors (wording of messages can be overridden using err.isJoi)
-    api.use(errors);
+    api.use(celebrate.errors());
 
     // Handle not found errors
     api.use((req, res) => {

@@ -8,7 +8,7 @@ import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../
 
 // Import validation dependencies
 
-import { celebrate as validate , Joi, errors } from 'celebrate';
+import { celebrate as validate , Joi  } from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();

@@ -8,7 +8,7 @@ import missions from './../missions/model';
 import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
-import { celebrate as validate, Joi, errors } from 'celebrate';
+import { celebrate as validate, Joi } from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();
@@ -56,6 +56,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
+                report_id: Joi.number().min(1),
                 created_at: Joi.date().iso().required(),
                 metadata: Joi.object().required(),
                 location: Joi.object().required().keys({
@@ -83,17 +84,16 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
-                metadata: Joi.object().required(),
-                location: Joi.object().keys({
-                    lat: Joi.number().min(-90).max(90),
-                    lng: Joi.number().min(-180).max(180)
-                }),
+                metadata: Joi.object().required()
             })
         }),
         (req, res, next) => {
             events(config, db, logger).updateEvent(req.params.id, req.body)
                 .then((data) => {
                     if (req.body.status === 'inactive') {
+                        // backfill location for compatibility
+                        console.log(data); // eslint-disable-line no-console
+                        req.body['location'] = {'lat': data.lat, 'lng': data.lng};
                         missions(config, db, logger).createMission(req.body)
                             .then((data) => handleGeoResponse(data, req, res, next))
                             .catch((err) => {
@@ -105,6 +105,32 @@ export default ({ config, db, logger }) => {
                     } else {
                         handleGeoResponse(data, req, res, next);
                     }
+                })
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // Update an event record's location in the database
+    api.patch('/updatelocation/:id',ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                location: Joi.object().required().keys({
+                    lat: Joi.number().min(-90).max(90).required(),
+                    lng: Joi.number().min(-180).max(180).required()
+                })
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).updateLocation(req.params.id, req.body)
+                .then((data) => {
+                    handleGeoResponse(data, req, res, next);
+
                 })
                 .catch((err) => {
                     /* istanbul ignore next */

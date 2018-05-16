@@ -12,7 +12,7 @@ import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../
 import BaseJoi from 'joi';
 import Extension from 'joi-date-extensions';
 const Joi = BaseJoi.extend(Extension);
-import { celebrate as validate , Joi2 , errors } from 'celebrate';
+import { celebrate as validate } from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();

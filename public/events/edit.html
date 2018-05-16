@@ -1087,8 +1087,24 @@ var vm = new Vue({
         Cookies.set(layersControlEvent.name,'off');
     });
 
-
-
+    eventMap.doubleClickZoom.disable();
+    eventMap.on('dblclick', function(dblclickEvent) {
+        latlng = dblclickEvent.latlng;
+        $.ajax({
+          type: "PATCH",
+          url: "/api/events/updatelocation/" + currentEventId,
+          data: JSON.stringify({location: {lat: latlng.lat, lng: latlng.lng}}),
+          contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+            setTimeout(function() {
+              window.location.reload(true);
+            }, 1000);
+        }).fail(function(err) {
+          if (err.responseText.includes('expired')) {
+            alert("session expired");
+          }
+        });
+    });
 
 
       setTimeout(function() {

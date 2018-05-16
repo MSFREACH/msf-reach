@@ -622,6 +622,7 @@
               <!--top level tabs-->
               <li class="active"><a href="#event" data-toggle="tab">EVENT STATUS</a></li>
               <li><a href="#contact" data-toggle="tab">CONTACTS</a></li>
+              <li><a href="#report" data-toggle="tab">REPORTS</a></li>
             </ul>
 
             <!--top level tab content-->
@@ -634,6 +635,29 @@
                         <li><a href="#event_missions" data-toggle="tab">MSF Past Responses</a></li>
                         <li><a href="#event_RSS" data-toggle="tab">RSS Feeds</a></li>
                     </ul>
+
+                    <!--event tab content-->
+                    <div class="tab-content msf-tab">
+                        <div id="event_monitoring" class="tab-pane tab-pane-box active">
+                          <div id="watchingEventProperties" class="list-group">
+                          </div>
+                        </div>
+                        <div id="event_ongoing" class="tab-pane tab-pane-box">
+                          <div id="ongoingEventProperties" class="list-group">
+                          </div>
+                        </div>
+                        <div id="event_missions" class="tab-pane tab-pane-box">
+                          <div class="form-group">
+                            <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
+                          </div>
+                          <div id="missionsContainer"></div>
+                        </div>
+                        <div id="event_RSS" class="tab-pane tab-pane-box">
+                          <div id="rssFeeds" class="list-group" style="margin-bottom:0px;">
+                          </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!--contact tab menu-->
@@ -670,34 +694,26 @@
                           <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
                         </div>
                       </div>
-
                     </div>
+                </div>
+
+                <!--reports tab menu-->
+                <div id="report" class="tab-pane">
+                  <ul class="nav nav-tabs" id="report_tabs">
+                      <li class="active"><a href="#report_unassigned" data-toggle="tab">Unassigned reports</a></li>
+                      <li><a href="/report/" target="_blank">Create new unassigned report</a></li>
+                  </ul>
+
+                  <!--reports tab content-->
+                  <div class="tab-content msf-tab active">
+                      <div id="report_unassigned" class="tab-pane tab-pane-box active">
+                        <div id="reportsContainer">
+                        </div>
+                      </div>
+                  </div>
 
                 </div>
              </div>
-
-          <!--event tab content-->
-          <div class="tab-content msf-tab">
-              <div id="event_monitoring" class="tab-pane tab-pane-box active">
-                <div id="watchingEventProperties" class="list-group">
-                </div>
-              </div>
-              <div id="event_ongoing" class="tab-pane tab-pane-box">
-                <div id="ongoingEventProperties" class="list-group">
-                </div>
-              </div>
-              <div id="event_missions" class="tab-pane tab-pane-box">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="missSearchTerm" name="" value="" placeholder="Term for searching name, region, severity or capacity ...">
-                </div>
-                <div id="missionsContainer"></div>
-              </div>
-              <div id="event_RSS" class="tab-pane tab-pane-box">
-                <div id="rssFeeds" class="list-group" style="margin-bottom:0px;">
-                </div>
-              </div>
-          </div>
-
 
 
 
