@@ -76,7 +76,9 @@ var getContacts = function(term,type){
     var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
     var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
     var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
-    url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+    if (!term) {
+        url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+    }
     if (type) {
         url=url+'&type='+type;
     }
