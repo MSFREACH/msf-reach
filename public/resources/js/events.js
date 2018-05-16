@@ -590,7 +590,7 @@ var mapReports = function(reports,mapForReports){
     }
     layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
 
-    if (points.length > 0){
+    if (points.length > 1){
         mapForReports.fitBounds(points, {padding: [200,200]});
     }
 
