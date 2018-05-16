@@ -142,5 +142,64 @@ export default (config, db, logger) => ({
             .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, uuid: data.uuid, the_geom:data.the_geom }))
             .catch((err) => reject(err));
+    }),
+
+    /**
+   * Update an event location
+   * @param {integer} id ID of event
+   * @param {object} body Body of request with event location update
+   */
+    updateLocation: (id, body) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+        			SET the_geom = ST_SetSRID(ST_Point($1,$2),4326),
+              updated_at = now(),
+        			metadata = metadata || $3
+        			WHERE id = $4
+        			RETURNING type, created_at, updated_at, report_key, metadata, the_geom`;
+
+
+        // Execute
+        logger.debug(query);
+
+        if (config.GOOGLE_API_KEY) {
+            request('https://maps.googleapis.com/maps/api/geocode/json?latlng='+String(body.location.lat)+','+String(body.location.lng)+'&key='+config.GOOGLE_API_KEY, function (error, response, response_body) {
+                let country = 'unknown';
+                if (error) {
+                    logger.error('err ' + error );
+                    logger.error('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                    country = 'unknown';
+                } else {
+                    country = 'unknown';
+                    let geocoded = JSON.parse(response_body);
+                    if (geocoded && geocoded.results && geocoded.results[0] && geocoded.results[0].address_components) {
+                        for (let i = 0; i < geocoded.results[0].address_components.length; i++ ) {
+                            if (geocoded.results[0].address_components[i].types.indexOf('country') > -1) {
+                                country=geocoded.results[0].address_components[i].long_name;
+                            }
+                        }
+                    }
+                }
+                // Setup values
+                let values = [ body.location.lng, body.location.lat, {'country':country}, id ];
+
+                db.one(query, values).timeout(config.PGTIMEOUT).then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
+                    .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+                    .catch((err) => reject(err));
+
+
+            });
+        } else {
+
+            // Setup values
+            let values = [ body.location.lng, body.location.lat, {'country':'unknown'}, id ];
+
+            db.one(query, values).timeout(config.PGTIMEOUT).then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
+                .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+                .catch((err) => reject(err));
+
+        }
+
     })
 });

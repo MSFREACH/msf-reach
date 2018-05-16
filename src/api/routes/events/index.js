@@ -84,11 +84,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
-                metadata: Joi.object().required(),
-                location: Joi.object().keys({
-                    lat: Joi.number().min(-90).max(90),
-                    lng: Joi.number().min(-180).max(180)
-                }),
+                metadata: Joi.object().required()
             })
         }),
         (req, res, next) => {
@@ -106,6 +102,32 @@ export default ({ config, db, logger }) => {
                     } else {
                         handleGeoResponse(data, req, res, next);
                     }
+                })
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // Update an event record's location in the database
+    api.patch('/updatelocation/:id',ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                location: Joi.object().required().keys({
+                    lat: Joi.number().min(-90).max(90).required(),
+                    lng: Joi.number().min(-180).max(180).required()
+                })
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).updateLocation(req.params.id, req.body)
+                .then((data) => {
+                    handleGeoResponse(data, req, res, next);
+
                 })
                 .catch((err) => {
                     /* istanbul ignore next */
