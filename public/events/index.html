@@ -581,18 +581,12 @@
                   <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
                   <tr><td>Last updated at</td><td> {{ event.updated_at.split('T')[0] }}</td></tr>
 
-
-
-
                   <tr><td>Event link</td><td><a id='eventLink'  :href='eventLink' target='_blank'>{{ eventLink }}</a></td><td><button class='btn btn-primary' data-clipboard-target='#eventLink'>Copy link</button></td></tr>
 
                   <tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td>
-                    <td><a style="display:none;" id='reportLink' :href='eventReportLink' target='_blank'> {{ eventReportLink }} </a><button class='btn btn-primary' :data-clipboard-text='eventReportLink'>Copy link</button></td></tr>
+                  <td><a style="display:none;" id='reportLink' :href='eventReportLink' target='_blank'> {{ eventReportLink }} </a><button class='btn btn-primary' :data-clipboard-text='eventReportLink'>Copy link</button></td></tr>
 
-
-                    <tr v-if='event.metadata.user'><td>Creator</td><td> {{ event.metadata.user }}</td></tr>
-                    <tr v-if='event.metadata.user_edit'><td>Edits</td><td>{{ event.metadata.user_edit }}</td></tr>
-                  </table>
+                </table>
 
 
               </div>
