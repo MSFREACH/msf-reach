@@ -70,6 +70,25 @@ var PTWCHazardsLayer;
 
 var MAX_RADIUS= 15;
 
+var hazardList = [];
+
+var filterHazards = function(res) { 
+    for (var i = res.features.length-1; i >= 0; i--) {
+        // going backwards means the element we splice out won't change the index of other elements we need to splice out :)
+
+        for (var j = 0; j < hazardList.length; j++) {
+            if (turf.distance(res.features[i].geometry.coordinates, hazardList[j].geometry.coordinates) < 5) {
+                hazardList.push(res.features[i]);
+                res.features.splice(i,1);
+            } else {
+                hazardList.push(res.features[i]);
+            }
+        }
+
+    }
+    return res;
+};
+
 // Set cookies if not set
 if (typeof(Cookies.get('- access')) === 'undefined') {
     Cookies.set('- access','on'); // default
@@ -149,7 +168,7 @@ function openReportPopup(id) {
 **/
 var getFeeds = function(url, callback) {
     $.getJSON(url, function( data ){
-        callback(data.result);
+        callback(filterHazards(data.result));
     }).fail(function(err) {
         if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
             alert('session expired');
