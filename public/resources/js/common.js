@@ -83,8 +83,8 @@ var filterHazards = function(res) {
             }
         }
     }
-    for (var i = 0; i < res.features.length; i++) {
-        hazardList.push(res.features[i]);
+    for (var k = 0; k < res.features.length; k++) {
+        hazardList.push(res.features[k]);
     }
     return res;
 };
