@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+	  xmlns:georss="http://www.georss.org/georss">
+	<title>World Natural Hazards Website | Natural Disaster Management | Disaster Agency Hawaii - PDC</title>
+    <link href="http://pdc.org/" rel="self" />
+	<updated>2018-05-20T10:23:14-10:00</updated>
+	<author>
+		<name>PDC</name>
+		<uri>http://pdc.org/</uri>
+	</author>
+	<id>tag:pdc.org,2013:1</id>
+        <entry>
+		<title>Volcano - Langila, Papua New Guinea</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=252010" />
+		<id>tag:pdc.org,2013:1.9581</id>
+		<updated>2018-05-20T10:23:14-10:00</updated>
+		<summary>VOLCANO (WATCH)</summary>
+		<georss:point>-5.6 151.6</georss:point>
+	</entry>
+	    <entry>
+		<title>Earthquake - 5.3 - 38km E of Pamandzi, Mayotte</title>
+		<link href="http://snc.pdc.org/PRODUCTION/419426f3-33a1-453a-b946-91931d49965a/index.html" />
+		<id>tag:pdc.org,2013:1.80389</id>
+		<updated>2018-05-20T09:44:36-10:00</updated>
+		<summary>EARTHQUAKE (ADVISORY)</summary>
+		<georss:point>-12.7770004 45.6338005</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Sabancaya, Peru</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=354006" />
+		<id>tag:pdc.org,2013:1.31291</id>
+		<updated>2018-05-20T09:29:39-10:00</updated>
+		<summary>VOLCANO (WARNING)</summary>
+		<georss:point>-15.7830000 -71.8330002</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Fuego, Guatemala</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=342090" />
+		<id>tag:pdc.org,2013:1.9931</id>
+		<updated>2018-05-20T09:01:16-10:00</updated>
+		<summary>VOLCANO (ADVISORY)</summary>
+		<georss:point>14.4670000 -90.8669968</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Cleveland, United States</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=311240" />
+		<id>tag:pdc.org,2013:1.9766</id>
+		<updated>2018-05-20T08:09:20-10:00</updated>
+		<summary>VOLCANO (WATCH)</summary>
+		<georss:point>52.8330002 169.9499969</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Dukono, Indonesia</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=268010" />
+		<id>tag:pdc.org,2013:1.9481</id>
+		<updated>2018-05-20T08:08:09-10:00</updated>
+		<summary>VOLCANO (WATCH)</summary>
+		<georss:point>1.6830000 127.8830032</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Kilauea, United States</title>
+		<link href="http://snc.pdc.org/PRODUCTION/634219ff-d812-4600-882d-dcfc2cd02bc6/index.html" />
+		<id>tag:pdc.org,2013:1.9482</id>
+		<updated>2018-05-20T06:55:14-10:00</updated>
+		<summary>VOLCANO (WARNING)</summary>
+		<georss:point>19.4169998 -155.2669983</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Reventador, Ecuador</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=352010" />
+		<id>tag:pdc.org,2013:1.9484</id>
+		<updated>2018-05-20T06:19:13-10:00</updated>
+		<summary>VOLCANO (ADVISORY)</summary>
+		<georss:point>-0.0830000 -77.6500015</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Sinabung, Indonesia</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=261080" />
+		<id>tag:pdc.org,2013:1.15157</id>
+		<updated>2018-05-20T05:07:17-10:00</updated>
+		<summary>VOLCANO (WATCH)</summary>
+		<georss:point>3.1670001 98.4000015</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Aira, Japan</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=282080" />
+		<id>tag:pdc.org,2013:1.38451</id>
+		<updated>2018-05-20T02:23:12-10:00</updated>
+		<summary>VOLCANO (ADVISORY)</summary>
+		<georss:point>31.6000004 130.6499939</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Sheveluch, Russia</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=300270" />
+		<id>tag:pdc.org,2013:1.43074</id>
+		<updated>2018-05-19T21:40:44-10:00</updated>
+		<summary>VOLCANO (WARNING)</summary>
+		<georss:point>56.6500015 161.3670044</georss:point>
+	</entry>
+	    <entry>
+		<title>Wildfire - SE of Magdagachi, Amur - Russia</title>
+		<link href="http://snc.pdc.org/PRODUCTION/a5041493-e492-49fa-a1ba-5838d0f5ce38/index.html" />
+		<id>tag:pdc.org,2013:1.78714</id>
+		<updated>2018-05-19T17:56:43-10:00</updated>
+		<summary>WILDFIRE (WATCH)</summary>
+		<georss:point>52.8446121 128.9978027</georss:point>
+	</entry>
+	    <entry>
+		<title>Wildfire - NW of Katherine, Northern Territory - Australia</title>
+		<link href="http://snc.pdc.org/PRODUCTION/04862a91-b513-4431-aba1-2a60bb4ef981/index.html" />
+		<id>tag:pdc.org,2013:1.80325</id>
+		<updated>2018-05-19T17:53:51-10:00</updated>
+		<summary>WILDFIRE (ADVISORY)</summary>
+		<georss:point>-13.7388067 132.0424042</georss:point>
+	</entry>
+	    <entry>
+		<title>Earthquake - 5.0 - 145km E of Kimbe, Papua New Guinea</title>
+		<link href="http://snc.pdc.org/PRODUCTION/9a420b39-79b9-4630-a038-631da580b887/index.html" />
+		<id>tag:pdc.org,2013:1.80386</id>
+		<updated>2018-05-19T17:23:35-10:00</updated>
+		<summary>EARTHQUAKE (ADVISORY)</summary>
+		<georss:point>-5.7758999 151.4398041</georss:point>
+	</entry>
+	    <entry>
+		<title>Earthquake - 5.0 - 6km SW of Volcano, Hawaii</title>
+		<link href="http://snc.pdc.org/PRODUCTION/f5ef9382-7734-453d-9540-423c7f81a844/index.html" />
+		<id>tag:pdc.org,2013:1.80377</id>
+		<updated>2018-05-19T16:17:33-10:00</updated>
+		<summary>EARTHQUAKE (ADVISORY)</summary>
+		<georss:point>19.4050007 -155.2810059</georss:point>
+	</entry>
+	    <entry>
+		<title>Earthquake - 5.0 - 3km W of Volcano, Hawaii</title>
+		<link href="http://snc.pdc.org/PRODUCTION/59b3a7e4-1010-4234-9d39-dd7eec70e6aa/index.html" />
+		<id>tag:pdc.org,2013:1.80376</id>
+		<updated>2018-05-19T16:17:33-10:00</updated>
+		<summary>EARTHQUAKE (ADVISORY)</summary>
+		<georss:point>19.4050007 -155.2810059</georss:point>
+	</entry>
+	    <entry>
+		<title>Earthquake - 5.5 - 120km ENE of `Ohonua, Tonga</title>
+		<link href="http://snc.pdc.org/PRODUCTION/51529698-cd38-472d-8381-a9367facce59/index.html" />
+		<id>tag:pdc.org,2013:1.80384</id>
+		<updated>2018-05-19T15:23:41-10:00</updated>
+		<summary>EARTHQUAKE (WATCH)</summary>
+		<georss:point>-21.0205002 -173.8412018</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Agung, Indonesia</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=264020" />
+		<id>tag:pdc.org,2013:1.73430</id>
+		<updated>2018-05-19T05:45:41-10:00</updated>
+		<summary>VOLCANO (WATCH)</summary>
+		<georss:point>-8.3500004 115.5000000</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Puerto Valdivia and Taraza Municipalities, Colombia</title>
+		<link href="http://erccportal.jrc.ec.europa.eu/ECHO-Flash" />
+		<id>tag:pdc.org,2013:1.80341</id>
+		<updated>2018-05-18T17:30:18-10:00</updated>
+		<summary>FLOOD (INFORMATION)</summary>
+		<georss:point>7.2911901 -75.3921432</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - PITON DE LA FOURNAISE</title>
+		<link href="http://snc.pdc.org/PRODUCTION/5bd6f753-1ec1-49ae-ac12-9ee37b3e8ff7/index.html" />
+		<id>tag:pdc.org,2013:1.78829</id>
+		<updated>2018-05-18T06:47:14-10:00</updated>
+		<summary>VOLCANO (WARNING)</summary>
+		<georss:point>-21.2329998 55.7000008</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - South Sudan</title>
+		<link href="http://www.gdacs.org/report.aspx?eventid=1000195&amp;episodeid=1&amp;eventtype=FL" />
+		<id>tag:pdc.org,2013:1.80340</id>
+		<updated>2018-05-18T03:51:25-10:00</updated>
+		<summary>FLOOD (INFORMATION)</summary>
+		<georss:point>7.0031600 30.3836803</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Brazil </title>
+		<link href="https://www.paho.org/disasters/index.php?option=com_content&amp;view=article&amp;id=3698:natural-disasters-monitoring-may-17-2018&amp;Itemid=1242&amp;lang=en" />
+		<id>tag:pdc.org,2013:1.80339</id>
+		<updated>2018-05-18T03:50:57-10:00</updated>
+		<summary>FLOOD (INFORMATION)</summary>
+		<georss:point>-12.2215300 -48.0147591</georss:point>
+	</entry>
+	    <entry>
+		<title>Storms - El Salvador</title>
+		<link href="https://www.redhum.org/documento/2609694" />
+		<id>tag:pdc.org,2013:1.80338</id>
+		<updated>2018-05-18T03:46:27-10:00</updated>
+		<summary>STORM (WARNING)</summary>
+		<georss:point>13.5883999 -88.7294464</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Honduras</title>
+		<link href="https://www.redhum.org/documento/2609699" />
+		<id>tag:pdc.org,2013:1.80337</id>
+		<updated>2018-05-18T03:46:00-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>14.7600803 -86.9496689</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Central Japan</title>
+		<link href="http://www.jma.go.jp/en/warn/index.html" />
+		<id>tag:pdc.org,2013:1.80336</id>
+		<updated>2018-05-18T03:40:16-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>39.0755501 140.6321259</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Sweden</title>
+		<link href="http://www.meteoalarm.eu/en_UK/0/0/SE-Sweden.html" />
+		<id>tag:pdc.org,2013:1.79917</id>
+		<updated>2018-05-18T03:21:52-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>64.0675735 16.3321609</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Southern Norway</title>
+		<link href="http://www.meteoalarm.eu/en_UK/0/0/NO-Norway.html" />
+		<id>tag:pdc.org,2013:1.80068</id>
+		<updated>2018-05-18T03:21:42-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>60.7969017 9.4327497</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Kashechewan First Nation, Ontario, Canada</title>
+		<link href="https://www.ontario.ca/page/emergency-information" />
+		<id>tag:pdc.org,2013:1.79668</id>
+		<updated>2018-05-18T03:15:09-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>52.2621689 -81.5578613</georss:point>
+	</entry>
+	    <entry>
+		<title>Storms - India</title>
+		<link href="http://www.ndma.gov.in/en/alerts/1794-09-april-2018-at-2130-hrs.html" />
+		<id>tag:pdc.org,2013:1.79070</id>
+		<updated>2018-05-18T03:14:22-10:00</updated>
+		<summary>STORM (WARNING)</summary>
+		<georss:point>23.5945606 79.8770828</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Russia</title>
+		<link href="http://en.mchs.ru/summary/digest/item/33640706/" />
+		<id>tag:pdc.org,2013:1.79597</id>
+		<updated>2018-05-18T03:00:54-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>62.9004097 99.6903229</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Western Montana, United States</title>
+		<link href="http://floodlist.com/america/usa/montana-snowmelt-flooding-april-2018" />
+		<id>tag:pdc.org,2013:1.79484</id>
+		<updated>2018-05-18T02:39:46-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>47.4320717 -113.7569504</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Northeast and Mid-Atlantic, United States</title>
+		<link href="http://floodlist.com/america/usa/usa-storms-north-east-flash-floods-maryland-may-2018" />
+		<id>tag:pdc.org,2013:1.80282</id>
+		<updated>2018-05-18T02:39:34-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>39.7159500 -75.7112885</georss:point>
+	</entry>
+	    <entry>
+		<title>Storms - China</title>
+		<link href="http://www.cma.gov.cn/en2014/weather/Warnings/" />
+		<id>tag:pdc.org,2013:1.80243</id>
+		<updated>2018-05-18T02:35:15-10:00</updated>
+		<summary>STORM (WARNING)</summary>
+		<georss:point>34.2984009 104.0470123</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Popocatepetl, Mexico</title>
+		<link href="http://volcano.si.edu/volcano.cfm?vn=341090" />
+		<id>tag:pdc.org,2013:1.41988</id>
+		<updated>2018-05-17T18:10:57-10:00</updated>
+		<summary>VOLCANO (ADVISORY)</summary>
+		<georss:point>19.0170002 -98.6169968</georss:point>
+	</entry>
+	    <entry>
+		<title>Storms - Peru</title>
+		<link href="http://www.senamhi.gob.pe/?p=avisos-vigentes&amp;a=2018&amp;b=049&amp;c=022&amp;d=SENA#tabs-0502018" />
+		<id>tag:pdc.org,2013:1.80308</id>
+		<updated>2018-05-17T02:06:54-10:00</updated>
+		<summary>STORM (WARNING)</summary>
+		<georss:point>-8.4393797 -75.2059174</georss:point>
+	</entry>
+	    <entry>
+		<title>Flood - Banyuwangi District, Indonesia</title>
+		<link href="http://adinet.ahacentre.org/reports/view/1157" />
+		<id>tag:pdc.org,2013:1.80307</id>
+		<updated>2018-05-17T02:05:53-10:00</updated>
+		<summary>FLOOD (INFORMATION)</summary>
+		<georss:point>-8.3327799 114.2214203</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Burundi</title>
+		<link href="http://floodlist.com/africa/burundi-butererefloods-april-may-2018-in" />
+		<id>tag:pdc.org,2013:1.79822</id>
+		<updated>2018-05-17T01:42:10-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>-3.3927901 29.9706993</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Rwanda</title>
+		<link href="http://floodlist.com/africa/rwanda-floods-landslides-april-2018" />
+		<id>tag:pdc.org,2013:1.79599</id>
+		<updated>2018-05-17T01:41:58-10:00</updated>
+		<summary>FLOOD (INFORMATION)</summary>
+		<georss:point>-1.9959600 29.9106503</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Kenya</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/africa_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.79123</id>
+		<updated>2018-05-17T01:41:46-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>0.3849200 37.9532585</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Galgaduud Region, Somalia</title>
+		<link href="http://www.glidenumber.net/glide/public/search/details.jsp?glide=21050&amp;record=3&amp;last=6512" />
+		<id>tag:pdc.org,2013:1.79602</id>
+		<updated>2018-05-17T01:41:36-10:00</updated>
+		<summary>FLOOD (INFORMATION)</summary>
+		<georss:point>4.8813701 46.7226906</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Dar Es Salaam, Tanzania</title>
+		<link href="http://floodlist.com/africa/tanzania-floods-dar-es-salaam-april-2018" />
+		<id>tag:pdc.org,2013:1.79414</id>
+		<updated>2018-05-17T01:41:21-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>-6.7695999 39.2542801</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Guinea/Sierra Leone</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/africa_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.80096</id>
+		<updated>2018-05-17T01:40:18-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>9.6119804 -10.8919601</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Southern Gulf of Guinea</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/africa_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.79122</id>
+		<updated>2018-05-17T01:38:40-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>7.6569500 1.5665400</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Somalia, Southeast Ethiopia, and Northeast Kenya</title>
+		<link href="http://erccportal.jrc.ec.europa.eu/getdailymap/docId/2398" />
+		<id>tag:pdc.org,2013:1.77209</id>
+		<updated>2018-05-17T01:38:27-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>4.3111501 41.8693619</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Northern Mozambique</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/africa_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.79121</id>
+		<updated>2018-05-17T01:38:16-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>-15.1247702 39.5792313</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Northwestern Angola</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/africa_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.77173</id>
+		<updated>2018-05-17T01:38:04-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>-8.6783800 15.1456404</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Southwestern Madagascar</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/africa_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.76789</id>
+		<updated>2018-05-17T01:36:50-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>-21.4629192 44.7208405</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Southern Africa</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/africa_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.76788</id>
+		<updated>2018-05-17T01:36:32-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>-22.9681396 27.8458405</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Cape Town, South Africa</title>
+		<link href="http://news.trust.org/item/20180213171154-qfzxi/" />
+		<id>tag:pdc.org,2013:1.77369</id>
+		<updated>2018-05-17T01:36:20-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>-33.9148483 18.4470901</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Afghanistan/Tajikistan</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/AFGHANISTAN/casia_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.76957</id>
+		<updated>2018-05-17T01:34:28-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>37.0495682 68.6547928</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Afghanistan</title>
+		<link href="http://floodlist.com/asia/afghanistan-floods-may-2018" />
+		<id>tag:pdc.org,2013:1.80281</id>
+		<updated>2018-05-17T01:34:06-10:00</updated>
+		<summary>FLOOD (INFORMATION)</summary>
+		<georss:point>34.0438919 65.3751373</georss:point>
+	</entry>
+	    <entry>
+		<title>Floods - Southern Guatemala</title>
+		<link href="http://www.cpc.ncep.noaa.gov/products/fews/central_america/central_america_hazard.pdf" />
+		<id>tag:pdc.org,2013:1.80093</id>
+		<updated>2018-05-17T01:28:17-10:00</updated>
+		<summary>FLOOD (WARNING)</summary>
+		<georss:point>14.1263103 -90.2462082</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Manaro Voui, Ambae, Vanuatu</title>
+		<link href="http://www.vmgd.gov.vu/vmgd/index.php/geohazards/volcano" />
+		<id>tag:pdc.org,2013:1.73584</id>
+		<updated>2018-05-15T02:13:22-10:00</updated>
+		<summary>VOLCANO (WARNING)</summary>
+		<georss:point>-15.3844500 167.8253937</georss:point>
+	</entry>
+	    <entry>
+		<title>Lassa Fever - Nigeria</title>
+		<link href="http://snc.pdc.org/PRODUCTION/e1b588e5-0c4e-42fe-b892-954a48f39979/index.html" />
+		<id>tag:pdc.org,2013:1.77556</id>
+		<updated>2018-05-14T08:25:47-10:00</updated>
+		<summary>BIOMEDICAL (INFORMATION)</summary>
+		<georss:point>6.6693501 5.8643398</georss:point>
+	</entry>
+	    <entry>
+		<title>Volcano - Mayon, Philippines</title>
+		<link href="http://snc.pdc.org/PRODUCTION/9e8e53ec-5d97-4fbc-8bd8-05753c0cb359/index.html" />
+		<id>tag:pdc.org,2013:1.10114</id>
+		<updated>2018-04-30T11:04:40-10:00</updated>
+		<summary>VOLCANO (ADVISORY)</summary>
+		<georss:point>13.2500000 123.6829987</georss:point>
+	</entry>
+	    <entry>
+		<title>Drought - Southern Plains, United States</title>
+		<link href="http://droughtmonitor.unl.edu/" />
+		<id>tag:pdc.org,2013:1.76745</id>
+		<updated>2018-03-12T09:56:00-10:00</updated>
+		<summary>DROUGHT (WARNING)</summary>
+		<georss:point>36.9062996 -103.1111908</georss:point>
+	</entry>
+	    <entry>
+		<title>Dengue - Western Pacific</title>
+		<link href="http://www.wpro.who.int/emerging_diseases/dengue_biweekly_20151020.pdf?ua=1" />
+		<id>tag:pdc.org,2013:1.50429</id>
+		<updated>2018-02-20T15:41:19-10:00</updated>
+		<summary>BIOMEDICAL (ADVISORY)</summary>
+		<georss:point>13.7851295 121.9766998</georss:point>
+	</entry>
+	    <entry>
+		<title>Cholera - Yemen/Somalia</title>
+		<link href="http://reliefweb.int/report/yemen/unicef-supports-health-centres-yemen-respond-cholera-outbreak" />
+		<id>tag:pdc.org,2013:1.63035</id>
+		<updated>2018-02-08T10:36:14-10:00</updated>
+		<summary>BIOMEDICAL (INFORMATION)</summary>
+		<georss:point>15.3747396 44.1964989</georss:point>
+	</entry>
+	    <entry>
+		<title>Middle East Respiratory Syndrome Coronavirus (MERS-CoV)  - Arabian Peninsula</title>
+		<link href="http://www.who.int/csr/don/13-november-2015-mers-saudi-arabia/en/" />
+		<id>tag:pdc.org,2013:1.42945</id>
+		<updated>2017-11-07T08:53:32-10:00</updated>
+		<summary>BIOMEDICAL (WATCH)</summary>
+		<georss:point>20.1384697 46.7578125</georss:point>
+	</entry>
+	    <entry>
+		<title>Dengue - Americas</title>
+		<link href="http://bit.ly/1iVGSkD" />
+		<id>tag:pdc.org,2013:1.49072</id>
+		<updated>2017-08-28T08:30:15-10:00</updated>
+		<summary>BIOMEDICAL (ADVISORY)</summary>
+		<georss:point>21.7088509 -71.6793137</georss:point>
+	</entry>
+	    <entry>
+		<title>Zika Virus - Americas</title>
+		<link href="http://www.pdc.org/event-dashboard/Zika_Virus/" />
+		<id>tag:pdc.org,2013:1.55415</id>
+		<updated>2017-05-15T10:54:27-10:00</updated>
+		<summary>BIOMEDICAL (ADVISORY)</summary>
+		<georss:point>17.8984795 -62.8319588</georss:point>
+	</entry>
+	    <entry>
+		<title>Cholera - Haiti</title>
+		<link href="http://snc.pdc.org/PRODUCTION/5bfd4ac7-b269-41f8-b930-9e08bc0d2aa2/index.html" />
+		<id>tag:pdc.org,2013:1.62966</id>
+		<updated>2016-12-08T11:39:18-10:00</updated>
+		<summary>BIOMEDICAL (WATCH)</summary>
+		<georss:point>18.6540508 -72.1691895</georss:point>
+	</entry>
+	</feed>

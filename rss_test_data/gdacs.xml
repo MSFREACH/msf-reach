@@ -1,0 +1,1792 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:asgard="http://asgard.jrc.it" xmlns:gdacs="http://www.gdacs.org" xmlns:glide="http://glidenumber.net" xmlns:georss="http://www.georss.org/georss" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GDACS RSS information</title>
+    <link>http://www.gdacs.org/</link>
+    <description>Near real-time alerts about natural disaster with a potential humanitarian impact</description>
+    <managingEditor>stefano.paris@ext.ec.europa.eu</managingEditor>
+    <!--Records number 11-->
+    <!--Start 5/20/2018 11:15:05 PM-->
+    <!--=Start 5/20/2018 11:15:05 PM-->
+    <webMaster>stefano.paris@ext.ec.europa.eu</webMaster>
+    <pubDate>Sun, 20 May 2018 21:15:05 GMT</pubDate>
+    <atom:link href="http://www.gdacs.org/xml/rss_homepage.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Green earthquake alert (Magnitude 5.5M, Depth:10km) in Tonga 20/05/2018 00:42 UTC, Few people within 100km.</title>
+      <description>On 5/20/2018 12:42:14 AM, an earthquake occurred in Tonga potentially affecting Few people within 100km. The earthquake had Magnitude 5.5M, Depth:10km.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211242_1.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=EQ&amp;eventid=1143588</link>
+      <pubDate>Sun, 20 May 2018 00:42:14 GMT</pubDate>
+      <gdacs:fromdate>Sun, 20 May 2018 00:42:14 GMT</gdacs:fromdate>
+      <gdacs:todate>Sun, 20 May 2018 00:42:14 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>EQ1</dc:subject>
+      <guid isPermaLink="false">EQ1143588</guid>
+      <geo:Point>
+        <geo:lat>-21.0205</geo:lat>
+        <geo:long>-173.8412</geo:long>
+      </geo:Point>
+      <georss:point>-21.0205 -173.8412</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=EQ&amp;eventid=1143588</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>EQ</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1143588</gdacs:eventid>
+      <gdacs:episodeid>1211242</gdacs:episodeid>
+      <gdacs:calculationtype>earthquakeonly</gdacs:calculationtype>
+      <gdacs:severity unit="M" value="5.5">Magnitude 5.5M, Depth:10km</gdacs:severity>
+      <gdacs:population unit="Population in 100km" value="61">Few people within 100km</gdacs:population>
+      <gdacs:vulnerability value="1.9484393755003" />
+      <gdacs:iso3>TON</gdacs:iso3>
+      <gdacs:country>Tonga</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="overviewmap" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211242_2.png" type="image">
+          <gdacs:title>Population density map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged. Population data from LandScan 2008.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="UNOSATmaps_country" version="0" source="" url="http://www.unitar.org/unosat/maps/TON" type="html">
+          <gdacs:title>UNOSAT maps by country</gdacs:title>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_event_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=EARTHQUAKE&amp;eventid=1143588&amp;episodeid=1211242&amp;coordinate=-173.8412,-21.0205" type="map">
+          <gdacs:title>Interactive earthquake event map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_pager" version="0" source="NEIC" url="http://www.gdacs.org/datareport/resources/EQ/1143588/1143588_1211242_alertfatal_small.png" type="image">
+          <gdacs:title>Estimated casualties (PAGER)</gdacs:title>
+          <gdacs:description>USGS estimates the number of casualties for each earthquake for the Prompt Assessment of Global Earthquakes for Response (PAGER) product. The graph shows the current fatalities estimate.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-174\eq_-17385_-02100.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="http://www.reliefweb.int/updates?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4628" type="rss">
+          <gdacs:title>OCHA Situation Reports for Earthquakes</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="geooffice" version="0" source="INGV" url="http://cnt.rm.ingv.it/" type="link">
+          <gdacs:title>Istituto Nazionale di Geofisica e Vulcanologia</gdacs:title>
+          <gdacs:description>Latest earthquakes recorded by the Italian National Earthquake Centre</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211242_1.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>The Impact thumbanil image</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="populationmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211242_4.png" type="image">
+          <gdacs:title>Population map close up</gdacs:title>
+          <gdacs:description>The impact image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml_old" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-173/eq_-17385_-02100.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="gts_message_file" version="0" source="JRC" url="http://www.gdacs.org/gis/gts_message/EQ/1143588/" type="txt">
+          <gdacs:title>GTS Message Folder</gdacs:title>
+          <gdacs:description>GTS Message generate for episode</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1143588&amp;eventtype=EQ" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1143588&amp;eventtype=EQ" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="metoffice" version="0" source="WMO" url="http://www.met.gov.to/" type="link">
+          <gdacs:title>Tonga Meteorological Service</gdacs:title>
+          <gdacs:description>Official website of meteorological institute</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143588/rss_1143588.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143588/geojson_1143588_1211242.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143588/geojson_1143588_1211242.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url=" http://139.191.244.117/GNASystem/isochoice_iframe.aspx?iso3=TON&amp;workflow=360&amp;workflowgroup=INFORM2018" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to informa data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="alertbar" version="0" source="JRC" url="http://www.gdacs.org/datareport/resources/EQ/1143588/alertbar_1143588_1211242.jpg" type="image">
+          <gdacs:title>Image having the alertbar</gdacs:title>
+          <gdacs:acknowledgements>JRC</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143588/rss_1143588_1211242.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers>
+        <gdacs:identifier id="eqcalculationpath" src="JRC">-174\eq_-17385_-02100.xml</gdacs:identifier>
+        <gdacs:identifier id="gdpcapita" src="JRC">1579.4228516</gdacs:identifier>
+      </gdacs:identifiers>
+    </item>
+    <item>
+      <title>Green earthquake alert (Magnitude 6.2M, Depth:10.62km) in South Of Kermadec Islands 18/05/2018 01:45 UTC, No people within 100km.</title>
+      <description>On 5/18/2018 1:45:31 AM, an earthquake occurred in South Of Kermadec Islands potentially affecting No people within 100km. The earthquake had Magnitude 6.2M, Depth:10.62km.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211018_1.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=EQ&amp;eventid=1143440</link>
+      <pubDate>Fri, 18 May 2018 01:45:31 GMT</pubDate>
+      <gdacs:fromdate>Fri, 18 May 2018 01:45:31 GMT</gdacs:fromdate>
+      <gdacs:todate>Fri, 18 May 2018 01:45:31 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>EQ1</dc:subject>
+      <guid isPermaLink="false">EQ1143440</guid>
+      <geo:Point>
+        <geo:lat>-34.551</geo:lat>
+        <geo:long>-178.4162</geo:long>
+      </geo:Point>
+      <georss:point>-34.551 -178.4162</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=EQ&amp;eventid=1143440</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>EQ</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1143440</gdacs:eventid>
+      <gdacs:episodeid>1211018</gdacs:episodeid>
+      <gdacs:calculationtype>tsunami</gdacs:calculationtype>
+      <gdacs:severity unit="M" value="6.2">Magnitude 6.2M, Depth:10.62km</gdacs:severity>
+      <gdacs:population unit="Population in 100km" value="0">No people within 100km</gdacs:population>
+      <gdacs:vulnerability value="1.3145341380124" />
+      <gdacs:iso3>NZL</gdacs:iso3>
+      <gdacs:country>South Of Kermadec Islands</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="overviewmap" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211018_2.png" type="image">
+          <gdacs:title>Population density map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged. Population data from LandScan 2008.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="UNOSATmaps_country" version="0" source="" url="http://www.unitar.org/unosat/maps/NZL" type="html">
+          <gdacs:title>UNOSAT maps by country</gdacs:title>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_event_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=EARTHQUAKE&amp;eventid=1143440&amp;episodeid=1211018&amp;coordinate=-178.4162,-34.551" type="map">
+          <gdacs:title>Interactive earthquake event map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_pager" version="0" source="NEIC" url="http://www.gdacs.org/datareport/resources/EQ/1143440/1143440_1211018_alertfatal_small.png" type="image">
+          <gdacs:title>Estimated casualties (PAGER)</gdacs:title>
+          <gdacs:description>USGS estimates the number of casualties for each earthquake for the Prompt Assessment of Global Earthquakes for Response (PAGER) product. The graph shows the current fatalities estimate.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-178\eq_-17840_-03455.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="http://www.reliefweb.int/updates?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4628" type="rss">
+          <gdacs:title>OCHA Situation Reports for Earthquakes</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_report" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e7qq#summary" type="html">
+          <gdacs:title>USGS earthquake report</gdacs:title>
+          <gdacs:description>Report of the USGS National Earthquake Information Center</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="geooffice" version="0" source="INGV" url="http://cnt.rm.ingv.it/" type="link">
+          <gdacs:title>Istituto Nazionale di Geofisica e Vulcanologia</gdacs:title>
+          <gdacs:description>Latest earthquakes recorded by the Italian National Earthquake Centre</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211018_1.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>The Impact thumbanil image</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="populationmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1211018_4.png" type="image">
+          <gdacs:title>Population map close up</gdacs:title>
+          <gdacs:description>The impact image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="tsunami_wps_directory" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingTsunami/TsunamiSurge/JETS_System/2018/05/29474" type="data">
+          <gdacs:title>Tsunami model calculations</gdacs:title>
+          <gdacs:description>The folder containing the tsunami calculation result</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_json" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e7qq.json" type="json">
+          <gdacs:title>USGS NEIC Json Product Feed</gdacs:title>
+          <gdacs:description>Json feed of products available on USGS NEIC website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml_old" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-178/eq_-17840_-03455.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1143440&amp;eventtype=EQ" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1143440&amp;eventtype=EQ" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="metoffice" version="0" source="WMO" url="http://www.metservice.com" type="link">
+          <gdacs:title>New Zealand National Meteorological Service</gdacs:title>
+          <gdacs:description>National Weather Service of New Zealand</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143440/rss_1143440.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143440/geojson_1143440_1211018.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143440/geojson_1143440_1211018.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143440_1211018_2_2.png" type="image">
+          <gdacs:title>Shakemap Image</gdacs:title>
+          <gdacs:description>The Shakemap impact image </gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_overview_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143440_1211018_2_1.png" type="image">
+          <gdacs:title>Population Shakemap Overview </gdacs:title>
+          <gdacs:description>The Shakemap impact image zoomed</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url=" http://139.191.244.117/GNASystem/isochoice_iframe.aspx?iso3=NZL&amp;workflow=360&amp;workflowgroup=INFORM2018" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to informa data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="alertbar" version="0" source="JRC" url="http://www.gdacs.org/datareport/resources/EQ/1143440/alertbar_1143440_1211018.jpg" type="image">
+          <gdacs:title>Image having the alertbar</gdacs:title>
+          <gdacs:acknowledgements>JRC</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143440/rss_1143440_1211018.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers>
+        <gdacs:identifier id="eqcalculationpath" src="JRC">-178\eq_-17840_-03455.xml</gdacs:identifier>
+        <gdacs:identifier id="neicid" src="NEIC">us1000e7qq</gdacs:identifier>
+        <gdacs:identifier id="tsgridoutputpath" src="JRC">http://www.gdacs.org/Data/NoScenario/Green/locations.xml</gdacs:identifier>
+        <gdacs:identifier id="tsoutputpath" src="JRC">JETS_System/2018/05/29474</gdacs:identifier>
+      </gdacs:identifiers>
+    </item>
+    <item>
+      <title>Green earthquake alert (Magnitude 5.7M, Depth:238.4km) in South Of Kermadec Islands 17/05/2018 21:43 UTC, No people within 100km.</title>
+      <description>On 5/17/2018 9:43:10 PM, an earthquake occurred in South Of Kermadec Islands potentially affecting No people within 100km. The earthquake had Magnitude 5.7M, Depth:238.4km.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210998_1.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=EQ&amp;eventid=1143423</link>
+      <pubDate>Thu, 17 May 2018 21:43:10 GMT</pubDate>
+      <gdacs:fromdate>Thu, 17 May 2018 21:43:10 GMT</gdacs:fromdate>
+      <gdacs:todate>Thu, 17 May 2018 21:43:10 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>EQ1</dc:subject>
+      <guid isPermaLink="false">EQ1143423</guid>
+      <geo:Point>
+        <geo:lat>-32.0764</geo:lat>
+        <geo:long>-179.9844</geo:long>
+      </geo:Point>
+      <georss:point>-32.0764 -179.9844</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=EQ&amp;eventid=1143423</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>EQ</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1143423</gdacs:eventid>
+      <gdacs:episodeid>1210998</gdacs:episodeid>
+      <gdacs:calculationtype>earthquakeonly</gdacs:calculationtype>
+      <gdacs:severity unit="M" value="5.7">Magnitude 5.7M, Depth:238.4km</gdacs:severity>
+      <gdacs:population unit="Population in 100km" value="0">No people within 100km</gdacs:population>
+      <gdacs:vulnerability value="1.3145341380124" />
+      <gdacs:iso3 />
+      <gdacs:country>South Of Kermadec Islands</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="overviewmap" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210998_2.png" type="image">
+          <gdacs:title>Population density map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged. Population data from LandScan 2008.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_event_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=EARTHQUAKE&amp;eventid=1143423&amp;episodeid=1210998&amp;coordinate=-179.9844,-32.0764" type="map">
+          <gdacs:title>Interactive earthquake event map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_pager" version="0" source="NEIC" url="http://www.gdacs.org/datareport/resources/EQ/1143423/1143423_1210998_alertfatal_small.png" type="image">
+          <gdacs:title>Estimated casualties (PAGER)</gdacs:title>
+          <gdacs:description>USGS estimates the number of casualties for each earthquake for the Prompt Assessment of Global Earthquakes for Response (PAGER) product. The graph shows the current fatalities estimate.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-180\eq_-18000_-03210.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="http://www.reliefweb.int/updates?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4628" type="rss">
+          <gdacs:title>OCHA Situation Reports for Earthquakes</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_report" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e7kx#summary" type="html">
+          <gdacs:title>USGS earthquake report</gdacs:title>
+          <gdacs:description>Report of the USGS National Earthquake Information Center</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="geooffice" version="0" source="INGV" url="http://cnt.rm.ingv.it/" type="link">
+          <gdacs:title>Istituto Nazionale di Geofisica e Vulcanologia</gdacs:title>
+          <gdacs:description>Latest earthquakes recorded by the Italian National Earthquake Centre</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210998_1.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>The Impact thumbanil image</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="populationmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210998_4.png" type="image">
+          <gdacs:title>Population map close up</gdacs:title>
+          <gdacs:description>The impact image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_json" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e7kx.json" type="json">
+          <gdacs:title>USGS NEIC Json Product Feed</gdacs:title>
+          <gdacs:description>Json feed of products available on USGS NEIC website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="gts_message_file" version="0" source="JRC" url="http://www.gdacs.org/gis/gts_message/EQ/1143423/" type="txt">
+          <gdacs:title>GTS Message Folder</gdacs:title>
+          <gdacs:description>GTS Message generate for episode</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1143423&amp;eventtype=EQ" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1143423&amp;eventtype=EQ" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143423/rss_1143423.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143423/geojson_1143423_1210998.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143423/geojson_1143423_1210998.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143423_1210998_2_2.png" type="image">
+          <gdacs:title>Shakemap Image</gdacs:title>
+          <gdacs:description>The Shakemap impact image </gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_overview_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143423_1210998_2_1.png" type="image">
+          <gdacs:title>Population Shakemap Overview </gdacs:title>
+          <gdacs:description>The Shakemap impact image zoomed</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="alertbar" version="0" source="JRC" url="http://www.gdacs.org/datareport/resources/EQ/1143423/alertbar_1143423_1210998.jpg" type="image">
+          <gdacs:title>Image having the alertbar</gdacs:title>
+          <gdacs:acknowledgements>JRC</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143423/rss_1143423_1210998.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers>
+        <gdacs:identifier id="eqcalculationpath" src="JRC">-180\eq_-18000_-03210.xml</gdacs:identifier>
+        <gdacs:identifier id="neicid" src="NEIC">us1000e7kx</gdacs:identifier>
+      </gdacs:identifiers>
+    </item>
+    <item>
+      <title>Green earthquake alert (Magnitude 5.5M, Depth:45.06km) in Guam 17/05/2018 18:47 UTC, 160000 people within 100km.</title>
+      <description>On 5/17/2018 6:47:09 PM, an earthquake occurred in Guam potentially affecting 160000 people within 100km. The earthquake had Magnitude 5.5M, Depth:45.06km.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210992_1.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=EQ&amp;eventid=1143413</link>
+      <pubDate>Thu, 17 May 2018 18:47:09 GMT</pubDate>
+      <gdacs:fromdate>Thu, 17 May 2018 18:47:09 GMT</gdacs:fromdate>
+      <gdacs:todate>Thu, 17 May 2018 18:47:09 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>EQ1</dc:subject>
+      <guid isPermaLink="false">EQ1143413</guid>
+      <geo:Point>
+        <geo:lat>13.0097</geo:lat>
+        <geo:long>145.3498</geo:long>
+      </geo:Point>
+      <georss:point>13.0097 145.3498</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=EQ&amp;eventid=1143413</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>EQ</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1143413</gdacs:eventid>
+      <gdacs:episodeid>1210992</gdacs:episodeid>
+      <gdacs:calculationtype>earthquakeonly</gdacs:calculationtype>
+      <gdacs:severity unit="M" value="5.5">Magnitude 5.5M, Depth:45.06km</gdacs:severity>
+      <gdacs:population unit="Population in 100km" value="161001">160000 people within 100km</gdacs:population>
+      <gdacs:vulnerability value="1.3145341380124" />
+      <gdacs:iso3>GUM</gdacs:iso3>
+      <gdacs:country>Guam</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="overviewmap" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210992_2.png" type="image">
+          <gdacs:title>Population density map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged. Population data from LandScan 2008.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="UNOSATmaps_country" version="0" source="" url="http://www.unitar.org/unosat/maps/GUM" type="html">
+          <gdacs:title>UNOSAT maps by country</gdacs:title>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_event_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=EARTHQUAKE&amp;eventid=1143413&amp;episodeid=1210992&amp;coordinate=145.3498,13.0097" type="map">
+          <gdacs:title>Interactive earthquake event map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_pager" version="0" source="NEIC" url="http://www.gdacs.org/datareport/resources/EQ/1143413/1143413_1210992_alertfatal_small.png" type="image">
+          <gdacs:title>Estimated casualties (PAGER)</gdacs:title>
+          <gdacs:description>USGS estimates the number of casualties for each earthquake for the Prompt Assessment of Global Earthquakes for Response (PAGER) product. The graph shows the current fatalities estimate.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/145\eq_14535_01300.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="http://www.reliefweb.int/updates?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4628" type="rss">
+          <gdacs:title>OCHA Situation Reports for Earthquakes</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="geooffice" version="0" source="INGV" url="http://cnt.rm.ingv.it/" type="link">
+          <gdacs:title>Istituto Nazionale di Geofisica e Vulcanologia</gdacs:title>
+          <gdacs:description>Latest earthquakes recorded by the Italian National Earthquake Centre</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210992_1.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>The Impact thumbanil image</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="populationmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210992_4.png" type="image">
+          <gdacs:title>Population map close up</gdacs:title>
+          <gdacs:description>The impact image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml_old" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/145/eq_14535_01300.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="gts_message_file" version="0" source="JRC" url="http://www.gdacs.org/gis/gts_message/EQ/1143413/" type="txt">
+          <gdacs:title>GTS Message Folder</gdacs:title>
+          <gdacs:description>GTS Message generate for episode</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1143413&amp;eventtype=EQ" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1143413&amp;eventtype=EQ" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143413/rss_1143413.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143413/geojson_1143413_1210992.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143413/geojson_1143413_1210992.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url=" http://139.191.244.117/GNASystem/isochoice_iframe.aspx?iso3=GUM&amp;workflow=360&amp;workflowgroup=INFORM2018" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to informa data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="alertbar" version="0" source="JRC" url="http://www.gdacs.org/datareport/resources/EQ/1143413/alertbar_1143413_1210992.jpg" type="image">
+          <gdacs:title>Image having the alertbar</gdacs:title>
+          <gdacs:acknowledgements>JRC</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143413/rss_1143413_1210992.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers>
+        <gdacs:identifier id="eqcalculationpath" src="JRC">145\eq_14535_01300.xml</gdacs:identifier>
+        <gdacs:identifier id="gdpcapita" src="JRC">0</gdacs:identifier>
+      </gdacs:identifiers>
+    </item>
+    <item>
+      <title>Green earthquake alert (Magnitude 5.8M, Depth:10km) in Japan 17/05/2018 18:42 UTC, About 64000 people within 100km.</title>
+      <description>On 5/17/2018 6:42:10 PM, an earthquake occurred in Japan potentially affecting About 64000 people within 100km. The earthquake had Magnitude 5.8M, Depth:10km.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210979_1.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=EQ&amp;eventid=1143412</link>
+      <pubDate>Thu, 17 May 2018 18:42:10 GMT</pubDate>
+      <gdacs:fromdate>Thu, 17 May 2018 18:42:10 GMT</gdacs:fromdate>
+      <gdacs:todate>Thu, 17 May 2018 18:42:10 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>EQ1</dc:subject>
+      <guid isPermaLink="false">EQ1143412</guid>
+      <geo:Point>
+        <geo:lat>42.6758</geo:lat>
+        <geo:long>145.6026</geo:long>
+      </geo:Point>
+      <georss:point>42.6758 145.6026</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=EQ&amp;eventid=1143412</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>EQ</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1143412</gdacs:eventid>
+      <gdacs:episodeid>1210979</gdacs:episodeid>
+      <gdacs:calculationtype>earthquakeonly</gdacs:calculationtype>
+      <gdacs:severity unit="M" value="5.8">Magnitude 5.8M, Depth:10km</gdacs:severity>
+      <gdacs:population unit="Population in 100km" value="64160">About 64000 people within 100km</gdacs:population>
+      <gdacs:vulnerability value="1.3145341380124" />
+      <gdacs:iso3>JPN</gdacs:iso3>
+      <gdacs:country>Japan</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="overviewmap" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210979_2.png" type="image">
+          <gdacs:title>Population density map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged. Population data from LandScan 2008.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="UNOSATmaps_country" version="0" source="" url="http://www.unitar.org/unosat/maps/JPN" type="html">
+          <gdacs:title>UNOSAT maps by country</gdacs:title>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_event_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=EARTHQUAKE&amp;eventid=1143412&amp;episodeid=1210979&amp;coordinate=145.6026,42.6758" type="map">
+          <gdacs:title>Interactive earthquake event map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_pager" version="0" source="NEIC" url="http://www.gdacs.org/datareport/resources/EQ/1143412/1143412_1210979_alertfatal_small.png" type="image">
+          <gdacs:title>Estimated casualties (PAGER)</gdacs:title>
+          <gdacs:description>USGS estimates the number of casualties for each earthquake for the Prompt Assessment of Global Earthquakes for Response (PAGER) product. The graph shows the current fatalities estimate.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/146\eq_14560_04270.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="http://www.reliefweb.int/updates?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4628" type="rss">
+          <gdacs:title>OCHA Situation Reports for Earthquakes</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_report" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e7fh#summary" type="html">
+          <gdacs:title>USGS earthquake report</gdacs:title>
+          <gdacs:description>Report of the USGS National Earthquake Information Center</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="geooffice" version="0" source="INGV" url="http://cnt.rm.ingv.it/" type="link">
+          <gdacs:title>Istituto Nazionale di Geofisica e Vulcanologia</gdacs:title>
+          <gdacs:description>Latest earthquakes recorded by the Italian National Earthquake Centre</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210979_1.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>The Impact thumbanil image</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="populationmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210979_4.png" type="image">
+          <gdacs:title>Population map close up</gdacs:title>
+          <gdacs:description>The impact image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_json" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e7fh.json" type="json">
+          <gdacs:title>USGS NEIC Json Product Feed</gdacs:title>
+          <gdacs:description>Json feed of products available on USGS NEIC website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml_old" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/145/eq_14560_04270.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="gts_message_file" version="0" source="JRC" url="http://www.gdacs.org/gis/gts_message/EQ/1143412/" type="txt">
+          <gdacs:title>GTS Message Folder</gdacs:title>
+          <gdacs:description>GTS Message generate for episode</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1143412&amp;eventtype=EQ" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1143412&amp;eventtype=EQ" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="metoffice" version="0" source="WMO" url="http://www.jma.go.jp/jma/index.html" type="link">
+          <gdacs:title>Japan Meteorological Agency</gdacs:title>
+          <gdacs:description>National Weather Service of Japan</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143412/rss_1143412.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143412/geojson_1143412_1210979.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143412/geojson_1143412_1210979.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143412_1210979_3_2.png" type="image">
+          <gdacs:title>Shakemap Image</gdacs:title>
+          <gdacs:description>The Shakemap impact image </gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_overview_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143412_1210979_3_1.png" type="image">
+          <gdacs:title>Population Shakemap Overview </gdacs:title>
+          <gdacs:description>The Shakemap impact image zoomed</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url=" http://139.191.244.117/GNASystem/isochoice_iframe.aspx?iso3=JPN&amp;workflow=360&amp;workflowgroup=INFORM2018" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to informa data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="alertbar" version="0" source="JRC" url="http://www.gdacs.org/datareport/resources/EQ/1143412/alertbar_1143412_1210979.jpg" type="image">
+          <gdacs:title>Image having the alertbar</gdacs:title>
+          <gdacs:acknowledgements>JRC</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143412/rss_1143412_1210979.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers>
+        <gdacs:identifier id="eqcalculationpath" src="JRC">146\eq_14560_04270.xml</gdacs:identifier>
+        <gdacs:identifier id="gdpcapita" src="JRC">42317.671875</gdacs:identifier>
+        <gdacs:identifier id="neicid" src="NEIC">us1000e7fh</gdacs:identifier>
+      </gdacs:identifiers>
+    </item>
+    <item>
+      <title>Green alert for tropical cyclone SAGAR-18. Population affected by Category 1 (120 km/h) wind speeds or higher is 0.</title>
+      <description>From 16/05/2018 to 19/05/2018, a Tropical Storm (maximum wind speed of 102 km/h) SAGAR-18 was active in NorthIndian. The cyclone affects these countries: Somalia, Ethiopia, Yemen (vulnerability High). Estimated population affected by category 1 (120 km/h) wind speeds or higher is 0.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/tc/1000452/1000452_12_tn.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=TC&amp;eventid=1000452</link>
+      <pubDate>Sat, 19 May 2018 12:00:00 GMT</pubDate>
+      <gdacs:fromdate>Wed, 16 May 2018 18:00:00 GMT</gdacs:fromdate>
+      <gdacs:todate>Sat, 19 May 2018 12:00:00 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>TC1</dc:subject>
+      <guid isPermaLink="false">TC1000452</guid>
+      <geo:Point>
+        <geo:lat>10.3</geo:lat>
+        <geo:long>43.7</geo:long>
+      </geo:Point>
+      <georss:point>10.3 43.7</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=TC&amp;eventid=1000452</gdacs:cap>
+      <gdacs:version>12</gdacs:version>
+      <gdacs:eventtype>TC</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname>SAGAR-18</gdacs:eventname>
+      <gdacs:eventid>1000452</gdacs:eventid>
+      <gdacs:episodeid>12</gdacs:episodeid>
+      <gdacs:calculationtype>tropicalcyclonewithstormsurge</gdacs:calculationtype>
+      <gdacs:severity unit="km/h" value="92.592">Tropical Storm (maximum wind speed of 93 km/h)</gdacs:severity>
+      <gdacs:population unit="Pop74" value="0">Population affected by Category 1 (120 km/h) wind speeds or higher is 0</gdacs:population>
+      <gdacs:vulnerability value="3">High</gdacs:vulnerability>
+      <gdacs:iso3>SOM</gdacs:iso3>
+      <gdacs:country>Somalia, Ethiopia, Yemen</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="UNOSATmaps_country" version="0" source="" url="http://www.unitar.org/unosat/maps/SOM" type="html">
+          <gdacs:title>UNOSAT maps by country</gdacs:title>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_event_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=CYCLONES" type="map">
+          <gdacs:title>Interactive event map</gdacs:title>
+          <gdacs:description>Link to interactive cyclone map</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=CYCLONES" type="map">
+          <gdacs:title>Interactive map</gdacs:title>
+          <gdacs:description>Link to interactive cyclone bulletin map</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="link_bom" version="0" source="BOM" url="http://www.bom.gov.au/cyclone/index.shtml" type="link">
+          <gdacs:title>Bureau of Meteorology of Australia</gdacs:title>
+          <gdacs:accesslevel>Link</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="link_ptwc" version="0" source="JTWC" url="http://www.usno.navy.mil/JTWC/" type="link">
+          <gdacs:title>Joint Typhoon Warning Centre</gdacs:title>
+          <gdacs:accesslevel>Link</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="link_unisys_basin" version="0" source="" url="http://weather.unisys.com/hurricane/n_indian/2018/index.php" type="link">
+          <gdacs:title>Unisys </gdacs:title>
+          <gdacs:description>Unisys provides data and charts for weather experts</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="nasa_earth_observatory" version="0" source="NASA" url="http://earthobservatory.nasa.gov/Feeds/rss/nh.rss" type="rss">
+          <gdacs:title>Imagery of the NASA Earth Observatory</gdacs:title>
+          <gdacs:xslt>xslt/rss_default.xslt&amp;pname=contains&amp;pvalue={eventname|~0,-}</gdacs:xslt>
+          <gdacs:description>NASA publishes relevant images related to natural disasters from the many operational sensors</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="noaa_nesdis_event" version="0" source="NOAA" url="http://www.ssd.noaa.gov/PS/TROP/storms/SAGAR.html" type="link">
+          <gdacs:title>Tropical cyclones potential rainfall (NOAA/NESDIS)</gdacs:title>
+          <gdacs:description>Website dedicated to the rainfall estimation associated with tropical cyclones</gdacs:description>
+          <gdacs:accesslevel>Link</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="http://www.reliefweb.int/updates/rss.xml?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4618" type="rss">
+          <gdacs:title>OCHA Situation Reports for Tropical Cyclones</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="overviewmap" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/tc/1000452/clouds_1000452_12.png" type="image">
+          <gdacs:title>Overview map</gdacs:title>
+          <gdacs:description>The image of Cyclone</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/tc/1000452/rain_1000452_12.png" type="image">
+          <gdacs:title>Extreme rainfall</gdacs:title>
+          <gdacs:description>The map shows the accumulated precipitation along the cyclone's track. Yellow area is &gt; 100mm; Red area is &gt; 300mm; Blue area is &gt; 500mm. The accumulated rainfall is calculated based on the Tropical Rainfall Potential of NOAA/NESDIS. The eTRaP is a simple ensemble whose members are the 6-hourly totals from the single-orbit TRaPs, which are rainfall estimates from passive microwave remote sensing.</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainmap_original" version="0" source="NOAA" url="http://www.ssd.noaa.gov/PS/TROP/DATA/ETRAP/2018/NorthIndian/SAGAR/2018SAGAR.pmqpf.05191200.00.GIF" type="image">
+          <gdacs:title>Extreme rainfall (original)</gdacs:title>
+          <gdacs:description>The original map shows the accumulated precipitation along the cyclone's track. Yellow area is &gt; 100mm; Red area is &gt; 300mm; Blue area is &gt; 500mm. The accumulated rainfall is calculated based on the Tropical Rainfall Potential of NOAA/NESDIS. The eTRaP is a simple ensemble whose members are the 6-hourly totals from the single-orbit TRaPs, which are rainfall estimates from passive microwave remote sensing.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/tc/1000452/1000452_12_tn.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>Small overview map</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="unisys_track" version="0" source="Unisys" url="http://weather.unisys.com/hurricane/s_indian/2018/SAGAR/track.gif" type="image">
+          <gdacs:title>Track (Unisys)</gdacs:title>
+          <gdacs:description>The external link to Unisys Track</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1000452&amp;eventtype=TC" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1000452&amp;eventtype=TC" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_animation" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/final/outres1.gif" type="image">
+          <gdacs:title>Storm surge animation</gdacs:title>
+          <gdacs:description>The Storm surge animation gif for all cylone's bulletins</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_maxheight" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/final/P1_MAXHEIGHT_END.jpg" type="image">
+          <gdacs:title>Storm surge maximum height</gdacs:title>
+          <gdacs:description>The Strom surge maxheight </gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_locations_affected_episode" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/final/locations.xml" type="xml">
+          <gdacs:title>Populated places affected by storm surge</gdacs:title>
+          <gdacs:description>AsgardXML list of affected population, cities and infrastructure by stormsurge for single episode</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_data" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/final/" type="data">
+          <gdacs:title>Storm surge event results</gdacs:title>
+          <gdacs:description>The folder containing the Storm surge data</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_data_episode" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/final/" type="data">
+          <gdacs:title>Storm surge episode results</gdacs:title>
+          <gdacs:description>The folder containing the Storm surge bulletin data</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_locations_affected_kmz" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/final/locations.kmz" type="kmz">
+          <gdacs:title>Storm surge overview for Google Earth</gdacs:title>
+          <gdacs:description>The stormsurge in kmz format </gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_locations_affected_episodes" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/final/locations.xml" type="xml">
+          <gdacs:title>Populated places affected by storm surge for an episode</gdacs:title>
+          <gdacs:description>AsgardXML list of affected population, cities and infrastructure by stormsurge for single episode</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_data" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/" type="data">
+          <gdacs:title>GIS data and impact analyses (latest episode)</gdacs:title>
+          <gdacs:description>The folder containing the Cyclone episode GIS data</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_data" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/" type="data">
+          <gdacs:title>GIS data and impact analyses</gdacs:title>
+          <gdacs:description>The folder containing the Cyclone GIS data</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="latest_impact_storm" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/buffer39_all.xml" type="xml">
+          <gdacs:title>Impact Tropical Storm Data</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt</gdacs:xslt>
+          <gdacs:description>AsgardXML list of affected population, cities and infrastructure by winds of tropical storm strength</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cyclone_timeline" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/all_inpData.xml" type="rss">
+          <gdacs:title>Cyclone timeline</gdacs:title>
+          <gdacs:xslt>xslt/cyclone_timeline.xslt</gdacs:xslt>
+          <gdacs:description>The xml having the Cyclone timeline bulletins in xml format </gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/TC/1000452/rss_1000452.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/TC/1000452/geojson_1000452_12.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/TC/1000452/geojson_1000452_12.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cyclone_timeline_HWRF" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/all_inpData.xml" type="rss">
+          <gdacs:title>Cyclone timeline</gdacs:title>
+          <gdacs:xslt>xslt/cyclone_timeline.xslt</gdacs:xslt>
+          <gdacs:description>The xml having the Cyclone timeline bulletins in xml format for HWRF source</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cyclone_timeline_GFS" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/all_inpData.xml" type="rss">
+          <gdacs:title>Cyclone timeline</gdacs:title>
+          <gdacs:xslt>xslt/cyclone_timeline.xslt</gdacs:xslt>
+          <gdacs:description>The xml having the Cyclone timeline bulletins in xml format for GFS source</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="overviewmap_zoom" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/tc/1000452/clouds_1000452_12_zoom.png" type="image">
+          <gdacs:title>Overview map Zoomed on last Forecast</gdacs:title>
+          <gdacs:description>The image of Cyclone Zoomed on last forecst</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url=" http://139.191.244.117/GNASystem/isochoice_iframe.aspx?iso3=SOM&amp;workflow=360&amp;workflowgroup=INFORM2018" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to informa data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_animation_episode" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/final/outres1.gif" type="image">
+          <gdacs:title>Storm surge animation</gdacs:title>
+          <gdacs:description>The Storm surge animation gif for single bulletin</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_locations_affected_episode_kmz" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/final/locations.kmz" type="kmz">
+          <gdacs:title>Storm surge overview for Google Earth</gdacs:title>
+          <gdacs:description>The stormsurge in kmz format for single episode</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_locations_affected" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/final/locations.xml" type="xml">
+          <gdacs:title>Populated places affected by storm surge</gdacs:title>
+          <gdacs:description>AsgardXML list of affected population, cities and infrastructure by stormsurge </gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_maxheight_episode" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/12/final/P1_MAXHEIGHT_END.jpg" type="image">
+          <gdacs:title>Storm surge maximum height</gdacs:title>
+          <gdacs:description>The Strom surge maxheight image for single episode</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="storm_surge_locations_affected_kml" version="0" source="JRC" url="http://webcritech.jrc.ec.europa.eu/ModellingCyclone/cyclonesurgeVM/1000452_JTWC/final/locations.kmz" type="kml">
+          <gdacs:title>Storm surge overview for Google Earth</gdacs:title>
+          <gdacs:description>The stormsurge in kml format </gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/TC/1000452/rss_1000452_12.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers />
+    </item>
+    <item>
+      <title>Green earthquake alert (Magnitude 5.8M, Depth:10km) in New Zealand 16/05/2018 17:22 UTC, No people within 100km.</title>
+      <description>On 5/16/2018 5:22:13 PM, an earthquake occurred in New Zealand potentially affecting No people within 100km. The earthquake had Magnitude 5.8M, Depth:10km.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210851_1.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=EQ&amp;eventid=1143315</link>
+      <pubDate>Wed, 16 May 2018 17:22:13 GMT</pubDate>
+      <gdacs:fromdate>Wed, 16 May 2018 17:22:13 GMT</gdacs:fromdate>
+      <gdacs:todate>Wed, 16 May 2018 17:22:13 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>EQ1</dc:subject>
+      <guid isPermaLink="false">EQ1143315</guid>
+      <geo:Point>
+        <geo:lat>-33.9157</geo:lat>
+        <geo:long>-179.5412</geo:long>
+      </geo:Point>
+      <georss:point>-33.9157 -179.5412</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=EQ&amp;eventid=1143315</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>EQ</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1143315</gdacs:eventid>
+      <gdacs:episodeid>1210851</gdacs:episodeid>
+      <gdacs:calculationtype>earthquakeonly</gdacs:calculationtype>
+      <gdacs:severity unit="M" value="5.8">Magnitude 5.8M, Depth:10km</gdacs:severity>
+      <gdacs:population unit="Population in 100km" value="0">No people within 100km</gdacs:population>
+      <gdacs:vulnerability value="1.3145341380124" />
+      <gdacs:iso3>NZL</gdacs:iso3>
+      <gdacs:country>New Zealand</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="overviewmap" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210851_2.png" type="image">
+          <gdacs:title>Population density map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged. Population data from LandScan 2008.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="UNOSATmaps_country" version="0" source="" url="http://www.unitar.org/unosat/maps/NZL" type="html">
+          <gdacs:title>UNOSAT maps by country</gdacs:title>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="interactive_event_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=EARTHQUAKE&amp;eventid=1143315&amp;episodeid=1210851&amp;coordinate=-179.5412,-33.9157" type="map">
+          <gdacs:title>Interactive earthquake event map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_pager" version="0" source="NEIC" url="http://www.gdacs.org/datareport/resources/EQ/1143315/1143315_1210851_alertfatal_small.png" type="image">
+          <gdacs:title>Estimated casualties (PAGER)</gdacs:title>
+          <gdacs:description>USGS estimates the number of casualties for each earthquake for the Prompt Assessment of Global Earthquakes for Response (PAGER) product. The graph shows the current fatalities estimate.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-180\eq_-17955_-03390.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="http://www.reliefweb.int/updates?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4628" type="rss">
+          <gdacs:title>OCHA Situation Reports for Earthquakes</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_report" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e6hz#summary" type="html">
+          <gdacs:title>USGS earthquake report</gdacs:title>
+          <gdacs:description>Report of the USGS National Earthquake Information Center</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="geooffice" version="0" source="INGV" url="http://cnt.rm.ingv.it/" type="link">
+          <gdacs:title>Istituto Nazionale di Geofisica e Vulcanologia</gdacs:title>
+          <gdacs:description>Latest earthquakes recorded by the Italian National Earthquake Centre</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210851_1.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>The Impact thumbanil image</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="populationmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/eq/eq1210851_4.png" type="image">
+          <gdacs:title>Population map close up</gdacs:title>
+          <gdacs:description>The impact image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="neic_json" version="0" source="NEIC" url="http://earthquake.usgs.gov/earthquakes/eventpage/us1000e6hz.json" type="json">
+          <gdacs:title>USGS NEIC Json Product Feed</gdacs:title>
+          <gdacs:description>Json feed of products available on USGS NEIC website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml_old" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-179/eq_-17955_-03390.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=EQ</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="gts_message_file" version="0" source="JRC" url="http://www.gdacs.org/gis/gts_message/EQ/1143315/" type="txt">
+          <gdacs:title>GTS Message Folder</gdacs:title>
+          <gdacs:description>GTS Message generate for episode</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1143315&amp;eventtype=EQ" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1143315&amp;eventtype=EQ" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="metoffice" version="0" source="WMO" url="http://www.metservice.com" type="link">
+          <gdacs:title>New Zealand National Meteorological Service</gdacs:title>
+          <gdacs:description>National Weather Service of New Zealand</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143315/rss_1143315.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143315/geojson_1143315_1210851.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143315/geojson_1143315_1210851.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143315_1210851_2_2.png" type="image">
+          <gdacs:title>Shakemap Image</gdacs:title>
+          <gdacs:description>The Shakemap impact image </gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="shakemap_populationmap_overview_static_v01" version="0" source="USGS" url="http://dma.gdacs.org/saved/gdacs/eq/sm/eq1143315_1210851_2_1.png" type="image">
+          <gdacs:title>Population Shakemap Overview </gdacs:title>
+          <gdacs:description>The Shakemap impact image zoomed</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url=" http://139.191.244.117/GNASystem/isochoice_iframe.aspx?iso3=NZL&amp;workflow=360&amp;workflowgroup=INFORM2018" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to informa data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="alertbar" version="0" source="JRC" url="http://www.gdacs.org/datareport/resources/EQ/1143315/alertbar_1143315_1210851.jpg" type="image">
+          <gdacs:title>Image having the alertbar</gdacs:title>
+          <gdacs:acknowledgements>JRC</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/EQ/1143315/rss_1143315_1210851.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers>
+        <gdacs:identifier id="eqcalculationpath" src="JRC">-180\eq_-17955_-03390.xml</gdacs:identifier>
+        <gdacs:identifier id="gdpcapita" src="JRC">17210.082031</gdacs:identifier>
+        <gdacs:identifier id="neicid" src="NEIC">us1000e6hz</gdacs:identifier>
+      </gdacs:identifiers>
+    </item>
+    <item>
+      <title>Green flood alert in South Sudan</title>
+      <description>On 13/05/2018, a flood started in South Sudan, lasting until 17/05/2018 (last update). The flood caused 0 killed and 2000 displaced .</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000195.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=FL&amp;eventid=1000195</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 GMT</pubDate>
+      <gdacs:fromdate>Sun, 13 May 2018 00:00:00 GMT</gdacs:fromdate>
+      <gdacs:todate>Thu, 17 May 2018 00:00:00 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>FL1</dc:subject>
+      <guid isPermaLink="false">FL1000195</guid>
+      <geo:Point>
+        <geo:lat>6.23</geo:lat>
+        <geo:long>31.582</geo:long>
+      </geo:Point>
+      <georss:point>6.23 31.582</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=FL&amp;eventid=1000195</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>FL</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1000195</gdacs:eventid>
+      <gdacs:episodeid>1</gdacs:episodeid>
+      <gdacs:calculationtype />
+      <gdacs:severity unit="" value="0">Magnitude 0.00</gdacs:severity>
+      <gdacs:population unit="Population affected" value="0">0 killed and 2000 displaced </gdacs:population>
+      <gdacs:vulnerability value="0" />
+      <gdacs:iso3 />
+      <gdacs:country>South Sudan</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="floodmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000195/7rest.png" type="image">
+          <gdacs:title>Indicative flood map based on passive microwave remote sensing</gdacs:title>
+          <gdacs:description>The flood map image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000195.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>Small overview map</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainmap_cached" version="0" source="NASA" url="http://dma.gdacs.org/saved/gdacs/fl/2018_1000195/6rest.png" type="image">
+          <gdacs:title>Map of accumulated rainfall</gdacs:title>
+          <gdacs:description>Accumulated rainfall observed from the TRMM satellite</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="overviewmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/1000195/flood_overview_1000195.png" type="image">
+          <gdacs:title>Overview map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_map" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/020E010N/MFM_2018136_020E010N_2D2OT.png" type="link">
+          <gdacs:title>MODIS Automatic Flood Map</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_kmz" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/020E010N/MFW_2018136_020E010N_2D2OT_V.kmz" type="kmz">
+          <gdacs:title>MODIS Automatic Flood Map KMZ</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_shp" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/030E020N/MFW_2018136_030E020N_2D2OT_V.zip" type="shapefile">
+          <gdacs:title>MODIS Automatic Flood Map (shapefiles)</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1000195&amp;eventtype=FL" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1000195&amp;eventtype=FL" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainimage" version="0" source="JRC" url="http://www.gdacs.org/rainimage/2018/05/3B42RT.2018051300.7.7day.tif" type="image">
+          <gdacs:title>Rain las 7 days</gdacs:title>
+          <gdacs:description>The image of last 7 day of rain</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_download" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/020E010N/MFW_2018136_020E010N_3D3OT_V.kmz" type="kmz">
+          <gdacs:title>MODIS Automatic Flood Map KMZ</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Download</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000195/rss_1000195.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000195/geojson_1000195_1.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000195/geojson_1000195_1.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000195/rss_1000195_1.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers />
+    </item>
+    <item>
+      <title>Green flood alert in Afghanistan</title>
+      <description>On 12/05/2018, a flood started in Afghanistan, lasting until 17/05/2018 (last update). The flood caused 34 killed and 0 displaced .</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000193.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=FL&amp;eventid=1000193</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 GMT</pubDate>
+      <gdacs:fromdate>Sat, 12 May 2018 00:00:00 GMT</gdacs:fromdate>
+      <gdacs:todate>Thu, 17 May 2018 00:00:00 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>FL1</dc:subject>
+      <guid isPermaLink="false">FL1000193</guid>
+      <geo:Point>
+        <geo:lat>36.21</geo:lat>
+        <geo:long>70.463</geo:long>
+      </geo:Point>
+      <georss:point>36.21 70.463</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=FL&amp;eventid=1000193</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>FL</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1000193</gdacs:eventid>
+      <gdacs:episodeid>1</gdacs:episodeid>
+      <gdacs:calculationtype />
+      <gdacs:severity unit="" value="0">Magnitude 0.00</gdacs:severity>
+      <gdacs:population unit="Population affected" value="34">34 killed and 0 displaced </gdacs:population>
+      <gdacs:vulnerability value="0" />
+      <gdacs:iso3 />
+      <gdacs:country>Afghanistan</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="floodmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000193/7rest.png" type="image">
+          <gdacs:title>Indicative flood map based on passive microwave remote sensing</gdacs:title>
+          <gdacs:description>The flood map image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000193.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>Small overview map</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainmap_cached" version="0" source="NASA" url="http://dma.gdacs.org/saved/gdacs/fl/2018_1000193/6rest.png" type="image">
+          <gdacs:title>Map of accumulated rainfall</gdacs:title>
+          <gdacs:description>Accumulated rainfall observed from the TRMM satellite</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="overviewmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/1000193/flood_overview_1000193.png" type="image">
+          <gdacs:title>Overview map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_map" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/060E040N/MFM_2018136_060E040N_2D2OT.png" type="link">
+          <gdacs:title>MODIS Automatic Flood Map</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_kmz" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/060E040N/MFW_2018136_060E040N_2D2OT_V.kmz" type="kmz">
+          <gdacs:title>MODIS Automatic Flood Map KMZ</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_shp" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/070E050N/MFW_2018136_070E050N_2D2OT_V.zip" type="shapefile">
+          <gdacs:title>MODIS Automatic Flood Map (shapefiles)</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1000193&amp;eventtype=FL" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1000193&amp;eventtype=FL" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainimage" version="0" source="JRC" url="http://www.gdacs.org/rainimage/2018/05/3B42RT.2018051200.7.7day.tif" type="image">
+          <gdacs:title>Rain las 7 days</gdacs:title>
+          <gdacs:description>The image of last 7 day of rain</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_download" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/060E040N/MFW_2018136_060E040N_3D3OT_V.kmz" type="kmz">
+          <gdacs:title>MODIS Automatic Flood Map KMZ</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Download</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000193/rss_1000193.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000193/geojson_1000193_1.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000193/geojson_1000193_1.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000193/rss_1000193_1.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers />
+    </item>
+    <item>
+      <title>Volcanic eruption is on going for Kilauea in United States</title>
+      <description>Volcano Kilauea is emitting ash clouds according to the regional VAAC. The aviation alert level is Green.</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/vo/voKila_1.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=VO&amp;eventid=511</link>
+      <pubDate>Fri, 18 May 2018 10:00:00 GMT</pubDate>
+      <gdacs:fromdate>Fri, 04 May 2018 22:00:00 GMT</gdacs:fromdate>
+      <gdacs:todate>Fri, 04 May 2018 22:00:00 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>VO2</dc:subject>
+      <guid isPermaLink="false">VO511</guid>
+      <geo:Point>
+        <geo:lat>19.421097</geo:lat>
+        <geo:long>-155.286762</geo:long>
+      </geo:Point>
+      <georss:point>19.421097 -155.286762</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=VO&amp;eventid=511</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>VO</gdacs:eventtype>
+      <gdacs:alertlevel>Orange</gdacs:alertlevel>
+      <gdacs:alertscore>2</gdacs:alertscore>
+      <gdacs:eventname>Kilauea</gdacs:eventname>
+      <gdacs:eventid>511</gdacs:eventid>
+      <gdacs:episodeid>1</gdacs:episodeid>
+      <gdacs:calculationtype />
+      <gdacs:severity unit="M" value="0">Magnitude 6M, Depth:10km</gdacs:severity>
+      <gdacs:population unit="Population in 100km" value="189138">180000 people within 100km</gdacs:population>
+      <gdacs:vulnerability value="1.3145341380124" />
+      <gdacs:iso3>USA</gdacs:iso3>
+      <gdacs:country>United States</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage>http://www.gdacs.org/contentdata/maps/daily/VO/511/ECDM_20180507_Hawai_EQ-Volcano.png</gdacs:mapimage>
+      <gdacs:maplink>http://www.gdacs.org/contentdata/maps/daily/VO/511/ECDM_20180507_Hawai_EQ-Volcano.pdf</gdacs:maplink>
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="interactive_map" version="0" source="JRC" url="http://dma.gdacs.org/map?application=VOLCANO" type="map">
+          <gdacs:title>Interactive map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="UNOSATmaps_country" version="0" source="" url="http://www.unitar.org/unosat/maps/USA" type="html">
+          <gdacs:title>UNOSAT maps by country</gdacs:title>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="geooffice" version="0" source="INGV" url="http://www.ingv.it/vulcani/stato-dei-vulcani-attivi-italiani/" type="link">
+          <gdacs:title>Istituto Nazionale di Geofisica e Vulcanologia</gdacs:title>
+          <gdacs:description>Status of volcanoes in Italy</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="overview_map_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/vo/voKila_1.png" type="image">
+          <gdacs:title>Overview map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/vo/voKila_1.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=511&amp;eventtype=VO" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=511&amp;eventtype=VO" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="metoffice" version="0" source="WMO" url="http://www.weather.gov" type="link">
+          <gdacs:title>National Oceanic and Atmospheric Administration National Renewable of Energy Laboratory</gdacs:title>
+          <gdacs:description>National Weather Service of U.S.A.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/VO/511/rss_511.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/VO/511/geojson_511_1.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/VO/511/geojson_511_1.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url=" http://139.191.244.117/GNASystem/isochoice_iframe.aspx?iso3=USA&amp;workflow=360&amp;workflowgroup=INFORM2018" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to informa data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/VO/511/rss_511_1.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_xml" version="0" source="JRC" url="http://www.gdacs.org/gis/calculation/EQ1_WPS/-155\eq_-15530_01940.xml" type="xml">
+          <gdacs:title>Affected population and infrastructure</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt&amp;pname=eventtype&amp;pvalue=VO</gdacs:xslt>
+          <gdacs:description>GIS analysis of the area affected by the earthquake</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers>
+        <gdacs:identifier id="eqcalculationpath" src="VAAC">-155\eq_-15530_01940.xml</gdacs:identifier>
+        <gdacs:identifier id="gdpcapita" src="VAAC">30845.189453</gdacs:identifier>
+      </gdacs:identifiers>
+    </item>
+    <item>
+      <title>Green flood alert in Kenya</title>
+      <description>On 01/03/2018, a flood started in Kenya, lasting until 17/05/2018 (last update). The flood caused 180 killed and 310000 displaced .</description>
+      <enclosure type="image/png" length="1" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000196.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=FL&amp;eventid=1000196</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 GMT</pubDate>
+      <gdacs:fromdate>Thu, 01 Mar 2018 00:00:00 GMT</gdacs:fromdate>
+      <gdacs:todate>Thu, 17 May 2018 00:00:00 GMT</gdacs:todate>
+      <gdacs:year>2018</gdacs:year>
+      <dc:subject>FL1</dc:subject>
+      <guid isPermaLink="false">FL1000196</guid>
+      <geo:Point>
+        <geo:lat>1.184</geo:lat>
+        <geo:long>38.105</geo:long>
+      </geo:Point>
+      <georss:point>1.184 38.105</georss:point>
+      <gdacs:cap>http://www.gdacs.org/cap.aspx?eventtype=FL&amp;eventid=1000196</gdacs:cap>
+      <gdacs:version>1</gdacs:version>
+      <gdacs:eventtype>FL</gdacs:eventtype>
+      <gdacs:alertlevel>Green</gdacs:alertlevel>
+      <gdacs:alertscore>1</gdacs:alertscore>
+      <gdacs:eventname />
+      <gdacs:eventid>1000196</gdacs:eventid>
+      <gdacs:episodeid>1</gdacs:episodeid>
+      <gdacs:calculationtype />
+      <gdacs:severity unit="" value="0">Magnitude 0.00</gdacs:severity>
+      <gdacs:population unit="Population affected" value="180">180 killed and 310000 displaced </gdacs:population>
+      <gdacs:vulnerability value="0" />
+      <gdacs:iso3 />
+      <gdacs:country>Kenya</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="floodmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000196/7rest.png" type="image">
+          <gdacs:title>Indicative flood map based on passive microwave remote sensing</gdacs:title>
+          <gdacs:description>The flood map image</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="thumbnailmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/dfo2018_1000196.png" type="image">
+          <gdacs:title>Overview thumbnail map</gdacs:title>
+          <gdacs:description>Small overview map</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainmap_cached" version="0" source="NASA" url="http://dma.gdacs.org/saved/gdacs/fl/2018_1000196/6rest.png" type="image">
+          <gdacs:title>Map of accumulated rainfall</gdacs:title>
+          <gdacs:description>Accumulated rainfall observed from the TRMM satellite</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="overviewmap_cached" version="0" source="JRC" url="http://dma.gdacs.org/saved/gdacs/fl/1000196/flood_overview_1000196.png" type="image">
+          <gdacs:title>Overview map</gdacs:title>
+          <gdacs:description>The overview image impact with population density layer</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_map" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/030E000S/MFM_2018136_030E000S_2D2OT.png" type="link">
+          <gdacs:title>MODIS Automatic Flood Map</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_kmz" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/030E000S/MFW_2018136_030E000S_2D2OT_V.kmz" type="kmz">
+          <gdacs:title>MODIS Automatic Flood Map KMZ</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_shp" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/040E010N/MFW_2018136_040E010N_2D2OT_V.zip" type="shapefile">
+          <gdacs:title>MODIS Automatic Flood Map (shapefiles)</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="JRC" url="http://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1000196&amp;eventtype=FL" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Link to KML data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="JRC" url="http://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1000196&amp;eventtype=FL" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Link to CAP data of this event</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="rainimage" version="0" source="JRC" url="http://www.gdacs.org/rainimage/2018/03/3B42RT.2018030100.7.7day.tif" type="image">
+          <gdacs:title>Rain las 7 days</gdacs:title>
+          <gdacs:description>The image of last 7 day of rain</gdacs:description>
+          <gdacs:acknowledgements>Copyright European Union. Syndication allowed, provided the source is acknowledged.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="modis_flood_download" version="0" source="NASA" url="https://floodmap.modaps.eosdis.nasa.gov/Products/030E000S/MFW_2018136_030E000S_3D3OT_V.kmz" type="kmz">
+          <gdacs:title>MODIS Automatic Flood Map KMZ</gdacs:title>
+          <gdacs:description>NASA Goddard's Office of Applied Science, in collaboration with Dartmouth Flood Observatory, is working to operationalize near real-time global flood mapping using available satellite data resources</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Download</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000196/rss_1000196.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>The event data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="event_geojson" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000196/geojson_1000196_1.geojson" type="geojson">
+          <gdacs:title>Event in geojson format</gdacs:title>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000196/geojson_1000196_1.geojson" type="json">
+          <gdacs:title>The Event in GeoJson format</gdacs:title>
+          <gdacs:description>The data in json format</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="http://www.inform-index.org/" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="JRC" url="http://www.gdacs.org//datareport/resources/FL/1000196/rss_1000196_1.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>The episode data in xml format</gdacs:description>
+          <gdacs:acknowledgements>NASA Experimental Product</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers />
+    </item>
+  </channel>
+</rss><!--End 5/20/2018 11:15:09 PM-->

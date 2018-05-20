@@ -72,19 +72,19 @@ var MAX_RADIUS= 15;
 
 var hazardList = [];
 
-var filterHazards = function(res) { 
+var filterHazards = function(res) {
+
     for (var i = res.features.length-1; i >= 0; i--) {
         // going backwards means the element we splice out won't change the index of other elements we need to splice out :)
 
         for (var j = 0; j < hazardList.length; j++) {
             if (turf.distance(res.features[i].geometry.coordinates, hazardList[j].geometry.coordinates) < 5) {
-                hazardList.push(res.features[i]);
                 res.features.splice(i,1);
-            } else {
-                hazardList.push(res.features[i]);
             }
         }
-
+    }
+    for (var i = 0; i < res.features.length; i++) {
+        hazardList.push(res.features[i]);
     }
     return res;
 };
