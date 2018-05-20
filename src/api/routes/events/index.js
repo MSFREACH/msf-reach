@@ -33,15 +33,15 @@ export default ({ config, db, logger }) => {
             const location = {
                 lng: req.query.lng,
                 lat: req.query.lat
-            }
+            };
             events(config, db, logger).all(req.query.status, req.query.country, location)
-            .then((data) => handleGeoResponse(data, req, res, next))
-            .catch((err) => {
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
                 /* istanbul ignore next */
-                logger.error(err);
-                /* istanbul ignore next */
-                next(err);
-            });
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
         }
     );
 

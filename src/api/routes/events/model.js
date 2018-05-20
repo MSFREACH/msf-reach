@@ -37,7 +37,7 @@ export default (config, db, logger) => ({
             .catch((err) => reject(err));
     }),
 
-  /**
+    /**
    * Return event specified by ID
    * @param {integer} id ID of event
    */
