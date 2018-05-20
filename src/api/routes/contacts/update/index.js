@@ -16,7 +16,7 @@ import mail from '../../../../lib/mailer';
 import BaseJoi from 'joi';
 import Extension from 'joi-date-extensions';
 const Joi = BaseJoi.extend(Extension);
-import validate from 'celebrate';
+import { celebrate as validate } from 'celebrate';
 
 export default ({ config, db, logger }) => {
     let api = Router();
