@@ -20,7 +20,7 @@ export default (config, db, logger) => ({
     }),
 
     validateGUID: (email, guid) => new Promise((resolve, reject) => {
-        let query = `SELECT id FROM ${config.TABLE_CONTACTS} WHERE (properties->>'email' = $1 or properties->>'email2' = $2) AND properties->>'guid' = $2 AND (extract(epoch from now()) - (properties->>'guid_timestamp')::real) <= ${config.PEER_GUID_TIMEOUT}`;
+        let query = `SELECT id, ST_X(the_geom) as lng, ST_Y(the_geom) as lat, properties FROM ${config.TABLE_CONTACTS} WHERE (properties->>'email' = $1 or properties->>'email2' = $2) AND properties->>'guid' = $2 AND (extract(epoch from now()) - (properties->>'guid_timestamp')::real) <= ${config.PEER_GUID_TIMEOUT}`;
 
         let values = [email, guid];
 

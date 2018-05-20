@@ -53,6 +53,34 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    // get a peer contact details before update
+    api.get('/byEmail',
+        validate({
+            query: {
+                email: Joi.string().required(),
+                guid: Joi.string().min(36).max(36).required()
+            }
+        }),
+        (req, res, next) => {
+        // Validate the GUID against the email
+            update(config, db, logger).validateGUID(req.query.email, req.query.guid)
+                .then((data) => {
+                    if (data !== null){
+                    // Validation successful,
+                        res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: data });
+                    }
+                    else {
+                        res.status(401).json({ statusCode: 401, time:new Date().toISOString(), result: 'Contact GUID invalid or expired' });
+                    }
+                })
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        });
+
     // Allow a peer to update their contact record in the database using one-time-link (GUID)
     api.patch('/',
         validate({

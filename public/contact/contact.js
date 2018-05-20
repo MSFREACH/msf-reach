@@ -2,28 +2,80 @@ var doItOnce=true;
 
 
 $(function () {
-  $('#permission').toggle(localStorage.getItem('username')!=null);
-  $('#sharepoint').toggle(localStorage.getItem('username')!=null);
-  $('#private').toggle(localStorage.getItem('username')!=null);
-
-  var qGUID=getQueryVariable('token');
-  var qEmail=getQueryVariable('email');
-
-  if (qGUID && qEmail)
-  {
-    $('#updateModal').modal('show');
-    $('#updateModalBody').html(qGUID+' - '+qEmail);
-  }
-
-
-
-    var $sections = $('.form-section');
+    $('#permission').toggle(localStorage.getItem('username')!=null);
+    $('#sharepoint').toggle(localStorage.getItem('username')!=null);
+    $('#private').toggle(localStorage.getItem('username')!=null);
 
     const STARTPAGEINDEX = 0;
     const CHECKEMAILPAGEINDEX =1;
     const NAMESECTIONINDEX = 2;
     const MAPSECTIONINDEX = 4;
     const CONTACTDETAILSINDEX =5;
+
+    var qGUID=getQueryVariable('token');
+    var qEmail=getQueryVariable('email');
+
+    if (qGUID && qEmail)
+    {
+        $('#updateModal').modal('show');
+        $('#updateModalBody').html('Loading contact data ...');
+        $.ajax({
+            type: 'GET',
+            url: '/api/contacts/peers/byemail',
+            data: { guid: qGUID,
+                email: qEmail },
+            contentType: 'application/json'
+        }).done(function( resp, textStatus, req ){
+            $('#updateModalBody').html('Contact retrieved!');
+            console.log(resp);
+            //test
+            //'location':newContactMap.msf_latlng,
+            newContactMap.setView([resp.result.lat, resp.result.lng],17);
+            newContactMap.msf_latlng = {lat: resp.result.lat, lng: resp.result.lng};
+            newContactMap.msf_marker = L.marker({lat: resp.result.lat, lng: resp.result.lng}).addTo(newContactMap);
+            var props=resp.result.properties;
+            $('#mapAddress').val(props.address);
+            $('#inputContactTitle').val(props.title); //'title':  || $('#inputContactOtherTitle').val(),
+            $('#inputContactOtherName').val(props.otherNames);
+            if ((props.gender=='male')||(props.gender=='female'))
+                $('#inputGender').val(props.gender);
+            else {
+                $('#inputGender option:last').attr('selected',true);
+                $('#inputContactOtherGender').val(props.gender);
+            }
+
+            //'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
+            //var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
+            $('#inputContactFirstName').val(props.name.split(' ')[0]);
+            $('#inputContactLastName').val(props.name.split(' ')[1]);
+            $('#inputSpeciality').val(props.speciality);
+
+            //'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
+            $('#datepicker').val(props.dob);
+            $('#inputContactWeb').val(props.web) ;
+            //'email':$('#inputContactEmail').val(),
+            $('#inputContactEmailRO').val(props.email);
+            $('#inputContactEmail2').val(props.email2);
+            $('#inputContactSharepoint').val(props.sharepoint);
+            $('#inputWhatsApp').val(props.WhatsApp);
+            $('#inputFacebook').val(props.Facebook);
+            $('#inputTwitter').val(props.Twitter);
+            $('#inputInstagram').val(props.Instagram);
+            $('#inputTelegram').val(props.Telegram);
+            $('#inputSkype').val(props.Skype);
+            navigateTo(NAMESECTIONINDEX);
+
+        }).fail(function (req, textStatus, err){
+            $('#updateModalBody').html('An error ' + err + 'occured');
+        });
+
+    }
+
+
+
+    var $sections = $('.form-section');
+
+
     function navigateTo(index) {
     // Mark the current section with the class 'current'
         $sections
@@ -38,7 +90,10 @@ $(function () {
         if (index == MAPSECTIONINDEX && doItOnce)
         {
             newContactMap.invalidateSize();
-            newContactMap.locate({setView: true, maxZoom: 16});
+            if (newContactMap.msf_latlng)
+                newContactMap.setView(newContactMap.msf_latlng,17);
+            else
+                newContactMap.locate({setView: true, maxZoom: 17});
             doItOnce=false;
         }
     }
@@ -109,44 +164,44 @@ $(function () {
 
         if (cInd==CHECKEMAILPAGEINDEX)
         {
-          if (!valid_email($('#inputContactEmail').val()))
-          {
-              alert('Please enter a valid email address to proceed.');
-              return;
-          }
-          $('.msf-contact-loader').show();
-          $('#checkEmailDiv').html('Verifying email ...')
+            if (!valid_email($('#inputContactEmail').val()))
+            {
+                alert('Please enter a valid email address to proceed.');
+                return;
+            }
+            $('.msf-contact-loader').show();
+            $('#checkEmailDiv').html('Verifying email ...');
 
-          $.ajax({
-              type: 'GET',
-              url: '/api/contacts/peers',
-              data: {
-                email: $('#inputContactEmail').val()
-              },
-              contentType: 'application/json'
-          }).done(function( data, textStatus, req ){
-             console.log(data);
-             $('.msf-contact-loader').hide();
-             if (data.emailExists)
-             {
-               $('#checkEmailDiv').html('<p> This email already exists in the database. we have sent you an email with instructions on how to update or delete this contact.');
-               $('.form-navigation .next').html('Try Again');
-             }
-               else{
-                 $('#checkEmailDiv').html('Email checked.')
-                 $('#inputContactEmailRO').val($('#inputContactEmail').val());
-                 $('.form-navigation .next').html('Next');
-                 navigateTo(cInd + 1);
-               }
+            $.ajax({
+                type: 'GET',
+                url: '/api/contacts/peers',
+                data: {
+                    email: $('#inputContactEmail').val()
+                },
+                contentType: 'application/json'
+            }).done(function( data, textStatus, req ){
+                console.log(data);
+                $('.msf-contact-loader').hide();
+                if (data.emailExists)
+                {
+                    $('#checkEmailDiv').html('<p> This email already exists in the database. we have sent you an email with instructions on how to update or delete this contact.');
+                    $('.form-navigation .next').html('Try Again');
+                }
+                else{
+                    $('#checkEmailDiv').html('Email checked.');
+                    $('#inputContactEmailRO').val($('#inputContactEmail').val());
+                    $('.form-navigation .next').html('Next');
+                    navigateTo(cInd + 1);
+                }
 
-          }).fail(function (req, textStatus, err){
-            $('.msf-contact-loader').hide();
-              $('#checkEmailDiv').html('An error ' + err + 'occured');
-          });
+            }).fail(function (req, textStatus, err){
+                $('.msf-contact-loader').hide();
+                $('#checkEmailDiv').html('An error ' + err + 'occured');
+            });
         }
         else{
-         navigateTo(cInd + 1);
-       }
+            navigateTo(cInd + 1);
+        }
     });
 
     navigateTo(0); // Start at the beginning
