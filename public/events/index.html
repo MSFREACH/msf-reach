@@ -571,7 +571,7 @@
                   <tr><td>Country</td><td> {{ event.metadata.country }}</td></tr>
                   <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
                   <tr><td>Type</td><td> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
-                  <tr><td>Event date and Time</td><td> {{ event.metadata.event_datetime || event.created_at }}</td></tr>
+                  <tr><td>Event date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>
 
@@ -579,7 +579,7 @@
                   <tr><td>Severity </td><td> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
                   <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
-                  <tr><td>Last updated at</td><td> {{ event.updated_at.split('T')[0] }}</td></tr>
+                  <tr><td>Last updated at</td><td> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
 
                   <tr><td>Event link</td><td><a id='eventLink'  :href='eventLink' target='_blank'>{{ eventLink }}</a></td><td><button class='btn btn-primary' data-clipboard-target='#eventLink'>Copy link</button></td></tr>
 
@@ -607,7 +607,7 @@
                               <thead><tr><td>Time</td><td>Notification</td></tr></thead>
                               <tbody>
                                 <tr v-for="elem in event.metadata.notification">
-                                  <td>{{ (new Date(elem.notification_time*1000)).toLocaleString() }}</td>
+                                  <td>{{ (new Date(elem.notification_time*1000)).toLocaleString().replace(/:\d{2}$/,'') }}</td>
                                   <td> {{ elem.notification }}</td>
                                 </tr>
                               </tbody>
@@ -1070,8 +1070,6 @@
 <script src="/lib/jquery/jquery.validate.js"></script>
 <!-- Cookies -->
 <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
-<!-- Turf.js distance -->
-<script src="/lib/turf.min.js" ></script>
 <!--Twitter-->
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <!--Google translate-->

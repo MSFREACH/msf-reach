@@ -14,11 +14,11 @@
         </dl>
         <dl>
           <dt>Open Date of event</dt>
-          <dd><span class="event-startDate">{{mission.startDate}}</span></dd>
+          <dd><span class="event-startDate">{{(new Date(mission.startDate)).toLocaleString().replace(/:\d{2}$/,'')}}</span></dd>
         </dl>
         <dl>
           <dt>Closure Date of event</dt>
-          <dd><span class="event-finishDate">{{mission.finishDate}}</span></dd>
+          <dd><span class="event-finishDate">{{(new Date(mission.finishDate)).toLocaleString().replace(/:\d{2}$/,'')}}</span></dd>
         </dl>
         <dl>
           <dt>Status</dt>
@@ -29,15 +29,15 @@
           <dd>{{mission.sub_type}}</dd>
         </dl>
         <dl>
-          <dt>Date and hours (local time) of the disaster</dt>
-          <dd>{{mission.event_datetime | formatFullDate}}</dd>
+          <dt>Date and time (local time) of the disaster</dt>
+          <dd>{{(new Date(mission.event_datetime)).toLocaleString().replace(/:\d{2}$/,'')}}</dd>
         </dl>
         <dl>
           <dt>Mission Contact Person</dt>
           <dd>{{mission.incharge_position}}</dd>
           <dd>{{mission.incharge_name}}</dd>
-          <dd>{{mission.mission_contact_person.arrival_time}}</dd>
-          <dd>{{mission.mission_contact_person.departure_time}}</dd>
+          <dd>{{(new Date(mission.mission_contact_person.arrival_time)).toLocaleString().replace(/:\d{2}$/,'')}}</dd>
+          <dd>{{(new Date(mission.mission_contact_person.departure_time)).toLocaleString().replace(/:\d{2}$/,'')}}</dd>
         </dl>
         <dl>
           <dt>Main results of the explo-mission</dt>
@@ -79,11 +79,11 @@
             </dl>
             <dl>
               <dt>Start Date of the MSF response</dt>
-              <dd>{{mission.start_date_msf_response | formatFullDate}}</dd>
+              <dd>{{(new Date(mission.start_date_msf_response)).toLocaleString().replace(/:\d{2}$/,'') | formatFullDate}}</dd>
             </dl>
             <dl>
               <dt>End Date of the MSF response</dt>
-              <dd>{{mission.end_date_msf_response | formatFullDate}}</dd>
+              <dd>{{(new Date(mission.end_date_msf_response)).toLocaleString().replace(/:\d{2}$/,'') | formatFullDate}}</dd>
             </dl>
             <dl>
               <dt>Location of MSF response</dt>
@@ -99,13 +99,13 @@
               <dt>Medical material</dt>
               <dd>{{mission.msf_response_medical_material.toString() | relaceUnderscore}}</dd>
               <dd>Total: {{mission.msf_response_medical_material_total}}</dd>
-              <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatFullDate}}</dd>
+              <dd>Date of arrival: {{(new Date(mission.msf_response_medical_material_date_arrival)).toLocaleString().replace(/:\d{2}$/,'') }}</dd>
             </dl>
             <dl>
               <dt>Non medical material</dt>
               <dd>{{mission.msf_response_non_medical_material.toString() | relaceUnderscore}}</dd>
               <dd>Total: {{mission.msf_response_non_medical_material_total}}</dd>
-              <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatFullDate}}</dd>
+              <dd>Date of arrival: {{(new Date(mission.msf_response_non_medical_material_date_arrival)).toLocaleString().replace(/:\d{2}$/,'') }}</dd>
             </dl>
           </div>
         </div>
@@ -150,7 +150,7 @@
                     {{item.deployment}}
                   </td>
                   <td>
-                    {{item.arrival_date}}
+                    {{(new Date(item.arrival_date)).toLocaleString().replace(/:\d{2}$/,'')}}
                   </td>
                 </tr>
               </tbody>
@@ -228,7 +228,7 @@
             </dl>
             <dl>
               <dt>When were they hired by MSF? / When do they arrive on the ground?</dt>
-              <dd>{{mission.msf_resource_hired_date}} arrive on {{mission.msf_resource_arrive_to_ground}}</dd>
+              <dd>{{(new Date(mission.msf_resource_hired_date)).toLocaleString().replace(/:\d{2}$/,'')}} arrive on {{(new Date(mission.msf_resource_arrive_to_ground))..toLocaleString().replace(/:\d{2}$/,'')}}</dd>
             </dl>
             <dl>
               <dt>Visa requirement</dt>

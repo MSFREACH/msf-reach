@@ -143,7 +143,7 @@ dd.padding-bottom {
             </dl>
             <dl>
               <dt>Open Date of event</dt>
-              <dd>{{ event.metadata.event_datetime | formatFullDate }}</dd>
+              <dd>{{ (new Date(event.metadata.event_datetime)).toLocaleString().replace(/:\d{2}$/,'') }}</dd>
             </dl>
             <dl>
               <dt>Status</dt>
