@@ -894,6 +894,12 @@ $('#btnArchive').click(function(e){
     });
 });
 
+// fill in share buttons with URLs
+$("[id$=EventShareButton]").attr("data-url",window.location);
+$("[id$=ReportShareButton]").attr("data-url",eventReportLink);
+
+
+
 // Edit support
 $('#btnSaveEdits').click(function(e){
 

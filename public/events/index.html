@@ -44,6 +44,10 @@
   <!-- Copy to clipboard functionality -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 
+  <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons"></script>
+
+
+
   <!-- Events -->
   <link rel="stylesheet" href="/resources/css/events.css"/>
 
@@ -581,7 +585,9 @@
                   <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
                   <tr><td>Last updated at</td><td> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
 
-                  <tr><td>Event link</td><td><a id='eventLink'  :href='eventLink' target='_blank'>{{ eventLink }}</a></td><td><button class='btn btn-primary' data-clipboard-target='#eventLink'>Copy link</button></td></tr>
+                  <tr><td>Event link</td><td><a id='eventLink'  :href='eventLink' target='_blank'>{{ eventLink }}</a></td><td>
+                    <div class="sharethis-inline-share-buttons"></div>
+                    </td></tr>
 
                   <tr><td>Report</td><td><button class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">Create a new report</button></td>
                   <td><a style="display:none;" id='reportLink' :href='eventReportLink' target='_blank'> {{ eventReportLink }} </a><button class='btn btn-primary' :data-clipboard-text='eventReportLink'>Copy link</button></td></tr>
