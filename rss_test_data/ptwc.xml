@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"
+                    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+                    xmlns:georss="http://www.georss.org/georss">
+ <channel>
+  <title>PTWC - Pacific Ocean Bulletins</title>
+  <link>http://ptwc.weather.gov/?region=1</link>
+  <atom:link href="http://ptwc.weather.gov/feeds/ptwc_rss_pacific.xml" rel="self" type="application/rss+xml" />
+  <description>Tsunami warnings and information for Pacific Ocean countries</description>
+  <language>en-us</language>
+  <managingEditor>ptwc@ptwc.noaa.gov (PTWC)</managingEditor>
+  <webMaster>ptwc@ptwc.noaa.gov (PTWC Webmaster)</webMaster>
+  <image>
+   <url>http://weather.gov/images/xml_logo.gif</url>
+   <title>PTWC - Pacific Ocean Bulletins</title>
+   <link>http://ptwc.weather.gov/?region=1</link>
+  </image>
+  <lastBuildDate>29 Mar 2018 22:46:23 GMT</lastBuildDate>
+<item>
+<title>Ptwc Final Tsunami Threat Message</title>
+<pubDate>29 Mar 2018 22:46:23 GMT</pubDate>
+<link>http://ptwc.weather.gov/?region=1&amp;id=pacific.TSUPAC.2018.03.29.2246</link>
+<guid isPermaLink="false">pacific.TSUPAC.2018.03.29.2246</guid>
+<author>ptwc@ptwc.noaa.gov (PTWC)</author>
+<category>information</category>
+<geo:lat>-5.6</geo:lat>
+<geo:long>151.6</geo:long>
+<georss:point>-5.6 151.6</georss:point>
+<georss:radius>7.2</georss:radius>
+<georss:featurename></georss:featurename>
+<description><![CDATA[<pre>
+000
+WEPA40 PHEB 292246
+TSUPAC
+
+TSUNAMI MESSAGE NUMBER 3
+NWS PACIFIC TSUNAMI WARNING CENTER EWA BEACH HI
+2245 UTC THU MAR 29 2018
+
+...PTWC FINAL TSUNAMI THREAT MESSAGE...
+
+
+**** NOTICE **** NOTICE **** NOTICE **** NOTICE **** NOTICE *****
+
+ THIS MESSAGE IS ISSUED FOR INFORMATION ONLY IN SUPPORT OF THE
+ UNESCO/IOC PACIFIC TSUNAMI WARNING AND MITIGATION SYSTEM AND IS
+ MEANT FOR NATIONAL AUTHORITIES IN EACH COUNTRY OF THAT SYSTEM.
+
+ NATIONAL AUTHORITIES WILL DETERMINE THE APPROPRIATE LEVEL OF
+ ALERT FOR EACH COUNTRY AND MAY ISSUE ADDITIONAL OR MORE REFINED
+ INFORMATION.
+
+**** NOTICE **** NOTICE **** NOTICE **** NOTICE **** NOTICE *****
+
+THE TSUNAMI FORECAST IS UNCHANGED IN THIS MESSAGE.
+
+
+PRELIMINARY EARTHQUAKE PARAMETERS
+---------------------------------
+
+  * MAGNITUDE      7.2
+  * ORIGIN TIME    2126 UTC MAR 29 2018
+  * COORDINATES    5.6 SOUTH  151.6 EAST
+  * DEPTH          10 KM / 6 MILES
+  * LOCATION       NEW BRITAIN REGION  PAPUA NEW GUINEA
+
+
+EVALUATION
+----------
+
+  * AN EARTHQUAKE WITH A PRELIMINARY MAGNITUDE OF 7.2 OCCURRED IN
+    THE NEW BRITAIN REGION, PAPUA NEW GUINEA AT 2126 UTC ON
+    THURSDAY MARCH 29 2018.
+
+  * BASED ON ALL AVAILABLE DATA... THE TSUNAMI THREAT FROM THIS
+    EARTHQUAKE HAS NOW PASSED.
+
+
+TSUNAMI THREAT FORECAST...UPDATED
+---------------------------------
+
+  * THERE IS NO LONGER A TSUNAMI THREAT FROM THIS EARTHQUAKE.
+
+
+RECOMMENDED ACTIONS
+-------------------
+
+  * REMAIN OBSERVANT AND EXERCISE NORMAL CAUTION NEAR THE SEA.
+    OTHERWISE... NO ACTION IS REQUIRED.
+
+
+POTENTIAL IMPACTS
+-----------------
+
+  * MINOR SEA LEVEL FLUCTUATIONS MAY OCCUR IN SOME COASTAL AREAS
+    NEAR THE EARTHQUAKE OVER THE NEXT FEW HOURS.
+
+
+NEXT UPDATE AND ADDITIONAL INFORMATION
+--------------------------------------
+
+  * THIS WILL BE THE FINAL STATEMENT ISSUED FOR THIS EVENT UNLESS
+    NEW INFORMATION IS RECEIVED OR THE SITUATION CHANGES.
+
+  * AUTHORITATIVE INFORMATION ABOUT THE EARTHQUAKE FROM THE U.S.
+    GEOLOGICAL SURVEY CAN BE FOUND ON THE INTERNET AT
+    EARTHQUAKE.USGS.GOV/EARTHQUAKES -ALL LOWER CASE-.
+
+  * FURTHER INFORMATION ABOUT THIS EVENT MAY BE FOUND AT
+    PTWC.WEATHER.GOV AND AT WWW.TSUNAMI.GOV.
+
+  * COASTAL REGIONS OF HAWAII... AMERICAN SAMOA... GUAM... AND
+    CNMI SHOULD REFER TO PACIFIC TSUNAMI WARNING CENTER MESSAGES
+    SPECIFICALLY FOR THOSE PLACES THAT CAN BE FOUND AT
+    PTWC.WEATHER.GOV.
+
+  * COASTAL REGIONS OF CALIFORNIA... OREGON... WASHINGTON...
+    BRITISH COLUMBIA AND ALASKA SHOULD ONLY REFER TO U.S.
+    NATIONAL TSUNAMI WARNING CENTER MESSAGES THAT CAN BE FOUND
+    AT NTWC.ARH.NOAA.GOV.
+
+$$
+
+
+</pre>]]></description>
+</item></channel>
+</rss>

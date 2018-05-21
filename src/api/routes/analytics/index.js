@@ -24,7 +24,8 @@ export default ({ config, logger }) => {
         }),
         (req, res, next) => {
             let eventBody=req.body;
-            var options = {
+            eventBody.location = [ eventBody.location.lng, eventBody.location.lat ];
+            let options = {
                 method: 'POST',
                 uri: 'https://msf-api.vizalytics.com/event',
                 body: eventBody  /*{

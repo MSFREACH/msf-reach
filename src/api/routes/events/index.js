@@ -13,23 +13,36 @@ import { celebrate as validate, Joi } from 'celebrate';
 export default ({ config, db, logger }) => {
     let api = Router();
 
+    // Validation schema
+    const schemaGetAll = Joi.object().keys(
+        {
+            geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
+            status: Joi.any().valid(config.API_EVENT_STATUS_TYPES),
+            country: Joi.string(),
+            lng: Joi.number().min(-180).max(180),
+            lat: Joi.number().min(-90).max(90),
+        }
+    ).with('lng', 'lat');
+
     // Get a list of all events
     api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
         validate({
-            query: {
-                geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
-                status: Joi.any().valid(config.API_EVENT_STATUS_TYPES),
-                country: Joi.string()
-            }
+            query: schemaGetAll
         }),
-        (req, res, next) => events(config, db, logger).all(req.query.status, req.query.country)
-            .then((data) => handleGeoResponse(data, req, res, next))
-            .catch((err) => {
+        (req, res, next) => {
+            const location = {
+                lng: req.query.lng,
+                lat: req.query.lat
+            };
+            events(config, db, logger).all(req.query.status, req.query.country, location)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
                 /* istanbul ignore next */
-                logger.error(err);
-                /* istanbul ignore next */
-                next(err);
-            })
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
     );
 
     // Get a single event

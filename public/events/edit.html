@@ -68,7 +68,7 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Precise location of the emergency</dt>
+              <dt>Add region for the emergency</dt>
               <dd class="bottom-margined">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
               </dd>
@@ -136,14 +136,14 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Region</dt>
+              <dt>Region(s)</dt>
               <dd>
                 <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
               </dd>
             </dl>
             <dl>
               <dt>Open Date of event</dt>
-              <dd>{{ event.metadata.event_datetime | formatFullDate }}</dd>
+              <dd>{{ (new Date(event.metadata.event_datetime)).toLocaleString().replace(/:\d{2}$/,'') }}</dd>
             </dl>
             <dl>
               <dt>Status</dt>

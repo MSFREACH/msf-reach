@@ -55,8 +55,8 @@ var mapEditEvents = function(err, events){
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
-    'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+    'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>' +
+    'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type,feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
