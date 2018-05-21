@@ -806,7 +806,7 @@ var mapMissions = function(missions ){
     }
 
 
-    layerControl.addOverlay(missionsClusters, 'Missions');
+    layerControl.addOverlay(missionsClusters, 'Past MSF Responses');
 
 };
 
