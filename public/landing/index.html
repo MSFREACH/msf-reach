@@ -19,41 +19,7 @@
     <!-- Bootstrap core CSS -->
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-    .container {
-      position: relative;
-      height: 14rem;
-      border: 1px solid;
-    }
-
-    .img {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 40%;
-    }
-
-    @font-face {
-        font-family: "stone_sans";
-        src: url("/resources/fonts/stone_sans_bold_italic.woff") format('woff');
-        font-weight: bold;
-        font-style: italic;
-    }
-
-    .jumbotron {
-      position: absolute;
-      background-color: white;
-      top: 50%;
-      left:50%;
-      transform: translate(-50%,-50%);
-      border: 5px solid black;
-    }
-
-    .stone_sans {
-      font-family: 'stone_sans';
-      font-size: 200%;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="landing.css">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -140,6 +106,6 @@
     <script src="/lib/aws/aws-cognito-sdk.min.js"></script>
     <script src="/lib/aws/amazon-cognito-identity.min.js"></script>
     <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
-    <script src="login.js"></script>
+    <script src="landing.js"></script>
   </body>
 </html>

@@ -1,0 +1,33 @@
+.container {
+  position: relative;
+  height: 14rem;
+  border: 1px solid;
+}
+
+.img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+}
+
+@font-face {
+    font-family: "stone_sans";
+    src: url("/resources/fonts/stone_sans_bold_italic.woff") format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+.jumbotron {
+  position: absolute;
+  background-color: white;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  border: 3px solid black;
+}
+
+.stone_sans {
+  font-family: 'stone_sans';
+  font-size: 200%;
+}
