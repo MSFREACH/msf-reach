@@ -3,9 +3,9 @@
 var USERNAME = localStorage.getItem('username');
 
 if (!USERNAME) {
-  $('#username').append('SESSION');
+    $('#username').append('SESSION');
 } else {
-  $('#username').append(USERNAME);
+    $('#username').append(USERNAME);
 }
 
 $('#logout').click(function() {
