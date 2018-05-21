@@ -515,7 +515,8 @@ describe('Cognicity Server Testing Harness', function() {
                                 'name': 'Joe Bloggs',
                                 'gender': 'Male',
                                 'cell': '+1 234',
-                                'email': 'joe@email.com'
+                                'email': 'joe@email.com',
+                                'msf_entered': true
                             },
                             'private': true,
                             'location': {
