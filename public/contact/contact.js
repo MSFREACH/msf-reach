@@ -32,7 +32,7 @@ $(function () {
                     url: '/api/contacts/peers?email='+qEmail+'&guid='+qGUID,
                     data: {},
                     contentType: 'application/json'
-                }).done(function( resp, textStatus, req ){
+                }).done(function( resp, textStatus, req ){ // eslint-disable-line no-unused-vars
                     //console.log(resp);
                     if (resp.statusCode==200)
                     {
@@ -40,7 +40,7 @@ $(function () {
                         location.href='/contact/';
 
                     }
-                }).fail(function (req, textStatus, err){
+                }).fail(function (req, textStatus, err){ // eslint-disable-line no-unused-vars
                     $('#updateModalMsg').html('Error in deleting contact.');
 
                 });
@@ -53,7 +53,7 @@ $(function () {
             data: { guid: qGUID,
                 email: qEmail },
             contentType: 'application/json'
-        }).done(function( resp, textStatus, req ){
+        }).done(function( resp, textStatus, req ){ // eslint-disable-line no-unused-vars
             $('#updateModalBody .msf-contact-loader').hide();
             $('#updateModalMsg').html('Contact deatils successfully retrieved. ');
             //console.log(resp);
@@ -210,7 +210,7 @@ $(function () {
                     email: $('#inputContactEmail').val()
                 },
                 contentType: 'application/json'
-            }).done(function( data, textStatus, req ){
+            }).done(function( data, textStatus, req ){ // eslint-disable-line no-unused-vars
                 //console.log(data);
                 $('.msf-contact-loader').hide();
                 if (data.emailExists)
