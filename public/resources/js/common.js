@@ -148,7 +148,7 @@ function openReportPopup(id) {
 **/
 var getFeeds = function(url, callback) {
     $.getJSON(url, function( data ){
-        data.result;
+        callback(data.result);
     }).fail(function(err) {
         if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
             alert('session expired');
