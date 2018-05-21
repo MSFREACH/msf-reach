@@ -74,7 +74,7 @@ function postContact() {
             'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
             'dob':$('#datepicker').val(),
             'web': $('#inputContactWeb').val() || '',
-            'email':$('#inputContactEmail').val(),
+            'email':$('#inputContactEmailRO').val(),
             'email2': $('#inputContactEmail2').val() || '',
             'sharepoint': $('#inputContactSharepoint').val() || '',
             'WhatsApp': $('#inputWhatsApp').val() || '',
@@ -151,6 +151,101 @@ function postContact() {
     });
 }
 
+/** update contact Information
+* @function patchContact
+*/
+function patchContact() {
+    var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
+
+    var body = {
+        'location':newContactMap.msf_latlng,
+        'properties':{
+            'address': $('#mapAddress').val(),
+            'title': $('#inputContactTitle').val() || $('#inputContactOtherTitle').val(),
+            'otherNames': $('#inputContactOtherName').val() || '',
+            'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
+            'name': contName.trim(),
+            'speciality': $('#inputSpeciality').val() || '',
+            'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
+            'dob':$('#datepicker').val(),
+            'web': $('#inputContactWeb').val() || '',
+            'email':$('#inputContactEmailRO').val(),
+            'email2': $('#inputContactEmail2').val() || '',
+            'sharepoint': $('#inputContactSharepoint').val() || '',
+            'WhatsApp': $('#inputWhatsApp').val() || '',
+            'Facebook': $('#inputFacebook').val() || '',
+            'Twitter': $('#inputTwitter').val() || '',
+            'Instagram': $('#inputInstagram').val() || '',
+            'Telegram': $('#inputTelegram').val() || '',
+            'Skype': $('#inputSkype').val() || '',
+        }
+    };
+
+    if (localStorage.getItem('oid')) {
+        body['oid'] = localStorage.getItem('oid');
+    }
+    if (localStorage.getItem('username')!=null) {
+        body.properties['msf_entered'] = true;
+        if ($('#inputPrivate').is(':checked')) {
+            body['private'] = true;
+        } else {
+            body['private'] = false;
+        }
+    } else {
+        body.properties['msf_entered'] = false;
+        body['private'] = false;
+    }
+
+    if ($('#inputContactCell').val()) {
+        body.properties['cell']=$('#inputContactCell').intlTelInput('getNumber');
+    } else {
+        body.properties['cell'] = '';
+    }
+    if ($('#inputContactHome').val()) {
+        body.properties['home']=$('#inputContactHome').intlTelInput('getNumber');
+    }
+    else {
+        body.properties['home'] = '';
+    }
+    if ($('#inputContactWork').val()) {
+        body.properties['work']=$('#inputContactWork').intlTelInput('getNumber');
+    } else {
+        body.properties['work'] = '';
+    }
+    if ($('#inputContactFax').val()) {
+        body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
+    } else {
+        body.properties['fax'] = '';
+    }
+
+    if ($('#inputContactType').val() === 'Current MSF Staff') {
+        body.properties['OC'] = $('#inputContactOC').val();
+        body.properties['msf_employment'] = $('#inputContactMSFEmploy').val();
+        body.properties['msf_section'] = $('#inputMSFSection').val() || '';
+        body.properties['msf_branch'] = $('#inputMSFBranch').val() || '';
+        body.properties['msf_project'] = $('#inputMSFProject').val() || '';
+        body.properties['msf_mission'] = $('#inputMSFMission').val() || '';
+    } else {
+        body.properties['msf_associate'] = $('#inputContactMSFAssociate').is(':checked');
+        body.properties['msf_peer'] = $('#inputContactMSFPeer').is(':checked');
+        body.properties['employer'] = $('#inputContactEmployerName').val() || '';
+        body.properties['job_title'] = $('#inputContactJobTitle').val() || '';
+        body.properties['division'] = $('#inputContactEmployerDivision').val() || '';
+    }
+
+    $.ajax({
+        type: 'PATCH',
+        url: '/api/contacts/peers?email='+qEmail+'&guid='+qGUID,
+        data: JSON.stringify(body),
+        contentType: 'application/json'
+    }).done(function( data, textStatus, req ){
+        $('#divProgress').html('Contact updated!');
+        $('#divSuccess').show(500);
+    }).fail(function (req, textStatus, err){
+        $('#divProgress').html('An error ' + err + 'occured');
+    });
+}
+
 $( function() {
     // add date picker element
     $( '#datepicker' ).datepicker({
@@ -168,6 +263,12 @@ $( function() {
 $('#createContact').on('click', function (e) {
     $('#divProgress').html('Submitting new contact...');
     postContact();
+});
+
+//Updaing contact
+$('#updateContact').on('click', function (e) {
+    $('#divProgress').html('Updating contact...');
+    patchContact();
 });
 
 // Set up phone elements (incl. validation)

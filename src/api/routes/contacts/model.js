@@ -118,13 +118,13 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_CONTACTS}
-   SET properties = properties || $1, updated_at = now()
+   SET properties = properties || $1, updated_at = now(), private=$3, the_geom=ST_SetSRID(ST_Point($4,$5),4326)
    WHERE id = $2
    RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
    the_geom`;
 
         // Setup values
-        let values = [ body.properties, id ];
+        let values = [ body.properties, id, body.private, body.location.lng, body.location.lat];
 
         // Execute
         logger.debug(query, values);

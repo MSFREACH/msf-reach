@@ -290,7 +290,8 @@
           <div class="form-navigation">
             <button type="button" class="previous btn btn-info pull-left">PREVIOUS</button>
             <button type="button" class="next btn btn-danger pull-right">NEXT</button>
-            <button type="button" id="createContact" class="btn btn-primary pull-right" style="display: none;">Submit</button>
+            <button type="button" id="createContact" class="btn btn-primary pull-right" style="display: none;">SUBMIT</button>
+            <button type="button" id="updateContact" class="btn btn-warning pull-right" style="display: none;">UPDATE</button>
             <span class="clearfix"></span>
           </div>
 
@@ -306,13 +307,16 @@
       <div class="modal-content" id="archiveEventModalContent">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Loading contact details</h4>
+          <h4 class="modal-title" id="myModalLabel">Edit or remove contact details</h4>
         </div>
         <div class="modal-body" id="updateModalBody">
+          <div class="msf-contact-loader" style="display:none;"></div>
+          <div id="updateModalMsg"></div>
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-msf" data-dismiss="modal">OK</button>
+          <button type="button" class="btn btn-danger" id="btnDeleteContact">DELETE</button>
+          <button type="button" class="btn btn-msf" data-dismiss="modal">EDIT</button>
         </div>
       </div>
     </div>

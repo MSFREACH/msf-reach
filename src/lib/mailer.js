@@ -35,7 +35,7 @@ export default ( config, logger ) => ({
 
         let uLink=config.BASE_URL+'contact/?token='+theGUID+'&email='+recipient;
 
-        let emContext={ updateLink: uLink};
+        let emContext={ updateLink: uLink ,expiresIn: config.PEER_GUID_TIMEOUT/3600 };
 
         const mailOptions = {
             from: 'MSF-REACH <admin@msf-reach.org>', // sender address

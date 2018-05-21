@@ -1,4 +1,7 @@
 var doItOnce=true;
+var updateMode=false;
+var qGUID=null;
+var qEmail=null;
 
 
 $(function () {
@@ -12,13 +15,38 @@ $(function () {
     const MAPSECTIONINDEX = 4;
     const CONTACTDETAILSINDEX =5;
 
-    var qGUID=getQueryVariable('token');
-    var qEmail=getQueryVariable('email');
+    qGUID=getQueryVariable('token');
+    qEmail=getQueryVariable('email');
 
     if (qGUID && qEmail)
     {
+        updateMode=true;
         $('#updateModal').modal('show');
-        $('#updateModalBody').html('Loading contact data ...');
+        $('#updateModalMsg').html('Loading contact data ...');
+        $('#updateModalBody .msf-contact-loader').show();
+        $('#btnDeleteContact').on('click',function(){
+          if (confirm('Are you sure you want tp remove this contact? This cannot be undone.'))
+          {
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/contacts/peers?email='+qEmail+'&guid='+qGUID,
+                data: {},
+                contentType: 'application/json'
+            }).done(function( resp, textStatus, req ){
+              console.log(resp);
+              if (resp.statusCode==200)
+              {
+                alert('Contact successfully removed');
+                location.href="/contact/"
+
+              }
+            }).fail(function (req, textStatus, err){
+              $('#updateModalMsg').html('Error in deleting contact.')
+
+            });
+
+          }
+        });
         $.ajax({
             type: 'GET',
             url: '/api/contacts/peers/byemail',
@@ -26,7 +54,8 @@ $(function () {
                 email: qEmail },
             contentType: 'application/json'
         }).done(function( resp, textStatus, req ){
-            $('#updateModalBody').html('Contact retrieved!');
+            $('#updateModalBody .msf-contact-loader').hide();
+            $('#updateModalMsg').html('Contact deatils successfully retrieved. ');
             console.log(resp);
             //test
             //'location':newContactMap.msf_latlng,
@@ -54,6 +83,7 @@ $(function () {
             $('#datepicker').val(props.dob);
             $('#inputContactWeb').val(props.web) ;
             //'email':$('#inputContactEmail').val(),
+            $('#inputContactEmailRO').attr('readonly',false);
             $('#inputContactEmailRO').val(props.email);
             $('#inputContactEmail2').val(props.email2);
             $('#inputContactSharepoint').val(props.sharepoint);
@@ -66,7 +96,8 @@ $(function () {
             navigateTo(NAMESECTIONINDEX);
 
         }).fail(function (req, textStatus, err){
-            $('#updateModalBody').html('An error ' + err + 'occured');
+            $('#updateModalBody .msf-contact-loader').hide();
+            $('#updateModalMsg').html('An error ' + err + 'occured');
         });
 
     }
@@ -83,10 +114,11 @@ $(function () {
             .eq(index)
             .addClass('current');
         // Show only the navigation buttons that make sense for the current section:
-        $('.form-navigation .previous').toggle(index > 0 && index<($sections.length - 1));
+        $('.form-navigation .previous').toggle(index > (updateMode ? NAMESECTIONINDEX : 0) && index<($sections.length - 1));
         var atTheEnd = index >= $sections.length - 2;
         $('.form-navigation .next').toggle(!atTheEnd);
-        $('.form-navigation [id=createContact]').toggle(index ==  $sections.length - 2 );
+        $('.form-navigation [id=createContact]').toggle((!updateMode)&&(index ==  $sections.length - 2) );
+        $('.form-navigation [id=updateContact]').toggle((updateMode)&&(index ==  $sections.length - 2) );
         if (index == MAPSECTIONINDEX && doItOnce)
         {
             newContactMap.invalidateSize();
@@ -208,6 +240,10 @@ $(function () {
 
 
     $('.form-navigation [id=createContact]').click(function(){
+        navigateTo($sections.length - 1);
+    });
+
+    $('.form-navigation [id=updateContact]').click(function(){
         navigateTo($sections.length - 1);
     });
 

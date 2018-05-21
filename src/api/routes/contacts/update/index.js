@@ -89,7 +89,12 @@ export default ({ config, db, logger }) => {
                 guid: Joi.string().min(36).max(36).required()
             },
             body: Joi.object().keys({
-                properties: Joi.object().required()
+                properties: Joi.object().required(),
+                private: Joi.boolean().required(),
+                location: Joi.object().required().keys({
+                    lat: Joi.number().min(-90).max(90).required(),
+                    lng: Joi.number().min(-180).max(180).required()
+                })
             })
         }),
         (req, res, next) => {
