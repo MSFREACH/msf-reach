@@ -140,8 +140,8 @@ var mapAllEvents = function(err, events){
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
-      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+      'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
       notificationStr +
@@ -267,7 +267,7 @@ var tableFeeds = function(feeds) {
                     '<div id="rssdiv'+feature.properties.id+'" class="list-group-item rss-item" onclick="openHazardPopup(\''+feature.properties.id+'\')">' +
          'Name: <a target="_blank" href="' + feature.properties.link + '">' + feature.properties.title + '</a><br>' +
          'Source: ' + feature.properties.source + '<br>' +
-         'Updated: ' + (new Date(feature.properties.updated)).toISOString().replace('T', ' ').replace('Z',' GMT') + '<br>' +
+         'Updated: ' + (new Date(feature.properties.updated)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
          'Summary: ' + feature.properties.summary.trim() + '<br>' +
          '</div>'
                 );
@@ -349,8 +349,8 @@ var mapMissions = function(missions ){
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
-            popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
-            popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
+            popupContent += 'Start date: ' + (new Date(feature.properties.properties.startDate)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>';
+            popupContent += 'Finish date: ' + (new Date(feature.properties.properties.finishDate)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>';
             popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
@@ -407,7 +407,7 @@ var mapMissions = function(missions ){
     }
 
 
-    layerControl.addOverlay(missionsClusters, 'Missions');
+    layerControl.addOverlay(missionsClusters, 'Past Mission Responses');
 
 };
 
@@ -476,7 +476,7 @@ var mapReports = function(reports,mapForReports){
                         /* refresh map
                       * - doesn't hurt for confirmed/unconfimed and
                       * calling this here will ensure ignored entries aren't put back on table
-                      */ 
+                      */
                         getReports(mainMap, mapReports);
                     }
                 });
@@ -689,6 +689,7 @@ var mapContacts = function(contacts ){
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
+      '<br>Private contact? ' + (feature.properties.private ? 'yes' : 'no') +
       '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
       '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
       '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +

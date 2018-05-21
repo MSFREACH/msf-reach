@@ -2,7 +2,11 @@
 
 var USERNAME = localStorage.getItem('username');
 
-$('#username').append(USERNAME);
+if (!USERNAME) {
+    $('#username').append('SESSION');
+} else {
+    $('#username').append(USERNAME);
+}
 
 $('#logout').click(function() {
     Cookies.remove('jwt', {path: '/'} );

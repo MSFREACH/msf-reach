@@ -33,7 +33,7 @@ export default (config, db, logger) => ({
       ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
       ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
       ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
-      ($10 IS NULL OR properties ->> 'type' ILIKE $9)
+      ($10 IS NULL OR properties ->> 'type' ILIKE $10)
      ORDER BY id`;
 
         // Format search string for Postgres

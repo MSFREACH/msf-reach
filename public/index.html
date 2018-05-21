@@ -169,7 +169,7 @@
                               <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
                             </div>
                             <div class="form-group">
-                              <label for="inputEvDateTime">Date and time of Event (local time in time zone of event)</label>
+                              <label for="inputEvDateTime">Date and time of Event (local time of operator)</label>
                               <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD HH:MM" >
                             </div>
                             <div class="form-group" >
@@ -249,8 +249,8 @@
                       <ul>
                         <li v-for="ins in res.insights">{{ins}}</li>
                       </ul>
-                      <h5> Contatcs: </h5>
-                      <p class="help-block"> Below are the contacts that are located in the area of disaster </p>
+                      <h5> Contacts: </h5>
+                      <p class="help-block"> Below are the contacts (if any have been found) that are located in the area of disaster. (This AI feature coming soon...)</p>
                       <ul>
                         <li v-for="c in res.data.contacts">{{c.name}}, <i> {{c.location}}</i>, <a>{{c.phone}}</a> </li>
                       </ul>
@@ -334,7 +334,7 @@
                         <span class="title"></span> <span class="name"></span>
                     </div>
                     <div class="form-group" style="display:none;">
-                        <label>Other names:</label>
+                        <label>Alias:</label>
                         <span class="otherNames"></span>
                     </div>
                     <div class="form-group"  style="display:none;">
@@ -481,7 +481,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabelMession">Mission History Details</h4>
+            <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
           </div>
           <div class="modal-body" id="missionModalBody">
             [modal content here]
@@ -578,9 +578,9 @@
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="username"></span> <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a href="#about" data-toggle="modal" data-target="#about">About MSF-REACH</a></li>
+                    <li><a href="#about" data-toggle="modal" data-target="#about">About MSF REACH</a></li>
                     <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
-                    <li><a id="logout" href="/logout">logout</a></li>
+                    <li><a id="logout" href="/logout">Sign out</a></li>
                   </ul>
             </ul>
           </div><!-- /.navbar-collapse -->
@@ -714,13 +714,10 @@
 
                 </div>
              </div>
-
-
-
-
-
           </div>
+          <span class="skype-button bubble" data-contact-id="docnat76"></span>
       </div>
+    <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
     <script src="/lib/lodash.min.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="lib/jquery/jquery-3.3.1.min.js"></script>

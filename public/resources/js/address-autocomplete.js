@@ -40,6 +40,14 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             $('#'+inputId+'Lng').val(foundLatLng.lng.toFixed(7));
         }
 
+        if (inputId === 'editEventAddress') {
+            for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
+                if (place.address_components[placeIdx].types.indexOf('administrative_area_level_1')>-1) {
+                    $('#eventRegion').val($('#eventRegion').val()+', '+place.address_components[placeIdx].long_name);
+                }
+            }
+        }
+
     });
 
     $('#'+inputId+'Locate').on('click',function(){

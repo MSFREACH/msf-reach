@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Login to MSF REACH</title>
+
+    <!-- favicons -->
+    <link rel="icon" type="image/png" href="/resources/images/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/resources/images/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/resources/images/favicons/favicon-96x96.png" sizes="96x96">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="landing.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+
+
+<!--
+          <nav class="navbar navbar-default">
+              <!-- Brand and toggle get grouped for better mobile display
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <!-- Collect the nav links, forms, and other content for toggling
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="infolink"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#about" data-toggle="modal" data-target="#about">About MSF-REACH</a></li>
+                        <li role="separator" class="divider"></li>
+                      </ul>
+                </ul>
+              </div><!-- /.navbar-collapse
+          </nav>
+
+        -->
+
+          <!-- About modal -->
+          <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAbout">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabelAbout">About MSF REACH</h4>
+                </div>
+                <div class="modal-body" id="AboutModalBody">
+                  <p>MSF REACH is an ongoing collaboration between MSF and Urban Systems and Environments Resarch Group LLP, with Across the Cloud Pty Ltd assisting USER Group.</p>
+
+                  <p>The objective of this partnership is to effectively and efficiently combine institutional data with crowd-sourced information (including social media, instant messaging, and relevant RSS feeds) in real-time, thereby equipping MSF with virtual eyes on the ground. REACH will leverage Artificial Intelligence [AI] as a mode of assisting human agents and operators; AI- assistance can automate time-consuming tasks, aid in data collection and management, enhance user capacities and capabilities, and ensure MSF emergency specialists focus on complex analysis and decision-making. With the further integration of comprehensive machine-learning [ML] processes, REACH has the potential to improve emergency monitoring and response performance in the region and beyond.</p>
+
+                  <p>For more information contact <a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+      <div class="jumbotron">
+        <div class="text-center stone_sans">
+          <b><i>REACH</b></i></span>
+        </div>
+        <img src="/resources/images/msf.jpg" width="300px">
+        <br />
+        <div class="text-center">
+          <a href="/login" class="btn btn-default">LOGIN</a>
+        </div>
+        <br />
+        <div class="text-center">
+          <a href="#about" class="btn btn-default" data-toggle="modal" data-target="#about">About MSF REACH</a>
+        </div>
+      </div>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Auth -->
+    <script src="/lib/aws/aws-cognito-sdk.min.js"></script>
+    <script src="/lib/aws/amazon-cognito-identity.min.js"></script>
+    <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
+    <script src="landing.js"></script>
+  </body>
+</html>

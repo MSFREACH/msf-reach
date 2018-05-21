@@ -353,8 +353,8 @@ var mapAllEvents = function(err, events){
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<BR>' +
-    'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+    'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>' +
+    'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
@@ -365,8 +365,8 @@ var mapAllEvents = function(err, events){
         $('#ongoingEventsContainer').append(
             '<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
-      'Last updated at: ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+      'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
       notificationStr +
@@ -456,7 +456,7 @@ var mapReports = function(reports,mapForReports){
               '</td><td>' +
               feature.properties.content['username/alias'] +
               '</td><td>' +
-              feature.properties.created.replace('T',' ') +
+              (new Date(feature.properties.created)).toLocaleString().replace(/:\d{2}$/,'')+
               '</td><td>' +
               '<select id="report-'+feature.properties.id+'">'+
                 '<option value="unconfirmed">unconfirmed</option>' +
@@ -590,7 +590,7 @@ var mapReports = function(reports,mapForReports){
     }
     layerControl.addOverlay(reportsContactsLayer, '- contacts', 'Reports');
 
-    if (points.length > 0){
+    if (points.length > 1){
         mapForReports.fitBounds(points, {padding: [200,200]});
     }
 
@@ -630,6 +630,7 @@ var mapContacts = function(contacts) {
         feature.properties.id +
         ')" data-toggle="modal" data-target="#contactDetailsModal">' +
       (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
+      '<br>Private contact? ' + (feature.properties.private ? 'yes' : 'no') +
       '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
       '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
       '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
@@ -805,7 +806,7 @@ var mapMissions = function(missions ){
     }
 
 
-    layerControl.addOverlay(missionsClusters, 'Missions');
+    layerControl.addOverlay(missionsClusters, 'Past MSF Responses');
 
 };
 
@@ -1165,7 +1166,7 @@ var vmEventDetails = new Vue({
     },
     computed:{
         notStr:function(){
-            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleString() : '(none)';
+            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
             return WEB_HOST + 'events/?eventId=' + this.event.id;
