@@ -33,7 +33,7 @@ var typeStr = function(type, sub_type) {
     } else {
         result += sub_type ? (sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
     }
-    return result;
+    return result.slice(0,1).toUpperCase()+result.slice(1);
 };
 
 var severityColors=['green','orange','red'];
