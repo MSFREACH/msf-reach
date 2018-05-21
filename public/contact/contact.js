@@ -25,27 +25,27 @@ $(function () {
         $('#updateModalMsg').html('Loading contact data ...');
         $('#updateModalBody .msf-contact-loader').show();
         $('#btnDeleteContact').on('click',function(){
-          if (confirm('Are you sure you want tp remove this contact? This cannot be undone.'))
-          {
-            $.ajax({
-                type: 'DELETE',
-                url: '/api/contacts/peers?email='+qEmail+'&guid='+qGUID,
-                data: {},
-                contentType: 'application/json'
-            }).done(function( resp, textStatus, req ){
-              console.log(resp);
-              if (resp.statusCode==200)
-              {
-                alert('Contact successfully removed');
-                location.href="/contact/"
+            if (confirm('Are you sure you want tp remove this contact? This cannot be undone.'))
+            {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/api/contacts/peers?email='+qEmail+'&guid='+qGUID,
+                    data: {},
+                    contentType: 'application/json'
+                }).done(function( resp, textStatus, req ){
+                    //console.log(resp);
+                    if (resp.statusCode==200)
+                    {
+                        alert('Contact successfully removed');
+                        location.href='/contact/';
 
-              }
-            }).fail(function (req, textStatus, err){
-              $('#updateModalMsg').html('Error in deleting contact.')
+                    }
+                }).fail(function (req, textStatus, err){
+                    $('#updateModalMsg').html('Error in deleting contact.');
 
-            });
+                });
 
-          }
+            }
         });
         $.ajax({
             type: 'GET',
@@ -56,8 +56,7 @@ $(function () {
         }).done(function( resp, textStatus, req ){
             $('#updateModalBody .msf-contact-loader').hide();
             $('#updateModalMsg').html('Contact deatils successfully retrieved. ');
-            console.log(resp);
-            //test
+            //console.log(resp);
             //'location':newContactMap.msf_latlng,
             newContactMap.setView([resp.result.lat, resp.result.lng],17);
             newContactMap.msf_latlng = {lat: resp.result.lat, lng: resp.result.lng};
@@ -212,7 +211,7 @@ $(function () {
                 },
                 contentType: 'application/json'
             }).done(function( data, textStatus, req ){
-                console.log(data);
+                //console.log(data);
                 $('.msf-contact-loader').hide();
                 if (data.emailExists)
                 {
