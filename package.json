@@ -40,7 +40,7 @@
   "dependencies": {
     "api-error-handler": "^1.0.0",
     "apicache": "^1.2.1",
-    "aws-sdk": "^2.240.1",
+    "aws-sdk": "^2.243.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "celebrate": "^8.0.0",
@@ -83,7 +83,7 @@
     "eslint": "^4.19.1",
     "it-each": "^0.3.1",
     "jsonwebtoken": "^8.2.1",
-    "mocha": "^5.1.1",
+    "mocha": "^5.2.0",
     "nodemon": "^1.17.4",
     "nyc": "^11.8.0",
     "unit.js": "^2.0.0"
