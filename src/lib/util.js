@@ -102,7 +102,7 @@ const ensureAuthenticatedLanding = (req, res, next) => {
         if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
             return next();
         }
-        res.redirect('/landing');
+        res.redirect('/login');
         return;
     });
 };
