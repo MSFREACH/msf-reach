@@ -326,7 +326,7 @@ describe('Cognicity Server Testing Harness', function() {
                             'eventId': eventId,
                             'status': 'confirmed',
                             'created': '2017-05-22T20:35Z',
-                            'reportkey': '123',
+                            'reportkey': 'this-is-a-thirty-six-character-strin',
                             'location': {
                                 'lat': -6.10,
                                 'lng': 108.7
@@ -492,6 +492,77 @@ describe('Cognicity Server Testing Harness', function() {
                 it('Get all PTWC hazards', function(done) {
                     test.httpAgent(app)
                         .get('/api/hazards/ptwc')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
+                // Can create contacts, returning new contact
+                it('Create a contact (POST /contact)', function(done) {
+                    test.httpAgent(app)
+                        .post('/api/contacts')
+                        .send({
+                            'properties':{
+                                'address': '1 The Street',
+                                'title': 'King',
+                                'name': 'Joe Bloggs',
+                                'gender': 'Male',
+                                'cell': '+1 234',
+                                'email': 'joe@email.com',
+                                'msf_entered': true
+                            },
+                            'private': true,
+                            'location': {
+                                'lat': 45,
+                                'lng': 140
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) {
+                                test.fail(err.message + ' ' + JSON.stringify(res));
+                            }
+                            else {
+                                done();
+                            }
+                        });
+                });
+
+                // Rejects a new contact if email exists already
+                it('Reject creation of existing contact (POST /contact)', function(done) {
+                    test.httpAgent(app)
+                        .post('/api/contacts')
+                        .send({
+                            'properties':{
+                                'address': '1 The Street',
+                                'title': 'King',
+                                'name': 'Joe Bloggs',
+                                'gender': 'Male',
+                                'cell': '+1 234',
+                                'email': 'joe@email.com'
+                            },
+                            'private': true,
+                            'location': {
+                                'lat': 45,
+                                'lng': 140
+                            }
+                        })
+                        .expect(409);
+                    done();
+                });
+
+                // Can delete contacts
+                it('Delete a contact (delete /contact)', function(done) {
+                    test.httpAgent(app)
+                        .delete('/api/contacts/1')
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .end(function(err, res) {

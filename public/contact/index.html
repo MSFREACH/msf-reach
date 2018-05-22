@@ -57,6 +57,17 @@
               <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
+              <h4 style="padding-top:40%;">Please enter your email to start:</h4>
+              <div class="form-group" style="padding-top:5%;">
+                <input maxlength="50" placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
+              </div>
+              <div class="msf-contact-loader" style="display:none;"></div>
+              <div class="" id="checkEmailDiv">
+
+              </div>
+
+            </div>
+            <div class="form-section">
               <h4> Personal details</h4>
               <div style="text-align:left;">
                 <div class="form-group" >
@@ -223,7 +234,7 @@
                 </div>
                 <label style="text-transform:uppercase;">Email <span style="color:red;">*</span></label>
                 <div class="form-group">
-                  <input maxlength="50" placeholder="Email..." class="form-control" style="color:black;" id="inputContactEmail" >
+                  <input maxlength="50" placeholder="Email..." class="form-control" style="color:black; " readonly id="inputContactEmailRO" >
                   <input maxlength="50" placeholder="Other email..." class="form-control" style="color:black;" id="inputContactEmail2" >
                 </div>
                 <label style="text-transform:uppercase;">Fax </label>
@@ -269,7 +280,7 @@
                 <button onclick="newContact()" class="btn btn-msf">Add another contact</button>
                 <script>
                 function newContact() {
-                  location.reload();
+                  location.href="/contact/";
                 }
                 </script>
                 <br>
@@ -279,7 +290,8 @@
           <div class="form-navigation">
             <button type="button" class="previous btn btn-info pull-left">PREVIOUS</button>
             <button type="button" class="next btn btn-danger pull-right">NEXT</button>
-            <button type="button" id="createContact" class="btn btn-primary pull-right" style="display: none;">Submit</button>
+            <button type="button" id="createContact" class="btn btn-primary pull-right" style="display: none;">SUBMIT</button>
+            <button type="button" id="updateContact" class="btn btn-warning pull-right" style="display: none;">UPDATE</button>
             <span class="clearfix"></span>
           </div>
 
@@ -288,9 +300,35 @@
 
     </div>
   </div>
+
+  <!-- Update Modal -->
+  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content" id="archiveEventModalContent">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Edit or remove contact details</h4>
+        </div>
+        <div class="modal-body" id="updateModalBody">
+          <div class="msf-contact-loader" style="display:none;"></div>
+          <div id="updateModalMsg"></div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="btnDeleteContact">DELETE</button>
+          <button type="button" class="btn btn-msf" data-dismiss="modal">EDIT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
   <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
+
+  <!-- Bootstrap's JavaScript plugins -->
+  <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
 
   <!-- Cookies -->
   <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>

@@ -74,24 +74,39 @@ export default (config, db, logger) => ({
     */
     createContact: (ad_oid, body) => new Promise((resolve, reject) => {
 
-        // Setup query
-        let query = `INSERT INTO ${config.TABLE_CONTACTS}
+        // Setup query - check user doesn't already exist
+        let queryValidate = `SELECT id FROM ${config.TABLE_CONTACTS}
+          WHERE properties->>'email' = $1;`;
+
+        let valuesValidate = body.properties.email;
+
+        // Setup query - insert new user
+        let queryInsert = `INSERT INTO ${config.TABLE_CONTACTS}
      (created_at, ad_oid, private, properties, the_geom)
      VALUES (now(), $1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
      RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
      the_geom`;
 
         // Setup values
-        body.properties['sharedWith'] = [];
-        let values = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
+        let valuesInsert = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
 
         // Execute
-        logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
-                updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
-                properties:data.properties, the_geom:data.the_geom }))
-            .catch((err) => reject(err));
+        logger.debug(queryValidate, valuesValidate);
+
+        db.manyOrNone(queryValidate, valuesValidate).timeout(config.PGTIMEOUT)
+            .then((data) => {
+                if (data && data.length > 0) {
+                    reject(new Error('Contact already exists'));
+                }
+                else {
+                    logger.debug(queryInsert, valuesInsert);
+                    db.oneOrNone(queryInsert, valuesInsert).timeout(config.PGTIMEOUT)
+                        .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
+                            updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
+                            properties:data.properties, the_geom:data.the_geom }))
+                        .catch((err) => reject(err));
+                }
+            }).catch((err) => reject(err));
     }),
 
     /**
@@ -103,13 +118,13 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_CONTACTS}
-   SET properties = properties || $1, updated_at = now()
+   SET properties = properties || $1, updated_at = now(), private=$3, the_geom=ST_SetSRID(ST_Point($4,$5),4326)
    WHERE id = $2
    RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
    the_geom`;
 
         // Setup values
-        let values = [ body.properties, id ];
+        let values = [ body.properties, id, body.private, body.location.lng, body.location.lat];
 
         // Execute
         logger.debug(query, values);
@@ -144,6 +159,25 @@ export default (config, db, logger) => ({
             .then((data) => resolve({ id: String(id), created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
                 properties:data.properties, the_geom:data.the_geom }))
+            .catch((err) => reject(err));
+    }),
+
+    /**
+    * DELETE a contact from the database
+    * @param {integer} id ID of contact
+    */
+    deleteContact: (id) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `DELETE FROM ${config.TABLE_CONTACTS} WHERE id = $1`;
+
+        // Setup values
+        let values = [ id ];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then(() => resolve())
             .catch((err) => reject(err));
     }),
 
@@ -197,5 +231,6 @@ export default (config, db, logger) => ({
                 properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
     })
+
 
 });
