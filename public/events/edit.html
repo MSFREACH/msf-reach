@@ -1136,6 +1136,8 @@ var vm = new Vue({
         }
       }
 
+      metadata['region'] = $('#eventRegion').val();
+
       //update sub types and add into db
       this.updateSubEventTypes();
       var subType = replaceUnderscore(this.event.sub_type.toString());
