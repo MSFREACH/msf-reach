@@ -72,6 +72,21 @@ $(function () {
                 $('#inputContactOtherGender').val(props.gender);
             }
 
+            if (props.type === 'Current MSF Staff') {
+                $('#inputContactOC').val(props.OC);
+                $('#inputContactMSFEmploy').val(props.msf_employment);
+                $('#inputMSFSection').val(props.msf_section);
+                $('#inputMSFBranch').val(props.msf_branch);
+                $('#inputMSFProject').val(props.msf_project);
+                $('#inputMSFMission').val(props.msf_mission);
+            } else {
+                $('#inputContactMSFAssociate').prop('checked', prop.msf_associate);
+                $('#inputContactMSFPeer').prop('checked', prop.msf_peer);
+                $('#inputContactEmployerName').val(props.employer);
+                $('#inputContactJobTitle').val(props.job_title);
+                $('#inputContactEmployerDivision').val(props.division);
+            }
+
             $('#inputContactCell').val(props.cell);
             $('#inputContactWork').val(props.work);
             $('#inputContactHome').val(props.home);
