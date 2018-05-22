@@ -257,12 +257,12 @@
                       <h5> Maps: </h5>
                       <p class="help-block"> Below are relevant maps (if any have been found):</p>
                       <ul>
-                        <li v-for="m in res.data.maps">{{m.details ? m.details + ',' : ''}} <a v-link="{ path: m.url }">open map</a> </li>
+                        <li v-for="m in res.data.maps">{{m.details ? m.details + ',' : ''}} <a :href='m.url'>open map</a> </li>
                       </ul>
                       <h5> Documents: </h5>
                       <p class="help-block"> Below are relevant documents (if any have been found):</p>
                       <ul>
-                        <li v-for="d in res.data.documents">{{d.summary }} <a v-link="{ path: d.url }">{{d.filename}}</a> </li>
+                        <li v-for="d in res.data.documents">{{d.summary }} <a :href='d.url'>{{d.filename}}</a> </li>
                       </ul>
                       <h5> Supplies:</h5>
                       <table class="table table-striped">
