@@ -240,7 +240,7 @@ $(function () {
                 if (data.emailExists)
                 {
                     $('#checkEmailDiv').html('<p> This email already exists in the database. we have sent you an email with instructions on how to update or delete this contact.');
-                    $('.form-navigation .next').html('Try Again');
+                    $('.form-navigation .next').html('Please check your email.');
                 }
                 else{
                     $('#checkEmailDiv').html('Email checked.');
