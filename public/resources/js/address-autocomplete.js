@@ -49,9 +49,9 @@ function bindACInputToMap(targetMap,inputId,justLocate)
                         type: 'PUT',
                         url: '/api/events/' + currentEventId,
                         data: JSON.stringify({
-                          status: currentEventProperties.status,
-                          type: currentEventProperties.type,
-                          metadata: currentEventProperties.metadata
+                            status: currentEventProperties.status,
+                            type: currentEventProperties.type,
+                            metadata: currentEventProperties.metadata
                         }),
                         contentType: 'application/json'
                     }).done(function( data, textStatus, req ){
