@@ -895,24 +895,24 @@ getContacts(mapContacts);
 
 var TOTAL_FEEDS=0;
 if (Cookies.get('- PDC')==='on') {
-  TOTAL_FEEDS++;
-  getFeeds('/api/hazards/pdc', tableFeeds);
+    TOTAL_FEEDS++;
+    getFeeds('/api/hazards/pdc', tableFeeds);
 }
 if (Cookies.get('- USGS')==='on') {
-  TOTAL_FEEDS++;
-  getFeeds('/api/hazards/usgs', tableFeeds);
+    TOTAL_FEEDS++;
+    getFeeds('/api/hazards/usgs', tableFeeds);
 }
 if (Cookies.get('- TSR')==='on') {
-  TOTAL_FEEDS++;
-  getFeeds('/api/hazards/tsr', tableFeeds);
+    TOTAL_FEEDS++;
+    getFeeds('/api/hazards/tsr', tableFeeds);
 }
 if (Cookies.get('- GDACS')==='on') {
-  TOTAL_FEEDS++;
-  getFeeds('/api/hazards/gdacs', tableFeeds);
+    TOTAL_FEEDS++;
+    getFeeds('/api/hazards/gdacs', tableFeeds);
 }
 if (Cookies.get('- PTWC')==='on') {
-  TOTAL_FEEDS++;
-  getFeeds('/api/hazards/ptwc', tableFeeds);
+    TOTAL_FEEDS++;
+    getFeeds('/api/hazards/ptwc', tableFeeds);
 }
 
 var displayVideo = function(video) {
