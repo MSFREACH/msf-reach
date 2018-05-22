@@ -43,16 +43,19 @@ function bindACInputToMap(targetMap,inputId,justLocate)
         if (inputId === 'editEventAddress') {
             for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
                 if (place.address_components[placeIdx].types.indexOf('administrative_area_level_1')>-1) {
-                    body = {
-                        region: $('#eventRegion').val() + ', '+place.address_components[placeIdx].long_name
-                    };
+                    currentEventProperties.metadadata['region'] = $('#eventRegion').val()+', '+place.address_components[placeIdx].long_name;
+
                     $.ajax({
                         type: 'PUT',
                         url: '/api/events/' + currentEventId,
-                        data: JSON.stringify(body),
+                        data: JSON.stringify({
+                          status: currentEventProperties.status,
+                          type: currentEventProperties.type,
+                          metadata: currentEventProperties.metadata
+                        }),
                         contentType: 'application/json'
                     }).done(function( data, textStatus, req ){
-                        $('#eventRegion').val($('#eventRegion').val()+', '+place.address_components[placeIdx].long_name);
+                        $('#eventRegion').val(currentEventProperties.metadata.region);
                     }).fail(function(err) {
                         if (err.responseText.includes('expired')) {
                             alert('session expired');
