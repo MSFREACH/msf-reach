@@ -1060,6 +1060,21 @@ var vm = new Vue({
     eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
     msfResponseMapLayerControl = L.control.groupedLayers(msfResponseBaseMaps, groupedOverlays, groupOptions).addTo(msfResponseMap);
 
+    if (L.Browser.touch) {
+       L.DomEvent
+        .disableClickPropagation(eventMapLayerControl._container)
+        .disableScrollPropagation(eventMapLayerControl._container);
+    } else {
+        L.DomEvent.disableClickPropagation(eventMapLayerControl._container);
+    }
+    if (L.Browser.touch) {
+       L.DomEvent
+        .disableClickPropagation(msfResponseMapLayerControl._container)
+        .disableScrollPropagation(msfResponseMapLayerControl._container);
+    } else {
+        L.DomEvent.disableClickPropagation(msfResponseMapLayerControl._container);
+    }
+
     getAllEvents(mapEditEvents);
 
     getFeeds('/api/hazards/pdc',mapEditPDCHazards);

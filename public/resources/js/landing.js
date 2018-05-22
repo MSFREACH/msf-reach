@@ -882,6 +882,14 @@ var overlayMaps = {};
 
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
+if (L.Browser.touch) {
+   L.DomEvent
+    .disableClickPropagation(layerControl._container)
+    .disableScrollPropagation(layerControl._container);
+} else {
+    L.DomEvent.disableClickPropagation(layerControl._container);
+}
+
 // get and map data:
 getAllEvents(mapAllEvents);
 getReports(mainMap, mapReports);

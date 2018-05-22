@@ -896,6 +896,14 @@ var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
+if (L.Browser.touch) {
+   L.DomEvent
+    .disableClickPropagation(layerControl._container)
+    .disableScrollPropagation(layerControl._container);
+} else {
+    L.DomEvent.disableClickPropagation(layerControl._container);
+}
+
 // Archive support
 $('#btnArchive').click(function(e){
 
