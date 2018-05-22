@@ -90,11 +90,10 @@ $(function () {
                 $('#inputContactJobTitle').val(props.job_title);
                 $('#inputContactEmployerDivision').val(props.division);
             }
-
-            $('#inputContactCell').val(props.cell);
-            $('#inputContactWork').val(props.work);
-            $('#inputContactHome').val(props.home);
-            $('#inputContactFax').val(props.fax);
+            $("#inputContactCell").intlTelInput("setNumber", props.cell);
+            $("#inputContactWork").intlTelInput("setNumber", props.work);
+            $("#inputContactHome").intlTelInput("setNumber", props.home);
+            $("#inputContactFax").intlTelInput("setNumber", props.fax);
 
             //'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             //var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
