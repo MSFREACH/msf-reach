@@ -43,7 +43,7 @@ function bindACInputToMap(targetMap,inputId,justLocate)
         if (inputId === 'editEventAddress') {
             for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
                 if (place.address_components[placeIdx].types.indexOf('administrative_area_level_1')>-1) {
-                    currentEventProperties.metadadata['region'] = $('#eventRegion').val()+', '+place.address_components[placeIdx].long_name;
+                    currentEventProperties.metadata['region'] = ($('#eventRegion').val() !== '' ? $('#eventRegion').val() + ', ' : '') +place.address_components[placeIdx].long_name;
 
                     $.ajax({
                         type: 'PUT',
