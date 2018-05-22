@@ -109,6 +109,7 @@ export default ({ config, db, logger }) => {
                     Skype: Joi.string().allow(''),
                     msf_entered: Joi.boolean().required()
                 }),
+                oid: Joi.string().uuid(),
                 private: Joi.boolean().required(),
                 location: Joi.object().required().keys({
                     lat: Joi.number().min(-90).max(90).required(),
