@@ -25,7 +25,7 @@ $(function () {
         $('#updateModalMsg').html('Loading contact data ...');
         $('#updateModalBody .msf-contact-loader').show();
         $('#btnDeleteContact').on('click',function(){
-            if (confirm('Are you sure you want tp remove this contact? This cannot be undone.'))
+            if (confirm('Are you sure you want to remove your contact details? This cannot be undone.'))
             {
                 $.ajax({
                     type: 'DELETE',
@@ -41,7 +41,7 @@ $(function () {
 
                     }
                 }).fail(function (req, textStatus, err){ // eslint-disable-line no-unused-vars
-                    $('#updateModalMsg').html('Error in deleting contact.');
+                    $('#updateModalMsg').html('Error in deleting contact, contact <a href="mailto:admin@msf-reach.org">MSF admin</a> for manual deletion.');
 
                 });
 
@@ -84,8 +84,8 @@ $(function () {
                 $('#inputMSFProject').val(props.msf_project);
                 $('#inputMSFMission').val(props.msf_mission);
             } else {
-                $('#inputContactMSFAssociate').prop('checked', prop.msf_associate);
-                $('#inputContactMSFPeer').prop('checked', prop.msf_peer);
+                $('#inputContactMSFAssociate').prop('checked', props.msf_associate);
+                $('#inputContactMSFPeer').prop('checked', props.msf_peer);
                 $('#inputContactEmployerName').val(props.employer);
                 $('#inputContactJobTitle').val(props.job_title);
                 $('#inputContactEmployerDivision').val(props.division);
@@ -120,7 +120,7 @@ $(function () {
 
         }).fail(function (req, textStatus, err){
             $('#updateModalBody .msf-contact-loader').hide();
-            $('#updateModalMsg').html('An error ' + err + 'occured');
+            $('#updateModalMsg').html('An error, ' + err + ', occured');
         });
 
     }
