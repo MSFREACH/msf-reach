@@ -325,9 +325,9 @@ var vmAnalytics = new Vue({
         var layerControl = L.control.groupedLayers(analyticsBaseMaps,groupedOverlays, groupOptions).addTo(analyticsMap);
 
         if (L.Browser.touch) {
-           L.DomEvent
-            .disableClickPropagation(layerControl._container)
-            .disableScrollPropagation(layerControl._container);
+            L.DomEvent
+                .disableClickPropagation(layerControl._container)
+                .disableScrollPropagation(layerControl._container);
         } else {
             L.DomEvent.disableClickPropagation(layerControl._container);
         }

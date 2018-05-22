@@ -8,6 +8,8 @@ import peers from './update';
 
 import request from 'request';
 
+import mail from '../../../lib/mailer';
+
 
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
@@ -209,6 +211,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
             contacts(config, db, logger).shareWith(req.params.id, req.user.oid, req.body.oid)
+                .then((data) => mail(config,logger).sendShareNotificationEmail(req.user.access_token,req.params.id,req.body.oid,data))
                 .then((data) => handleGeoResponse(data, req, res, next))
 
                 .catch((err) => {

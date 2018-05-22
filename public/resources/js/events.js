@@ -11,7 +11,7 @@ var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 
-var clipboard = new Clipboard('.btn-clip');
+var clipboard = new Clipboard('.btn');
 
 clipboard.on('success', function(e) {
     alert('link copied to your clipboard, ready to share');
@@ -64,8 +64,6 @@ var zoomToEventBounds = function(bounds) {
     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
     mainMap.fitBounds(rBounds);
 };
-
-var clipboard = new Clipboard('.btn');
 
 // long form of labels:
 var labels = {
@@ -182,13 +180,13 @@ var printEventProperties = function(err, eventProperties){
         setTimeout(function() {
             $('#eventCopyButton').append(
                 '<div class="st-btn st-last" data-network="sharethis" style="display: inline-block;">'+
-          '<button data-clipboard-text="'+window.location+'" class="btn btn-primary btn-clip">'+
+          '<button data-clipboard-text="'+window.location+'" class="btn btn-primary">'+
           '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
           '</div>'
-          );
+            );
             $('#reportCopyButton').append(
                 '<div class="st-btn st-last" data-network="sharethis" style="display: inline-block;">'+
-          '<button data-clipboard-text="'+vmEventDetails.eventReportLink+'" class="btn btn-primary btn-clip">'+
+          '<button data-clipboard-text="'+vmEventDetails.eventReportLink+'" class="btn btn-primary">'+
           '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
           '</div>'
             );
@@ -897,9 +895,9 @@ var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
 if (L.Browser.touch) {
-   L.DomEvent
-    .disableClickPropagation(layerControl._container)
-    .disableScrollPropagation(layerControl._container);
+    L.DomEvent
+        .disableClickPropagation(layerControl._container)
+        .disableScrollPropagation(layerControl._container);
 } else {
     L.DomEvent.disableClickPropagation(layerControl._container);
 }
