@@ -72,10 +72,10 @@ $(function () {
                 $('#inputContactOtherGender').val(props.gender);
             }
 
-            ('#inputContactType').val(props.type);
-            $('#divOtherType').toggle(this.value == 'Other');
-            $('#divNonMSFFields').toggle(this.value != 'Current MSF Staff');
-            $('#divMSFFields').toggle(this.value == 'Current MSF Staff');
+            $('#inputContactType').val(props.type);
+            $('#divOtherType').toggle(props.type == 'Other');
+            $('#divNonMSFFields').toggle(props.type != 'Current MSF Staff');
+            $('#divMSFFields').toggle(props.type == 'Current MSF Staff');
             if (props.type === 'Current MSF Staff') {
                 $('#inputContactOC').val(props.OC);
                 $('#inputContactMSFEmploy').val(props.msf_employment);
