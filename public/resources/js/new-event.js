@@ -75,13 +75,13 @@ newEventMap.on('click', function(e) {
  * @function refreshLandingPage
  */
 var refreshLandingPage = function() {
-    var saveCookie = Cookies.get('Ongoing MSF Projects');
+    var saveCookie = Cookies.get('Ongoing MSF Responses');
     mainMap.removeLayer(eventsLayer);
     layerControl.removeLayer(eventsLayer);
     eventsLayer.clearLayers();
     $('#ongoingEventProperties').empty();
     $('#watchingEventProperties').empty();
-    Cookies.set('Ongoing MSF Projects',saveCookie);
+    Cookies.set('Ongoing MSF Responses',saveCookie);
     getAllEvents(mapAllEvents);
     $('watchingTab').tab('show');
 };

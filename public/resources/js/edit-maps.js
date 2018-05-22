@@ -113,12 +113,12 @@ var mapEditEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Ongoing MSF Projects')==='on') {
+    if (Cookies.get('Ongoing MSF Responses')==='on') {
         eventEventsLayer.addTo(eventMap);
         msfResponseEventsLayer.addTo(msfResponseMap);
     }
-    eventMapLayerControl.addOverlay(eventEventsLayer, 'Ongoing MSF Projects');
-    msfResponseMapLayerControl.addOverlay(msfResponseEventsLayer, 'Ongoing MSF Projects');
+    eventMapLayerControl.addOverlay(eventEventsLayer, 'Ongoing MSF Responses');
+    msfResponseMapLayerControl.addOverlay(msfResponseEventsLayer, 'Ongoing MSF Responses');
 
 };
 
@@ -179,12 +179,12 @@ var mapEditMissions = function(missions ){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('MSF Past Responses')==='on') {
+    if (Cookies.get('Previous MSF Responses')==='on') {
         eventMissionsLayer.addTo(eventMap);
         msfResponseMissionsLayer.addTo(msfResponseMap);
     }
-    eventMapLayerControl.addOverlay(eventMissionsLayer, 'MSF Past Responses');
-    msfResponseMapLayerControl.addOverlay(msfResponseMissionsLayer, 'MSF Past Responses');
+    eventMapLayerControl.addOverlay(eventMissionsLayer, 'Previous MSF Responses');
+    msfResponseMapLayerControl.addOverlay(msfResponseMissionsLayer, 'Previous MSF Responses');
 
 };
 

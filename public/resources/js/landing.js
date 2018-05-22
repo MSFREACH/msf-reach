@@ -170,10 +170,10 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Ongoing MSF Projects')==='on') {
+    if (Cookies.get('Ongoing MSF Responses')==='on') {
         eventsLayer.addTo(mainMap);
     }
-    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
+    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Responses');
 
 };
 
@@ -328,7 +328,7 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
-* @function mapMissions - function to map MSF Past Responses
+* @function mapMissions - function to map Previous MSF Responses
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
