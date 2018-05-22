@@ -68,6 +68,12 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
+              <dt>Region(s)</dt>
+              <dd>
+                <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
+              </dd>
+            </dl>
+            <dl>
               <dt>Add region for the emergency</dt>
               <dd class="bottom-margined">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
@@ -133,12 +139,6 @@ dd.padding-bottom {
                   <input type="text" v-model="typeOther" id="selectType7" class="form-control" placeholder="(Specify)" >
                 </div>
 
-              </dd>
-            </dl>
-            <dl>
-              <dt>Region(s)</dt>
-              <dd>
-                <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
               </dd>
             </dl>
             <dl>
