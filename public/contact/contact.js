@@ -72,7 +72,7 @@ $(function () {
                 $('#inputContactOtherGender').val(props.gender);
             }
 
-            ("#inputContactType").val(props.type);
+            ('#inputContactType').val(props.type);
             $('#divOtherType').toggle(this.value == 'Other');
             $('#divNonMSFFields').toggle(this.value != 'Current MSF Staff');
             $('#divMSFFields').toggle(this.value == 'Current MSF Staff');
