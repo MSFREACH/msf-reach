@@ -55,7 +55,7 @@ $(function () {
             contentType: 'application/json'
         }).done(function( resp, textStatus, req ){ // eslint-disable-line no-unused-vars
             $('#updateModalBody .msf-contact-loader').hide();
-            $('#updateModalMsg').html('Contact deatils successfully retrieved. ');
+            $('#updateModalMsg').html('Your contact details have been successfully retrieved.');
             //console.log(resp);
             //'location':newContactMap.msf_latlng,
             newContactMap.setView([resp.result.lat, resp.result.lng],17);
@@ -71,6 +71,11 @@ $(function () {
                 $('#inputGender option:last').attr('selected',true);
                 $('#inputContactOtherGender').val(props.gender);
             }
+
+            $('#inputContactCell').val(props.cell);
+            $('#inputContactWork').val(props.work);
+            $('#inputContactHome').val(props.home);
+            $('#inputContactFax').val(props.fax);
 
             //'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             //var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
