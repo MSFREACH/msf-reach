@@ -88,6 +88,7 @@ export default (config, db, logger) => ({
      the_geom`;
 
         // Setup values
+        body.properties['sharedWith'] = [];
         let valuesInsert = [ ad_oid, body.private, body.properties, body.location.lng, body.location.lat ];
 
         // Execute
