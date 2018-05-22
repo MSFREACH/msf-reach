@@ -892,12 +892,28 @@ getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //getMissions(mapMissions);
 getContacts(mapContacts);
-getFeeds('/api/hazards/pdc', tableFeeds);
-getFeeds('/api/hazards/usgs', tableFeeds);
-getFeeds('/api/hazards/tsr', tableFeeds);
-getFeeds('/api/hazards/gdacs', tableFeeds);
-getFeeds('/api/hazards/ptwc', tableFeeds);
-var TOTAL_FEEDS=5;
+
+var TOTAL_FEEDS=0;
+if (Cookies.get('- PDC')==='on') {
+  TOTAL_FEEDS++;
+  getFeeds('/api/hazards/pdc', tableFeeds);
+}
+if (Cookies.get('- USGS')==='on') {
+  TOTAL_FEEDS++;
+  getFeeds('/api/hazards/usgs', tableFeeds);
+}
+if (Cookies.get('- TSR')==='on') {
+  TOTAL_FEEDS++;
+  getFeeds('/api/hazards/tsr', tableFeeds);
+}
+if (Cookies.get('- GDACS')==='on') {
+  TOTAL_FEEDS++;
+  getFeeds('/api/hazards/gdacs', tableFeeds);
+}
+if (Cookies.get('- PTWC')==='on') {
+  TOTAL_FEEDS++;
+  getFeeds('/api/hazards/ptwc', tableFeeds);
+}
 
 var displayVideo = function(video) {
 
