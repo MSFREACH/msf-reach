@@ -85,7 +85,7 @@ export default ( config, logger ) => ({
 
         request.get('https://graph.microsoft.com/v1.0/users/'+sender_oid, {
             'headers': {
-                'Authorization': 'Bearer ' + req.user.access_token,
+                'Authorization': 'Bearer ' + access_token,
                 'Content-Type': 'application/json'
             }
         }, function(err, res1) {
@@ -97,7 +97,7 @@ export default ( config, logger ) => ({
 
                 request.get('https://graph.microsoft.com/v1.0/users/'+recipient_oid, {
                     'headers': {
-                        'Authorization': 'Bearer ' + req.user.access_token,
+                        'Authorization': 'Bearer ' + access_token,
                         'Content-Type': 'application/json'
                     }
                 }, function(err, res2) {
