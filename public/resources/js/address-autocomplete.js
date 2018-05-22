@@ -44,8 +44,8 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
                 if (place.address_components[placeIdx].types.indexOf('administrative_area_level_1')>-1) {
                     body = {
-                      region: $('#eventRegion').val() + ', '+place.address_components[placeIdx].long_name
-                    }
+                        region: $('#eventRegion').val() + ', '+place.address_components[placeIdx].long_name
+                    };
                     $.ajax({
                         type: 'PUT',
                         url: '/api/events/' + currentEventId,
