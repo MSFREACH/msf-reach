@@ -113,7 +113,7 @@ export default ( config, logger ) => ({
 
                         const mailOptions = {
                             from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
-                            to: 'mattjb@icloud.com', //update to receipient.mail
+                            to: recipient.userPrincipalName, 
                             subject: 'Contact share notification',
                             template: 'share',
                             context: emContext
