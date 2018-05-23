@@ -88,7 +88,7 @@ export default ( config, logger ) => ({
                 'Authorization': 'Bearer ' + access_token,
                 'Content-Type': 'application/json'
             }
-        }, function(err, res1) {
+        }, function(err, res, body1) {
             if(err){
                 logger.error(err.message);
                 reject(err);
@@ -100,7 +100,7 @@ export default ( config, logger ) => ({
                         'Authorization': 'Bearer ' + access_token,
                         'Content-Type': 'application/json'
                     }
-                }, function(err, res2) {
+                }, function(err, res, body2) {
                     if(err){
                         logger.error(err.message);
                         reject(err);
@@ -109,8 +109,8 @@ export default ( config, logger ) => ({
                         logger.debug('fixme');
                         logger.debug(res1);
                         logger.debug(res2);
-                        let sender = JSON.parse(res1.data);
-                        let receipient = JSON.parse(res2.data);
+                        let sender = JSON.parse(body1);
+                        let receipient = JSON.parse(body2);
 
                         let emContext={sender_name: sender.displayName, receipient_name: receipient.displayName, contact_name: contact_data.properties.name };
 
