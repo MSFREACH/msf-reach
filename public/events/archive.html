@@ -62,18 +62,12 @@ textarea.valid:focus {
               <li class="list-group-item">
                 <div class="row">
                   <div class="col-sm-6">
-                    <dl>
-                      <dt>Date of event closure</dt>
-                      <dd>
-                        <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
-                      </dd>
-                    </dl>
+                    <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                   </div>
                 </div>
               </li>
             </ul>
             <div class="panel-body">
-              <a href="#" class="btn btn-success pull-left previous">Previous</a>
               <button type="submit" class="btn btn-danger pull-right">Close Event</button>
             </div>
           </div>
