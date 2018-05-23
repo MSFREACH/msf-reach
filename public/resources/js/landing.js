@@ -15,6 +15,7 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+var RSS_LAYER_NAMES = ['- PDC', '- GDACS', '- TSR', '- PTWC', '- USGS'];
 
 // setup variables to store contact layers
 var MSFContactsLayer, nonMSFContactsLayer;
@@ -241,7 +242,7 @@ var getMissions = function(callback){
 };
 
 var allFeedFeatures=[];
-var totalFeedsSaved=0;
+
 
 /**
 * function to put the feed data into the table
@@ -902,26 +903,48 @@ getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 getContacts(mapContacts);
 
 var TOTAL_FEEDS=0;
-if (Cookies.get('- PDC')==='on') {
-    TOTAL_FEEDS++;
-    getFeeds('/api/hazards/pdc', tableFeeds);
-}
-if (Cookies.get('- USGS')==='on') {
-    TOTAL_FEEDS++;
-    getFeeds('/api/hazards/usgs', tableFeeds);
-}
-if (Cookies.get('- TSR')==='on') {
-    TOTAL_FEEDS++;
-    getFeeds('/api/hazards/tsr', tableFeeds);
-}
-if (Cookies.get('- GDACS')==='on') {
-    TOTAL_FEEDS++;
-    getFeeds('/api/hazards/gdacs', tableFeeds);
-}
-if (Cookies.get('- PTWC')==='on') {
-    TOTAL_FEEDS++;
-    getFeeds('/api/hazards/ptwc', tableFeeds);
-}
+var totalFeedsSaved=0;
+
+var updateFeedsTable = function() {
+    TOTAL_FEEDS=0;
+    totalFeedsSaved=0;
+    $('#rssFeeds').html('');
+
+    if (Cookies.get('- PDC')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- USGS')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- TSR')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- GDACS')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- PTWC')==='on') {
+        TOTAL_FEEDS++;
+    }
+    console.log(TOTAL_FEEDS);
+
+    if (Cookies.get('- PDC')==='on') {
+        getFeeds('/api/hazards/pdc', tableFeeds);
+    }
+    if (Cookies.get('- USGS')==='on') {
+        getFeeds('/api/hazards/usgs', tableFeeds);
+    }
+    if (Cookies.get('- TSR')==='on') {
+        getFeeds('/api/hazards/tsr', tableFeeds);
+    }
+    if (Cookies.get('- GDACS')==='on') {
+        getFeeds('/api/hazards/gdacs', tableFeeds);
+    }
+    if (Cookies.get('- PTWC')==='on') {
+        getFeeds('/api/hazards/ptwc', tableFeeds);
+    }
+};
+
+updateFeedsTable();
 
 var displayVideo = function(video) {
 
@@ -966,6 +989,10 @@ $('#inputContactType').on('change',function(){
 mainMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'on');
+        if (RSS_LAYER_NAMES.indexOf(layersControlEvent.name) > -1) {
+            console.log('updating feeds table');
+            updateFeedsTable();
+        }
     }
 });
 
@@ -973,5 +1000,9 @@ mainMap.on('overlayadd', function (layersControlEvent) {
 mainMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'off');
+        if (RSS_LAYER_NAMES.indexOf(layersControlEvent.name) > -1) {
+            console.log('updating feeds table');
+            updateFeedsTable();
+        }
     }
 });

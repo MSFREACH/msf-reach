@@ -106,6 +106,9 @@ export default ( config, logger ) => ({
                         reject(err);
                     }
                     else {
+                        logger.debug('fixme');
+                        logger.debug(res1);
+                        logger.debug(res2);
                         let sender = JSON.parse(res1.data);
                         let receipient = JSON.parse(res2.data);
 
