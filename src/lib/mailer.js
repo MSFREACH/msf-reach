@@ -107,9 +107,9 @@ export default ( config, logger ) => ({
                     }
                     else {
                         let sender = JSON.parse(body1);
-                        let receipient = JSON.parse(body2);
+                        let recipient = JSON.parse(body2);
 
-                        let emContext={sender_name: sender.displayName, receipient_name: receipient.displayName, contact_name: contact_data.properties.name };
+                        let emContext={sender_name: sender.displayName, recipient_name: recipient.displayName, contact_name: contact_data.properties.name };
 
                         const mailOptions = {
                             from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
@@ -120,7 +120,7 @@ export default ( config, logger ) => ({
                         };
 
                         // send mail with defined transport object
-                        logger.info('Sending email to ' + recipient);
+                        logger.info('Sending sharing email notification');
                         transport.sendMail(mailOptions, (error, info) => {
                             if (error) {
                                 logger.error(error.message);
