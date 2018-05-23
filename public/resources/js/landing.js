@@ -925,7 +925,7 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         TOTAL_FEEDS++;
     }
-    console.log(TOTAL_FEEDS);
+    //console.log(TOTAL_FEEDS);
 
     if (Cookies.get('- PDC')==='on') {
         getFeeds('/api/hazards/pdc', tableFeeds);
@@ -990,7 +990,7 @@ mainMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'on');
         if (RSS_LAYER_NAMES.indexOf(layersControlEvent.name) > -1) {
-            console.log('updating feeds table');
+            //console.log('updating feeds table');
             updateFeedsTable();
         }
     }
@@ -1001,7 +1001,7 @@ mainMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'off');
         if (RSS_LAYER_NAMES.indexOf(layersControlEvent.name) > -1) {
-            console.log('updating feeds table');
+            //console.log('updating feeds table');
             updateFeedsTable();
         }
     }
