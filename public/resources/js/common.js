@@ -83,15 +83,15 @@ if (typeof(Cookies.get('- contacts')) === 'undefined') {
     Cookies.set('- contacts','on'); // default
 }
 
-if (typeof(Cookies.get('MSF Past Responses')) === 'undefined') {
-    Cookies.set('MSF Past Responses','off'); // default
+if (typeof(Cookies.get('Previous MSF Responses')) === 'undefined') {
+    Cookies.set('Previous MSF Responses','off'); // default
 }
 if (typeof(Cookies.get('MapLayer')) === 'undefined') {
     Cookies.set('MapLayer','Terrain'); // default
 }
 
-if (typeof(Cookies.get('Ongoing MSF Projects'))==='undefined') {
-    Cookies.set('Ongoing MSF Projects','on');
+if (typeof(Cookies.get('Ongoing MSF Responses'))==='undefined') {
+    Cookies.set('Ongoing MSF Responses','on');
 }
 if (typeof(Cookies.get('Health Sites'))==='undefined') {
     Cookies.set('Health Sites','off');

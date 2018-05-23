@@ -40,6 +40,13 @@ var overlayMaps = {};
 
 var layerControl = L.control.layers(baseMaps, overlayMaps, {'position':'topright'}).addTo(newContactMap);
 
+if (L.Browser.touch) {
+    L.DomEvent
+        .disableClickPropagation(layerControl._container)
+        .disableScrollPropagation(layerControl._container);
+} else {
+    L.DomEvent.disableClickPropagation(layerControl._container);
+}
 
 newContactMap.on('click', function(e) {
     if(this.msf_marker)

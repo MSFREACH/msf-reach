@@ -41,10 +41,6 @@
   <link rel="stylesheet" href="/lib/leaflet/leaflet.rrose.css"/>
 
 
-  <!-- Copy to clipboard functionality -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
-
-
   <!-- Events -->
   <link rel="stylesheet" href="/resources/css/events.css"/>
 
@@ -557,8 +553,8 @@
             <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
             <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
             <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
-            <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF projects</a></li>
-            <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">MSF Past Responses</a></li>
+            <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF Responses</a></li>
+            <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Previous MSF Responses</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
@@ -1010,7 +1006,7 @@
     <div id="ongoingEvents" class="tab-pane fade">
       <div class="row">
         <div class="col-md-12" >
-          <h4>Ongoing MSF Projects in the same country</h4>
+          <h4>Ongoing MSF Responses in the same country</h4>
           <div id ="ongoingEventsContainer" style="height:70vh;"></div>
         </div>
       </div>
@@ -1066,6 +1062,10 @@
 <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
 <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
+
+<!-- Copy to clipboard functionality -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
 
 <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
 <script src="/lib/bootstrap/plugins/datetimepicker/bootstrap-datetimepicker.min.js"></script>

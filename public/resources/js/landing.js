@@ -15,6 +15,7 @@ var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
+var RSS_LAYER_NAMES = ['- PDC', '- GDACS', '- TSR', '- PTWC', '- USGS'];
 
 // setup variables to store contact layers
 var MSFContactsLayer, nonMSFContactsLayer;
@@ -170,10 +171,10 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Ongoing MSF Projects')==='on') {
+    if (Cookies.get('Ongoing MSF Responses')==='on') {
         eventsLayer.addTo(mainMap);
     }
-    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
+    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Responses');
 
 };
 
@@ -240,8 +241,8 @@ var getMissions = function(callback){
     });
 };
 
-var allFeedFeatures=[];
-var totalFeedsSaved=0;
+
+
 
 /**
 * function to put the feed data into the table
@@ -328,7 +329,7 @@ var missionPopupIcon = function(missionType) {
 
 /**
 * Function to add missions to map
-* @function mapMissions - function to map MSF Past Responses
+* @function mapMissions - function to map Previous MSF Responses
 * @param {Object} missions - GeoJson FeatureCollection containing mission points
 **/
 var mapMissions = function(missions ){
@@ -882,6 +883,14 @@ var overlayMaps = {};
 
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
 
+if (L.Browser.touch) {
+    L.DomEvent
+        .disableClickPropagation(layerControl._container)
+        .disableScrollPropagation(layerControl._container);
+} else {
+    L.DomEvent.disableClickPropagation(layerControl._container);
+}
+
 // get and map data:
 getAllEvents(mapAllEvents);
 getReports(mainMap, mapReports);
@@ -892,12 +901,53 @@ getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //getMissions(mapMissions);
 getContacts(mapContacts);
-getFeeds('/api/hazards/pdc', tableFeeds);
-getFeeds('/api/hazards/usgs', tableFeeds);
-getFeeds('/api/hazards/tsr', tableFeeds);
-getFeeds('/api/hazards/gdacs', tableFeeds);
-getFeeds('/api/hazards/ptwc', tableFeeds);
-var TOTAL_FEEDS=5;
+
+var TOTAL_FEEDS=0;
+var totalFeedsSaved=0;
+var allFeedFeatures=[];
+
+var updateFeedsTable = function() {
+    //  reset these each call:
+    TOTAL_FEEDS=0;
+    totalFeedsSaved=0;
+    allFeedFeatures=[];
+    $('#rssFeeds').html('');
+
+    // update TOTAL_FEEDS first so that other calls to tableFeeds work properly
+    if (Cookies.get('- PDC')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- USGS')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- TSR')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- GDACS')==='on') {
+        TOTAL_FEEDS++;
+    }
+    if (Cookies.get('- PTWC')==='on') {
+        TOTAL_FEEDS++;
+    }
+
+    if (Cookies.get('- PDC')==='on') {
+        getFeeds('/api/hazards/pdc', tableFeeds);
+    }
+    if (Cookies.get('- USGS')==='on') {
+        getFeeds('/api/hazards/usgs', tableFeeds);
+    }
+    if (Cookies.get('- TSR')==='on') {
+        getFeeds('/api/hazards/tsr', tableFeeds);
+    }
+    if (Cookies.get('- GDACS')==='on') {
+        getFeeds('/api/hazards/gdacs', tableFeeds);
+    }
+    if (Cookies.get('- PTWC')==='on') {
+        getFeeds('/api/hazards/ptwc', tableFeeds);
+    }
+};
+
+updateFeedsTable();
 
 var displayVideo = function(video) {
 
@@ -942,6 +992,10 @@ $('#inputContactType').on('change',function(){
 mainMap.on('overlayadd', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'on');
+        if (RSS_LAYER_NAMES.indexOf(layersControlEvent.name) > -1) {
+            //console.log('updating feeds table');
+            updateFeedsTable();
+        }
     }
 });
 
@@ -949,5 +1003,9 @@ mainMap.on('overlayadd', function (layersControlEvent) {
 mainMap.on('overlayremove', function (layersControlEvent) {
     if (!computerTriggered) {
         Cookies.set(layersControlEvent.name,'off');
+        if (RSS_LAYER_NAMES.indexOf(layersControlEvent.name) > -1) {
+            //console.log('updating feeds table');
+            updateFeedsTable();
+        }
     }
 });

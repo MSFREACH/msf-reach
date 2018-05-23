@@ -54,7 +54,7 @@ textarea.valid:focus {
         <div class="panel panel-default">
           <div class="panel-heading" role="tab" id="headingSix">
             <h4 class="panel-title">
-                End Date of the MSF response
+                Date of event closure
             </h4>
           </div>
           <div id="collapseSix2" class="panel-collapse" role="tabpanel" aria-labelledby="headingSix">
@@ -63,7 +63,7 @@ textarea.valid:focus {
                 <div class="row">
                   <div class="col-sm-6">
                     <dl>
-                      <dt>End Date of the MSF response</dt>
+                      <dt>Date of event closure</dt>
                       <dd>
                         <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                       </dd>
@@ -137,11 +137,7 @@ var vm = new Vue({
         var body = {
           status: "inactive",
           type: currentEventProperties.type,
-          metadata: metadata,
-          location: {
-            lat: currentEventGeometry.coordinates[1],
-            lng: currentEventGeometry.coordinates[0],
-          }
+          metadata: metadata
         }
         $.ajax({
           type: "PUT",

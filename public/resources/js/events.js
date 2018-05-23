@@ -11,6 +11,11 @@ var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
 
+var clipboard = new Clipboard('.btn');
+
+clipboard.on('success', function(e) {
+    alert('link copied to your clipboard, ready to share');
+});
 
 // set up the map:
 var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false});
@@ -59,8 +64,6 @@ var zoomToEventBounds = function(bounds) {
     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
     mainMap.fitBounds(rBounds);
 };
-
-var clipboard = new Clipboard('.btn');
 
 // long form of labels:
 var labels = {
@@ -167,7 +170,7 @@ var printEventProperties = function(err, eventProperties){
     vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
     vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
     vmEventDetails.$mount('#eventVApp');
-    eventReportLink=vmEventDetails.eventReportLink;
+    eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
 
     $('#eventShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></div>');
     $('#reportShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></div>');
@@ -428,10 +431,10 @@ var mapAllEvents = function(err, events){
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('Ongoing MSF Projects')==='on') {
+    if (Cookies.get('Ongoing MSF Responses')==='on') {
         eventsLayer.addTo(mainMap);
     }
-    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Projects');
+    layerControl.addOverlay(eventsLayer, 'Ongoing MSF Responses');
 
 };
 
@@ -890,6 +893,14 @@ var groupedOverlays = {
 var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
 var layerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(mainMap);
+
+if (L.Browser.touch) {
+    L.DomEvent
+        .disableClickPropagation(layerControl._container)
+        .disableScrollPropagation(layerControl._container);
+} else {
+    L.DomEvent.disableClickPropagation(layerControl._container);
+}
 
 // Archive support
 $('#btnArchive').click(function(e){

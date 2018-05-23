@@ -68,6 +68,12 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
+              <dt>Region(s)</dt>
+              <dd>
+                <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
+              </dd>
+            </dl>
+            <dl>
               <dt>Add region for the emergency</dt>
               <dd class="bottom-margined">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
@@ -133,12 +139,6 @@ dd.padding-bottom {
                   <input type="text" v-model="typeOther" id="selectType7" class="form-control" placeholder="(Specify)" >
                 </div>
 
-              </dd>
-            </dl>
-            <dl>
-              <dt>Region(s)</dt>
-              <dd>
-                <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
               </dd>
             </dl>
             <dl>
@@ -252,7 +252,7 @@ dd.padding-bottom {
                 </li>
                 <li class="list-group-item">
                   <dl>
-                    <dt>End Date of the MSF response</dt>
+                    <dt>Date of event closure</dt>
                     <dd>
                       <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                     </dd>
@@ -1060,6 +1060,21 @@ var vm = new Vue({
     eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
     msfResponseMapLayerControl = L.control.groupedLayers(msfResponseBaseMaps, groupedOverlays, groupOptions).addTo(msfResponseMap);
 
+    if (L.Browser.touch) {
+       L.DomEvent
+        .disableClickPropagation(eventMapLayerControl._container)
+        .disableScrollPropagation(eventMapLayerControl._container);
+    } else {
+        L.DomEvent.disableClickPropagation(eventMapLayerControl._container);
+    }
+    if (L.Browser.touch) {
+       L.DomEvent
+        .disableClickPropagation(msfResponseMapLayerControl._container)
+        .disableScrollPropagation(msfResponseMapLayerControl._container);
+    } else {
+        L.DomEvent.disableClickPropagation(msfResponseMapLayerControl._container);
+    }
+
     getAllEvents(mapEditEvents);
 
     getFeeds('/api/hazards/pdc',mapEditPDCHazards);
@@ -1135,6 +1150,8 @@ var vm = new Vue({
           currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
         }
       }
+
+      metadata['region'] = $('#eventRegion').val();
 
       //update sub types and add into db
       this.updateSubEventTypes();
