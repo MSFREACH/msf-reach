@@ -241,7 +241,7 @@ var getMissions = function(callback){
     });
 };
 
-var allFeedFeatures=[];
+
 
 
 /**
@@ -904,12 +904,16 @@ getContacts(mapContacts);
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;
+var allFeedFeatures=[];
 
 var updateFeedsTable = function() {
+    //  reset these each call:
     TOTAL_FEEDS=0;
     totalFeedsSaved=0;
+    allFeedFeatures=[];
     $('#rssFeeds').html('');
 
+    // update TOTAL_FEEDS first so that other calls to tableFeeds work properly
     if (Cookies.get('- PDC')==='on') {
         TOTAL_FEEDS++;
     }
@@ -925,9 +929,10 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         TOTAL_FEEDS++;
     }
-    //console.log(TOTAL_FEEDS);
+    console.log(TOTAL_FEEDS);
 
     if (Cookies.get('- PDC')==='on') {
+        console.log('PDC on');
         getFeeds('/api/hazards/pdc', tableFeeds);
     }
     if (Cookies.get('- USGS')==='on') {
