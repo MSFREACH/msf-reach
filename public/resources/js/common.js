@@ -93,6 +93,11 @@ if (typeof(Cookies.get('MapLayer')) === 'undefined') {
 if (typeof(Cookies.get('Ongoing MSF Responses'))==='undefined') {
     Cookies.set('Ongoing MSF Responses','on');
 }
+
+if (typeof(Cookies.get('Previous MSF Responses'))==='undefined') {
+    Cookies.set('Previous MSF Responses','on');
+}
+
 if (typeof(Cookies.get('Health Sites'))==='undefined') {
     Cookies.set('Health Sites','off');
 }

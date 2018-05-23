@@ -401,14 +401,13 @@ var mapMissions = function(missions ){
     missionsClusters.addLayer(missionsLayer);
 
     if (missionsLayerOn || firstMissionsLoad ) {
-        if (Cookies.get('Missions')==='on') {
+        if (Cookies.get('Previous MSF Responses')==='on') {
             missionsClusters.addTo(mainMap);
         }
         firstMissionsLoad = false;
     }
 
-
-    layerControl.addOverlay(missionsClusters, 'Past Mission Responses');
+    layerControl.addOverlay(missionsClusters, 'Previous MSF Responses');
 
 };
 
