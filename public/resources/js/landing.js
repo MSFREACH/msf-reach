@@ -929,10 +929,8 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         TOTAL_FEEDS++;
     }
-    console.log(TOTAL_FEEDS);
 
     if (Cookies.get('- PDC')==='on') {
-        console.log('PDC on');
         getFeeds('/api/hazards/pdc', tableFeeds);
     }
     if (Cookies.get('- USGS')==='on') {
