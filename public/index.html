@@ -233,12 +233,13 @@
                 <div  class="col-sm-7 analyticsDiv">
                   <div>
                     <div v-if="isSubmitting" class="msf-loader"></div>
-                    <div class="" v-if="hasNearBys">
-                      <h5>Below are the near-by events: </p>
-                      <ul>
-                        <li v-for="ev in nearByEvents">{{ev.properties.metadata.name}} </li>
-                      </ul>
-                      <h5> Would you like to create the new event anyway? </h5>
+                    <div class="" v-if="hasNearBys  && showNearByEvents">
+                      <h4>The following near-by events has been found. Would you like to create a new event anyway? </h4>
+                        <div class="list-group">
+                            <a v-for="ev in nearByEvents" :href="'/events/?id='+ ev.properties.id" target="_blank" class="list-group-item list-group-item-action list-group-item-light">Event {{ev.properties.id}}, {{ev.properties.metadata.name}}, <i>{{ev.properties.type}}</i> </a>
+                        </div>
+
+
                     </div>
                     <div v-if="hasSubmissionError"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in event submission <span v-if="submissionErrorMsg">:{{submissionErrorMsg}}</span></div>
                     <div v-if="isEventCreated"><span  class="glyphicon glyphicon-check" style="color:green;"></span> Event successfully created.</div>
@@ -313,8 +314,8 @@
 
           </div>
           <div class="modal-footer">
-            <button v-if="hasNearBys && !isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button v-if="hasNearBys && !isAnalyzed" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
+            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
             <button v-if="!hasNearBys || isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
           </div>
         </div>

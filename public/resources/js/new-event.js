@@ -38,6 +38,11 @@ $('#newEventModal').on('hidden.bs.modal', function() {
 
 });
 
+
+$('#analyticsModal').on('hidden.bs.modal', function() {
+    clearGlobalVars();
+});
+
 $('#analyticsModal').on('shown.bs.modal', function(){
     $('body').addClass('modal-open');
 });
@@ -272,6 +277,7 @@ var vmAnalytics = new Vue({
         isAnalyzing: false,
         hasNearBys:false,
         hasSubmissionError:false,
+        showNearByEvents:true,
         submissionErrorMsg:'',
         nearByEvents:[],
         response:{}
@@ -286,6 +292,7 @@ var vmAnalytics = new Vue({
             this.vizalyticsError=false;
             this.isAnalyzing =false;
             this.hasNearBys= false;
+            this.showNearByEvents=true,
             this.hasSubmissionError = false;
             this.submissionErrorMsg ='';
             this.nearByEvents=[];
@@ -295,6 +302,8 @@ var vmAnalytics = new Vue({
         submitAndAnalyze:function(evBody)
         {
             var vm=this;
+            vm.isSubmitting=true;
+            vm.showNearByEvents=false;
             $.ajax({
                 type: 'POST',
                 url: '/api/events',
@@ -304,6 +313,7 @@ var vmAnalytics = new Vue({
             // var eventId = data.result.objects.output.geometries[0].properties.id;
                 refreshLandingPage();
                 vm.isEventCreated=true;
+                vm.isSubmitting=false;
                 vm.isAnalyzing=true;
                 $.ajax({
                     type: 'POST',
