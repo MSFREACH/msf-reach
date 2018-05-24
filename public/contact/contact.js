@@ -5,9 +5,11 @@ var qEmail=null;
 
 
 $(function () {
-    $('#permission').toggle(localStorage.getItem('username')!=null);
+    qGUID=getQueryVariable('token');
+    qEmail=getQueryVariable('email');
+    $('#permission').toggle(localStorage.getItem('username')!=null && !qGUID);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
-    $('#private').toggle(localStorage.getItem('username')!=null);
+    $('#private').toggle(localStorage.getItem('username')!=null && !qGUID);
 
     const STARTPAGEINDEX = 0;
     const CHECKEMAILPAGEINDEX =1;
@@ -15,8 +17,29 @@ $(function () {
     const MAPSECTIONINDEX = 4;
     const CONTACTDETAILSINDEX =5;
 
-    qGUID=getQueryVariable('token');
-    qEmail=getQueryVariable('email');
+    function navigateTo(index) {
+    // Mark the current section with the class 'current'
+        $sections
+            .removeClass('current')
+            .eq(index)
+            .addClass('current');
+        // Show only the navigation buttons that make sense for the current section:
+        $('.form-navigation .previous').toggle(index > (updateMode ? NAMESECTIONINDEX : 0) && index<($sections.length - 1));
+        var atTheEnd = index >= $sections.length - 2;
+        $('.form-navigation .next').toggle(!atTheEnd);
+        $('.form-navigation [id=createContact]').toggle((!updateMode)&&(index ==  $sections.length - 2) );
+        $('.form-navigation [id=updateContact]').toggle((updateMode)&&(index ==  $sections.length - 2) );
+        if (index == MAPSECTIONINDEX && doItOnce)
+        {
+            newContactMap.invalidateSize();
+            if (newContactMap.msf_latlng)
+                newContactMap.setView(newContactMap.msf_latlng,17);
+            else
+                newContactMap.locate({setView: true, maxZoom: 17});
+            doItOnce=false;
+        }
+    }
+
 
     if (qGUID && qEmail)
     {
@@ -127,30 +150,6 @@ $(function () {
 
 
     var $sections = $('.form-section');
-
-
-    function navigateTo(index) {
-    // Mark the current section with the class 'current'
-        $sections
-            .removeClass('current')
-            .eq(index)
-            .addClass('current');
-        // Show only the navigation buttons that make sense for the current section:
-        $('.form-navigation .previous').toggle(index > (updateMode ? NAMESECTIONINDEX : 0) && index<($sections.length - 1));
-        var atTheEnd = index >= $sections.length - 2;
-        $('.form-navigation .next').toggle(!atTheEnd);
-        $('.form-navigation [id=createContact]').toggle((!updateMode)&&(index ==  $sections.length - 2) );
-        $('.form-navigation [id=updateContact]').toggle((updateMode)&&(index ==  $sections.length - 2) );
-        if (index == MAPSECTIONINDEX && doItOnce)
-        {
-            newContactMap.invalidateSize();
-            if (newContactMap.msf_latlng)
-                newContactMap.setView(newContactMap.msf_latlng,17);
-            else
-                newContactMap.locate({setView: true, maxZoom: 17});
-            doItOnce=false;
-        }
-    }
 
     function curIndex() {
     // Return the current index by looking at which section has the class 'current'
