@@ -20,6 +20,7 @@ $(function () {
 
     if (qGUID && qEmail)
     {
+        navigateTo(2);
         updateMode=true;
         $('#updateModal').modal('show');
         $('#updateModalMsg').html('Loading contact data ...');
