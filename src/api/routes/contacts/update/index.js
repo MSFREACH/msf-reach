@@ -53,6 +53,36 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    // Request the creation of a unique link and email sent to user
+    api.get('/guid',
+        validate({
+            query: {
+                email: Joi.string().required()
+            }
+        }),
+        (req ,res, next) => {
+            // Request GUID from database
+            update(config, db, logger).requestGUID(req.query.email)
+                .then((data) => {
+                    if (data !== null){
+                        res.status(200).json({ guid: data.guid});
+                    }
+                    else {
+                        // Email did not exist in database
+                        logger.info('Contact not found, ' + req.query.email);
+                        res.status(400).json({ statusCode: 200, time:new Date().toISOString(), result: 'error: email not found' , emailExists:false });
+                    }
+                })
+                // Catch database errors
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
     // get a peer contact details before update
     api.get('/byEmail',
         validate({
