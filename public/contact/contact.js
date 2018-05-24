@@ -176,6 +176,10 @@ $(function () {
                 return;
             }
         }
+        if (cInd==STARTPAGEINDEX && qGUID) {
+            navigateTo(NAMESECTIONINDEX);
+        }
+
         if (cInd==MAPSECTIONINDEX)
         {
             if (!newContactMap.msf_latlng)
