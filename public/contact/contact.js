@@ -7,9 +7,9 @@ var qEmail=null;
 $(function () {
     qGUID=getQueryVariable('token');
     qEmail=getQueryVariable('email');
-    $('#permission').toggle(localStorage.getItem('username')!=null && !qGUID);
+    $('#permission').toggle(localStorage.getItem('username')!=null);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
-    $('#private').toggle(localStorage.getItem('username')!=null && !qGUID);
+    $('#private').toggle(localStorage.getItem('username')!=null);
 
     const STARTPAGEINDEX = 0;
     const CHECKEMAILPAGEINDEX =1;
@@ -113,17 +113,25 @@ $(function () {
                 $('#inputContactJobTitle').val(props.job_title);
                 $('#inputContactEmployerDivision').val(props.division);
             }
-            $('#inputContactCell').intlTelInput('setNumber', props.cell);
-            $('#inputContactWork').intlTelInput('setNumber', props.work);
-            $('#inputContactHome').intlTelInput('setNumber', props.home);
-            $('#inputContactFax').intlTelInput('setNumber', props.fax);
+            if (props.hasOwnProperty('cell')) {
+                $('#inputContactCell').intlTelInput('setNumber', props.cell);
+            }
+            if (props.hasOwnProperty('work')) {
+                $('#inputContactWork').intlTelInput('setNumber', props.work);
+            }
+            if (props.hasOwnProperty('home')) {
+                $('#inputContactHome').intlTelInput('setNumber', props.home);
+            }
+            if (props.hasOwnProperty('fax')) {
+                $('#inputContactFax').intlTelInput('setNumber', props.fax);
+            }
 
             //'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             //var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
             $('#inputContactFirstName').val(props.name.split(' ')[0]);
             $('#inputContactLastName').val(props.name.split(' ')[1]);
-            $('#inputSpeciality').val(props.speciality);
 
+            $('#inputSpeciality').val(props.speciality);
             //'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
             $('#datepicker').val(props.dob);
             $('#inputContactWeb').val(props.web) ;
@@ -170,16 +178,12 @@ $(function () {
                 return;
             }
         }
-        if (cInd==STARTPAGEINDEX && localStorage.getItem('username') && !qGUID) {
+        if (cInd==STARTPAGEINDEX && localStorage.getItem('username')) {
             if (!$('#inputPermissionAcknowledge').is(':checked')) {
                 alert('Please tick the acknowledgement box to continue.');
                 return;
             }
         }
-        if (cInd==STARTPAGEINDEX && qGUID) {
-            navigateTo(NAMESECTIONINDEX);
-        }
-
         if (cInd==MAPSECTIONINDEX)
         {
             if (!newContactMap.msf_latlng)
