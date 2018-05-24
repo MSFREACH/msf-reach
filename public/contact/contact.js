@@ -170,7 +170,7 @@ $(function () {
                 return;
             }
         }
-        if (cInd==STARTPAGEINDEX && localStorage.getItem('username')) {
+        if (cInd==STARTPAGEINDEX && localStorage.getItem('username') && !qGUID) {
             if (!$('#inputPermissionAcknowledge').is(':checked')) {
                 alert('Please tick the acknowledgement box to continue.');
                 return;
