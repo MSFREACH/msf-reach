@@ -252,7 +252,7 @@
                       <h5> Contacts: </h5>
                       <p class="help-block"> Below are the contacts (if any have been found) that are located in the area of disaster. (This AI feature coming soon...)</p>
                       <ul>
-                        <li v-for="c in res.data.contacts">{{c.name}}, <i> {{c.location}}</i>, <a>{{c.phone}}</a> </li>
+                        <li v-for="c in res.data.contacts">{{c.name}}, <i> <a :href="'mailto:' + c.email">{{c.email}}</i>, <a>{{c.cell}}</a> </li>
                       </ul>
                       <h5> Maps: </h5>
                       <p class="help-block"> Below are relevant maps (if any have been found):</p>
