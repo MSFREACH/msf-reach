@@ -109,11 +109,15 @@ export default ( config, logger ) => ({
                         let sender = JSON.parse(body1);
                         let recipient = JSON.parse(body2);
 
-                        let emContext={sender_name: sender.displayName, recipient_name: recipient.displayName, contact_name: contact_data.properties.name };
+                        let emContext={
+                            sender_name: sender.displayName,
+                            recipient_name: recipient.displayName,
+                            contact_hyperlink: '<a href="'+config.BASE_URL+'#contact'+contact_data.id+'">'+contact_data.properties.name+'</a>'
+                        };
 
                         const mailOptions = {
                             from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
-                            to: recipient.userPrincipalName, 
+                            to: recipient.userPrincipalName,
                             subject: 'Contact share notification',
                             template: 'share',
                             context: emContext
