@@ -222,7 +222,7 @@
     <!-- Analytics modal -->
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewAnalyticsModalLabel" id="analyticsModal">
       <div class="modal-dialog modal-lg ">
-        <div class="modal-content">
+        <div id="analysisResultVue" class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myNewAnalyticsModalLabel">Event Analytics</h4>
@@ -230,15 +230,29 @@
           <div class="modal-body">
             <div class="container-fluid">
               <div class="row">
-                <div class="col-sm-7 analyticsDiv">
-                  <div id="submissionStatusDiv">
+                <div  class="col-sm-7 analyticsDiv">
+                  <div>
+                    <div v-if="isSubmitting" class="msf-loader"></div>
+                    <div class="" v-if="hasNearBys  && showNearByEvents">
+                      <h4>The following near-by events has been found. Would you like to create a new event anyway? </h4>
+                        <div class="list-group">
+                            <a v-for="ev in nearByEvents" :href="'/events/?id='+ ev.properties.id" target="_blank" class="list-group-item list-group-item-action list-group-item-light">Event {{ev.properties.id}}, {{ev.properties.metadata.name}}, <i>{{ev.properties.type}}</i> </a>
+                        </div>
+
+
+                    </div>
+                    <div v-if="hasSubmissionError"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in event submission <span v-if="submissionErrorMsg">:{{submissionErrorMsg}}</span></div>
+                    <div v-if="isEventCreated"><span  class="glyphicon glyphicon-check" style="color:green;"></span> Event successfully created.</div>
+
 
                   </div>
 
-                  <div id="vizalyticsDiv">
-
+                  <div v-if="isAnalyzing">
+                    <span>Analyzing event ...</span> <div class="msf-loader"></div>
                   </div>
-                  <div id="analysisResultVue" v-cloak>
+                  <div v-if="vizalyticsError"> <span  class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in analyzing event.</div>
+
+                  <div v-if="isAnalyzed">
                     <h4>Anlysis result:</h4>
                     <span v-if="response.status.success" > <span class="glyphicon glyphicon-check" style="color:green;"></span> OK </span>
                     <span v-else> <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Unsuccessful </span>
@@ -252,7 +266,7 @@
                       <h5> Contacts: </h5>
                       <p class="help-block"> Below are the contacts (if any have been found) that are located in the area of disaster. (This AI feature coming soon...)</p>
                       <ul>
-                        <li v-for="c in res.data.contacts">{{c.name}}, <i> {{c.location}}</i>, <a>{{c.phone}}</a> </li>
+                        <li v-for="c in res.data.contacts">{{c.name}}, <i> <a :href="'mailto:' + c.email">{{c.email}}</i>, <a>{{c.cell}}</a> </li>
                       </ul>
                       <h5> Maps: </h5>
                       <p class="help-block"> Below are relevant maps (if any have been found):</p>
@@ -300,11 +314,14 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
+            <button v-if="!hasNearBys || isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
           </div>
         </div>
       </div>
     </div>
+
 
     <!-- Contact Page Modal -->
     <div class="modal fade" id="contactDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelContact">
@@ -673,8 +690,8 @@
                 <!--contact tab menu-->
                 <div id="contact" class="tab-pane">
                     <ul class="nav nav-tabs" id="contact_tabs">
+                        <li><a href="#contact_list" data-toggle="tab">List Contacts</a></li>
                         <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
-                        <li><a href="#contact_search" data-toggle="tab">Search</a></li>
                     </ul>
 
                     <!--contact tab content-->
@@ -686,7 +703,7 @@
                         </div>
                       </div>
 
-                      <div id="contact_search" class="tab-pane">
+                      <div id="contact_list" class="tab-pane active">
                         <div class="form-group" >
                           Contact search category
                             <select class="form-control" style="color:black;" id="inputContactType" >
@@ -702,6 +719,9 @@
                         </div>
                         <div class="form-group">
                           <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
+                        </div>
+
+                        <div id="contact_container" class="tab-pane tab-pane-box">
                         </div>
                       </div>
                     </div>
@@ -729,6 +749,7 @@
       </div>
     <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
     <script src="/lib/lodash.min.js"></script>
+    <script src="/lib/moment.min.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="lib/jquery/jquery-3.3.1.min.js"></script>
     <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
