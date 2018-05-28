@@ -673,8 +673,8 @@
                 <!--contact tab menu-->
                 <div id="contact" class="tab-pane">
                     <ul class="nav nav-tabs" id="contact_tabs">
+                        <li><a href="#contact_list" data-toggle="tab">List Contacts</a></li>
                         <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
-                        <li><a href="#contact_search" data-toggle="tab">Search</a></li>
                     </ul>
 
                     <!--contact tab content-->
@@ -686,7 +686,7 @@
                         </div>
                       </div>
 
-                      <div id="contact_search" class="tab-pane">
+                      <div id="contact_list" class="tab-pane active">
                         <div class="form-group" >
                           Contact search category
                             <select class="form-control" style="color:black;" id="inputContactType" >
@@ -702,6 +702,9 @@
                         </div>
                         <div class="form-group">
                           <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
+                        </div>
+
+                        <div id="contact_container" class="tab-pane tab-pane-box">
                         </div>
                       </div>
                     </div>

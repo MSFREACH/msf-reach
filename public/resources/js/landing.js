@@ -178,6 +178,53 @@ var mapAllEvents = function(err, events){
 
 };
 
+// Load Contacts to contacts table tab
+var loadContacts = function(err, contacts) {
+    if (err) {
+        alert('Error loading contacts: ' + err);
+    } else {
+        $('#contact_container').html(
+            '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Private?</th><th>Type</th><th>Country</th></tr></thead><tbody>'
+        );
+
+        $.each(contacts, function(key, value) {
+
+            var employer = '';
+            if (value.properties.hasOwnProperty('employer')) {
+                employer = value.properties.employer;
+            }
+
+            var country = '';
+            if (value.properties.hasOwnProperty('address')) {
+                country=value.properties.address.split(',').slice(-1)[0];
+            }
+
+            // console.log(key, value);
+            $('#contactsTable').append(
+                '<tr id=\'crow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openContactPopup('+value.properties.id+')\'><td><a data-toggle=\'modal\' data-target=\'#contactDetailsModal\' href=\'#\' onclick=\'onContactLinkClick(' +
+          value.properties.id +
+          ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
+          (typeof value.properties.properties.title === 'undefined'
+              ? ''
+              : value.properties.properties.title) +
+          ' ' +
+          value.properties.properties.name +
+          '</td><td>'+(value.properties.private ? 'yes' : 'no') +
+
+          '</td><td>' +
+          (typeof value.properties.properties.type === 'undefined'
+              ? ''
+              : value.properties.properties.type) +
+
+          '</td></td>'+ country+ '</td></tr>'
+            );
+
+        });
+
+        $('#contactsTable').append('</tbody></table>');
+    }
+};
+
 /**
 * Function to get contacts
 * @function getContacts
@@ -185,22 +232,42 @@ var mapAllEvents = function(err, events){
 * @param {String} term - search term
 * @param {String} type - contact type to filter by
 **/
-var getContacts = function(callback,term,type){
-
-    var url = '/api/contacts/?geoformat='+GEOFORMAT;
-    if (term) {
-        url += '&search='+term;
+// Perform GET call to get contacts
+var getContacts = function(term,type){
+    var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
+    var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
+    var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
+    var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
+    var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
+    if (!term) {
+        url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
     }
     if (type) {
         url=url+'&type='+type;
     }
-    $.getJSON(url, function( data ){
-        callback(data.result);
-    }).fail(function(err) {
+    $.getJSON(url, function (data){
+        loadContacts(null, data.result.features);
+        //remap contacts
+        mapContacts(data.result);
+        MSFContactsLayer.eachLayer(function(layer){
+            layer.on('mouseover',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+            layer.on('mouseout',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+            layer.on('touchstart',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+            layer.on('touchend',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+        });
+        nonMSFContactsLayer.eachLayer(function(layer){
+            layer.on('mouseover',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+            layer.on('mouseout',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+            layer.on('touchstart',function(e){$('#crow'+layer.feature.properties.id).addClass('isHovered');});
+            layer.on('touchend',function(e){$('#crow'+layer.feature.properties.id).removeClass('isHovered');});
+        });
+
+    }).fail(function(err){
         if (err.responseText.includes('expired')) {
             alert('session expired');
         } else {
-            alert('error: '+ err.responseText);
+            // Catch condition where no data returned
+            loadContacts(err.responseText, null);
         }
     });
 };
@@ -899,7 +966,7 @@ getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //getMissions(mapMissions);
-getContacts(mapContacts);
+getContacts();
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;
@@ -1008,3 +1075,9 @@ mainMap.on('overlayremove', function (layersControlEvent) {
         }
     }
 });
+
+if (location.hash.includes("#contact")) {
+    console.log('hash', location.hash);
+    $('#contactDetailsModal').modal();
+    onContactLinkClick(/\d+/.exec(location.hash)[0]);
+}
