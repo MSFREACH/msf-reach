@@ -12,6 +12,10 @@ function clearGlobalVars(){
     if (latlng) {
         latlng=null;
     }
+    if (areaSelect) {
+        areaSelect.remove();
+        areaSelect=null;
+    }
     // clear previous entry
     $('#selectType').val('');
     $('#inputEventName').val('');
@@ -111,7 +115,7 @@ $(function(){
     // create a new event - get the values and store them using a POST
     $('#createEvent').on('click', function (e) {
 
-        if (latlng === null){
+        if (areaSelect === null){
             alert('Please select the epicenter of the event using the map.');
         }
         else {
@@ -122,12 +126,12 @@ $(function(){
                 'type': $('input[class=newEventTypeBox]:checked').map(
                     function () {return this.value;}).get().join(','),
                 'created_at': new Date().toISOString(),
-                'location': latlng,
+                'location': areaSelect.getBounds().getCenter(),
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),
                     'sub_type': sub_type,
-                    'bounds': mainMap.getBounds(),
+                    'bounds': areaSelect.getBounds(),
                     'event_datetime': $('#inputEvDateTime').val(),
                     'event_status': $('#inputEvStatus').val(),
                     'incharge_name': $('#inputInChargeName').val(),
@@ -179,8 +183,8 @@ $(function(){
                     data: {
                         geoformat : 'geojson',
                         //status: 'active',
-                        lng: latlng.lng,
-                        lat: latlng.lat
+                        lng: body.location.lng,
+                        lat: body.location.lat
                     },
                     contentType: 'application/json'
                 }).done(function( data, textStatus, req ){

@@ -1033,10 +1033,17 @@ var autocompleteMap=mainMap;
 
 var latlng = null;
 
+var areaSelect = null;
+
 mainMap.on('dblclick', function(dblclickEvent) {
-    latlng = dblclickEvent.latlng;
-    $('#newEventModal').modal('show');
+    if (!areaSelect) {
+        areaSelect = L.areaSelect({width:300, height:200});
+        areaSelect.addTo(mainMap);
+    } else {
+        $('#newEventModal').modal('show');
+    }
 });
+
 
 $('#contSearchTerm').on('input',function(){
     if ($('#inputContactType').val()!=='') {
