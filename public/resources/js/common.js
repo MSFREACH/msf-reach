@@ -424,7 +424,6 @@ var getAllEvents = function(callback){
 
 var currentContactId = 0;
 var onContactLinkClick = function(id) {
-    console.log(id);
     $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
     $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
     $('#contactDetailsModal').on('shown.bs.modal');
