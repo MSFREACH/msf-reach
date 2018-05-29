@@ -161,6 +161,7 @@ var getFeeds = function(url, callback) {
     });
 };
 
+var HAZARD_ICON_TYPES = ['biomedical', 'cyclone', 'drought', 'earthquake', 'flood', 'volcano', 'wildfire', 'storm', 'highwind'];
 
 /**
 * Function to map from PDC hazard summary to PDC hazard icon
@@ -168,9 +169,13 @@ var getFeeds = function(url, callback) {
 **/
 var PDCHazardIcon = function(hazardSummary) {
     var iconUrl = '/resources/images/hazards/';
-    iconUrl += hazardSummary.split(' ')[0].toLowerCase() + '_' +
-  hazardSummary.split(' ')[1].toLowerCase().replace(/(\(|\))/g,'') +
-  '.svg';
+    if (HAZARD_ICON_TYPES.indexOf(hazardSummary.split(' ')[0].toLowerCase())>-1) {
+        iconUrl += hazardSummary.split(' ')[0].toLowerCase() + '_' +
+      hazardSummary.split(' ')[1].toLowerCase().replace(/(\(|\))/g,'') +
+      '.svg';
+    } else {
+        iconUrl += 'indeterminate.svg';
+    }
 
     return L.icon({
         'iconUrl': iconUrl,
@@ -216,10 +221,10 @@ var mapTSRHazards = function(hazards){
 
     TSRHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, L.icon({
+            return L.marker(latlng, {icon: L.icon({
                 iconUrl: '/resources/images/icons/event_types/typhoon.svg',
-                iconSize: [39, 39]
-            }));
+                iconSize: [30, 30]
+            })});
         },
         onEachFeature: hazardFeature
     });
@@ -238,10 +243,11 @@ var mapTSRHazards = function(hazards){
 var mapPTWCHazards = function(hazards){
     PTWCHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, L.icon({
+            console.log('PTWC');
+            return L.marker(latlng, {icon: L.icon({
                 iconUrl: '/resources/images/icons/event_types/tsunami.svg',
-                iconSize: [39, 39]
-            }));
+                iconSize: [30, 30]
+            })});
         },
         onEachFeature: hazardFeature
     });
@@ -269,7 +275,7 @@ var GDACSHazardIcon = function(GDACSProperties) {
         iconUrl += 'cyclone_';
         break;
     default:
-        return L.icon({'iconUrl':'404.svg'}); // eslint-disable-line no-console
+        return L.icon({iconUrl:'/resources/images/hazards/indeterminate.svg', iconSize: [39,39]}); // eslint-disable-line no-console
     }
     switch(GDACSProperties.level) {
     case 'green':
