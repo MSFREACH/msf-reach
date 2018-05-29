@@ -243,7 +243,6 @@ var mapTSRHazards = function(hazards){
 var mapPTWCHazards = function(hazards){
     PTWCHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
-            console.log('PTWC');
             return L.marker(latlng, {icon: L.icon({
                 iconUrl: '/resources/images/icons/event_types/tsunami.svg',
                 iconSize: [30, 30]
