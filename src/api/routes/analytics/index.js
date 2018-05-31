@@ -24,6 +24,9 @@ export default ({ config, logger }) => {
         }),
         (req, res, next) => {
             let eventBody=req.body;
+            if (req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) {
+                eventBody.ad_oid = req.user.oid;
+            }
             let options = {
                 method: 'POST',
                 uri: 'https://msf-api.vizalytics.com/event',
