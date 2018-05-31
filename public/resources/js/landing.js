@@ -890,7 +890,7 @@ mainMap.on('load', function(loadEvent) {
 });
 
 mainMap.fitBounds([[-13, 84],[28,148]]);
-mainMap.setMaxBounds([[-16, 87],[25,151]]);
+//mainMap.setMaxBounds([[-16, 87],[25,151]]);
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
