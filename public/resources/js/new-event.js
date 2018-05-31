@@ -131,7 +131,7 @@ $(function(){
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),
-                    'description': $("#intputEventDescription").val(),
+                    'description': $('#intputEventDescription').val(),
                     'sub_type': sub_type,
                     'bounds': areaSelect.getBounds(),
                     'event_datetime': $('#inputEvDateTime').val(),
