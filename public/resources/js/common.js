@@ -327,10 +327,10 @@ var mapUSGSHazards = function(hazards){
 
     USGSHazardsLayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, L.icon({
+            return L.marker(latlng, {icon: L.icon({
                 iconUrl: '/resources/images/icons/event_types/earthquake.svg',
                 iconSize: [39, 39]
-            }));
+            })});
         },
         onEachFeature: hazardFeature
     });
