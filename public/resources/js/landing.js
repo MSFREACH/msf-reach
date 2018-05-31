@@ -149,6 +149,7 @@ var mapAllEvents = function(err, events){
       notificationStr +
       totalPopulationStr +
       affectedPopulationStr +
+      'Description: ' + feature.properties.metadata.description + '<br>' +
       '</div>'
         );
 
