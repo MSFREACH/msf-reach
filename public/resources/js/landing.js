@@ -122,6 +122,7 @@ var mapAllEvents = function(err, events){
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
     severityStr +
+    'Description: ' + feature.properties.metadata.description + '<br>' +
     notificationStr +
     totalPopulationStr +
     affectedPopulationStr;
