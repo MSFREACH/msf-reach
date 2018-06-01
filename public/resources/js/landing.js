@@ -419,6 +419,7 @@ var mapMissions = function(missions ){
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
+            popupContent += 'Description: ' + feature.properties.description + '<br>';
             popupContent += 'Start date: ' + (new Date(feature.properties.properties.startDate)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>';
             popupContent += 'Finish date: ' + (new Date(feature.properties.properties.finishDate)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>';
             popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';

@@ -18,7 +18,7 @@ var loadMissions = function(err, missions) {
         alert('Error loading missions: ' + err);
     } else {
         $('#missionsContainer').html(
-            '<table class="table table-hover" id="missionsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Region</th><th>Start</th><th>End</th><th>Severity</th><th>Capacity</th></tr></thead><tbody>'
+            '<table class="table table-hover" id="missionsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Description</th><th>Region</th><th>Start</th><th>End</th><th>Severity</th><th>Capacity</th></tr></thead><tbody>'
         );
 
         $.each(missions, function(key, value) {
@@ -28,6 +28,8 @@ var loadMissions = function(err, missions) {
           value.properties.id +
           ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
           value.properties.properties.name +
+          '</td><td>' +
+          value.properties.properties.description +
           '</td><td>' +
           value.properties.properties.region +
           '</td><td>' +
