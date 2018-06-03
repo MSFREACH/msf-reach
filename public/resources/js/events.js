@@ -1178,12 +1178,16 @@ function translate(data) {
 var editCategory='general';
 
 // vue functions used for filling in event display
+
+Vue.component("date-picker", VueBootstrapDatetimePicker.default);
+
 var vmEventDetails = new Vue({
 
     data: {
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
+        editingResponse:false
     },
     mounted:function(){
         $('.msf-loader').hide();
@@ -1283,9 +1287,27 @@ var vmEventDetails = new Vue({
             }
         },
         editEvent:function(category){
+          if (category == 'response')
+          {
+            this.editingResponse=true;
+            $('#collapseResp').collapse('show')
+          }else{
             editCategory=category;
             onEditEvent();
             $( '#editModal' ).modal('show');
+          }
+        },
+        stopEdit:function(saveEdits)
+        {
+          if (saveEdits)
+          {
+            //save event
+
+          }
+          else{
+
+          }
+          this.editingResponse=false;
         }
     },
     computed:{

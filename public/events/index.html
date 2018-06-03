@@ -622,25 +622,38 @@
                       href="#collapseResp" class="collapsed">
                       Response
                       </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('response')">Edit</button>
+                    <button v-if="!editingResponse" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('response')">Edit</button>
                   </div>
                   <div id="collapseResp" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div>
                             <dl class="dl-horizontal">
                               <dt>Type of programmes:</dt>
-                              <dd v-for="item in event.metadata.msf_response_types_of_programmes" >
+                              <dd v-if="!editingResponse" v-for="item in event.metadata.msf_response_types_of_programmes" >
                                 <span class="label label-primary" >
                                      {{ getTypeOfProgramme(item) }}
                                 </span>&nbsp;
                               </dd>
+                              <dd v-if="editingResponse">
+                                <div v-for="item in msfTypeOfProgrammes" class="type-of-programmes">
+                                  <label>
+                                    <input type="checkbox" :value="item.value" v-model="event.metadata.msf_response_types_of_programmes" /> {{ item.text }}
+                                  </label>
+                                </div>
+                              </dd>
                               <dt>MSF Response:</dt>
-                              <dd>
+                              <dd v-if="!editingResponse">
                                 {{event.metadata.msf_response}}
                               </dd>
+                              <dd  v-if="editingResponse">
+                                <textarea v-model="event.metadata.msf_response" placeholder="MSF response" class="form-control"></textarea>
+                              </dd>
                               <dt>Start Date:</dt>
-                              <dd>
+                              <dd v-if="!editingResponse">
                                 {{formatDateOnly(event.metadata.start_date_msf_response)}}
+                              </dd>
+                              <dd v-if="editingResponse">
+                                <date-picker v-model="event.metadata.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
                               </dd>
                               <dt>End Date:</dt>
                               <dd>
@@ -653,30 +666,38 @@
                                 <a @click="editEvent('response')">Edit</a>
                               </dd>
                               <dt>Operational Centre:</dt>
-                              <dd>
+                              <dd v-if="!editingResponse">
                                 {{event.metadata.operational_center}}
                               </dd>
                               <dt>
                                 Medical Material:
                               </dt>
-                                  <dd v-for="item in event.metadata.msf_response_medical_material">
-                                    {{item}}
-                                  </dd>
-                                  <dd><b>Total:</b> {{event.metadata.msf_response_medical_material_total}}</dd>
-                                  <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_medical_material_date_arrival)}}</dd>
+                                  <div v-if="!editingResponse">
+                                    <dd v-for="item in event.metadata.msf_response_medical_material">
+                                      {{item}}
+                                    </dd>
+                                    <dd><b>Total:</b> {{event.metadata.msf_response_medical_material_total}}</dd>
+                                    <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_medical_material_date_arrival)}}</dd>
+                                  </div>
                               <dt>
                                 Non-Medical Material:
                               </dt>
-                              <dd v-for="item in event.metadata.msf_response_non_medical_material">
-                                {{item}}
-                              </dd>
-                              <dd><b>Total:</b> {{event.metadata.msf_response_non_medical_material_total}}</dd>
-                              <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_non_medical_material_date_arrival)}}</dd>
+                              <div v-if="!editingResponse">
+                                <dd v-for="item in event.metadata.msf_response_non_medical_material">
+                                  {{item}}
+                                </dd>
+                                <dd><b>Total:</b> {{event.metadata.msf_response_non_medical_material_total}}</dd>
+                                <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_non_medical_material_date_arrival)}}</dd>
+                              </div>
 
 
                             </dl>
 
                       </div>
+                    </div>
+                    <div class="panel-footer" v-if="editingResponse">
+                      <button type="button" class="btn btn-success btn-sm" @click="stopEdit(true)">Save</button>
+                      <button type="button" class="btn btn-danger btn-sm" @click="stopEdit(false)">Cancel</button>
                     </div>
                   </div>
                 </div>
@@ -1200,6 +1221,12 @@ $('#countryDetailsTab').on('click', function(e){
     setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
+$(function(){
+  $('.panel-heading .btn').click(function (e) {
+      e.stopPropagation();
+  });
+
+})
 
 
 
@@ -1210,6 +1237,8 @@ var convertToLocaleDate= function (isoDate) {
   else
   return '';
 }
+
+
 
 </script>
 
