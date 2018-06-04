@@ -1049,19 +1049,23 @@ mainMap.on('dblclick', function(dblclickEvent) {
 
 
 $('#contSearchTerm').on('input',function(){
+  console.log(this.value);
+  console.log($('#inputContactType').val());
     if ($('#inputContactType').val()!=='') {
-        getContacts(mapContacts,this.value,$('#inputContactType').val());
+        getContacts(this.value,$('#inputContactType').val());
     } else {
-        getContacts(mapContacts,this.value);
+        getContacts(this.value);
     }
 
 });
 
 $('#inputContactType').on('change',function(){
+    console.log(this.value);
+    console.log($('#contSearchTerm').val());
     if ($('#contSearchTerm').val()!=='') {
-        getContacts(mapContacts,$('#contSearchTerm').val(),this.value);
+        getContacts($('#contSearchTerm').val(),this.value);
     } else {
-        getContacts(mapContacts,null,this.value);
+        getContacts(null,this.value);
     }
 });
 
