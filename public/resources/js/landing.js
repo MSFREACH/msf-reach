@@ -140,7 +140,7 @@ var mapAllEvents = function(err, events){
             eventDiv = '#ongoingEventProperties';
         }
         if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
-            feature.properties.metadata.name = "(no name specified)"
+            feature.properties.metadata.name = '(no name specified)';
         }
         $(eventDiv).append(
             '<div class="list-group-item">' +
