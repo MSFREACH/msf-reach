@@ -297,26 +297,6 @@ var getReports = function(mapForReports, callback){
 
 
 /**
-* Function to get missions
-* @function getMissions
-* @param {function} callback - callback function to run once missions are loaded
-**/
-var getMissions = function(callback){
-    $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
-        callback(data.result);
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
-        }
-    });
-};
-
-
-
-
-/**
 * function to put the feed data into the table
 * @function tableFeeds
 * @param {Object} feeds - feed data (geojson format)
