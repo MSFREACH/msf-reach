@@ -576,7 +576,7 @@
                   <tr v-else><td>Latest notification:  </td><td>(none)</td></tr>
                   <tr><td>Severity </td><td> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
                   <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
-                  <tr><td>Sharepoint Link </td><td> {{ event.metadata.sharepoint_link }}</td></tr>
+                  <tr><td>Sharepoint Link </td><td> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link }}</a></td></tr>
                   <tr><td>Last updated at</td><td> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
 
                   <tr><td>Event sharing</td><td>
