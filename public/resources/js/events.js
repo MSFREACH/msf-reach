@@ -529,11 +529,16 @@ var getContacts = function(term,type){
     });
 };
 
+
+var points = []; // local storage for coordinates of reports (used for map bounds)
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
 **/
 var mapReports = function(reports,mapForReports){
+
+    points = [];
 
     $('#reportsContainer').html(
         '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
@@ -605,7 +610,7 @@ var mapReports = function(reports,mapForReports){
         layer.bindPopup(popupContent, {  maxWidth: 'auto' });
     }
 
-    var points = []; // local storage for coordinates of reports (used for map bounds)
+
 
     // MSF Icons
     const accessIcon = L.icon({
