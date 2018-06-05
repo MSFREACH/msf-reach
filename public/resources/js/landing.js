@@ -139,6 +139,9 @@ var mapAllEvents = function(err, events){
         } else {
             eventDiv = '#ongoingEventProperties';
         }
+        if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
+            feature.properties.metadata.name = "(no name specified)"
+        }
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
