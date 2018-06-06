@@ -873,6 +873,18 @@ var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleCli
 
 mainMap.on('load', function(loadEvent) {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
+    $.getJSON({
+        url: '/api/utils/arcgistoken',
+        type: 'GET',
+        error: function(err){
+            alert(err);
+        },
+        success: function(data) {
+            ARCGIS_TOKEN = data.token;
+            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
+            getMSFPresence(mapMSFPresence);
+        }
+    });
 });
 
 mainMap.fitBounds([[-13, 84],[28,148]]);

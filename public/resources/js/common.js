@@ -227,19 +227,6 @@ const mapMSFPresence = function(presence) {
 
 };
 
-$.getJSON({
-    url: '/api/utils/arcgistoken',
-    type: 'GET',
-    error: function(err){
-        alert(err);
-    },
-    success: function(data) {
-        ARCGIS_TOKEN = data.token;
-        console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
-        getMSFPresence(mapMSFPresence);
-    }
-});
-
 /**
 * Function to get reports for an event
 * @function openReportPopup
