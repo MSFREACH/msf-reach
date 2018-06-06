@@ -99,7 +99,7 @@ if (typeof(Cookies.get('Previous MSF Responses'))==='undefined') {
 }
 
 if (typeof(Cookies.get('MSF Presence'))==='undefined') {
-    Cookies.set('MSF Presence','off'); // off by default
+    Cookies.set('MSF Presence','on');
 }
 
 if (typeof(Cookies.get('Health Sites'))==='undefined') {
@@ -207,7 +207,7 @@ const mapMSFPresence = function(presence) {
 
     presenceLayer = L.geoJSON(presence, {
         pointToLayer: function (feature, latlng) {
-            return L.marker(latlng);
+            return L.circleMarker(latlng, {'radius':20, 'color':'blue'});
         },
         onEachFeature: onEachFeature
     });
