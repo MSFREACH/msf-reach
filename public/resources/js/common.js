@@ -153,6 +153,7 @@ const getMSFPresence = function(callback) {
     });
 };
 
+let firstPresenceLoad = true;
 /**
 * Function to map MSF presence
 * @function mapMSFPresence
@@ -194,16 +195,33 @@ const mapMSFPresence = function(err, presence) {
         layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
+    let presenceLayerOn = mainMap.hasLayer(presenceLayer);
+
+    if (presenceLayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(presenceLayer);
+        layerControl.removeLayer(presenceLayer);
+        computerTriggered=false;
+    }
+
     presenceLayer = L.geoJSON(presence, {
         pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, {'radius':5, 'color':'blue'});
+            return L.circleMarker(latlng, {'radius':20, 'color':'blue'});
         },
         onEachFeature: onEachFeature
     });
 
-    if (Cookies.get('MSF Presence')==='on') {
-        presenceLayer.addTo(mainMap);
+
+
+    if (presenceLayerOn || firstPresenceLoad ) {
+        if (Cookies.get('MSF Presence')==='on') {
+            presenceLayer.addTo(mainMap);
+        }
+        firstPresenceLoad = false;
     }
+
+
     layerControl.addOverlay(presenceLayer, 'MSF Presence');
 
 
