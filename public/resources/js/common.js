@@ -99,7 +99,7 @@ if (typeof(Cookies.get('Previous MSF Responses'))==='undefined') {
 }
 
 if (typeof(Cookies.get('MSF Presence'))==='undefined') {
-    Cookies.set('MSF Presence','on');
+    Cookies.set('MSF Presence','off');
 }
 
 if (typeof(Cookies.get('Health Sites'))==='undefined') {
