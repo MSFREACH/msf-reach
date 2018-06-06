@@ -194,7 +194,7 @@ const mapMSFPresence = function(err, presence) {
         layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
-    presenceLayer = L.geoJSON(events, {
+    presenceLayer = L.geoJSON(presence, {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {'radius':5, 'color':'blue'});
         },
@@ -204,7 +204,7 @@ const mapMSFPresence = function(err, presence) {
     if (Cookies.get('MSF Presence')==='on') {
         presenceLayer.addTo(mainMap);
     }
-    layerControl.addOverlay(eventsLayer, 'MSF Presence');
+    layerControl.addOverlay(presenceLayer, 'MSF Presence');
 
 
 };
