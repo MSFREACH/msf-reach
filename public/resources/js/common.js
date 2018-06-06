@@ -222,8 +222,6 @@ $.getJSON({
     }
 });
 
-mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
-
 /**
 * Function to get reports for an event
 * @function openReportPopup

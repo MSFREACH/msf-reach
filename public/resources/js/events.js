@@ -983,6 +983,8 @@ mainMap.on('baselayerchange', function(baselayer) {
     Cookies.set('MapLayer',baselayer.name); // update default (set in cookie)
 });
 
+mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
+
 var groupedOverlays = {
     'Reports': {},
 };
