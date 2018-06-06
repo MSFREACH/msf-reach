@@ -210,7 +210,7 @@ const mapMSFPresence = function(err, presence) {
 };
 
 $.getJSON({
-    url: '/api/arcgistoken',
+    url: '/api/utils/arcgistoken',
     type: 'GET',
     error: function(err){
         alert(err);

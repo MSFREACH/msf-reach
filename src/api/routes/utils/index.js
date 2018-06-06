@@ -92,12 +92,6 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
     api.get('/arcgistoken', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => { // eslint-disable-line no-unused-vars
             res.status(200).json({statusCode: 200, token: config.ARCGIS_TOKEN});
-        })
-        .catch((err) => {
-            /* istanbul ignore next */
-            logger.error(err);
-            /* istanbul ignore next */
-            next(err);
         });
 
     return api;
