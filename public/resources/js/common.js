@@ -207,7 +207,7 @@ const mapMSFPresence = function(presence) {
 
     presenceLayer = L.geoJSON(presence, {
         pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, {'radius':20, 'color':'blue'});
+            return L.circleMarker(latlng, {'radius':10, 'color':'blue'});
         },
         onEachFeature: onEachFeature
     });
