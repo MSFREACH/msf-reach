@@ -98,6 +98,10 @@ if (typeof(Cookies.get('Previous MSF Responses'))==='undefined') {
     Cookies.set('Previous MSF Responses','on');
 }
 
+if (typeof(Cookies.get('MSF Presence'))==='undefined') {
+    Cookies.set('MSF Presence','on');
+}
+
 if (typeof(Cookies.get('Health Sites'))==='undefined') {
     Cookies.set('Health Sites','off');
 }
@@ -130,6 +134,95 @@ var firstContactsLoad = true;
 var firstMissionsLoad = true;
 
 var reportMarkers = [];
+
+let presenceLayer = null;
+
+let ARCGIS_TOKEN = ''; // const but does need to be set on initial load
+
+const getMSFPresence = function(callback) {
+
+    //get the current bounds
+    let bboxString=mainMap.getBounds().toBBoxString();
+    //the url
+    let url = 'https://arcgis.cartong.org/arcgis/rest/services/wrl_presence/wrl_presencemsf_view/MapServer/0/query?outFields=*&f=json&outSR=4326&inSR=4326&geometryType=esriGeometryEnvelope&geometry='+bboxString+'&token='+ARCGIS_TOKEN;
+
+    $.getJSON(url, function( data ){
+        callback(ArcgisToGeojsonUtils.arcgisToGeoJSON(data));
+    }).fail(function(err) {
+        alert('error: '+ err);
+    });
+};
+
+/**
+* Function to map MSF presence
+* @function mapMSFPresence
+* @param {Object} presence - geoJSON
+**/
+
+const mapMSFPresence = function(err, presence) {
+
+    // Add popups
+    function onEachFeature(feature, layer) {
+        var popupContent =
+              'Name: ' + feature.properties.name + '<br />' +
+              'Open Date: ' + (new Date(feature.properties.open_date)).toLocaleString().replace(/:\d{2}$/,'') + '<br />' +
+              'Country: ' + feature.properties.country + '<br />' +
+              'Project Code: ' + feature.properties.project_code + '<br />' +
+              'Intervention Type: ' + feature.properties.intervention_type + '<br />' +
+              'Project Mode: ' + feature.properties.project_mode + '<br />' +
+              'OC: ' + feature.properties.operational_centre;
+        if (feature.properties.close_date) {
+            popupContent += '<br />Close Date: '+(new Date(feature.properties.close_date)).toLocaleString().replace(/:\d{2}$/,'');
+        }
+
+        /*
+          $(eventDiv).append(
+              '<div class="list-group-item">' +
+        'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+        'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+        'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+        statusStr +
+        notificationStr +
+        totalPopulationStr +
+        affectedPopulationStr +
+        'Description: ' + feature.properties.metadata.description + '<br>' +
+        '</div>'
+          );
+          */
+
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
+    }
+
+    presenceLayer = L.geoJSON(events, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {'radius':5, 'color':'blue'});
+        },
+        onEachFeature: onEachFeature
+    });
+
+    if (Cookies.get('MSF Presence')==='on') {
+        presenceLayer.addTo(mainMap);
+    }
+    layerControl.addOverlay(eventsLayer, 'MSF Presence');
+
+
+};
+
+$.getJSON({
+    url: '/api/arcgistokens',
+    type: 'GET',
+    error: function(err){
+        alert(err);
+    },
+    success: function(data) {
+        ARCGIS_TOKEN = data.token;
+        console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
+        getMSFPresence(mapMSFPresence);
+    }
+});
+
+mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
 
 /**
 * Function to get reports for an event
