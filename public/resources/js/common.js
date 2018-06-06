@@ -160,7 +160,7 @@ let firstPresenceLoad = true;
 * @param {Object} presence - geoJSON
 **/
 
-const mapMSFPresence = function(err, presence) {
+const mapMSFPresence = function(presence) {
 
     // Add popups
     function onEachFeature(feature, layer) {
