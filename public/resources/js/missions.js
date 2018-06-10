@@ -101,7 +101,7 @@ var onMissionLinkClick = function(id) {
 var thGetMissions=_.throttle(getMissions, 300);
 
 //attach handler to different map events
-mainMap.on('load', function(){thGetMissions(null);});
+thGetMissions(null);
 mainMap.on('moveend', function(){thGetMissions($('#missSearchTerm').val());});
 
 

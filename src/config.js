@@ -22,6 +22,7 @@ function powerSet( list ){
 }
 
 export default {
+    ARCGIS_TOKEN: process.env.ARCGIS_TOKEN || '',
     AUTH: process.env.AUTH === 'true' || false,
     AZURE_AD_TENANT_NAME: process.env.AZURE_AD_TENANT_NAME || '',
     AZURE_AD_CLIENT_ID: process.env.AZURE_AD_CLIENT_ID || '',

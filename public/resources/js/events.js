@@ -22,6 +22,18 @@ var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false});
 
 mainMap.on('load', function(loadEvent) {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
+    $.getJSON({
+        url: '/api/utils/arcgistoken',
+        type: 'GET',
+        error: function(err){
+            alert(err);
+        },
+        success: function(data) {
+            ARCGIS_TOKEN = data.token;
+            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
+            getMSFPresence(mapMSFPresence);
+        }
+    });
 });
 
 mainMap.setView([-6.8, 108.7], 7);
@@ -529,11 +541,16 @@ var getContacts = function(term,type){
     });
 };
 
+
+var points = []; // local storage for coordinates of reports (used for map bounds)
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
 **/
 var mapReports = function(reports,mapForReports){
+
+    points = [];
 
     $('#reportsContainer').html(
         '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
@@ -605,7 +622,7 @@ var mapReports = function(reports,mapForReports){
         layer.bindPopup(popupContent, {  maxWidth: 'auto' });
     }
 
-    var points = []; // local storage for coordinates of reports (used for map bounds)
+
 
     // MSF Icons
     const accessIcon = L.icon({
@@ -977,6 +994,8 @@ var baseMaps = {
 mainMap.on('baselayerchange', function(baselayer) {
     Cookies.set('MapLayer',baselayer.name); // update default (set in cookie)
 });
+
+mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
 
 var groupedOverlays = {
     'Reports': {},

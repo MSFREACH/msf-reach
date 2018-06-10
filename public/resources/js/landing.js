@@ -139,6 +139,9 @@ var mapAllEvents = function(err, events){
         } else {
             eventDiv = '#ongoingEventProperties';
         }
+        if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
+            feature.properties.metadata.name = '(no name specified)';
+        }
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
@@ -291,26 +294,6 @@ var getReports = function(mapForReports, callback){
         }
     });
 };
-
-
-/**
-* Function to get missions
-* @function getMissions
-* @param {function} callback - callback function to run once missions are loaded
-**/
-var getMissions = function(callback){
-    $.getJSON('/api/missions/?geoformat=' + GEOFORMAT, function( data ){
-        callback(data.result);
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
-        }
-    });
-};
-
-
 
 
 /**
@@ -890,6 +873,18 @@ var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleCli
 
 mainMap.on('load', function(loadEvent) {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
+    $.getJSON({
+        url: '/api/utils/arcgistoken',
+        type: 'GET',
+        error: function(err){
+            alert(err);
+        },
+        success: function(data) {
+            ARCGIS_TOKEN = data.token;
+            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
+            getMSFPresence(mapMSFPresence);
+        }
+    });
 });
 
 mainMap.fitBounds([[-13, 84],[28,148]]);
@@ -899,6 +894,7 @@ mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
 
+mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
@@ -1050,18 +1046,18 @@ mainMap.on('dblclick', function(dblclickEvent) {
 
 $('#contSearchTerm').on('input',function(){
     if ($('#inputContactType').val()!=='') {
-        getContacts(mapContacts,this.value,$('#inputContactType').val());
+        getContacts(this.value,$('#inputContactType').val());
     } else {
-        getContacts(mapContacts,this.value);
+        getContacts(this.value);
     }
 
 });
 
 $('#inputContactType').on('change',function(){
     if ($('#contSearchTerm').val()!=='') {
-        getContacts(mapContacts,$('#contSearchTerm').val(),this.value);
+        getContacts($('#contSearchTerm').val(),this.value);
     } else {
-        getContacts(mapContacts,null,this.value);
+        getContacts(null,this.value);
     }
 });
 

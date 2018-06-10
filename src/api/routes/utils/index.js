@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 
 // Import any required utility functions
-import { cacheResponse } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 
@@ -87,6 +87,12 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         }
 
     });
+
+    // The following get methods get hazards from different data sources
+    api.get('/arcgistoken', ensureAuthenticated, cacheResponse('10 minutes'),
+        (req, res, next) => { // eslint-disable-line no-unused-vars
+            res.status(200).json({statusCode: 200, token: config.ARCGIS_TOKEN});
+        });
 
     return api;
 };
