@@ -6,6 +6,7 @@
 * Display and interact with event objects from events page
 */
 
+var vmEventDetails;
 
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
@@ -176,11 +177,11 @@ var reduceNotificationArray = function(acc, elem) {
 */
 var printEventProperties = function(err, eventProperties){
 
-
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
-    vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
-    vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
+    var newEvent= $.extend(true,{},defaultEvent);
+    vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
+    vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
 
@@ -1200,18 +1201,20 @@ var editCategory='general';
 
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
 
-var vmEventDetails = new Vue({
+var vmObject = {
 
     data: {
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
-        editingResponse:false
+        editingResponse:false,
+        editingExtCapacity:false
     },
     mounted:function(){
+       console.log('mounted');
         $('.msf-loader').hide();
         //console.log('mounted event instance.');
-        //console.log(this.event);
+        //console.log(this.event.metadata.ext_other_organizations);
 
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
@@ -1290,9 +1293,24 @@ var vmEventDetails = new Vue({
 
         eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
 
+       //copy-paste from edit.html vue mounted.
+        if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
+          var optCenter = this.event.metadata.operational_center;
+          this.event.metadata.msf_response_operational_centers.push(optCenter);
+        }
+
+        if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
+          this.event.metadata.ext_other_organizations.push({
+            name: this.event.metadata.other_orgs,
+            deployment: this.event.metadata.deployment,
+            arrival_date: null
+          });
+        }
+
 
     },
     methods:{
+        typeStr:typeStr,
         getTypeOfProgramme:function(val)
         {
             var filtered= msfTypeOfProgrammes.filter(function(e){
@@ -1309,8 +1327,13 @@ var vmEventDetails = new Vue({
           if (category == 'response')
           {
             this.editingResponse=true;
-            $('#collapseResp').collapse('show')
-          }else{
+            $('#collapseResp').collapse('show');
+          } else if (category == 'externalcap')
+          {
+            this.editingExtCapacity=true;
+            $('#collapseExtCapacity').collapse('show');
+          }
+          else{
             editCategory=category;
             onEditEvent();
             $( '#editModal' ).modal('show');
@@ -1327,6 +1350,17 @@ var vmEventDetails = new Vue({
 
           }
           this.editingResponse=false;
+          this.editingExtCapacity=false;
+        },
+        addOtherOrg: function() {
+          this.event.metadata.ext_other_organizations.push({
+            name: null,
+            deployment: 0,
+            arrival_date: null,
+          });
+        },
+        removeOtherOrg: function(index) {
+          this.event.metadata.ext_other_organizations.splice(index, 1);
         }
     },
     computed:{
@@ -1341,4 +1375,4 @@ var vmEventDetails = new Vue({
             return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
         }
     }
-});
+};
