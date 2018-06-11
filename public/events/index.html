@@ -656,18 +656,28 @@
                                 <date-picker v-model="event.metadata.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
                               </dd>
                               <dt>End Date:</dt>
-                              <dd>
+                              <dd v-if="!editingResponse">
                                 {{formatDateOnly(event.metadata.end_date_msf_response)}}
+                              </dd>
+                              <dd v-if="editingResponse">
+                                <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                               </dd>
                               <dt>
                                 Location of MSF Response:
                               </dt>
                               <dd>
-                                <a @click="editEvent('response')">Edit</a>
+                                <a @click="editEvent('response')">Edit (CHANGE TO MODAL EDIT)</a>
                               </dd>
                               <dt>Operational Centre:</dt>
                               <dd v-if="!editingResponse">
                                 {{event.metadata.operational_center}}
+                              </dd>
+                              <dd v-if="editingResponse">
+                                <div v-for="item in msfOperationalCenters" class="operational-centers">
+                                  <label>
+                                    <input type="checkbox" :value="item" v-model="event.metadata.msf_response_operational_centers" /> {{ item }}
+                                  </label>
+                                </div>
                               </dd>
                               <dt>
                                 Medical Material:
@@ -679,6 +689,33 @@
                                     <dd><b>Total:</b> {{event.metadata.msf_response_medical_material_total}}</dd>
                                     <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_medical_material_date_arrival)}}</dd>
                                   </div>
+                                  <div v-else >
+                                        <dd>
+                                          <div v-for="item in msfMedicalMaterials" class="operational-centers">
+                                            <label>
+                                              <input type="checkbox" :value="item" v-model="event.metadata.msf_response_medical_material" /> {{ item }}
+                                            </label>
+                                          </div>
+                                        </dd>
+
+                                      <dd>
+                                      <dl>
+                                        <dt>Total</dt>
+                                        <dd>
+                                          <input type="number" v-model.number="event.metadata.msf_response_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                                        </dd>
+                                      </dl>
+                                      </dd>
+
+                                    <dd>
+                                      <dl>
+                                        <dt>Date of arrival</dt>
+                                        <dd>
+                                          <date-picker v-model="event.metadata.msf_response_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                                        </dd>
+                                      </dl>
+                                    </dd>
+                                  </div>
                               <dt>
                                 Non-Medical Material:
                               </dt>
@@ -688,6 +725,31 @@
                                 </dd>
                                 <dd><b>Total:</b> {{event.metadata.msf_response_non_medical_material_total}}</dd>
                                 <dd><b>Date of Arrival:</b> {{formatDateOnly(event.metadata.msf_response_non_medical_material_date_arrival)}}</dd>
+                              </div>
+                              <div v-else>
+                                    <dd>
+                                      <div v-for="item in msfNonMedicalMaterials" class="operational-centers">
+                                        <label>
+                                          <input type="checkbox" :value="item" v-model="event.metadata.msf_response_non_medical_material" /> {{ item }}
+                                        </label>
+                                      </div>
+                                    </dd>
+                                <dd>
+                                  <dl>
+                                    <dt>Total</dt>
+                                    <dd>
+                                      <input type="number" v-model.number="event.metadata.msf_response_non_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                                    </dd>
+                                  </dl>
+                                </dd>
+                                <dd>
+                                  <dl>
+                                    <dt>Date of arrival</dt>
+                                    <dd>
+                                      <date-picker v-model="event.metadata.msf_response_non_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                                    </dd>
+                                  </dl>
+                                </dd>
                               </div>
 
 
