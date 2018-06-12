@@ -81,4 +81,26 @@ export default (config, db, logger) => ({
             .then((data) => resolve({ id: data.id, metadata: body.metadata, the_geom: data.the_geom }))
             .catch((err) => reject(err));
     }),
+    /**
+   * Update a mission
+   * @param {integer} id ID of event
+   * @param {object} body Body of request with event details
+   */
+    updateMission: (id, body) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_MISSIONS}
+      SET properties = properties || $1,
+      WHERE id = $2
+      RETURNING id, properties, the_geom`;
+
+        // Setup values
+        let values = [ body.metadata, id];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id),  properties:data.properties }))
+            .catch((err) => reject(err));
+    }),
 });
