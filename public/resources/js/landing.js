@@ -964,6 +964,7 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
+getFeeds('/api/hazards/lra',mapLRAHazards);
 //getMissions(mapMissions);
 getContacts();
 
@@ -994,6 +995,9 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         TOTAL_FEEDS++;
     }
+    if (Cookies.get('- LRA Crisis')==='on') {
+        TOTAL_FEEDS++;
+    }
 
     if (Cookies.get('- PDC')==='on') {
         getFeeds('/api/hazards/pdc', tableFeeds);
@@ -1009,6 +1013,9 @@ var updateFeedsTable = function() {
     }
     if (Cookies.get('- PTWC')==='on') {
         getFeeds('/api/hazards/ptwc', tableFeeds);
+    }
+    if (Cookies.get('- LRA Crisis')==='on') {
+        getFeeds('/api/hazards/lra', tableFeeds);
     }
 };
 

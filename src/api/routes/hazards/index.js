@@ -8,7 +8,7 @@ import { USGS } from '../../../lib/usgs-georss.js';
 import { TSR } from '../../../lib/tsr.js';
 import { GDACS } from '../../../lib/gdacs-georss.js';
 import { PTWC } from '../../../lib/ptwc-georss.js';
-
+import { LRA } from '../../../lib/lracrisistracker.js'
 
 
 export default ({ logger }) => {
@@ -70,6 +70,20 @@ export default ({ logger }) => {
 
     api.get('/ptwc', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => PTWC()
+            .then((events) => {
+                res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
+            })
+            .catch((err) => {
+                /* istanbul ignore next */
+                logger.error(err);
+                /* istanbul ignore next */
+                next(err);
+            })
+    );
+
+    // Get a list of all reports
+    api.get('/lra', ensureAuthenticated, cacheResponse('10 minutes'),
+        (req, res, next) => LRA()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
             })

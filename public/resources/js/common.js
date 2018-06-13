@@ -116,6 +116,11 @@ if (typeof(Cookies.get('- other contacts'))==='undefined') {
 if (typeof(Cookies.get('- PDC'))==='undefined') {
     Cookies.set('- PDC','on');
 }
+
+if (typeof(Cookies.get('- LRA Crisis'))==='undefined') {
+    Cookies.set('- LRA Crisis','off');
+}
+
 if (typeof(Cookies.get('- TSR'))==='undefined') {
     Cookies.set('- TSR','on');
 }
@@ -225,6 +230,74 @@ const mapMSFPresence = function(presence) {
     layerControl.addOverlay(presenceLayer, 'MSF Presence');
 
 
+};
+
+let firstLRALoad = true;
+let LRALayer = null;
+
+/**
+* Function to map MSF presence
+* @function mapLRAHazards
+* @param {Object} hazards - geoJSON
+**/
+
+const mapLRAHazards = function(hazards) {
+
+    // Add popups
+    function onEachFeature(feature, layer) {
+        var popupContent =
+              'Title (community name): <a href="' + feature.properties.title + '">' + feature.properties.id + '</a><br />' +
+              'Start Date: ' + (new Date(feature.properties.start_date)).toLocaleString().replace(/:\d{2}$/,'') + '<br />' +
+              'Summary: ' + feature.properties.summary + '<br />' +
+              'LRA Verification Rating: ' + feature.properties.lra_verification_rating + '<br />'; 
+        if (feature.properties.close_date) {
+            popupContent += '<br />Close Date: '+(new Date(feature.properties.close_date)).toLocaleString().replace(/:\d{2}$/,'');
+        }
+
+        /*
+          $(eventDiv).append(
+              '<div class="list-group-item">' +
+        'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+        'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+        'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+        statusStr +
+        notificationStr +
+        totalPopulationStr +
+        affectedPopulationStr +
+        'Description: ' + feature.properties.metadata.description + '<br>' +
+        '</div>'
+          );
+          */
+
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
+    }
+
+    let LRALayerOn = mainMap.hasLayer(LRALayer);
+
+    if (LRALayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(LRALayer);
+        layerControl.removeLayer(LRALayer);
+        computerTriggered=false;
+    }
+
+    LRALayer = L.geoJSON(hazards, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {'radius':10, 'color':'green'});
+        },
+        onEachFeature: onEachFeature
+    });
+
+    if (LRALayerOn || firstLRALoad ) {
+        if (Cookies.get('- LRA Crisis')==='on') {
+            LRALayer.addTo(mainMap);
+        }
+        firstLRALoad = false;
+    }
+
+    layerControl.addOverlay(LRALayer, '- LRA Crisis', 'RSS Feeds');
 };
 
 /**
