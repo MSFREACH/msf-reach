@@ -159,6 +159,16 @@ const getMSFPresence = function(callback) {
 };
 
 let firstPresenceLoad = true;
+
+const OCColours = {
+    'OCA': 'rgb(255,81,18)',
+    'OCB': 'rgb(255,199,6)',
+    'OCBA': 'rgb(12,153,5)',
+    'OCG': 'rgb(204,17,101)',
+    'OCP': 'rgb(2,0,204)',
+    'INT': 'rgb(209,33,33)'
+}
+
 /**
 * Function to map MSF presence
 * @function mapMSFPresence
@@ -169,14 +179,19 @@ const mapMSFPresence = function(presence) {
 
     // Add popups
     function onEachFeature(feature, layer) {
+        feature.properties.operational_centre = feature.properties.operational_centre.toUpperCase();
         var popupContent =
-              'Name: ' + feature.properties.name + '<br />' +
-              'Open Date: ' + (new Date(feature.properties.open_date)).toLocaleString().replace(/:\d{2}$/,'') + '<br />' +
               'Country: ' + feature.properties.country + '<br />' +
+              'Type: ' + feature.properties.type + '<br />' +
+              'Name: ' + feature.properties.name + '<br />' +
+              'Open Date: ' + (new Date(feature.properties.open_date)).toLocaleDateString() + '<br />' +
+              'Close Date: ' + (feature.properties.close_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : 'Still open') + '<br />' +
+              'Alternative Name: ' + feature.properties.name_alt + '<br />' +
+              'Operational Centre: ' + '<label class="btn btn-xs" style="background-color:'+OCColours[feature.properties.operational_centre]+';margin-right:5px;margin-bottom:5px;color:white;font-weight: bold">&nbsp;'+feature.properties.operational_centre+'</label><br />' +
+              'Cell: ' + feature.properties.cell + '<br />' +
               'Project Code: ' + feature.properties.project_code + '<br />' +
               'Intervention Type: ' + feature.properties.intervention_type + '<br />' +
-              'Project Mode: ' + feature.properties.project_mode + '<br />' +
-              'OC: ' + feature.properties.operational_centre;
+              'Project Mode: ' + feature.properties.project_mode + '<br />';
         if (feature.properties.close_date) {
             popupContent += '<br />Close Date: '+(new Date(feature.properties.close_date)).toLocaleString().replace(/:\d{2}$/,'');
         }
@@ -212,7 +227,7 @@ const mapMSFPresence = function(presence) {
 
     presenceLayer = L.geoJSON(presence, {
         pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, {'radius':10, 'color':'blue'});
+            return L.circleMarker(latlng, {'radius':10, 'color':OCColours[feature.properties.operational_centre.toUpperCase()]});
         },
         onEachFeature: onEachFeature
     });
@@ -249,7 +264,7 @@ const mapLRAHazards = function(hazards) {
               'Title (community name): <a href="' + feature.properties.title + '">' + feature.properties.id + '</a><br />' +
               'Start Date: ' + (new Date(feature.properties.start_date)).toLocaleString().replace(/:\d{2}$/,'') + '<br />' +
               'Summary: ' + feature.properties.summary + '<br />' +
-              'LRA Verification Rating: ' + feature.properties.lra_verification_rating + '<br />'; 
+              'LRA Verification Rating: ' + feature.properties.lra_verification_rating + '<br />';
         if (feature.properties.close_date) {
             popupContent += '<br />Close Date: '+(new Date(feature.properties.close_date)).toLocaleString().replace(/:\d{2}$/,'');
         }
