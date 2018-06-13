@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 import {parseString} from 'xml2js';
 import rp from 'request-promise';
 
-import { inAsiaBBox } from './util.js';
+
 
 // Take Pacific Disaster Center georss data and return geojson with required properties.
 
@@ -32,19 +32,17 @@ const PDC = () => new Promise((resolve, reject) => {
                         let feature = {'type': 'Feature', 'geometry':{'type':'Point','coordinates':[]},'properties':{}};
                         // extract coords
                         let coords = event['georss:point'][0].split(' ');
-                        if (inAsiaBBox(coords)) {
-                            feature.geometry.coordinates.push(JSON.parse(coords[1]));
-                            feature.geometry.coordinates.push(JSON.parse(coords[0]));
-                            // extract properties
-                            feature.properties.source = 'Pacific Disaster Center';
-                            feature.properties.title = event.title[0];
-                            feature.properties.link = event.link[0].$.href;
-                            feature.properties.id = 'PDC-'+event.id[0];
-                            feature.properties.updated = event.updated[0];
-                            feature.properties.summary = event.summary[0];
-                            // push feature to feature collection
-                            features.push(feature);
-                        }
+                        feature.geometry.coordinates.push(JSON.parse(coords[1]));
+                        feature.geometry.coordinates.push(JSON.parse(coords[0]));
+                        // extract properties
+                        feature.properties.source = 'Pacific Disaster Center';
+                        feature.properties.title = event.title[0];
+                        feature.properties.link = event.link[0].$.href;
+                        feature.properties.id = 'PDC-'+event.id[0];
+                        feature.properties.updated = event.updated[0];
+                        feature.properties.summary = event.summary[0];
+                        // push feature to feature collection
+                        features.push(feature);
                     }
                 }
             }

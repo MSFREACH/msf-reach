@@ -167,7 +167,7 @@ const OCColours = {
     'OCG': 'rgb(204,17,101)',
     'OCP': 'rgb(2,0,204)',
     'INT': 'rgb(209,33,33)'
-}
+};
 
 /**
 * Function to map MSF presence
