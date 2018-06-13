@@ -14,31 +14,31 @@ const LRA = () =>
             .then(function(result) {
                 let features = []; // store for features
 
-                    for (let i = 0; i < result.points.length; i++) {
-                        let event = result.points[i];
+                for (let i = 0; i < result.points.length; i++) {
+                    let event = result.points[i];
 
-                        let feature = {
-                            type: 'Feature',
-                            geometry: { type: 'Point', coordinates: [] },
-                            properties: {}
-                        };
+                    let feature = {
+                        type: 'Feature',
+                        geometry: { type: 'Point', coordinates: [] },
+                        properties: {}
+                    };
                         // extract coords
-                        feature.geometry.coordinates.push(event.longitude);
-                        feature.geometry.coordinates.push(event.latitude);
+                    feature.geometry.coordinates.push(event.longitude);
+                    feature.geometry.coordinates.push(event.latitude);
 
-                        // extract properties
-                        feature.properties.source = 'LRA Crisis Tracker';
-                        feature.properties.title = event.community_name;
-                        feature.properties.link = 'https://www.lracrisistracker.com/incidents/'+event.id;
-                        feature.properties.start_date = event.start_date;
-                        feature.properties.id = event.id;
-                        feature.properties.lra_verification_rating = event.lra_verification_rating;
-                        feature.properties.summary = event.public_display_note;
+                    // extract properties
+                    feature.properties.source = 'LRA Crisis Tracker';
+                    feature.properties.title = event.community_name;
+                    feature.properties.link = 'https://www.lracrisistracker.com/incidents/'+event.id;
+                    feature.properties.start_date = event.start_date;
+                    feature.properties.id = event.id;
+                    feature.properties.lra_verification_rating = event.lra_verification_rating;
+                    feature.properties.summary = event.public_display_note;
 
-                        // push feature to feature collection
-                        features.push(feature);
+                    // push feature to feature collection
+                    features.push(feature);
 
-                    }
+                }
                 // return GeoJSON
                 resolve({ type: 'FeatureCollection', title: 'LRA Crisis Tracker', features: features });
             })

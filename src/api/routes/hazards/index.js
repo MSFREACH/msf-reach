@@ -8,7 +8,7 @@ import { USGS } from '../../../lib/usgs-georss.js';
 import { TSR } from '../../../lib/tsr.js';
 import { GDACS } from '../../../lib/gdacs-georss.js';
 import { PTWC } from '../../../lib/ptwc-georss.js';
-import { LRA } from '../../../lib/lracrisistracker.js'
+import { LRA } from '../../../lib/lracrisistracker.js';
 
 
 export default ({ logger }) => {
