@@ -152,7 +152,9 @@ const getMSFPresence = function(callback) {
     let url = 'https://arcgis.cartong.org/arcgis/rest/services/wrl_presence/wrl_presencemsf_view/MapServer/0/query?outFields=*&f=json&outSR=4326&inSR=4326&geometryType=esriGeometryEnvelope&geometry='+bboxString+'&token='+ARCGIS_TOKEN;
 
     $.getJSON(url, function( data ){
-        callback(ArcgisToGeojsonUtils.arcgisToGeoJSON(data));
+        if (!data.hasOwnProperty('error')) {
+            callback(ArcgisToGeojsonUtils.arcgisToGeoJSON(data));
+        }
     }).fail(function(err) {
         alert('error: '+ err);
     });
