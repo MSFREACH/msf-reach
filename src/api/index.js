@@ -11,6 +11,7 @@ import { version } from '../../package.json';
 
 // Import our routes
 import events from './routes/events';
+import layers from './routes/layers';
 import reports from './routes/reports';
 import twitter from './routes/twitter';
 import hazards from './routes/hazards';
@@ -30,6 +31,7 @@ export default ({ config, db, logger }) => {
 
     // Mount the various endpoints
     api.use('/events', events({ config, db, logger }));
+    api.use('/layers', layers({ config, db, logger}));
     api.use('/reports', reports({ config, db, logger }));
     api.use('/twitter', twitter({ logger }));
     api.use('/hazards', hazards({ logger }));
