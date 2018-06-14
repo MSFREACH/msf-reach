@@ -261,7 +261,7 @@ const mapLRAHazards = function(hazards) {
     // Add popups
     function onEachFeature(feature, layer) {
         var popupContent =
-              'Community Name: <a href="' + feature.properties.title + '">' + feature.properties.id + '</a><br />' +
+              'Community Name: <a href="' + feature.properties.link + '">' + feature.properties.id + '</a><br />' +
               'Community Region: ' + feature.properties.region + '<br />' +
               'Start Date: ' + (new Date(feature.properties.start_date)).toLocaleDateString().replace(/:\d{2}$/,'') + '<br />' +
               'Summary: ' + feature.properties.summary + '<br />' +
@@ -301,7 +301,10 @@ const mapLRAHazards = function(hazards) {
 
     LRALayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, {'radius':10, 'color':'green'});
+          return L.marker(latlng, {icon: L.icon({
+              iconUrl: '/resources/images/icons/event_types/conflict.svg',
+              iconSize: [39, 39]
+          })});
         },
         onEachFeature: onEachFeature
     });
