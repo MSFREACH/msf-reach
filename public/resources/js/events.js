@@ -22,6 +22,18 @@ var mainMap = L.map('map',{dragging: !L.Browser.mobile, tap:false});
 
 mainMap.on('load', function(loadEvent) {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
+    $.getJSON({
+        url: '/api/utils/arcgistoken',
+        type: 'GET',
+        error: function(err){
+            alert(err);
+        },
+        success: function(data) {
+            ARCGIS_TOKEN = data.token;
+            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
+            getMSFPresence(mapMSFPresence);
+        }
+    });
 });
 
 mainMap.setView([-6.8, 108.7], 7);
@@ -983,6 +995,8 @@ mainMap.on('baselayerchange', function(baselayer) {
     Cookies.set('MapLayer',baselayer.name); // update default (set in cookie)
 });
 
+mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
+
 var groupedOverlays = {
     'Reports': {},
 };
@@ -1111,6 +1125,7 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
+getFeeds('/api/hazards/lra',mapLRAHazards);
 
 
 

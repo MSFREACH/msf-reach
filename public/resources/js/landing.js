@@ -874,15 +874,37 @@ var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleCli
 mainMap.on('load', function(loadEvent) {
     getContacts();
     getHealthSites(mainMap.getBounds(),mapHealthSites);
+    $.getJSON({
+        url: '/api/utils/arcgistoken',
+        type: 'GET',
+        error: function(err){
+            alert(err);
+        },
+        success: function(data) {
+            ARCGIS_TOKEN = data.token;
+            getMSFPresence(mapMSFPresence);
+        }
+    });
 });
 
 mainMap.on('moveend', function(){getContacts($('#contSearchTerm').val());});
 
-mainMap.fitBounds([[-13, 84],[28,148]]);
-//mainMap.setMaxBounds([[-16, 87],[25,151]]);
+let bounds = Cookies.get('landingMapBounds');
+if (typeof(bounds)!=='undefined') {
+    let boundsArray = bounds.split(',');
+    mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
+} else {
+    mainMap.fitBounds([[-90,-180],[90,180]]);
+
+}
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
+});
+
+mainMap.on('moveend', function(){
+    Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
+    getMSFPresence(mapMSFPresence);
 });
 
 // Add some base tiles
@@ -953,6 +975,7 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
+getFeeds('/api/hazards/lra',mapLRAHazards);
 //getMissions(mapMissions);
 
 var TOTAL_FEEDS=0;
@@ -982,6 +1005,9 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         TOTAL_FEEDS++;
     }
+    if (Cookies.get('- LRA Crisis')==='on') {
+        TOTAL_FEEDS++;
+    }
 
     if (Cookies.get('- PDC')==='on') {
         getFeeds('/api/hazards/pdc', tableFeeds);
@@ -997,6 +1023,9 @@ var updateFeedsTable = function() {
     }
     if (Cookies.get('- PTWC')==='on') {
         getFeeds('/api/hazards/ptwc', tableFeeds);
+    }
+    if (Cookies.get('- LRA Crisis')==='on') {
+        getFeeds('/api/hazards/lra', tableFeeds);
     }
 };
 

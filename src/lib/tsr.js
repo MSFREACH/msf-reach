@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 import cheerio from 'cheerio';
 import rp from 'request-promise';
 import { parseDms } from 'dms-conversion';
-import { inAsiaBBox } from './util.js';
+
 
 // scrape data from Tropical Storm Risk site and return geojson with desired properties
 
@@ -41,22 +41,20 @@ const TSR = () =>
                             properties: {}
                         };
 
-                        if (inAsiaBBox([currentDataCoords[1],currentDataCoords[0]])) {
-                            // extract coords
-                            feature.geometry.coordinates.push(currentDataCoords[1]);
-                            feature.geometry.coordinates.push(currentDataCoords[0]);
-                            // extract properties
-                            feature.properties.source = 'Tropical Storm Risk';
-                            feature.properties.title = 'Storm - ' + storm + ' in ' + basin;
-                            let url = ($(tr[i]).find('td').eq(0).find('a').attr('href')).split('./');
-                            feature.properties.link = HOST + '/' + url[1];
-                            feature.properties.id = 'TSR-'+ url[1].split('.')[0];
-                            feature.properties.updated = (new Date(updated)).toISOString();
-                            feature.properties.summary = 'Wind: ' + currentDataWind + ' Category: ' + currentDataCat;
+                        // extract coords
+                        feature.geometry.coordinates.push(currentDataCoords[1]);
+                        feature.geometry.coordinates.push(currentDataCoords[0]);
+                        // extract properties
+                        feature.properties.source = 'Tropical Storm Risk';
+                        feature.properties.title = 'Storm - ' + storm + ' in ' + basin;
+                        let url = ($(tr[i]).find('td').eq(0).find('a').attr('href')).split('./');
+                        feature.properties.link = HOST + '/' + url[1];
+                        feature.properties.id = 'TSR-'+ url[1].split('.')[0];
+                        feature.properties.updated = (new Date(updated)).toISOString();
+                        feature.properties.summary = 'Wind: ' + currentDataWind + ' Category: ' + currentDataCat;
 
-                            // push feature to feature collection
-                            features.push(feature);
-                        }
+                        // push feature to feature collection
+                        features.push(feature);
                     }
                 }
 
