@@ -872,8 +872,11 @@ var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleCli
 // To get healthsites loaded, need to first add load event and then setView separately
 
 mainMap.on('load', function(loadEvent) {
+    getContacts();
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
+
+mainMap.on('moveend', function(){getContacts($('#contSearchTerm').val());});
 
 mainMap.fitBounds([[-13, 84],[28,148]]);
 //mainMap.setMaxBounds([[-16, 87],[25,151]]);
@@ -881,7 +884,6 @@ mainMap.fitBounds([[-13, 84],[28,148]]);
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
-
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
@@ -952,7 +954,6 @@ getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //getMissions(mapMissions);
-getContacts();
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;
