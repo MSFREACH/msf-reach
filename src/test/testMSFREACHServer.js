@@ -472,7 +472,7 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
-                // Can get GDACS hazards
+                /* Can get GDACS hazards
                 it('Get all GDACS hazards', function(done) {
                     test.httpAgent(app)
                         .get('/api/hazards/gdacs')
@@ -486,7 +486,7 @@ describe('Cognicity Server Testing Harness', function() {
                                 done();
                             }
                         });
-                });
+                }); */
 
                 // Can get PTWC hazards
                 it('Get all PTWC hazards', function(done) {
