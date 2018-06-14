@@ -29,6 +29,7 @@ const LRA = () =>
                     // extract properties
                     feature.properties.source = 'LRA Crisis Tracker';
                     feature.properties.title = event.community_name;
+                    feature.properties.region = event.community_region;
                     feature.properties.link = 'https://www.lracrisistracker.com/incidents/'+event.id;
                     feature.properties.start_date = event.start_date;
                     feature.properties.id = event.id;

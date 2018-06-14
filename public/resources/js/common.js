@@ -261,8 +261,9 @@ const mapLRAHazards = function(hazards) {
     // Add popups
     function onEachFeature(feature, layer) {
         var popupContent =
-              'Title (community name): <a href="' + feature.properties.title + '">' + feature.properties.id + '</a><br />' +
-              'Start Date: ' + (new Date(feature.properties.start_date)).toLocaleString().replace(/:\d{2}$/,'') + '<br />' +
+              'Community Name: <a href="' + feature.properties.title + '">' + feature.properties.id + '</a><br />' +
+              'Community Region: ' + feature.properties.region + '<br />' +
+              'Start Date: ' + (new Date(feature.properties.start_date)).toLocaleDateString().replace(/:\d{2}$/,'') + '<br />' +
               'Summary: ' + feature.properties.summary + '<br />' +
               'LRA Verification Rating: ' + feature.properties.lra_verification_rating + '<br />';
         if (feature.properties.close_date) {
