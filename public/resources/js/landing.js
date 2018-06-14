@@ -872,6 +872,7 @@ var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleCli
 // To get healthsites loaded, need to first add load event and then setView separately
 
 mainMap.on('load', function(loadEvent) {
+    getContacts();
     getHealthSites(mainMap.getBounds(),mapHealthSites);
     $.getJSON({
         url: '/api/utils/arcgistoken',
@@ -886,6 +887,8 @@ mainMap.on('load', function(loadEvent) {
     });
 });
 
+mainMap.on('moveend', function(){getContacts($('#contSearchTerm').val());});
+
 let bounds = Cookies.get('landingMapBounds');
 if (typeof(bounds)!=='undefined') {
     let boundsArray = bounds.split(',');
@@ -894,7 +897,6 @@ if (typeof(bounds)!=='undefined') {
     mainMap.fitBounds([[-90,-180],[90,180]]);
 
 }
-
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
@@ -975,7 +977,6 @@ getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 getFeeds('/api/hazards/lra',mapLRAHazards);
 //getMissions(mapMissions);
-getContacts();
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;
