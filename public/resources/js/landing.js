@@ -881,20 +881,29 @@ mainMap.on('load', function(loadEvent) {
         },
         success: function(data) {
             ARCGIS_TOKEN = data.token;
-            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
             getMSFPresence(mapMSFPresence);
         }
     });
 });
 
-mainMap.fitBounds([[-13, 84],[28,148]]);
-//mainMap.setMaxBounds([[-16, 87],[25,151]]);
+let bounds = Cookies.get('landingMapBounds');
+if (typeof(bounds)!=='undefined') {
+    let boundsArray = bounds.split(',');
+    mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
+} else {
+    mainMap.fitBounds([[-90,-180],[90,180]]);
+
+}
+
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
 
-mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
+mainMap.on('moveend', function(){
+    Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
+    getMSFPresence(mapMSFPresence);
+});
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
