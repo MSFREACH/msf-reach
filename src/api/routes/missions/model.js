@@ -90,7 +90,7 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_MISSIONS}
-      SET properties = properties || $1,
+      SET properties = properties || $1
       WHERE id = $2
       RETURNING id, properties, the_geom`;
 
