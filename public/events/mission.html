@@ -1,299 +1,325 @@
-<div id="missionDetailsVue" class="row">
-  <div class="col-sm-5">
-    <div class="row">
-      <div class="col-sm-12">
-        <dl>
-          <dt>Event Name</dt>
-          <dd>{{mission.name}}</dd>
-        </dl>
-        <dl>
-          <dt>Event Description</dt>
-          <dd>{{mission.description}}</dd>
-        </dl>
-        <dl>
-          <dt>Precise location of the emergency</dt>
-          <dd>
-            <div id="eventMap1" style="width: 100%; height: 380px;"></div>
-          </dd>
-        </dl>
-        <dl>
-          <dt>Open Date of event</dt>
-          <dd><span class="event-startDate">{{mission.startDate | formatFullDate}}</span></dd>
-        </dl>
-        <dl>
-          <dt>Closure Date of event</dt>
-          <dd><span class="event-finishDate">{{mission.finishDate | formatFullDate }}</span></dd>
-        </dl>
-        <dl>
-          <dt>Status</dt>
-          <dd><span class="event-status">{{mission.event_status}}</span></dd>
-        </dl>
-        <dl>
-          <dt>Type of Emergency (nature)</dt>
-          <dd>{{mission.sub_type}}</dd>
-        </dl>
-        <dl>
-          <dt>Date and time (local time) of the disaster</dt>
-          <dd>{{mission.event_datetime  | formatFullDate}}</dd>
-        </dl>
-        <dl>
-          <dt>Mission Contact Person</dt>
-          <dd>{{mission.incharge_position}}</dd>
-          <dd>{{mission.incharge_name}}</dd>
-          <dd>{{mission.mission_contact_person.arrival_time  | formatFullDate}}</dd>
-          <dd>{{mission.mission_contact_person.departure_time | formatFullDate}}</dd>
-        </dl>
-        <dl>
-          <dt>Main results of the explo-mission</dt>
-          <dd>{{mission.exploratory_details}}</dd>
-        </dl>
-        <dl>
-          <dt>Analysis of severity</dt>
-          <dd>{{mission.severity}}</dd>
-        </dl>
-        <dl>
-          <dt>Security information</dt>
-          <dd>{{mission.security_details}}</dd>
-        </dl>
-        <dl>
-          <dt>ID link - SharePoint</dt>
-          <dd>
-            <a class="event-idLinkSharePoint" href="#">{{mission.sharepoint_link}}</a>
-          </dd>
-        </dl>
-      </div>
-    </div>
+<div class="modal-content" id="missionDetailsVue">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
   </div>
-  <div class="col-sm-7">
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingTwo">
-          <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo3" aria-expanded="true" aria-controls="collapseTwo3">
-              MSF Response
-            </a>
-          </h4>
-        </div>
-        <div id="collapseTwo3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
-          <div class="panel-body">
+  <div class="modal-body" >
+    <div class="msf-loader" v-if="isSubmitting">
+
+    </div>
+    <div v-if="hasSubmissionError">
+      {{submissionErrorText}}
+    </div>
+    <div v-if="!isSubmitting && !hasSubmissionError"  class="row">
+      <div class="col-sm-5">
+        <div class="row">
+          <div class="col-sm-12">
             <dl>
-              <dt>MSF response / type of programmes</dt>
-              <dd><b>{{mission.msf_response}}</b></dd>
-              <dd>{{mission.msf_response_types_of_programmes.toString() | relaceUnderscore}}</dd>
-            </dl>
-            <dl>
-              <dt>Start Date of the MSF response</dt>
-              <dd>{{ mission.start_date_msf_response | formatFullDate}}</dd>
-            </dl>
-            <dl>
-              <dt>Date of event closure</dt>
-              <dd>{{mission.end_date_msf_response | formatFullDate}}</dd>
-            </dl>
-            <dl>
-              <dt>Location of MSF response</dt>
-              <dd>
-                <div id="msfResponseMap1" style="width: 100%; height: 380px;"></div>
+              <dt>Event Name</dt>
+              <dd v-if="!inEditMode">{{mission.name}}</dd>
+              <dd v-else>
+                <input id="eventName" type="text" v-model="mission.name" class="form-control" placeholder="Event name" />
               </dd>
             </dl>
             <dl>
-              <dt>Operational Center</dt>
-              <dd>{{mission.msf_response_operational_centers.toString() | relaceUnderscore}}</dd>
-            </dl>
-            <dl>
-              <dt>Medical material</dt>
-              <dd>{{mission.msf_response_medical_material.toString() | relaceUnderscore}}</dd>
-              <dd>Total: {{mission.msf_response_medical_material_total}}</dd>
-              <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatFullDate }}</dd>
-            </dl>
-            <dl>
-              <dt>Non medical material</dt>
-              <dd>{{mission.msf_response_non_medical_material.toString() | relaceUnderscore}}</dd>
-              <dd>Total: {{mission.msf_response_non_medical_material_total}}</dd>
-              <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatFullDate }}</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingThree">
-          <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree3" aria-expanded="false" aria-controls="collapseThree3">
-              External Capacity
-            </a>
-          </h4>
-        </div>
-        <div id="collapseThree3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-          <div class="panel-body">
-            <dl>
-              <dt>Analysis of capacity on the ground</dt>
-              <dd>{{mission.ext_capacity_type_in_ground}}</dd>
-              <dd></dd>
-            </dl>
-            <dl>
-              <dt>Other organizations, partners involved</dt>
-              <dd>Government capacity: {{mission.capacity}}</dd>
-              <dd>Humanitarian: {{mission.ext_capacity_by_humanitarian}}</dd>
-              <dd>Action plan: {{mission.ext_capacity_action_plan}}</dd>
-              <dd>Who: {{mission.ext_capacity_who}}</dd>
-            </dl>
-            <header>OTHER ORGANIZATIONS, PARTNERS INVOLVED</header>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>NGO</th>
-                  <th>Deployment</th>
-                  <th>Arrival</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in mission.ext_other_organizations">
-                  <td>
-                    {{item.name}}
-                  </td>
-                  <td>
-                    {{item.deployment}}
-                  </td>
-                  <td>
-                    {{item.arrival_date | formatFullDate}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingFour">
-          <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour3" aria-expanded="false" aria-controls="collapseFour3">
-              Key Figures
-            </a>
-          </h4>
-        </div>
-        <div id="collapseFour3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-          <div class="panel-body">
-            <dl>
-              <dt>Figures</dt>
-              <dd>
-                <div v-for="(item, index) in mission.keyMSFFigures">
-                  <div class="row">
-                    <div class="col-sm-12">
-                      <input type="range" readonly min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
-                    </div>
-                    <div class="col-sm-12">
-                      <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
-                      <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
-                        {{item.description}}
-                      </div>
-                    </div>
-                  </div>
-                  <hr/>
-                </div>
+              <dt>Event Description</dt>
+              <dd v-if="!inEditMode">{{mission.description}}</dd>
+              <dd v-else>
+                <input id="eventDescription" type="text" v-model="mission.description" class="form-control" placeholder="Event description" />
               </dd>
             </dl>
             <dl>
-              <dt>Population in total for zone impacted</dt>
-              <dd>{{mission.population_total}}</dd>
-              <dd>{{mission.population_total_description}}</dd>
+              <dt>Precise location of the emergency</dt>
+              <dd>
+                <div id="eventMap1" style="width: 100%; height: 380px;"></div>
+              </dd>
             </dl>
             <dl>
-              <dt>Population affected</dt>
-              <dd>{{mission.population_affected}}</dd>
-              <dd>{{mission.population_affected_description}}</dd>
+              <dt>Open Date of event</dt>
+              <dd><span class="event-startDate">{{mission.startDate | formatFullDate}}</span></dd>
             </dl>
             <dl>
-              <dt>Percentage of people affected</dt>
-              <dd>{{mission.percentage_population_affected}}%</dd>
+              <dt>Closure Date of event</dt>
+              <dd><span class="event-finishDate">{{mission.finishDate | formatFullDate }}</span></dd>
+            </dl>
+            <dl>
+              <dt>Status</dt>
+              <dd><span class="event-status">{{mission.event_status}}</span></dd>
+            </dl>
+            <dl>
+              <dt>Type of Emergency (nature)</dt>
+              <dd>{{mission.sub_type}}</dd>
+            </dl>
+            <dl>
+              <dt>Date and time (local time) of the disaster</dt>
+              <dd>{{mission.event_datetime  | formatFullDate}}</dd>
+            </dl>
+            <dl>
+              <dt>Mission Contact Person</dt>
+              <dd>{{mission.incharge_position}}</dd>
+              <dd>{{mission.incharge_name}}</dd>
+              <dd>{{mission.mission_contact_person.arrival_time  | formatFullDate}}</dd>
+              <dd>{{mission.mission_contact_person.departure_time | formatFullDate}}</dd>
+            </dl>
+            <dl>
+              <dt>Main results of the explo-mission</dt>
+              <dd>{{mission.exploratory_details}}</dd>
+            </dl>
+            <dl>
+              <dt>Analysis of severity</dt>
+              <dd>{{mission.severity}}</dd>
+            </dl>
+            <dl>
+              <dt>Security information</dt>
+              <dd>{{mission.security_details}}</dd>
+            </dl>
+            <dl>
+              <dt>ID link - SharePoint</dt>
+              <dd>
+                <a class="event-idLinkSharePoint" href="#">{{mission.sharepoint_link}}</a>
+              </dd>
             </dl>
           </div>
         </div>
       </div>
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingFive">
-          <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive3" aria-expanded="false" aria-controls="collapseFive3">
-              MSF Resources
-            </a>
-          </h4>
-        </div>
-        <div id="collapseFive3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-          <div class="panel-body">
-            <dl>
-              <dt>Staff list — human resources</dt>
-              <dd>{{mission.msf_resource_staff_list}}</dd>
-            </dl>
-            <dl>
-              <dt>Expatriate</dt>
-              <dd>{{mission.msf_resource_staff_expatriate}}</dd>
-            </dl>
-            <dl>
-              <dt>National staff</dt>
-              <dd>{{mission.msf_resource_staff_national}}</dd>
-            </dl>
-            <dl>
-              <dt>When were they hired by MSF? / When do they arrive on the ground?</dt>
-              <dd>{{mission.msf_resource_hired_date | formatFullDate }} arrive on {{mission.msf_resource_arrive_to_ground | formatFullDate}}</dd>
-            </dl>
-            <dl>
-              <dt>Visa requirement</dt>
-              <dd>Nationality: {{mission.msf_resource_visa_requirement.name}}</dd>
-              <dd>Visa required: {{mission.msf_resource_visa_requirement.is_required}}</dd>
-              <dd>{{mission.msf_resource_visa_requirement.description}}</dd>
-            </dl>
-            <dl>
-              <dt>Budget</dt>
-              <dd>
+      <div class="col-sm-7">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo3" aria-expanded="true" aria-controls="collapseTwo3">
+                  MSF Response
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTwo3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+              <div class="panel-body">
+                <dl>
+                  <dt>MSF response / type of programmes</dt>
+                  <dd><b>{{mission.msf_response}}</b></dd>
+                  <dd>{{mission.msf_response_types_of_programmes.toString() | relaceUnderscore}}</dd>
+                </dl>
+                <dl>
+                  <dt>Start Date of the MSF response</dt>
+                  <dd>{{ mission.start_date_msf_response | formatFullDate}}</dd>
+                </dl>
+                <dl>
+                  <dt>Date of event closure</dt>
+                  <dd>{{mission.end_date_msf_response | formatFullDate}}</dd>
+                </dl>
+                <dl>
+                  <dt>Location of MSF response</dt>
+                  <dd>
+                    <div id="msfResponseMap1" style="width: 100%; height: 380px;"></div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Operational Center</dt>
+                  <dd>{{mission.msf_response_operational_centers.toString() | relaceUnderscore}}</dd>
+                </dl>
+                <dl>
+                  <dt>Medical material</dt>
+                  <dd>{{mission.msf_response_medical_material.toString() | relaceUnderscore}}</dd>
+                  <dd>Total: {{mission.msf_response_medical_material_total}}</dd>
+                  <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatFullDate }}</dd>
+                </dl>
+                <dl>
+                  <dt>Non medical material</dt>
+                  <dd>{{mission.msf_response_non_medical_material.toString() | relaceUnderscore}}</dd>
+                  <dd>Total: {{mission.msf_response_non_medical_material_total}}</dd>
+                  <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatFullDate }}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThree">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree3" aria-expanded="false" aria-controls="collapseThree3">
+                  External Capacity
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+              <div class="panel-body">
+                <dl>
+                  <dt>Analysis of capacity on the ground</dt>
+                  <dd>{{mission.ext_capacity_type_in_ground}}</dd>
+                  <dd></dd>
+                </dl>
+                <dl>
+                  <dt>Other organizations, partners involved</dt>
+                  <dd>Government capacity: {{mission.capacity}}</dd>
+                  <dd>Humanitarian: {{mission.ext_capacity_by_humanitarian}}</dd>
+                  <dd>Action plan: {{mission.ext_capacity_action_plan}}</dd>
+                  <dd>Who: {{mission.ext_capacity_who}}</dd>
+                </dl>
+                <header>OTHER ORGANIZATIONS, PARTNERS INVOLVED</header>
                 <table class="table">
                   <thead>
                     <tr>
-                      <th>Amount</th>
-                      <th>From who</th>
+                      <th>NGO</th>
+                      <th>Deployment</th>
+                      <th>Arrival</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in mission.msf_resource_budget">
+                    <tr v-for="(item, index) in mission.ext_other_organizations">
                       <td>
-                        {{item.amount}}
+                        {{item.name}}
                       </td>
                       <td>
-                        {{item.from_who}}
+                        {{item.deployment}}
+                      </td>
+                      <td>
+                        {{item.arrival_date | formatFullDate}}
                       </td>
                     </tr>
                   </tbody>
                 </table>
-              </dd>
-            </dl>
-            <dl>
-              <dt>Institutional Donors</dt>
-              <dd>{{mission.msf_resource_institutional_donors}}</dd>
-            </dl>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingSix">
-          <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix3" aria-expanded="false" aria-controls="collapseSix3">
-              Reflection and comments
-            </a>
-          </h4>
-        </div>
-        <div id="collapseSix3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-          <div class="panel-body">
-            <dl>
-              <dt>Practical Details / Recommendations</dt>
-              <dd>{{mission.msf_ref_com_practical_details_recomm}}</dd>
-            </dl>
-            <dl>
-              <dt>Reflection / Comments on intervention</dt>
-              <dd>{{mission.msf_ref_com_reflection_comments}}</dd>
-            </dl>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFour">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour3" aria-expanded="false" aria-controls="collapseFour3">
+                  Key Figures
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFour3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+              <div class="panel-body">
+                <dl>
+                  <dt>Figures</dt>
+                  <dd>
+                    <div v-for="(item, index) in mission.keyMSFFigures">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <input type="range" readonly min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
+                        </div>
+                        <div class="col-sm-12">
+                          <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
+                          <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                            {{item.description}}
+                          </div>
+                        </div>
+                      </div>
+                      <hr/>
+                    </div>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Population in total for zone impacted</dt>
+                  <dd>{{mission.population_total}}</dd>
+                  <dd>{{mission.population_total_description}}</dd>
+                </dl>
+                <dl>
+                  <dt>Population affected</dt>
+                  <dd>{{mission.population_affected}}</dd>
+                  <dd>{{mission.population_affected_description}}</dd>
+                </dl>
+                <dl>
+                  <dt>Percentage of people affected</dt>
+                  <dd>{{mission.percentage_population_affected}}%</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFive">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive3" aria-expanded="false" aria-controls="collapseFive3">
+                  MSF Resources
+                </a>
+              </h4>
+            </div>
+            <div id="collapseFive3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+              <div class="panel-body">
+                <dl>
+                  <dt>Staff list — human resources</dt>
+                  <dd>{{mission.msf_resource_staff_list}}</dd>
+                </dl>
+                <dl>
+                  <dt>Expatriate</dt>
+                  <dd>{{mission.msf_resource_staff_expatriate}}</dd>
+                </dl>
+                <dl>
+                  <dt>National staff</dt>
+                  <dd>{{mission.msf_resource_staff_national}}</dd>
+                </dl>
+                <dl>
+                  <dt>When were they hired by MSF? / When do they arrive on the ground?</dt>
+                  <dd>{{mission.msf_resource_hired_date | formatFullDate }} arrive on {{mission.msf_resource_arrive_to_ground | formatFullDate}}</dd>
+                </dl>
+                <dl>
+                  <dt>Visa requirement</dt>
+                  <dd>Nationality: {{mission.msf_resource_visa_requirement.name}}</dd>
+                  <dd>Visa required: {{mission.msf_resource_visa_requirement.is_required}}</dd>
+                  <dd>{{mission.msf_resource_visa_requirement.description}}</dd>
+                </dl>
+                <dl>
+                  <dt>Budget</dt>
+                  <dd>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Amount</th>
+                          <th>From who</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in mission.msf_resource_budget">
+                          <td>
+                            {{item.amount}}
+                          </td>
+                          <td>
+                            {{item.from_who}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>Institutional Donors</dt>
+                  <dd>{{mission.msf_resource_institutional_donors}}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingSix">
+              <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix3" aria-expanded="false" aria-controls="collapseSix3">
+                  Reflection and comments
+                </a>
+              </h4>
+            </div>
+            <div id="collapseSix3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+              <div class="panel-body">
+                <dl>
+                  <dt>Practical Details / Recommendations</dt>
+                  <dd>{{mission.msf_ref_com_practical_details_recomm}}</dd>
+                </dl>
+                <dl>
+                  <dt>Reflection / Comments on intervention</dt>
+                  <dd>{{mission.msf_ref_com_reflection_comments}}</dd>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button v-if="!inEditMode && !hasSubmissionError" type="button" class="btn btn-success" @click="inEditMode=true;" >Edit</button>
+    <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" @click="saveMissionEdits()" >Save Edits</button>
+  </div>
 </div>
+
 <script type="text/javascript">
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
 
@@ -330,10 +356,52 @@ var replaceUnderscore = function(value) {
   return value.replace(/_/g, " ");
 }
 
+var eventMap1,msfResponseMap1;
+
 var vm = new Vue({
   el: "#missionDetailsVue",
   data: {
-    mission: $.extend(true, defaultEvent.metadata, missionData)
+    mission: $.extend(true, defaultEvent.metadata, missionData),
+    inEditMode:false,
+    isSubmitting:false,
+    hasSubmissionError:false,
+    submissionErrorText: '',
+    currentMissionId: currentMissionId
+  },
+  methods: {
+    saveMissionEdits: function(){
+      var vm=this;
+      vm.isSubmitting=true;
+      var body={
+        metadata: vm.mission
+      }
+      this.inEditMode=false;
+      $.ajax({
+        type: "PUT",
+        url: "/api/missions/" + currentMissionId,
+        data: JSON.stringify(body),
+        contentType: 'application/json'
+      }).done(function(data, textStatus, req) {
+        vm.isSubmitting=false;
+        vm.hasSubmissionError=false;
+
+        setTimeout(function() {
+          eventMap1.invalidateSize();
+          msfResponseMap1.invalidateSize();
+        }, 300);
+
+      }).fail(function(err) {
+        vm.isSubmitting=false;
+        vm.hasSubmissionError=true;
+        vm.submissionErrorText='Unsuccessful submission.'
+
+        if (err.responseText.includes('expired')) {
+
+          alert("session expired");
+        }
+      });
+
+    }
   },
   mounted: function() {
     console.log("Vue already mounted.");
@@ -344,7 +412,7 @@ var vm = new Vue({
       var eventDefaultLatLng = [missionCoordinates[1], missionCoordinates[0]];
 
       /** << eventMap1 */
-      var eventMap1 = L.map('eventMap1').setView(eventDefaultLatLng, 13);
+      eventMap1 = L.map('eventMap1').setView(eventDefaultLatLng, 13);
       L.tileLayer(eventDefaultLayer, {
         minZoom: 0,
         maxZoom: 18,
@@ -360,7 +428,7 @@ var vm = new Vue({
         msfResponseMarkerLatLng = [this.mission.msf_response_location.coordinates[1], this.mission.msf_response_location.coordinates[0]];
       }
 
-      var msfResponseMap1 = L.map('msfResponseMap1').setView(msfResponseMarkerLatLng, 13);
+      msfResponseMap1 = L.map('msfResponseMap1').setView(msfResponseMarkerLatLng, 13);
       L.tileLayer(eventDefaultLayer, {
         attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
         id: 'mapbox.streets'
