@@ -10,7 +10,7 @@
     <div v-if="hasSubmissionError">
       {{submissionErrorText}}
     </div>
-    <div v-if="!isSubmitting && !hasSubmissionError"  class="row">
+    <div v-show="!isSubmitting && !hasSubmissionError"  class="row">
       <div class="col-sm-5">
         <div class="row">
           <div class="col-sm-12">
@@ -36,7 +36,7 @@
             </dl>
             <dl>
               <dt>Open Date of event</dt>
-              <dd><span class="event-startDate">{{mission.startDate | formatFullDate}}</span></dd>
+              <dd ><span class="event-startDate">{{mission.startDate | formatFullDate}}</span></dd>
             </dl>
             <dl>
               <dt>Closure Date of event</dt>
@@ -52,7 +52,10 @@
             </dl>
             <dl>
               <dt>Date and time (local time) of the disaster</dt>
-              <dd>{{mission.event_datetime  | formatFullDate}}</dd>
+              <dd v-if="!inEditMode">{{mission.event_local_time  | formatFullDate}}</dd>
+              <dd v-else>
+                <date-picker v-model="mission.event_local_time" ></date-picker>
+              </dd>
             </dl>
             <dl>
               <dt>Mission Contact Person</dt>
@@ -331,7 +334,6 @@ Vue.filter('formatDateOnly', function(value) {
 
 Vue.filter('formatFullDate', function(value) {
   if (value) {
-    console.log(value);
     //return (new Date(value)).toLocaleString().replace(/:\d{2}$/,'');
     return moment(value,"DD-MM-YYYY").format('LLL');
   } else {
@@ -358,7 +360,7 @@ var replaceUnderscore = function(value) {
 
 var eventMap1,msfResponseMap1;
 
-var vm = new Vue({
+var vmInstance = new Vue({
   el: "#missionDetailsVue",
   data: {
     mission: $.extend(true, defaultEvent.metadata, missionData),
@@ -376,30 +378,25 @@ var vm = new Vue({
         metadata: vm.mission
       }
       this.inEditMode=false;
-      $.ajax({
-        type: "PUT",
-        url: "/api/missions/" + currentMissionId,
-        data: JSON.stringify(body),
-        contentType: 'application/json'
-      }).done(function(data, textStatus, req) {
-        vm.isSubmitting=false;
-        vm.hasSubmissionError=false;
+        $.ajax({
+          type: "PUT",
+          url: "/api/missions/" + currentMissionId,
+          data: JSON.stringify(body),
+          contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+          vm.isSubmitting=false;
+          vm.hasSubmissionError=false;
 
-        setTimeout(function() {
-          eventMap1.invalidateSize();
-          msfResponseMap1.invalidateSize();
-        }, 300);
+        }).fail(function(err) {
+          vm.isSubmitting=false;
+          vm.hasSubmissionError=true;
+          vm.submissionErrorText='Unsuccessful submission.'
 
-      }).fail(function(err) {
-        vm.isSubmitting=false;
-        vm.hasSubmissionError=true;
-        vm.submissionErrorText='Unsuccessful submission.'
+          if (err.responseText.includes('expired')) {
 
-        if (err.responseText.includes('expired')) {
-
-          alert("session expired");
-        }
-      });
+            alert("session expired");
+          }
+        });
 
     }
   },
