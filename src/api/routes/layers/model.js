@@ -5,10 +5,6 @@
 // Import promise support
 import Promise from 'bluebird';
 
-import request from 'request';
-
-import { addChatbotItem } from '../../../lib/chatbot.js';
-
 export default (config, db, logger) => ({
 
     /**

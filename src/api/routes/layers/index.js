@@ -4,7 +4,7 @@ import { Router } from 'express';
 import layers from './model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
 
 // Import validation dependencies
 import { celebrate as validate, Joi } from 'celebrate';
