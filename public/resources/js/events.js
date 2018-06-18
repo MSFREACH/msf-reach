@@ -1128,6 +1128,9 @@ getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 getFeeds('/api/hazards/lra',mapLRAHazards);
 
+getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
+getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
+getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
 
 
 // Enter an API key from the Google API Console:
