@@ -113,6 +113,16 @@ if (typeof(Cookies.get('- other contacts'))==='undefined') {
     Cookies.set('- other contacts','off');
 }
 
+if (typeof(Cookies.get('- DRC health sites'))==='undefined') {
+    Cookies.set('- DRC health sites','off');
+}
+if (typeof(Cookies.get('- MSF presence'))==='undefined') {
+    Cookies.set('- MSF presence','off');
+}
+if (typeof(Cookies.get('- DRC villages and cities'))==='undefined') {
+    Cookies.set('- DRC villages and cities','off');
+}
+
 if (typeof(Cookies.get('- PDC'))==='undefined') {
     Cookies.set('- PDC','on');
 }
@@ -253,7 +263,7 @@ let firstLRALoad = true;
 let LRALayer = null;
 
 /**
-* Function to map MSF presence
+* Function to map LRA Crisis layer
 * @function mapLRAHazards
 * @param {Object} hazards - geoJSON
 **/
@@ -321,6 +331,177 @@ const mapLRAHazards = function(hazards) {
     layerControl.addOverlay(LRALayer, '- LRA Crisis', 'RSS Feeds');
 };
 
+let firstDRCHealthsitesLoad = true;
+let firstDRCVillagesLoad = true;
+let firstDRCPresence = true;
+let DRCHealthsitesLayer = null;
+let DRCVillagesLayer = null;
+let DRCPresenceLayer = null;
+
+/**
+* Function to map DRC health site data
+* @function mapDRCHealthSites
+* @param {Object} sites - geoJSON
+**/
+
+const mapDRCHealthSites = function(sites) {
+
+    // Add popups
+    function onEachFeature(feature, layer) {
+        var popupContent =
+              'Name: ' + feature.properties.name + '<br />' +
+              'Source: ' + (feature.properties.source ? feature.properties.source : '') + '<br />' +
+              'Open Date: ' + (feature.properties.opendate ? (new Date(feature.properties.opendate)).toLocaleDateString() : 'No open date specified') + '<br />' +
+              'Close Date: ' + (feature.properties.closedate ? (new Date(feature.properties.closedate)).toLocaleDateString() : 'Still open') + '<br />' +
+              'Type: ' + (feature.properties.type ? feature.properties.type : '') + '<br />';
+
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
+    }
+
+    let DRCHealthsitesLayerOn = mainMap.hasLayer(DRCHealthsitesLayer);
+
+    if (DRCHealthsitesLayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(DRCHealthsitesLayer);
+        layerControl.removeLayer(DRCHealthsitesLayer);
+        computerTriggered=false;
+    }
+
+    DRCHealthsitesLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+
+            return new L.DivIcon({ html: '<div><span style="color:white;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-healthsites' , iconSize: new L.Point(40, 40) });
+
+        }
+    }
+    ).addLayer(L.geoJSON(sites, {
+        pointToLayer: function (feature, latlng) {
+
+            return L.marker(latlng, {icon: L.icon({
+                iconUrl: '/resources/images/icons/pin.svg',
+                iconSize:     [35, 35] // size of the icon
+                //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+            })});
+        },
+        onEachFeature: onEachFeature
+    }));
+
+    if (DRCHealthsitesLayer || firstDRCHealthsitesLoad ) {
+        if (Cookies.get('- DRC health sites')==='on') {
+            DRCHealthsitesLayer.addTo(mainMap);
+        }
+        firstDRCHealthsitesLoad = false;
+    }
+
+    layerControl.addOverlay(DRCHealthsitesLayer, '- DRC health sites', 'DRC layers');
+};
+
+/**
+* Function to map DRC villages and cities data
+* @function mapDRCVillages
+* @param {Object} sites - geoJSON
+**/
+
+const mapDRCVillages = function(cities) {
+
+    // Add popups
+    function onEachFeature(feature, layer) {
+        var popupContent =
+              'Name: ' + feature.properties.name + '<br />' +
+              'Type: ' + (feature.properties.type ? feature.properties.type : '') + '<br />' +
+              'Source: ' + (feature.properties.source ? feature.properties.source : '') + '<br />' +
+              //              'Valid Date: ' + (feature.properties.startvalid ? (new Date(feature.properties.opendate)).toLocaleDateString() : 'No valid date specified') + '<br />' +
+              'PCode: ' + (feature.properties.pcode ? feature.properties.pcode : '') + '<br />' +
+              'Note: ' + (feature.properties.note ? feature.properties.note : '') + '<br />';
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
+    }
+
+    let DRCVillagesLayerOn = mainMap.hasLayer(DRCVillagesLayer);
+
+    if (DRCVillagesLayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(DRCVillagesLayer);
+        layerControl.removeLayer(DRCVillagesLayer);
+        computerTriggered=false;
+    }
+
+    DRCVillagesLayer = L.markerClusterGroup({
+        maxClusterRadius:MAX_RADIUS,
+        iconCreateFunction: function(cluster) {
+            var childCount = cluster.getChildCount();
+
+            return new L.DivIcon({ html: '<div><span style="color:black;"><b>' + childCount + '</b></span></div>', className: 'marker-cluster marker-cluster-healthsites' , iconSize: new L.Point(30, 30) });
+
+        }
+    }
+    ).addLayer(L.geoJSON(cities, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {'radius':3, 'color':'black'});
+        },
+        onEachFeature: onEachFeature
+    }));
+
+    if (DRCVillagesLayer || firstDRCVillagesLoad ) {
+        if (Cookies.get('- DRC villages and cities')==='on') {
+            DRCVillagesLayer.addTo(mainMap);
+        }
+        firstDRCVillagesLoad = false;
+    }
+
+    layerControl.addOverlay(DRCVillagesLayer, '- DRC villages and cities', 'DRC layers');
+};
+
+/**
+* Function to map DRC MSF presence data
+* @function mapDRCVillages
+* @param {Object} presence - geoJSON
+**/
+
+const mapDRCPresence = function(presence) {
+
+    // Add popups
+    function onEachFeature(feature, layer) {
+        var popupContent =
+              'Name: ' + feature.properties.name + '<br />' +
+              'Type: ' + (feature.properties.type ? feature.properties.type : '') + '<br />' +
+              'Source: ' + (feature.properties.source ? feature.properties.source : '') + '<br />' +
+              'PCode: ' + (feature.properties.pcode ? feature.properties.pcode : '') + '<br />' +
+              'Note: ' + (feature.properties.note ? feature.properties.note : '') + '<br />';
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
+    }
+
+    let DRCPresenceLayerOn = mainMap.hasLayer(DRCPresenceLayer);
+
+    if (DRCPresenceLayer)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(DRCPresenceLayer);
+        layerControl.removeLayer(DRCPresenceLayer);
+        computerTriggered=false;
+    }
+
+    DRCPresenceLayer = L.geoJSON(presence, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {'radius':10, 'color':OCColours['OCG']});
+        },
+        onEachFeature: onEachFeature
+    });
+
+    if (DRCPresenceLayer || firstDRCPresenceLoad ) {
+        if (Cookies.get('- DRC presence')==='on') {
+            DRCPresenceLayer.addTo(mainMap);
+        }
+        firstDRCPresenceLoad = false;
+    }
+
+    layerControl.addOverlay(DRCPresenceLayer, '- DRC presence', 'DRC layers');
+};
+
 /**
 * Function to get reports for an event
 * @function openReportPopup
@@ -350,6 +531,20 @@ var getFeeds = function(url, callback) {
         }
     });
 };
+
+/**
+* Function to get feeds
+**/
+var getDRCLayer = function(url, callback) {
+    $.getJSON(url, function( data ){
+        callback(data.layer);
+    }).fail(function(err) {
+        if (err.hasOwnProperty('responseText') && err.responseText.includes('expired')) {
+            alert('session expired');
+        }
+    });
+};
+
 
 var HAZARD_ICON_TYPES = ['biomedical', 'cyclone', 'drought', 'earthquake', 'flood', 'volcano', 'wildfire', 'storm', 'highwind'];
 
