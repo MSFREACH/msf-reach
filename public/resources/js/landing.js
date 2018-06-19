@@ -980,7 +980,7 @@ getFeeds('/api/hazards/lra',mapLRAHazards);
 //getMissions(mapMissions);
 
 getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
-getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
+//getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
 getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
 
 var TOTAL_FEEDS=0;
