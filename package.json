@@ -41,7 +41,7 @@
     "@esri/arcgis-to-geojson-utils": "^1.2.0",
     "api-error-handler": "^1.0.0",
     "apicache": "^1.2.1",
-    "aws-sdk": "^2.256.1",
+    "aws-sdk": "^2.259.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "celebrate": "^8.0.0",
@@ -62,7 +62,7 @@
     "moment": "^2.22.2",
     "morgan": "^1.9.0",
     "nocache": "^2.0.0",
-    "nodemailer": "^4.6.6",
+    "nodemailer": "^4.6.7",
     "nodemailer-express-handlebars": "^3.0.0",
     "passport": "0.4.0",
     "passport-azure-ad": "^3.0.12",
@@ -72,7 +72,7 @@
     "response-time": "^2.3.2",
     "save": "^2.3.2",
     "twitter": "^1.7.1",
-    "winston": "^2.4.2",
+    "winston": "^3.0.0",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
