@@ -520,13 +520,13 @@ const mapBuniaLayer1 = function(track) {
 
     const styleLines = function(feature) {
         return {
-                    color: 'red',
-                    weight: 10,
-                    opacity: .7,
-                    dashArray: '20,15',
-                    lineJoin: 'round'
-                };
-    }
+            color: 'red',
+            weight: 10,
+            opacity: .7,
+            dashArray: '20,15',
+            lineJoin: 'round'
+        };
+    };
 
 
     if (BuniaTrackLayer1)
@@ -538,7 +538,7 @@ const mapBuniaLayer1 = function(track) {
     }
 
     BuniaTrackLayer1 = L.geoJSON(track, {
-      style: styleLines
+        style: styleLines
     });
 
     if (BuniaTrackLayer1 || firstBuniaTrackLoad1 ) {
@@ -557,13 +557,13 @@ const mapBuniaLayer2 = function(track) {
 
     const styleLines = function(feature) {
         return {
-                    color: 'maroon',
-                    weight: 10,
-                    opacity: .7,
-                    dashArray: '20,15',
-                    lineJoin: 'round'
-                };
-    }
+            color: 'maroon',
+            weight: 10,
+            opacity: .7,
+            dashArray: '20,15',
+            lineJoin: 'round'
+        };
+    };
 
     if (BuniaTrackLayer2)
     {
@@ -574,7 +574,7 @@ const mapBuniaLayer2 = function(track) {
     }
 
     BuniaTrackLayer2 = L.geoJSON(track, {
-      style: styleLines
+        style: styleLines
     });
 
     if (BuniaTrackLayer2 || firstBuniaTrackLoad2 ) {
