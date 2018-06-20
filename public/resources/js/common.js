@@ -123,6 +123,13 @@ if (typeof(Cookies.get('- DRC villages and cities'))==='undefined') {
     Cookies.set('- DRC villages and cities','off');
 }
 
+if (typeof(Cookies.get('- track 1'))==='undefined') {
+    Cookies.set('- track 1','off');
+}
+if (typeof(Cookies.get('- track 2'))==='undefined') {
+    Cookies.set('- track 2','off');
+}
+
 if (typeof(Cookies.get('- PDC'))==='undefined') {
     Cookies.set('- PDC','on');
 }
@@ -500,6 +507,84 @@ const mapDRCPresence = function(presence) {
     }
 
     layerControl.addOverlay(DRCPresenceLayer, '- DRC presence', 'DRC layers');
+};
+
+let BuniaTrackLayer1 = null;
+let BuniaTrackLayer2 = null;
+let firstBuniaTrackLoad1 = true;
+let firstBuniaTrackLoad2 = true;
+
+const mapBuniaLayer1 = function(track) {
+
+    let BuniaTrackLayer1On = mainMap.hasLayer(BuniaTrackLayer1);
+
+    const styleLines = function(feature) {
+        return {
+                    color: 'red',
+                    weight: 10,
+                    opacity: .7,
+                    dashArray: '20,15',
+                    lineJoin: 'round'
+                };
+    }
+
+
+    if (BuniaTrackLayer1)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(BuniaTrackLayer1);
+        layerControl.removeLayer(BuniaTrackLayer1);
+        computerTriggered=false;
+    }
+
+    BuniaTrackLayer1 = L.geoJSON(track, {
+      style: styleLines
+    });
+
+    if (BuniaTrackLayer1 || firstBuniaTrackLoad1 ) {
+        if (Cookies.get('- track 1')==='on') {
+            BuniaTrackLayer1.addTo(mainMap);
+        }
+        firstBuniaTrackLoad1 = false;
+    }
+
+    layerControl.addOverlay(BuniaTrackLayer1, '- track 1', 'Bunia');
+};
+
+const mapBuniaLayer2 = function(track) {
+
+    let BuniaTrackLayer2On = mainMap.hasLayer(BuniaTrackLayer2);
+
+    const styleLines = function(feature) {
+        return {
+                    color: 'maroon',
+                    weight: 10,
+                    opacity: .7,
+                    dashArray: '20,15',
+                    lineJoin: 'round'
+                };
+    }
+
+    if (BuniaTrackLayer2)
+    {
+        computerTriggered=true;
+        mainMap.removeLayer(BuniaTrackLayer2);
+        layerControl.removeLayer(BuniaTrackLayer2);
+        computerTriggered=false;
+    }
+
+    BuniaTrackLayer2 = L.geoJSON(track, {
+      style: styleLines
+    });
+
+    if (BuniaTrackLayer2 || firstBuniaTrackLoad2 ) {
+        if (Cookies.get('- track 2')==='on') {
+            BuniaTrackLayer2.addTo(mainMap);
+        }
+        firstBuniaTrackLoad2 = false;
+    }
+
+    layerControl.addOverlay(BuniaTrackLayer2, '- track 2', 'Bunia');
 };
 
 /**
