@@ -36,6 +36,9 @@ function clearGlobalVars(){
     $('.newSubEventTypeBox').prop('checked',false);
     $('.newEventTypeBox').prop('checked',false);
 
+    $('#reportsContainer').html('');
+    getReports(mainMap, mapReports);
+
 }
 
 $('#newEventModal').on('hidden.bs.modal', function() {
