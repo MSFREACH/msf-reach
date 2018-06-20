@@ -7,8 +7,11 @@
     <div class="msf-loader" v-if="isSubmitting">
 
     </div>
-    <div v-if="hasSubmissionError">
+    <div class="alert alert-danger" v-if="hasSubmissionError">
       {{submissionErrorText}}
+    </div>
+    <div class="alert alert-success" v-if="submissionSuccess">
+      Mission has been successfully updated.
     </div>
     <div v-show="!isSubmitting && !hasSubmissionError"  class="row">
       <div class="col-sm-5">
@@ -59,27 +62,56 @@
             </dl>
             <dl>
               <dt>Mission Contact Person</dt>
-              <dd>{{mission.incharge_position}}</dd>
-              <dd>{{mission.incharge_name}}</dd>
-              <dd>{{mission.mission_contact_person.arrival_time  | formatFullDate}}</dd>
-              <dd>{{mission.mission_contact_person.departure_time | formatFullDate}}</dd>
+              <section v-if="!inEditMode">
+                <dd>{{mission.incharge_position}}</dd>
+                <dd>{{mission.incharge_name}}</dd>
+                <dd>{{mission.mission_contact_person.arrival_time  | formatFullDate}}</dd>
+                <dd>{{mission.mission_contact_person.departure_time | formatFullDate}}</dd>
+              </section>
+              <section v-else>
+                <dd class="padding-bottom">
+                  <input type="text" class="form-control" v-model="mission.incharge_position" placeholder="Position" />
+                </dd>
+                <dd class="padding-bottom">
+                  <input type="text" class="form-control" v-model="mission.incharge_name" placeholder="Name" />
+                </dd>
+                <dd class="padding-bottom">
+                  <date-picker v-model="mission.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+                </dd>
+                <dd class="padding-bottom">
+                  <date-picker v-model="mission.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+                </dd>
+              </section>
+
             </dl>
             <dl>
               <dt>Main results of the explo-mission</dt>
-              <dd>{{mission.exploratory_details}}</dd>
+              <dd v-if="!inEditMode">{{mission.exploratory_details}}</dd>
+              <dd v-else>
+                <textarea v-model.trim="mission.exploratory_details" placeholder="Main results" class="form-control"></textarea>
+              </dd>
             </dl>
             <dl>
               <dt>Analysis of severity</dt>
-              <dd>{{mission.severity}}</dd>
+              <dd v-if="!inEditMode">{{mission.severity}}</dd>
+              <dd v-else class="padding-bottom">
+                <textarea v-model.trim="mission.severity" placeholder="Severity description" class="form-control"></textarea>
+              </dd>
             </dl>
             <dl>
               <dt>Security information</dt>
-              <dd>{{mission.security_details}}</dd>
+              <dd v-if="!inEditMode">{{mission.security_details}}</dd>
+              <dd v-else>
+                <textarea v-model.trim="mission.security_details" placeholder="Security details" class="form-control"></textarea>
+              </dd>
             </dl>
             <dl>
               <dt>ID link - SharePoint</dt>
-              <dd>
+              <dd v-if="!inEditMode">
                 <a class="event-idLinkSharePoint" href="#">{{mission.sharepoint_link}}</a>
+              </dd>
+              <dd v-else>
+                <input type="text" class="form-control" v-model="mission.sharepoint_link" placeholder="SharePoint Link" />
               </dd>
             </dl>
           </div>
@@ -99,16 +131,36 @@
               <div class="panel-body">
                 <dl>
                   <dt>MSF response / type of programmes</dt>
-                  <dd><b>{{mission.msf_response}}</b></dd>
-                  <dd>{{mission.msf_response_types_of_programmes.toString() | relaceUnderscore}}</dd>
+                  <section v-if="!inEditMode">
+                    <dd><b>{{mission.msf_response}}</b></dd>
+                    <dd>{{mission.msf_response_types_of_programmes.toString() | relaceUnderscore}}</dd>
+                  </section>
+                  <section v-else>
+                    <dd>
+                      <div v-for="item in msfTypeOfProgrammes" class="type-of-programmes">
+                        <label>
+                          <input type="checkbox" :value="item.value" v-model="mission.msf_response_types_of_programmes" /> {{ item.text }}
+                        </label>
+                      </div>
+                    </dd>
+                    <dd>
+                      <textarea v-model="mission.msf_response" placeholder="MSF response" class="form-control"></textarea>
+                    </dd>
+                  </section>
                 </dl>
                 <dl>
                   <dt>Start Date of the MSF response</dt>
-                  <dd>{{ mission.start_date_msf_response | formatFullDate}}</dd>
+                  <dd v-if="!inEditMode">{{ mission.start_date_msf_response | formatFullDate}}</dd>
+                  <dd v-else>
+                    <date-picker v-model="mission.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>Date of event closure</dt>
-                  <dd>{{mission.end_date_msf_response | formatFullDate}}</dd>
+                  <dd v-if="!inEditMode">{{mission.end_date_msf_response | formatFullDate}}</dd>
+                  <dd v-else>
+                    <date-picker v-model="mission.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>Location of MSF response</dt>
@@ -118,19 +170,94 @@
                 </dl>
                 <dl>
                   <dt>Operational Center</dt>
-                  <dd>{{mission.msf_response_operational_centers.toString() | relaceUnderscore}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_response_operational_centers.toString() | relaceUnderscore}}</dd>
+                  <dd v-else>
+                    <div v-for="item in msfOperationalCenters" class="operational-centers">
+                      <label>
+                        <input type="checkbox" :value="item" v-model="mission.msf_response_operational_centers" /> {{ item }}
+                      </label>
+                    </div>
+                  </dd>
                 </dl>
                 <dl>
-                  <dt>Medical material</dt>
-                  <dd>{{mission.msf_response_medical_material.toString() | relaceUnderscore}}</dd>
-                  <dd>Total: {{mission.msf_response_medical_material_total}}</dd>
-                  <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatFullDate }}</dd>
+                  <section v-if="!inEditMode">
+                    <dt>Medical material</dt>
+                    <dd>{{mission.msf_response_medical_material.toString() | relaceUnderscore}}</dd>
+                    <dd>Total: {{mission.msf_response_medical_material_total}}</dd>
+                    <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatFullDate }}</dd>
+                  </section>
+                  <section v-else>
+                    <div class="row">
+                      <div class="col-sm-5">
+                        <dl>
+                          <dt>Medical material:</dt>
+                          <dd>
+                            <div v-for="item in msfMedicalMaterials" class="operational-centers">
+                              <label>
+                                <input type="checkbox" :value="item" v-model="mission.msf_response_medical_material" /> {{ item }}
+                              </label>
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="col-sm-3">
+                        <dl>
+                          <dt>Total</dt>
+                          <dd>
+                            <input type="number" v-model.number="mission.msf_response_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="col-sm-4">
+                        <dl>
+                          <dt>Date of arrival</dt>
+                          <dd>
+                            <date-picker v-model="mission.msf_response_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </section>
                 </dl>
                 <dl>
-                  <dt>Non medical material</dt>
-                  <dd>{{mission.msf_response_non_medical_material.toString() | relaceUnderscore}}</dd>
-                  <dd>Total: {{mission.msf_response_non_medical_material_total}}</dd>
-                  <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatFullDate }}</dd>
+                  <section v-if="!inEditMode">
+                    <dt>Non medical material</dt>
+                    <dd>{{mission.msf_response_non_medical_material.toString() | relaceUnderscore}}</dd>
+                    <dd>Total: {{mission.msf_response_non_medical_material_total}}</dd>
+                    <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatFullDate }}</dd>
+                  </section>
+                  <section v-else>
+                    <div class="row">
+                      <div class="col-sm-5">
+                        <dl>
+                          <dt>Non Medical material:</dt>
+                          <dd>
+                            <div v-for="item in msfNonMedicalMaterials" class="operational-centers">
+                              <label>
+                                <input type="checkbox" :value="item" v-model="mission.msf_response_non_medical_material" /> {{ item }}
+                              </label>
+                            </div>
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="col-sm-3">
+                        <dl>
+                          <dt>Total</dt>
+                          <dd>
+                            <input type="number" v-model.number="mission.msf_response_non_medical_material_total" class="form-control" placeholder="Exact number of supplies" />
+                          </dd>
+                        </dl>
+                      </div>
+                      <div class="col-sm-4">
+                        <dl>
+                          <dt>Date of arrival</dt>
+                          <dd>
+                            <date-picker v-model="mission.msf_response_non_medical_material_date_arrival" :config="{format: 'YYYY-MM-DD'}" placeholder="Date of arrival"></date-picker>
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </section>
                 </dl>
               </div>
             </div>
@@ -318,7 +445,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    <button v-if="!inEditMode && !hasSubmissionError" type="button" class="btn btn-success" @click="inEditMode=true;" >Edit</button>
+    <button v-if="!inEditMode && !hasSubmissionError" type="button" class="btn btn-success" @click="inEditMode=true;submissionSuccess=false;" >Edit</button>
     <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" @click="saveMissionEdits()" >Save Edits</button>
   </div>
 </div>
@@ -364,9 +491,12 @@ var vmInstance = new Vue({
   el: "#missionDetailsVue",
   data: {
     mission: $.extend(true, defaultEvent.metadata, missionData),
+    msfTypeOfProgrammes: msfTypeOfProgrammes,
+    msfOperationalCenters: msfOperationalCenters,
     inEditMode:false,
     isSubmitting:false,
     hasSubmissionError:false,
+    submissionSuccess:false,
     submissionErrorText: '',
     currentMissionId: currentMissionId
   },
@@ -377,26 +507,28 @@ var vmInstance = new Vue({
       var body={
         metadata: vm.mission
       }
-      this.inEditMode=false;
-        $.ajax({
-          type: "PUT",
-          url: "/api/missions/" + currentMissionId,
-          data: JSON.stringify(body),
-          contentType: 'application/json'
-        }).done(function(data, textStatus, req) {
-          vm.isSubmitting=false;
-          vm.hasSubmissionError=false;
+      vm.inEditMode=false;
+      vm.submissionSuccess=false;
+      $.ajax({
+        type: "PUT",
+        url: "/api/missions/" + currentMissionId,
+        data: JSON.stringify(body),
+        contentType: 'application/json'
+      }).done(function(data, textStatus, req) {
+        vm.isSubmitting=false;
+        vm.hasSubmissionError=false;
+        vm.submissionSuccess=true;
 
-        }).fail(function(err) {
-          vm.isSubmitting=false;
-          vm.hasSubmissionError=true;
-          vm.submissionErrorText='Unsuccessful submission.'
+      }).fail(function(err) {
+        vm.isSubmitting=false;
+        vm.hasSubmissionError=true;
+        vm.submissionErrorText='Unsuccessful submission.'
 
-          if (err.responseText.includes('expired')) {
+        if (err.responseText.includes('expired')) {
 
-            alert("session expired");
-          }
-        });
+          alert("session expired");
+        }
+      });
 
     }
   },
