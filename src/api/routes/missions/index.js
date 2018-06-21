@@ -57,6 +57,25 @@ export default ({ config, db, logger }) => {
                 next(err);
             })
     );
+    // Update a mission record in the database
+    api.put('/:id',ensureAuthenticated,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                metadata: Joi.object().required()
+            })
+        }),
+        (req, res, next) => {
+            missions(config, db, logger).updateMission(req.params.id, req.body)
+                .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
 
     return api;
 };
