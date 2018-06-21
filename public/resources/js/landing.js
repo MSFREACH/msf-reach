@@ -746,7 +746,8 @@ var mapContacts = function(contacts ){
       '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
       '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
       '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-      '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+      '<br>Organisation: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.employer) +
+      '<br>Job title: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.job_title);
         }
 
         layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
@@ -979,6 +980,13 @@ getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 getFeeds('/api/hazards/lra',mapLRAHazards);
 //getMissions(mapMissions);
+
+getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
+//getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
+getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
+
+getDRCLayer('/api/layers/bunia%20current%20track%201',mapBuniaLayer1);
+getDRCLayer('/api/layers/bunia%20current%20track%202',mapBuniaLayer2);
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;
