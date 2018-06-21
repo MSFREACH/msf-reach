@@ -983,8 +983,8 @@ getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
 //getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
 
-getDRCLayer('/api/layers/bunia%20current%20track%201',mapBuniaLayer1);
-getDRCLayer('/api/layers/bunia%20current%20track%202',mapBuniaLayer2);
+//getDRCLayer('/api/layers/bunia%20current%20track%201',mapBuniaLayer1);
+//getDRCLayer('/api/layers/bunia%20current%20track%202',mapBuniaLayer2);
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;
