@@ -976,12 +976,12 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-getFeeds('/api/hazards/lra',mapLRAHazards);
+//getFeeds('/api/hazards/lra',mapLRAHazards);
 //getMissions(mapMissions);
 
-getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
+//('/api/layers/health%20facilities',mapDRCHealthSites);
 //getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
-getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
+//getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
 
 getDRCLayer('/api/layers/bunia%20current%20track%201',mapBuniaLayer1);
 getDRCLayer('/api/layers/bunia%20current%20track%202',mapBuniaLayer2);
@@ -1013,9 +1013,11 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         TOTAL_FEEDS++;
     }
+    /*
     if (Cookies.get('- LRA Crisis')==='on') {
         TOTAL_FEEDS++;
     }
+    */
 
     if (Cookies.get('- PDC')==='on') {
         getFeeds('/api/hazards/pdc', tableFeeds);
@@ -1032,9 +1034,11 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         getFeeds('/api/hazards/ptwc', tableFeeds);
     }
+    /*
     if (Cookies.get('- LRA Crisis')==='on') {
         getFeeds('/api/hazards/lra', tableFeeds);
     }
+    */
 };
 
 updateFeedsTable();
