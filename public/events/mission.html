@@ -367,11 +367,11 @@
               <div class="panel-body">
                 <dl>
                   <dt>Figures</dt>
-                  <dd>
+                  <dd v-if="!inEditMode">
                     <div v-for="(item, index) in mission.keyMSFFigures">
                       <div class="row">
                         <div class="col-sm-12">
-                          <input type="range" readonly min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
+                          <input type="range" disabled min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
                         </div>
                         <div class="col-sm-12">
                           <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
@@ -383,7 +383,40 @@
                       <hr/>
                     </div>
                   </dd>
+                  <dd v-else>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div v-if="mission.keyMSFFigures.length === 0">
+                          <div class="well">No MSF Figure yet.</div>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div v-for="(item, index) in mission.keyMSFFigures">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <button class="btn btn-xs btn-danger" @click="removeMSFfigure(item, index)">X</button>
+                            </div>
+                            <div class="col-sm-10">
+                              <input type="range" min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
+                            </div>
+                            <div class="col-sm-12">
+                              <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
+                              <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                                <input type="text" v-model="item.description" class="form-control" placeholder="Please Specify" />
+                              </div>
+                            </div>
+                          </div>
+                          <hr/>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div v-for="(item, index) in keyMSFFigures">
+                          <a href="#" @click="addSelectedMSFfigures(item)"><i class="glyphicon glyphicon-ok" /> {{ item | relaceUnderscore }}</a>
+                        </div>
+                      </div>
+                    </div>
+                  </dd>
                 </dl>
+                <section v-if="!inEditMode">
                 <dl>
                   <dt>Population in total for zone impacted</dt>
                   <dd>{{mission.population_total}}</dd>
@@ -398,6 +431,45 @@
                   <dt>Percentage of people affected</dt>
                   <dd>{{mission.percentage_population_affected}}%</dd>
                 </dl>
+              </section>
+              <section v-else>
+                  <dl>
+                    <dt>Population in total for zone impacted</dt>
+                    <dd>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <input type="number" class="form-control" v-model.number="mission.population_total" v-on:change="calculatePercentagePeopleAffected" placeholder="Total population" />
+                        </div>
+                        <div class="col-sm-8">
+                          <textarea v-model.trim="mission.population_total_description" placeholder="Description" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </dd>
+                  </dl>
+                  <dl>
+                    <dt>Population affected</dt>
+                    <dd>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <input type="number" class="form-control col-sm-3" v-model.number="mission.population_affected" v-on:change="calculatePercentagePeopleAffected" placeholder="Affected population" />
+                        </div>
+                        <div class="col-sm-8">
+                          <textarea v-model.trim="mission.population_affected_description" placeholder="Description" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </dd>
+                  </dl>
+                  <dl>
+                    <dt>Percentage of people affected</dt>
+                    <dd>
+                      <div class="row">
+                        <div class="col-xs-4">
+                          <input type="number" class="form-control col-sm-3" v-model.number="mission.percentage_population_affected" placeholder="Affected population" />
+                        </div>
+                      </div>
+                    </dd>
+                  </dl>
+              </section>
               </div>
             </div>
           </div>
@@ -413,25 +485,63 @@
               <div class="panel-body">
                 <dl>
                   <dt>Staff list — human resources</dt>
-                  <dd>{{mission.msf_resource_staff_list}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_resource_staff_list}}</dd>
+                  <dd v-else>
+                    <textarea v-model.trim="mission.msf_resource_staff_list" placeholder="Contact(s)" class="form-control"></textarea>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>Expatriate</dt>
-                  <dd>{{mission.msf_resource_staff_expatriate}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_resource_staff_expatriate}}</dd>
+                  <dd v-else>
+                    <textarea v-model.trim="mission.msf_resource_staff_expatriate" placeholder="Contact(s)" class="form-control"></textarea>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>National staff</dt>
-                  <dd>{{mission.msf_resource_staff_national}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_resource_staff_national}}</dd>
+                  <dd v-else>
+                    <textarea v-model.trim="mission.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>When were they hired by MSF? / When do they arrive on the ground?</dt>
-                  <dd>{{mission.msf_resource_hired_date | formatFullDate }} arrive on {{mission.msf_resource_arrive_to_ground | formatFullDate}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_resource_hired_date | formatFullDate }} arrive on {{mission.msf_resource_arrive_to_ground | formatFullDate}}</dd>
+                  <dd v-if="inEditMode">
+                    <date-picker v-model="mission.msf_resource_hired_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Hired date"></date-picker>
+                  </dd>
+                  <dd v-if="inEditMode">
+                    <date-picker v-model="mission.msf_resource_arrive_to_ground" :config="{format: 'YYYY-MM-DD'}" placeholder="Arrive to ground date"></date-picker>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>Visa requirement</dt>
-                  <dd>Nationality: {{mission.msf_resource_visa_requirement.name}}</dd>
-                  <dd>Visa required: {{mission.msf_resource_visa_requirement.is_required}}</dd>
+                  <section v-if="!inEditMode" >
+                    <section v-for="nat in mission.msf_resource_visa_requirement.nationality">
+                      <dd>Nationality: {{nat.name}}</dd>
+                      <dd>Visa required: {{nat.is_required}}</dd>
+                    </section>
                   <dd>{{mission.msf_resource_visa_requirement.description}}</dd>
+                </section>
+                <section v-else>
+                  <dd>
+                    <label>Nationality</label>
+                    <div style="display:block;" v-for="(nat,ind) in mission.msf_resource_visa_requirement.nationality">
+                       <country-select :options="countryParams" v-model="nat" @input="countryChanged($event,ind)"></country-select>
+
+                         <label>Required:</label>
+                         <label>
+                           <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="yes"> Yes
+                         </label>
+                         <label>
+                           <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="no"> No
+                         </label>
+
+                       <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
+                    </div>
+                    <button type="button" class="btn btn-success btn-xs" @click="addNationalityField">Add another nationality</button>
+                  </dd>
+                </section>
                 </dl>
                 <dl>
                   <dt>Budget</dt>
@@ -443,7 +553,7 @@
                           <th>From who</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody v-if="!inEditMode">
                         <tr v-for="(item, index) in mission.msf_resource_budget">
                           <td>
                             {{item.amount}}
@@ -453,12 +563,33 @@
                           </td>
                         </tr>
                       </tbody>
+                      <tbody v-else>
+                        <tr v-for="(item, index) in mission.msf_resource_budget">
+                          <td>
+                            <input type="text" class="form-control" v-model="item.amount" />
+                          </td>
+                          <td>
+                            <input type="text" class="form-control" v-model.number="item.from_who" />
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-xs btn-danger" v-on:click="removeResourceBudget(index)">X</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="4">
+                            <button type="button" class="btn btn-xs btn-success" v-on:click="addResourceBudget">Add more budget</button>
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </dd>
                 </dl>
                 <dl>
                   <dt>Institutional Donors</dt>
-                  <dd>{{mission.msf_resource_institutional_donors}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_resource_institutional_donors}}</dd>
+                  <dd v-else>
+                    <textarea v-model.trim="mission.msf_resource_institutional_donors" placeholder="Donors" class="form-control"></textarea>
+                  </dd>
                 </dl>
               </div>
             </div>
@@ -475,11 +606,17 @@
               <div class="panel-body">
                 <dl>
                   <dt>Practical Details / Recommendations</dt>
-                  <dd>{{mission.msf_ref_com_practical_details_recomm}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_ref_com_practical_details_recomm}}</dd>
+                  <dd v-else>
+                    <textarea v-model.trim="mission.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control"></textarea>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>Reflection / Comments on intervention</dt>
-                  <dd>{{mission.msf_ref_com_reflection_comments}}</dd>
+                  <dd v-if="!inEditMode">{{mission.msf_ref_com_reflection_comments}}</dd>
+                  <dd v-else>
+                    <textarea v-model.trim="mission.msf_ref_com_reflection_comments" placeholder="Description" class="form-control"></textarea>
+                  </dd>
                 </dl>
               </div>
             </div>
@@ -497,6 +634,35 @@
 
 <script type="text/javascript">
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
+
+Vue.component('country-select', {
+  props: ['options', 'value'],
+  template: '<input  type="text" class="form-control input-sm" >',
+  mounted: function () {
+    var vmc = this
+    $(this.$el)
+      .countrySelect(this.options)
+      .countrySelect("selectCountry", this.value.iso2)
+      .trigger('change')
+      // emit event on change.
+      .on('change', function () {
+        var country = $(this).countrySelect("getSelectedCountryData");
+        vmc.$emit('input', country)
+      })
+  },
+  watch: {
+    value: function (value) {
+      // update value
+      $(this.$el).countrySelect("selectCountry", value.iso2);
+    },
+    options: function (options) {
+      $(this.$el).countrySelect(options);
+    }
+  },
+  destroyed: function () {
+    $(this.$el).off().countrySelect('destroy')
+  }
+});
 
 Vue.filter('formatDateOnly', function(value) {
   if (value) {
@@ -538,6 +704,7 @@ var vmInstance = new Vue({
     mission: $.extend(true, defaultEvent.metadata, missionData),
     msfTypeOfProgrammes: msfTypeOfProgrammes,
     msfOperationalCenters: msfOperationalCenters,
+    keyMSFFigures: keyMSFFigures,
     inEditMode:false,
     isSubmitting:false,
     hasSubmissionError:false,
@@ -585,6 +752,57 @@ var vmInstance = new Vue({
     },
     removeOtherOrg(index) {
       this.mission.ext_other_organizations.splice(index, 1);
+    },
+    updateFigureValue(item, i) {
+      this.mission.keyMSFFigures[i].value = Math.pow(10, item.range);
+    },
+    addSelectedMSFfigures(item) {
+      var newItem = { value: 0, range: 0, category: item, description: null };
+      if (!_.find(this.mission.keyMSFFigures, { category: item })) {
+        this.mission.keyMSFFigures.push(newItem);
+        var index = this.keyMSFFigures.indexOf(item);
+        if (index > -1) {
+          this.keyMSFFigures.splice(index, 1);
+        }
+      }
+    },
+    removeMSFfigure(item, index) {
+      this.keyMSFFigures.push(item.category);
+      this.mission.keyMSFFigures.splice(index, 1);
+    },
+    calculatePercentagePeopleAffected() {
+      var percentage = (this.mission.population_affected / this.mission.population_total) * 100;
+      this.mission.percentage_population_affected = percentage.toFixed(2);
+    },
+    removeNationalityField(index){
+      this.mission.msf_resource_visa_requirement.nationality.splice(index,1);
+
+    },
+    addNationalityField(){
+      this.mission.msf_resource_visa_requirement.nationality.push({
+          iso2: 'xx',
+          name: null,
+          is_required:true
+      });
+
+    },
+    countryChanged(country,ind) {
+      var vm=this;
+      var obj={
+        name:country.name,
+        iso2:country.iso2,
+        is_required: vm.mission.msf_resource_visa_requirement.nationality[ind].is_required
+      }
+      Vue.set(vm.mission.msf_resource_visa_requirement.nationality,ind, obj);
+    },
+    removeResourceBudget(index) {
+      this.mission.msf_resource_budget.splice(index, 1);
+    },
+    addResourceBudget() {
+      this.mission.msf_resource_budget.push({
+        amount: 0,
+        from_who: null,
+      });
     }
   },
   mounted: function() {
