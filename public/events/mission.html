@@ -108,7 +108,7 @@
             <dl>
               <dt>ID link - SharePoint</dt>
               <dd v-if="!inEditMode">
-                <a class="event-idLinkSharePoint" href="#">{{mission.sharepoint_link}}</a>
+                <a class="event-idLinkSharePoint" :href="mission.sharepoint_link" target="_blank">{{mission.sharepoint_link}}</a>
               </dd>
               <dd v-else>
                 <input type="text" class="form-control" v-model="mission.sharepoint_link" placeholder="SharePoint Link" />
@@ -715,7 +715,13 @@ var vmInstance = new Vue({
   methods: {
     saveMissionEdits: function(){
       var vm=this;
+      if (vm.mission.sharepoint_link.indexOf('https://') != 0)
+      {
+        alert('Please make sure the sharepoint link starts with https:// and try again. ');
+        return;
+      }
       vm.isSubmitting=true;
+
       var body={
         metadata: vm.mission
       }
