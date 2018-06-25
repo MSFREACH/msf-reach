@@ -39,9 +39,10 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@esri/arcgis-to-geojson-utils": "^1.2.0",
+    "ajv": "^6.5.1",
     "api-error-handler": "^1.0.0",
     "apicache": "^1.2.1",
-    "aws-sdk": "^2.259.1",
+    "aws-sdk": "^2.263.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "celebrate": "^8.0.0",
@@ -72,7 +73,7 @@
     "response-time": "^2.3.2",
     "save": "^2.3.2",
     "twitter": "^1.7.1",
-    "winston": "^2.4.2",
+    "winston": "^3.0.0",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
@@ -82,7 +83,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "coveralls": "^3.0.1",
-    "eslint": "^4.19.1",
+    "eslint": "^5.0.0",
     "it-each": "^0.3.1",
     "jsonwebtoken": "^8.3.0",
     "mocha": "^5.2.0",
