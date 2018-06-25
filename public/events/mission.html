@@ -65,8 +65,8 @@
               <section v-if="!inEditMode">
                 <dd>{{mission.incharge_position}}</dd>
                 <dd>{{mission.incharge_name}}</dd>
-                <dd>{{mission.mission_contact_person.arrival_time  | formatFullDate}}</dd>
-                <dd>{{mission.mission_contact_person.departure_time | formatFullDate}}</dd>
+                <dd>Date of arrival: {{mission.mission_contact_person.arrival_time  | formatFullDate}}</dd>
+                <dd>Date of departure: {{mission.mission_contact_person.departure_time | formatFullDate}}</dd>
               </section>
               <section v-else>
                 <dd class="padding-bottom">
