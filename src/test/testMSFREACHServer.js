@@ -20,11 +20,14 @@ import routes from '../api';
 // Import server object
 import { init } from '../server.js';
 
+// Import logging libraries
+import { createLogger, format, transports } from 'winston';
+
 // Mock logger object for app
-const winston = require('winston');
-const logger = new (winston.Logger)({
+const logger = createLogger({
+    format: format.simple(),
     transports: [
-        new (winston.transports.Console)({ raw: true }),
+        new transports.Console()
     ]
 });
 
