@@ -110,7 +110,7 @@ $(function(){
     // set up #inputEvDateTime as a date time picker element
     $( '#inputEvDateTime' ).datetimepicker({
         //controlType: 'select',
-        format: 'YY-MM-DD'
+        format: 'YYYY-MM-DD HH:mm'
         //yearRange: '1900:' + new Date().getFullYear()
     });
 
