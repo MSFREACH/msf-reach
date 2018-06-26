@@ -248,7 +248,13 @@ var getContacts = function(term,type){
         url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
     }
     if (type) {
-        url=url+'&type='+type;
+        if (type==='msf_associate') {
+            url = url + '&msf_associate=true';
+        } else if (type==='msf_peer') {
+            url = url + '&msf_peer=true';
+        } else {
+            url=url+'&type='+type;
+        }
     }
     $.getJSON(url, function (data){
         loadContacts(null, data.result.features);
