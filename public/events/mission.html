@@ -715,7 +715,7 @@ var vmInstance = new Vue({
   methods: {
     saveMissionEdits: function(){
       var vm=this;
-      if (vm.mission.sharepoint_link.indexOf('https://') != 0)
+      if ((vm.mission.sharepoint_link)&&(vm.mission.sharepoint_link.indexOf('https://') != 0))
       {
         alert('Please make sure the sharepoint link starts with https:// and try again. ');
         return;
