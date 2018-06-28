@@ -979,10 +979,10 @@ getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //getMissions(mapMissions);
 
 if (window.location.hostname.toLowerCase().startsWith('test.') || window.location.hostname.toLowerCase().startsWith('dev.')) {
-  getFeeds('/api/hazards/lra',mapLRAHazards);
-  getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
-  getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
-  getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
+    getFeeds('/api/hazards/lra',mapLRAHazards);
+    getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
+    getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
+    getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
 }
 
 var TOTAL_FEEDS=0;
