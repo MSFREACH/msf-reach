@@ -1126,11 +1126,13 @@ getFeeds('/api/hazards/tsr',mapTSRHazards);
 getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
-//getFeeds('/api/hazards/lra',mapLRAHazards);
 
-//getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
-//getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
-//getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
+if (window.location.hostname.toLowerCase().startsWith('test.') || window.location.hostname.toLowerCase().startsWith('dev.')) {
+    getFeeds('/api/hazards/lra',mapLRAHazards);
+    getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
+    getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
+    getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
+}
 
 // Enter an API key from the Google API Console:
 //   https://console.developers.google.com/apis/credentials
