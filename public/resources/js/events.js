@@ -1132,6 +1132,8 @@ if (window.location.hostname.toLowerCase().startsWith('test.') || window.locatio
     getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
     getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
     getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
+    getDRCLayer('/api/layers/bunia%20current%20track%201',mapBuniaLayer1);
+    getDRCLayer('/api/layers/bunia%20current%20track%202',mapBuniaLayer2);
 }
 
 // Enter an API key from the Google API Console:
