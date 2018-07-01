@@ -31,8 +31,8 @@ export default (config, db, logger) => ({
       OR properties ->> 'speciality' ILIKE $1)) AND
       ($7 IS NULL OR (ad_oid = $7 and private = true) OR ((properties->>'sharedWith')::jsonb ? $7) OR private = false) AND
       ($2 IS NULL OR ( the_geom && ST_MakeEnvelope($3,$4,$5,$6, 4326) ) ) AND
-      ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $7) AND
-      ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $8) AND
+      ($8 IS NULL OR properties ->> 'msf_associate' ILIKE $8) AND
+      ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $9) AND
       ($10 IS NULL OR properties ->> 'type' ILIKE $10)
      ORDER BY id`;
 

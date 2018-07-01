@@ -10,6 +10,7 @@ $(function () {
     $('#permission').toggle(localStorage.getItem('username')!=null);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
     $('#private').toggle(localStorage.getItem('username')!=null);
+    $('#peerQuestion').toggle(localStorage.getItem('username')!=null);
 
     const STARTPAGEINDEX = 0;
     const CHECKEMAILPAGEINDEX =1;

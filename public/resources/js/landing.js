@@ -248,7 +248,13 @@ var getContacts = function(term,type){
         url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
     }
     if (type) {
-        url=url+'&type='+type;
+        if (type==='msf_associate') {
+            url = url + '&msf_associate=true';
+        } else if (type==='msf_peer') {
+            url = url + '&msf_peer=true';
+        } else {
+            url=url+'&type='+type;
+        }
     }
     $.getJSON(url, function (data){
         loadContacts(null, data.result.features);
@@ -391,10 +397,10 @@ var mapMissions = function(missions ){
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
-            popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+            popupContent += '<a href="#" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + missionPopupIcon(feature.properties.properties.type) + '</a>';
-            popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+            popupContent += '<a href="#" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
@@ -746,7 +752,8 @@ var mapContacts = function(contacts ){
       '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
       '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
       '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-      '<br>Speciality: '+(typeof(feature.properties.properties.speciality)==='undefined' ? '' : feature.properties.properties.speciality);
+      '<br>Organisation: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.employer) +
+      '<br>Job title: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.job_title);
         }
 
         layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
@@ -842,9 +849,11 @@ var mapContacts = function(contacts ){
 */
 var onMissionLinkClick = function(id) {
     $.getJSON('/api/missions/' + id, function(data) {
+        currentMissionId=id;
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
         missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
         $( '#missionModalBody' ).load( '/events/mission.html' );
+        $('#missionModal').modal('show');
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
@@ -872,6 +881,7 @@ var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleCli
 // To get healthsites loaded, need to first add load event and then setView separately
 
 mainMap.on('load', function(loadEvent) {
+    getContacts();
     getHealthSites(mainMap.getBounds(),mapHealthSites);
     $.getJSON({
         url: '/api/utils/arcgistoken',
@@ -881,20 +891,30 @@ mainMap.on('load', function(loadEvent) {
         },
         success: function(data) {
             ARCGIS_TOKEN = data.token;
-            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
             getMSFPresence(mapMSFPresence);
         }
     });
 });
 
-mainMap.fitBounds([[-13, 84],[28,148]]);
-//mainMap.setMaxBounds([[-16, 87],[25,151]]);
+mainMap.on('moveend', function(){getContacts($('#contSearchTerm').val());});
+
+let bounds = Cookies.get('landingMapBounds');
+if (typeof(bounds)!=='undefined') {
+    let boundsArray = bounds.split(',');
+    mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
+} else {
+    mainMap.fitBounds([[-90,-180],[90,180]]);
+
+}
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites);
 });
 
-mainMap.on('moveend', function(){getMSFPresence(mapMSFPresence);});
+mainMap.on('moveend', function(){
+    Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
+    getMSFPresence(mapMSFPresence);
+});
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
@@ -965,7 +985,16 @@ getFeeds('/api/hazards/usgs',mapUSGSHazards);
 getFeeds('/api/hazards/gdacs',mapGDACSHazards);
 getFeeds('/api/hazards/ptwc',mapPTWCHazards);
 //getMissions(mapMissions);
-getContacts();
+
+if (window.location.hostname.toLowerCase().startsWith('test.') || window.location.hostname.toLowerCase().startsWith('dev.')) {
+    getFeeds('/api/hazards/lra',mapLRAHazards);
+    getDRCLayer('/api/layers/health%20facilities',mapDRCHealthSites);
+    getDRCLayer('/api/layers/villages%20and%20cities',mapDRCVillages);
+    getDRCLayer('/api/layers/MSF%20OCG%20locations',mapDRCPresence);
+    getDRCLayer('/api/layers/bunia%20current%20track%201',mapBuniaLayer1);
+    getDRCLayer('/api/layers/bunia%20current%20track%202',mapBuniaLayer2);
+}
+
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;
@@ -994,6 +1023,11 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         TOTAL_FEEDS++;
     }
+    /*
+    if (Cookies.get('- LRA Crisis')==='on') {
+        TOTAL_FEEDS++;
+    }
+    */
 
     if (Cookies.get('- PDC')==='on') {
         getFeeds('/api/hazards/pdc', tableFeeds);
@@ -1010,6 +1044,11 @@ var updateFeedsTable = function() {
     if (Cookies.get('- PTWC')==='on') {
         getFeeds('/api/hazards/ptwc', tableFeeds);
     }
+    /*
+    if (Cookies.get('- LRA Crisis')==='on') {
+        getFeeds('/api/hazards/lra', tableFeeds);
+    }
+    */
 };
 
 updateFeedsTable();

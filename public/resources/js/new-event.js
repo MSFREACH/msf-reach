@@ -36,6 +36,9 @@ function clearGlobalVars(){
     $('.newSubEventTypeBox').prop('checked',false);
     $('.newEventTypeBox').prop('checked',false);
 
+    $('#reportsContainer').html('');
+    getReports(mainMap, mapReports);
+
 }
 
 $('#newEventModal').on('hidden.bs.modal', function() {
@@ -107,16 +110,14 @@ $(function(){
     // set up #inputEvDateTime as a date time picker element
     $( '#inputEvDateTime' ).datetimepicker({
         //controlType: 'select',
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'yy-mm-dd',
-        yearRange: '1900:' + new Date().getFullYear()
+        format: 'YYYY-MM-DD HH:mm'
+        //yearRange: '1900:' + new Date().getFullYear()
     });
 
     // create a new event - get the values and store them using a POST
     $('#createEvent').on('click', function (e) {
 
-        if (areaSelect === null){
+        if (areaSelect === null && !latlng ){
             alert('Please select the epicenter of the event using the map.');
         }
         else {
@@ -127,13 +128,12 @@ $(function(){
                 'type': $('input[class=newEventTypeBox]:checked').map(
                     function () {return this.value;}).get().join(','),
                 'created_at': new Date().toISOString(),
-                'location': areaSelect.getBounds().getCenter(),
+                'location': (areaSelect ? areaSelect.getBounds().getCenter() : latlng),
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),
                     'description': $('#inputEventDescription').val(),
                     'sub_type': sub_type,
-                    'bounds': areaSelect.getBounds(),
                     'event_datetime': $('#inputEvDateTime').val(),
                     'event_status': $('#inputEvStatus').val(),
                     'incharge_name': $('#inputInChargeName').val(),
@@ -164,6 +164,10 @@ $(function(){
 					*/
                 }
             };
+
+            if (areaSelect) {
+                body.metadata['bounds'] = areaSelect.getBounds();
+            }
 
             // add report id if creating from existing report
             if (report_id_for_event) {
@@ -423,8 +427,12 @@ var vmAnalytics = new Vue({
 
                     return (layer.feature.properties.type || layer.feature.properties.name) ;
                 });
-                analysisLayer.addTo(analyticsMap);
-                analyticsMap.fitBounds(analysisLayer.getBounds());
+                try {
+                    analysisLayer.addTo(analyticsMap);
+                    analyticsMap.fitBounds(analysisLayer.getBounds());
+                } catch (err) {
+                    console.log(err); // eslint-disable-line no-console
+                }
 
             }
 

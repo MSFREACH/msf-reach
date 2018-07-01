@@ -20,11 +20,14 @@ import routes from '../api';
 // Import server object
 import { init } from '../server.js';
 
+// Import logging libraries
+import { createLogger, format, transports } from 'winston';
+
 // Mock logger object for app
-const winston = require('winston');
-const logger = new (winston.Logger)({
+const logger = createLogger({
+    format: format.simple(),
     transports: [
-        new (winston.transports.Console)({ raw: true }),
+        new transports.Console()
     ]
 });
 
@@ -472,7 +475,7 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
-                // Can get GDACS hazards
+                /* Can get GDACS hazards
                 it('Get all GDACS hazards', function(done) {
                     test.httpAgent(app)
                         .get('/api/hazards/gdacs')
@@ -486,7 +489,7 @@ describe('Cognicity Server Testing Harness', function() {
                                 done();
                             }
                         });
-                });
+                }); */
 
                 // Can get PTWC hazards
                 it('Get all PTWC hazards', function(done) {
