@@ -40,6 +40,10 @@ $(function () {
             alert('Please select a report location on the map to proceed.');
             return;
         }
+        if ((cInd==2)&& typeof($('.rtype-selected').attr('data-msf-value'))==='undefined') {
+            alert('Please select a report type');
+            return;
+        }
 
         navigateTo(cInd + 1);
     });
