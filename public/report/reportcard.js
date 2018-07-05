@@ -56,6 +56,7 @@ $(function () {
 
             reader.onload = function (e) {
 
+                $('#btnUpTrigger').hide();
                 $('#imgPreview').show();
                 $('#imgPreview').attr('src', e.target.result);
             };
