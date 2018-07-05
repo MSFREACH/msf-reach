@@ -110,10 +110,8 @@ $(function(){
     // set up #inputEvDateTime as a date time picker element
     $( '#inputEvDateTime' ).datetimepicker({
         //controlType: 'select',
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'yy-mm-dd',
-        yearRange: '1900:' + new Date().getFullYear()
+        format: 'YYYY-MM-DD HH:mm'
+        //yearRange: '1900:' + new Date().getFullYear()
     });
 
     // create a new event - get the values and store them using a POST

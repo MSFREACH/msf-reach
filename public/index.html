@@ -14,6 +14,8 @@
 
     <!-- Bootstrap -->
     <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/lib/bootstrap/plugins/datetimepicker/bootstrap-datetimepicker.min.css">
+
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -43,10 +45,12 @@
     <link rel="stylesheet" href="/resources/css/new-event.css"/>
     <!-- jqueryui css -->
     <link rel="stylesheet" href="/resources/css/jquery-ui-1.12.1.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" integrity="sha256-AbZqn2w4KXugIvUu6QtV4nK4KlXj4nrIp6x/8S4Xg2U=" crossorigin="anonymous" />
 
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
+
+    <!-- country selector -->
+    <link rel="stylesheet" href="/resources/css/countrySelect.min.css">
     <style>
     .ui-autocomplete {
           position:absolute;
@@ -510,19 +514,8 @@
 
     <!-- Mission history modal -->
     <div class="modal fade" id="missionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelMession">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
-          </div>
-          <div class="modal-body" id="missionModalBody">
-            [modal content here]
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
+      <div class="modal-dialog modal-lg" role="document" id="missionModalBody">
+          [modal content here]
       </div>
     </div>
       <!-- Modal (placeholder - currently unused)
@@ -715,6 +708,8 @@
                             <select class="form-control" style="color:black;" id="inputContactType" >
                               <option value="" selected>(no category filtering)</option>
                               <option value="Current MSF Staff">Current MSF Staff</option>
+                              <option value="msf_peer">MSF Peer</option>
+                              <option value="msf_associate">MSF Associate</option>
                               <option value="Supplier">Supplier</option>
                               <option value="United Nations">United Nations</option>
                               <option value="Government">Government</option>
@@ -759,18 +754,23 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="lib/jquery/jquery-3.3.1.min.js"></script>
     <script src="/lib/jquery/jquery-ui-1.12.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js" integrity="sha256-gQzieXjKD85Ibbpg4l8GduIagpt4oUSQRYaDaLd+8sI=" crossorigin="anonymous"></script>
+
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <!-- Cookies -->
     <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
 
+  <script src="/lib/countrySelect.min.js"></script>
+
     <!-- VueJs + plug-ins -->
+    <script src="/lib/bootstrap/plugins/datetimepicker/bootstrap-datetimepicker.min.js"></script>
     <script src="/lib/vue/vue.min.js"></script>
     <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
 
     <!-- Get query parameter from URL -->
     <script src="lib/getQueryVariable/getQueryVariable.js"></script>
+
+
 
     <!-- Display event details -->
 

@@ -15,10 +15,16 @@ import routes from './api';
 import { init } from './server.js';
 
 // Import logging libraries
-import logger from 'winston'; // Application logging
+import { createLogger, format, transports } from 'winston';
 
-// Set the default logging level
-logger.level = config.LOG_LEVEL;
+const consoleLogger = new transports.Console();
+const logger = createLogger({
+    level: config.LOG_LEVEL,
+    format: format.json(),
+    transports: [
+        consoleLogger
+    ]
+});
 
 // Check that log file directory can be written to
 try {
@@ -31,17 +37,16 @@ try {
 }
 
 // Configure the logger
-logger.add(logger.transports.File, {
+logger.add(new transports.File({
     filename: path.join(config.LOG_DIR, `${config.APP_NAME}.log`),
-    json: config.LOG_JSON, // Log in json or plain text
     maxsize: config.LOG_MAX_FILE_SIZE, // Max size of each file
     maxFiles: config.LOG_MAX_FILES, // Max number of files
-    level: config.LOG_LEVEL // Level of log messages
-});
+    tailable: true
+}));
 
 // If we are not in development and console logging has not been requested then remove it
 if (config.NODE_ENV !== 'development' && !config.LOG_CONSOLE) {
-    logger.remove(logger.transports.Console);
+    logger.remove(consoleLogger);
 }
 
 // If we exit immediately winston does not get a chance to write the last log message

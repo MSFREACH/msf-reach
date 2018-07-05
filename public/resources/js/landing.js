@@ -248,7 +248,13 @@ var getContacts = function(term,type){
         url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
     }
     if (type) {
-        url=url+'&type='+type;
+        if (type==='msf_associate') {
+            url = url + '&msf_associate=true';
+        } else if (type==='msf_peer') {
+            url = url + '&msf_peer=true';
+        } else {
+            url=url+'&type='+type;
+        }
     }
     $.getJSON(url, function (data){
         loadContacts(null, data.result.features);
@@ -391,10 +397,10 @@ var mapMissions = function(missions ){
         var popupContent = '';
 
         if (feature.properties && feature.properties.properties) {
-            popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+            popupContent += '<a href="#" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + missionPopupIcon(feature.properties.properties.type) + '</a>';
-            popupContent += '<a href="#" data-toggle="modal" data-target="#missionModal" onclick="onMissionLinkClick(' +
+            popupContent += '<a href="#" onclick="onMissionLinkClick(' +
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
@@ -843,9 +849,11 @@ var mapContacts = function(contacts ){
 */
 var onMissionLinkClick = function(id) {
     $.getJSON('/api/missions/' + id, function(data) {
+        currentMissionId=id;
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
         missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
         $( '#missionModalBody' ).load( '/events/mission.html' );
+        $('#missionModal').modal('show');
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
@@ -986,6 +994,7 @@ if (window.location.hostname.toLowerCase().startsWith('test.') || window.locatio
     getDRCLayer('/api/layers/bunia%20current%20track%201',mapBuniaLayer1);
     getDRCLayer('/api/layers/bunia%20current%20track%202',mapBuniaLayer2);
 }
+
 
 var TOTAL_FEEDS=0;
 var totalFeedsSaved=0;

@@ -24,7 +24,7 @@ var loadMissions = function(err, missions) {
         $.each(missions, function(key, value) {
             $('#missionsTable').append(
                 '<tr id=\'mrow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openMissionPopup('+value.properties.id+')\'>'
-        +'<td><a data-toggle=\'modal\' data-target=\'#missionModal\' href=\'#\' onclick=\'onMissionLinkClick(' +
+        +'<td><a href=\'#\' onclick=\'onMissionLinkClick(' +
           value.properties.id +
           ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
           value.properties.properties.name +
@@ -81,13 +81,16 @@ var getMissions = function(term) {
 // variables for mission data
 var missionData = {};
 var missionCoordinates = {};
+var currentMissionId=0;
 
 // open mission modal on click
 var onMissionLinkClick = function(id) {
     $.getJSON('/api/missions/' + id, function(data) {
+        currentMissionId=id;
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
         missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
         $( '#missionModalBody' ).load( '/events/mission.html' );
+        $('#missionModal').modal('show');
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
