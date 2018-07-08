@@ -592,14 +592,14 @@
               </div>
               <div class="panel-group" id="accordion">
                 <div class="panel panel-default" id="panel4">
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
-                      <a data-toggle="collapse" data-target="#collapseNotif"
-                      href="#collapseNotif" class="collapsed">
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotification" >
+                      <a data-toggle="collapse" data-target="#collapseNotification"
+                      href="#collapseNotification" class="collapsed">
                       Notifications
                       </a>
                     <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('general')">Edit</button>
                   </div>
-                  <div id="collapseNotif" class="panel-collapse collapse in">
+                  <div id="collapseNotification" class="panel-collapse collapse in">
                     <div class="panel-body" >
                       <div id="eventNotifications">
 
@@ -617,24 +617,25 @@
                   </div>
                 </div>
                 <div class="panel panel-default" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResp" >
-                      <a data-toggle="collapse" data-target="#collapseResp"
-                      href="#collapseResp" class="collapsed">
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResponse" >
+                      <a data-toggle="collapse" data-target="#collapseResponse"
+                      href="#collapseResponse" class="collapsed">
                       Response
-                      </a>
-                    <button v-if="!editingResponse" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('response')">Edit</button>
+                    </a>
+                    <button v-if="panelStates.Response==0" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-if="panelStates.Response == 1">Done</button>
                   </div>
-                  <div id="collapseResp" class="panel-collapse collapse">
+                  <div id="collapseResponse" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div>
                             <dl class="dl-horizontal">
                               <dt>Type of programmes:</dt>
-                              <dd v-if="!editingResponse" v-for="item in event.metadata.msf_response_types_of_programmes" >
+                              <dd v-if="panelStates.Response==0" v-for="item in event.metadata.msf_response_types_of_programmes" >
                                 <span class="label label-primary" >
                                      {{ getTypeOfProgramme(item) }}
                                 </span>&nbsp;
                               </dd>
-                              <dd v-if="editingResponse">
+                              <dd v-if="panelStates.Response==1">
                                 <div v-for="item in msfTypeOfProgrammes" class="type-of-programmes">
                                   <label>
                                     <input type="checkbox" :value="item.value" v-model="event.metadata.msf_response_types_of_programmes" /> {{ item.text }}
@@ -642,37 +643,37 @@
                                 </div>
                               </dd>
                               <dt>MSF Response:</dt>
-                              <dd v-if="!editingResponse">
+                              <dd v-if="panelStates.Response==0">
                                 {{event.metadata.msf_response}}
                               </dd>
-                              <dd  v-if="editingResponse">
+                              <dd  v-if="panelStates.Response==1">
                                 <textarea v-model="event.metadata.msf_response" placeholder="MSF response" class="form-control"></textarea>
                               </dd>
                               <dt>Start Date:</dt>
-                              <dd v-if="!editingResponse">
+                              <dd v-if="panelStates.Response==0">
                                 {{formatDateOnly(event.metadata.start_date_msf_response)}}
                               </dd>
-                              <dd v-if="editingResponse">
+                              <dd v-if="panelStates.Response==1">
                                 <date-picker v-model="event.metadata.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
                               </dd>
                               <dt>End Date:</dt>
-                              <dd v-if="!editingResponse">
+                              <dd v-if="panelStates.Response==0">
                                 {{formatDateOnly(event.metadata.end_date_msf_response)}}
                               </dd>
-                              <dd v-if="editingResponse">
+                              <dd v-if="panelStates.Response==1">
                                 <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                               </dd>
                               <dt>
                                 Location of MSF Response:
                               </dt>
                               <dd>
-                                <a @click="editEvent('response')">Edit (CHANGE TO MODAL EDIT)</a>
+                                <a @click="editEvent('Response')">Edit (CHANGE TO MODAL EDIT)</a>
                               </dd>
                               <dt>Operational Centre:</dt>
-                              <dd v-if="!editingResponse">
+                              <dd v-if="panelStates.Response==0">
                                 {{event.metadata.operational_center}}
                               </dd>
-                              <dd v-if="editingResponse">
+                              <dd v-if="panelStates.Response==1">
                                 <div v-for="item in msfOperationalCenters" class="operational-centers">
                                   <label>
                                     <input type="checkbox" :value="item" v-model="event.metadata.msf_response_operational_centers" /> {{ item }}
@@ -682,7 +683,7 @@
                               <dt>
                                 Medical Material:
                               </dt>
-                                  <div v-if="!editingResponse">
+                                  <div v-if="panelStates.Response==0">
                                     <dd v-for="item in event.metadata.msf_response_medical_material">
                                       {{item}}
                                     </dd>
@@ -719,7 +720,7 @@
                               <dt>
                                 Non-Medical Material:
                               </dt>
-                              <div v-if="!editingResponse">
+                              <div v-if="panelStates.Response==0">
                                 <dd v-for="item in event.metadata.msf_response_non_medical_material">
                                   {{item}}
                                 </dd>
@@ -757,10 +758,6 @@
 
                       </div>
                     </div>
-                    <div class="panel-footer" v-if="editingResponse">
-                      <button type="button" class="btn btn-success btn-sm" @click="stopEdit(true)">Save</button>
-                      <button type="button" class="btn btn-danger btn-sm" @click="stopEdit(false)">Cancel</button>
-                    </div>
                   </div>
                 </div>
                 <div class="panel panel-default" >
@@ -769,12 +766,13 @@
                       href="#collapseExtCapacity" class="collapsed">
                       External Capacity
                       </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('externalcap')">Edit</button>
+                    <button type="button" v-if="panelStates.ExtCapacity==0" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtCapacity')">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtCapacity')" v-if="panelStates.ExtCapacity == 1">Done</button>
                   </div>
                   <div id="collapseExtCapacity" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div>
-                            <dl v-if="!editingExtCapacity" class="dl-horizontal">
+                            <dl v-if="panelStates.ExtCapacity == 0" class="dl-horizontal">
                               <dt>Analysis of capacity on the ground:</dt>
                               <dd>{{event.metadata.ext_capacity_type_in_ground =='medical' ? 'Medical' : 'Non-Medical'}}</dd>
                               <dd>{{event.metadata.capacity}}</dd>
@@ -787,7 +785,7 @@
                               </section>
 
                             </dl>
-                            <dl v-if="editingExtCapacity" >
+                            <dl v-if="panelStates.ExtCapacity == 1" >
                               <dt>Analysis of capacity on the ground</dt>
                               <dd>
                                 <label>
@@ -810,7 +808,7 @@
                                 <input type="text" v-model="event.metadata.ext_capacity_who" class="form-control" placeholder="Who" />
                               </dd>
                             </dl>
-                            <div v-if="editingExtCapacity" class="row">
+                            <div v-if="panelStates.ExtCapacity == 1" class="row">
                               <div class="col-sm-12">
                                 <table class="table">
                                   <thead>
@@ -847,23 +845,22 @@
                             </div>
                           </div>
                         </div>
-                        <div class="panel-footer" v-if="editingExtCapacity">
-                          <button type="button" class="btn btn-success btn-sm" @click="stopEdit(true)">Save</button>
-                          <button type="button" class="btn btn-danger btn-sm" @click="stopEdit(false)">Cancel</button>
-                        </div>
+
                       </div>
                     </div>
                     <div class="panel panel-default" >
-                      <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#medFigures" >
-                        <a data-toggle="collapse" data-target="#medFigures"
-                        href="#medFigures" class="collapsed">
+                      <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseFigures" >
+                        <a data-toggle="collapse" data-target="#collapseFigures"
+                        href="#collapseFigures" class="collapsed">
                         Medical Figures
                       </a>
-                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('medfigures')">Edit</button>
+                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Figures')" v-if="panelStates.Figures == 0">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Figures')" v-if="panelStates.Figures == 1" >Done</button>
+
                     </div>
-                    <div id="medFigures" class="panel-collapse collapse">
+                    <div id="collapseFigures" class="panel-collapse collapse">
                       <div class="panel-body" >
-                        <div>
+                        <div v-if="panelStates.Figures == 0">
                           <dl class="dl-horizontal">
                             <dt>Figures:</dt>
                             <dd v-for="(item, index) in event.metadata.keyMSFFigures">{{item.category.replace(/_/g,' ') }} , <i>value:</i> {{item.value}}</dd>
@@ -879,19 +876,103 @@
                             <dd>{{event.metadata.percentage_population_affected}}</dd>
                           </dl>
                         </div>
+                        <div v-if="panelStates.Figures == 1">
+                          <ul class="list-group">
+                            <li class="list-group-item">
+                              <dl>
+                                <dt>Figures</dt>
+                                <dd>
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                      <div v-if="event.metadata.keyMSFFigures.length === 0">
+                                        <div class="well">No MSF Figure yet.</div>
+                                      </div>
+                                      <div class="clearfix">&nbsp;</div>
+                                      <div v-for="(item, index) in event.metadata.keyMSFFigures">
+                                        <div class="row">
+                                          <div class="col-sm-2">
+                                            <button class="btn btn-xs btn-danger" @click="removeMSFfigure(item, index)">X</button>
+                                          </div>
+                                          <div class="col-sm-10">
+                                            <input type="range" min="1" max="10" step="1" v-model="item.range" v-on:input="updateFigureValue(item, index)" />
+                                          </div>
+                                          <div class="col-sm-12">
+                                            <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
+                                            <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                                              <input type="text" v-model="item.description" class="form-control" placeholder="Please Specify" />
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <hr/>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                      <div v-for="(item, index) in keyMSFFigures">
+                                        <a href="#" @click="addSelectedMSFfigures(item)"><i class="glyphicon glyphicon-ok" ></i> {{ item | relaceUnderscore }}</a>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </dd>
+                                <dd>
+                                </dd>
+                              </dl>
+                            </li>
+                            <li class="list-group-item">
+                              <dl>
+                                <dt>Population in total for zone impacted</dt>
+                                <dd>
+                                  <div class="row">
+                                    <div class="col-sm-4">
+                                      <input type="number" class="form-control" v-model.number="event.metadata.population_total" v-on:change="calculatePercentagePeopleAffected" placeholder="Total population" />
+                                    </div>
+                                    <div class="col-sm-8">
+                                      <textarea v-model.trim="event.metadata.population_total_description" placeholder="Description" class="form-control"></textarea>
+                                    </div>
+                                  </div>
+                                </dd>
+                              </dl>
+                              <dl>
+                                <dt>Population affected</dt>
+                                <dd>
+                                  <div class="row">
+                                    <div class="col-sm-4">
+                                      <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.population_affected" v-on:change="calculatePercentagePeopleAffected" placeholder="Affected population" />
+                                    </div>
+                                    <div class="col-sm-8">
+                                      <textarea v-model.trim="event.metadata.population_affected_description" placeholder="Description" class="form-control"></textarea>
+                                    </div>
+                                  </div>
+                                </dd>
+                              </dl>
+                              <dl>
+                                <dt>Percentage of people affected</dt>
+                                <dd>
+                                  <div class="row">
+                                    <div class="col-xs-4">
+                                      <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.percentage_population_affected" placeholder="Affected population" />
+                                    </div>
+                                  </div>
+                                </dd>
+                              </dl>
+                            </li>
+                          </ul>
+
+
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="panel panel-default" >
-                    <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#resourceCollapse" >
-                      <a data-toggle="collapse" data-target="#resourceCollapse" href="#resourceCollapse" class="collapsed">
+                    <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResources" >
+                      <a data-toggle="collapse" data-target="#collapseResources" href="#collapseResources" class="collapsed">
                       Staff Resources
                     </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('resources')">Edit</button>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="panelStates.Resources == 0">Edit</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-if="panelStates.Resources == 1" >Done</button>
                   </div>
-                  <div id="resourceCollapse" class="panel-collapse collapse">
+                  <div id="collapseResources" class="panel-collapse collapse">
                     <div class="panel-body" >
-                      <div>
+                      <div v-if="panelStates.Resources == 0">
                         <dl class="dl-horizontal">
                           <dt>Staff list — human resources:</dt>
                           <dd>{{event.metadata.msf_resource_staff_list}}</dd>
@@ -909,20 +990,161 @@
                           <dd>{{event.metadata.msf_resource_institutional_donors}}</dd>
                         </dl>
                       </div>
+                      <ul v-if="panelStates.Resources == 1" class="list-group">
+                        <li class="list-group-item">
+                          <dl>
+                            <dt>Staff list — human resources</dt>
+                            <dd>
+                              <textarea v-model.trim="event.metadata.msf_resource_staff_list" placeholder="Contact(s)" class="form-control"></textarea>
+                            </dd>
+                          </dl>
+                        </li>
+                        <li class="list-group-item">
+                          <dl>
+                            <dt>Expatriate</dt>
+                            <dd>
+                              <textarea v-model.trim="event.metadata.msf_resource_staff_expatriate" placeholder="Contact(s)" class="form-control"></textarea>
+                            </dd>
+                          </dl>
+                        </li>
+                        <li class="list-group-item">
+                          <dl>
+                            <dt>National staff</dt>
+                            <dd>
+                              <textarea v-model.trim="event.metadata.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
+                            </dd>
+                          </dl>
+                        </li>
+                        <li class="list-group-item hidden">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <dl>
+                                <dt>When were they hired by MSF?</dt>
+                                <dd>
+                                  <date-picker v-model="event.metadata.msf_resource_hired_date" :config="{format: 'YYYY-MM-DD'}" placeholder="Hired date"></date-picker>
+                                </dd>
+                              </dl>
+                            </div>
+                            <div class="col-sm-6">
+                              <dl>
+                                <dt>When do they arrive on the ground?</dt>
+                                <dd>
+                                  <date-picker v-model="event.metadata.msf_resource_arrive_to_ground" :config="{format: 'YYYY-MM-DD'}" placeholder="Arrive to ground date"></date-picker>
+                                </dd>
+                              </dl>
+                            </div>
+                          </div>
+                          <dl>
+                            <dt>Category</dt>
+                            <dd>
+                              <select v-model="event.metadata.msf_resource_category" class="form-control">
+                                <option disabled value="">Please select one</option>
+                                <option v-for="item in msfResourceCategories" :value="item">{{ item | relaceUnderscore }}</option>
+                              </select>
+                            </dd>
+                          </dl>
+                          <dl>
+                            <dt>Name</dt>
+                            <dd></dd>
+                          </dl>
+                          <dl>
+                            <dt>Function</dt>
+                            <dd></dd>
+                          </dl>
+                          <dl>
+                            <dt>Contact number</dt>
+                            <dd></dd>
+                          </dl>
+                          <dl>
+                            <dt>Comments/Evaluation</dt>
+                            <dd></dd>
+                          </dl>
+                        </li>
+                        <li class="list-group-item">
+                          <dl>
+                            <dt>Visa requirement</dt>
+                            <dd>
+                              <label>Nationality</label>
+                              <div style="display:block;" v-for="(nat,ind) in event.metadata.msf_resource_visa_requirement.nationality">
+                                 <country-select :options="countryParams" :value="nat" @input="countryChanged($event,ind)"></country-select>
+
+                                   <label>Required:</label>
+                                   <label>
+                                     <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="yes"> Yes
+                                   </label>
+                                   <label>
+                                     <input type="radio" :name="'nationalityRequired_'+ind" v-model="nat.is_required" value="no"> No
+                                   </label>
+
+                                 <button type="button" class="btn btn-danger btn-xs" style="float:right;" @click="removeNationalityField(ind)">x</button>
+                              </div>
+                              <button type="button" class="btn btn-success btn-xs" @click="addNationalityField">Add another nationality</button>
+                            </dd>
+
+                            <dd>
+                              <label>Description:</label>
+                              <textarea v-model.trim="event.metadata.msf_resource_visa_requirement.description" placeholder="Specify" class="form-control"></textarea>
+                            </dd>
+                          </dl>
+                        </li>
+                        <li class="list-group-item">
+                          <dl>
+                            <dt>Budget</dt>
+                            <dd>
+                              <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th>Amount</th>
+                                    <th>From who</th>
+                                    <th>&nbsp;</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr v-for="(item, index) in event.metadata.msf_resource_budget">
+                                    <td>
+                                      <input type="text" class="form-control" v-model="item.amount" />
+                                    </td>
+                                    <td>
+                                      <input type="text" class="form-control" v-model.number="item.from_who" />
+                                    </td>
+                                    <td>
+                                      <button type="button" class="btn btn-xs btn-danger" v-on:click="removeResourceBudget(index)">X</button>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="4">
+                                      <button type="button" class="btn btn-xs btn-success" v-on:click="addResourceBudget">Add more budget</button>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </dd>
+                          </dl>
+                        </li>
+                        <li class="list-group-item">
+                          <dl>
+                            <dt>Institutional Donors</dt>
+                            <dd>
+                              <textarea v-model.trim="event.metadata.msf_resource_institutional_donors" placeholder="Donors" class="form-control"></textarea>
+                            </dd>
+                          </dl>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
                 <div class="panel panel-default" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#reflectionCollapse" >
-                    <a data-toggle="collapse" data-target="#reflectionCollapse"
-                    href="#reflectionCollapse" class="collapsed">
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseReflection" >
+                    <a data-toggle="collapse" data-target="#collapseReflection"
+                    href="#collapseReflection" class="collapsed">
                     Reflection
                   </a>
-                  <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('reflection')">Edit</button>
+                  <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Reflection')" v-if="panelStates.Reflection == 0">Edit</button>
+                  <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Reflection')" v-if="panelStates.Reflection == 1" >Done</button>
                 </div>
-                <div id="reflectionCollapse" class="panel-collapse collapse">
+                <div id="collapseReflection" class="panel-collapse collapse">
                   <div class="panel-body" >
-                    <div>
+                    <div v-if="panelStates.Reflection == 0">
                       <dl class="dl-horizontal">
                         <dt>Practical Details / Recommendations:</dt>
                         <dd>{{event.metadata.msf_ref_com_practical_details_recomm}}</dd>
@@ -930,6 +1152,24 @@
                         <dd>{{event.metadata.msf_ref_com_reflection_comments}}</dd>
                       </dl>
                     </div>
+                    <ul v-if="panelStates.Reflection == 1" class="list-group">
+                      <li class="list-group-item">
+                        <dl>
+                          <dt>Practical Details / Recommendations</dt>
+                          <dd>
+                            <textarea v-model.trim="event.metadata.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control"></textarea>
+                          </dd>
+                        </dl>
+                      </li>
+                      <li class="list-group-item">
+                        <dl>
+                          <dt>Reflection / Comments on intervention</dt>
+                          <dd>
+                            <textarea v-model.trim="event.metadata.msf_ref_com_reflection_comments" placeholder="Description" class="form-control"></textarea>
+                          </dd>
+                        </dl>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -937,31 +1177,31 @@
 
 
               <div class="panel panel-default" id="panel3">
-                <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseThree">
+                <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseSecurity">
                   <h4 class="panel-title">
-                    <a data-toggle="collapse" data-target="#collapseThree"
-                    href="#collapseThree" class="collapsed">
+                    <a data-toggle="collapse" data-target="#collapseSecurity"
+                    href="#collapseSecurity" class="collapsed">
                     Security Details
                   </details>
                 </a>
               </h4>
 
             </div>
-            <div id="collapseThree" class="panel-collapse collapse">
+            <div id="collapseSecurity" class="panel-collapse collapse">
               <div class="panel-body" id="eventSecurityDetails"></div>
             </div>
           </div>
 
           <div class="panel panel-default" id="panel5">
-            <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseFour">
+            <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtraDetails">
               <h4 class="panel-title">
-                <a data-toggle="collapse" data-target="#collapseFour"
-                href="#collapseFour" class="collapsed">
+                <a data-toggle="collapse" data-target="#collapseExtraDetails"
+                href="#collapseExtraDetails" class="collapsed">
                 Extra details
                 </a>
               </h4>
             </div>
-            <div id="collapseFour" class="panel-collapse collapse">
+            <div id="collapseExtraDetails" class="panel-collapse collapse">
               <div class="panel-body" >
                 <dl id="eventExtra" class="dl-horizontal">
 
@@ -971,8 +1211,10 @@
           </div>
       </div>
       <button class="btn btn-primary"  @click="editEvent('general')">Edit</button>
+      <button class="btn btn-success"  @click="">Save Edits</button>
+      <button class="btn btn-default"  @click="">Cancel Edits</button>
       <!-- Button trigger modal -->
-      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Close</button>
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Close Event</button>
     </div>
     <div id="tweets" class="tab-pane fade">
       <div class="row">
@@ -1175,7 +1417,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> <!--Vue App -->
 </div>
 
 <!-- Map -->
@@ -1230,7 +1472,7 @@
 <script src="/lib/countrySelect.min.js"></script>
 
 <!-- VueJs + plug-ins -->
-<script src="/lib/vue/vue.min.js"></script>
+<script src="/lib/vue/vue.js"></script>
 <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
 
 

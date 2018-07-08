@@ -1215,14 +1215,89 @@ var editCategory='general';
 
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
 
+Vue.component('country-select', {
+  props: ['options', 'value'],
+  template: '<input  type="text" class="form-control input-sm" >',
+  mounted: function () {
+    var vmc = this
+    $(this.$el)
+      .countrySelect(this.options)
+      .countrySelect("selectCountry", this.value.iso2)
+      .trigger('change')
+      // emit event on change.
+      .on('change', function () {
+        var country = $(this).countrySelect("getSelectedCountryData");
+        vmc.$emit('input', country)
+      })
+  },
+  watch: {
+    value: function (value) {
+      // update value
+      $(this.$el).countrySelect("selectCountry", value.iso2);
+    },
+    options: function (options) {
+      $(this.$el).countrySelect(options);
+    }
+  },
+  destroyed: function () {
+    $(this.$el).off().countrySelect('destroy')
+  }
+});
+
+
+Vue.filter('formatDateOnly', function(value) {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD');
+  }
+});
+
+Vue.filter('formatFullDate', function(value) {
+  if (value) {
+    return moment(value).format('LLL');
+  } else {
+    return "N/A";
+  }
+});
+
+Vue.filter('formatedNumber', function(value) {
+  return value.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+});
+
+Vue.filter('relaceUnderscore', function(value) {
+  return replaceUnderscore(value);
+});
+
+var replaceUnderscore = function(value) {
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  value = capitalizeFirstLetter(value);
+  value = value.replace(/__/g, "-");
+  return value.replace(/_/g, " ");
+}
+
 var vmObject = {
 
     data: {
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
-        editingResponse:false,
-        editingExtCapacity:false
+        keyMSFFigures: keyMSFFigures,
+        msfResourceCategories: msfResourceCategories,
+        countryParams:countryParams,
+        msfOperationalCenters: msfOperationalCenters,
+        msfMedicalMaterials:msfMedicalMaterials,
+        msfNonMedicalMaterials:msfNonMedicalMaterials,
+        panelStates:{
+          'Notification': 0, //0: view, 1: editing, 2:saved
+          'Response': 0,
+          'ExtCapacity': 0,
+          'Figures': 0,
+          'Resources': 0,
+          'Reflection': 0,
+          'Security': 0,
+          'ExtraDetails': 0
+        }
     },
     mounted:function(){
        console.log('mounted');
@@ -1338,33 +1413,19 @@ var vmObject = {
             }
         },
         editEvent:function(category){
-          if (category == 'response')
+          if (category == 'general')
           {
-            this.editingResponse=true;
-            $('#collapseResp').collapse('show');
-          } else if (category == 'externalcap')
-          {
-            this.editingExtCapacity=true;
-            $('#collapseExtCapacity').collapse('show');
-          }
-          else{
             editCategory=category;
             onEditEvent();
             $( '#editModal' ).modal('show');
+          } else {
+            this.panelStates[category]=1;
+            $('#collapse'+category).collapse('show');
           }
         },
-        stopEdit:function(saveEdits)
+        stopEdit:function(category)
         {
-          if (saveEdits)
-          {
-            //save event
-
-          }
-          else{
-
-          }
-          this.editingResponse=false;
-          this.editingExtCapacity=false;
+           this.panelStates[category]=0;
         },
         addOtherOrg: function() {
           this.event.metadata.ext_other_organizations.push({
@@ -1375,6 +1436,57 @@ var vmObject = {
         },
         removeOtherOrg: function(index) {
           this.event.metadata.ext_other_organizations.splice(index, 1);
+        },
+        calculatePercentagePeopleAffected() {
+          var percentage = (this.event.metadata.population_affected / this.event.metadata.population_total) * 100;
+          this.event.metadata.percentage_population_affected = percentage.toFixed(2);
+        },
+        updateFigureValue(item, i) {
+          this.event.metadata.keyMSFFigures[i].value = Math.pow(10, item.range);
+        },
+        addSelectedMSFfigures(item) {
+          var newItem = { value: 0, range: 0, category: item, description: null };
+          if (!_.find(this.event.metadata.keyMSFFigures, { category: item })) {
+            this.event.metadata.keyMSFFigures.push(newItem);
+            var index = this.keyMSFFigures.indexOf(item);
+            if (index > -1) {
+              this.keyMSFFigures.splice(index, 1);
+            }
+          }
+        },
+        removeMSFfigure(item, index) {
+          this.keyMSFFigures.push(item.category);
+          this.event.metadata.keyMSFFigures.splice(index, 1);
+        },
+        removeNationalityField(index){
+          this.event.metadata.msf_resource_visa_requirement.nationality.splice(index,1);
+
+        },
+        addNationalityField(){
+          this.event.metadata.msf_resource_visa_requirement.nationality.push({
+              iso2: 'xx',
+              name: null,
+              is_required:true
+          });
+
+        },
+        countryChanged(country,ind) {
+          var vm=this;
+          var obj={
+            name:country.name,
+            iso2:country.iso2,
+            is_required: vm.event.metadata.msf_resource_visa_requirement.nationality[ind].is_required
+          }
+          Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, obj);
+        },
+        removeResourceBudget(index) {
+          this.event.metadata.msf_resource_budget.splice(index, 1);
+        },
+        addResourceBudget() {
+          this.event.metadata.msf_resource_budget.push({
+            amount: 0,
+            from_who: null,
+          });
         }
     },
     computed:{
