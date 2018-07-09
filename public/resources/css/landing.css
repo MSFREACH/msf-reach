@@ -111,3 +111,7 @@ div.pac-container {
 #analyticsMap{
   height:70vh;
 }
+
+.bottom-margined {
+  margin-bottom: 5px;
+}

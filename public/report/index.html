@@ -27,6 +27,9 @@
 
   <link rel="stylesheet" href="/report/reportcard.css">
 
+  <link rel="stylesheet" href="/resources/fonts/fontello/css/fontello.css">
+  <link rel="stylesheet" href="/resources/fonts/fontello/css/animation.css">
+
 
 </head>
 <body>
@@ -70,8 +73,8 @@
               <h4>Would you like to upload an image ? </h4><i>(optional)</i>
               <form enctype="multipart/form-data">
                 <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
-                <a id="btnUpTrigger" style="color:red;text-transform:uppercase;cursor:pointer;" >Select from photos / take photo</a>
                 <div style="margin-top:10px;width:100%;height:55vh;background-color:white;color:black;">
+                  <i id="btnUpTrigger" class="icon-camera" style="font-size:108px;"></i>
                   <img id="imgPreview" src="#" alt="your image" style="width:100%;height:55vh;display:none;"/>
                 </div>
               </form>
