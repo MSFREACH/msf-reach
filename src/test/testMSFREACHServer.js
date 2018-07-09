@@ -427,6 +427,7 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
+                /*
                 // Can get PDC hazards
                 it('Get all PDC hazards', function(done) {
                     test.httpAgent(app)
@@ -475,7 +476,7 @@ describe('Cognicity Server Testing Harness', function() {
                         });
                 });
 
-                /* Can get GDACS hazards
+                // Can get GDACS hazards
                 it('Get all GDACS hazards', function(done) {
                     test.httpAgent(app)
                         .get('/api/hazards/gdacs')
@@ -489,7 +490,7 @@ describe('Cognicity Server Testing Harness', function() {
                                 done();
                             }
                         });
-                }); */
+                });
 
                 // Can get PTWC hazards
                 it('Get all PTWC hazards', function(done) {
@@ -506,6 +507,7 @@ describe('Cognicity Server Testing Harness', function() {
                             }
                         });
                 });
+                */
 
                 // Can create contacts, returning new contact
                 it('Create a contact (POST /contact)', function(done) {
