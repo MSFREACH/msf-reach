@@ -17,6 +17,10 @@
   <link rel="stylesheet" type="text/css" href="/lib/bootstrap/plugins/datetimepicker/bootstrap-datetimepicker.min.css">
   <link href="/resources/css/flexText.css" rel="stylesheet">
 
+  <!-- fontello -->
+  <link rel="stylesheet" href="/resources/fonts/fontello/css/fontello.css">
+  <link rel="stylesheet" href="/resources/fonts/fontello/css/animation.css">
+
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -329,8 +333,8 @@
     <div class="modal-dialog ui-front" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabelContact">Contact Information</h4>
+          <h4 class="modal-title" id="myModalLabelContact" style="display: inline-block;">Contact Information</h4>
+          <i id="contactShare" class="icon-link-ext icon-floating" style="font-size:18px;"></i>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -1102,6 +1106,7 @@
 
 <script src="/lib/arcgis-to-geojson.js"></script>
 
+<script src="/lib/clipboard.min.js"></script>
 
 <script src="/resources/js/nav.js"></script>
 <script src="/resources/js/dragdrop.js"></script>

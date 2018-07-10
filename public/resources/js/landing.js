@@ -1123,6 +1123,6 @@ mainMap.on('overlayremove', function (layersControlEvent) {
 });
 
 if (location.hash.includes('#contact')) {
-    $('#contactDetailsModal').modal();
     onContactLinkClick(/\d+/.exec(location.hash)[0]);
+    $('#contactDetailsModal').modal();
 }

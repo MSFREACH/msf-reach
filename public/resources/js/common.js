@@ -897,13 +897,27 @@ var getAllEvents = function(callback){
     });
 };
 
+
 var currentContactId = 0;
+
+// code for setting up actions on contact link click
 var onContactLinkClick = function(id) {
-    $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
-    $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
-    $('#contactDetailsModal').on('shown.bs.modal');
+
     currentContactId = id;
     getContact(id);
+    $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
+    $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
+
+    $('#contactDetailsModal').on('shown.bs.modal', function(e) {
+        // setup sharing action
+        $('#contactShare').attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/#contact'+id);
+        let clipboard=new ClipboardJS(document.getElementById('contactShare'), {
+            container: document.getElementById('contactDetailsModal')
+        });
+        clipboard.on('success', function(e) {
+            alert('Link to contact copied to clipboard');
+        });
+    });
 };
 
 var contactInfo = {};
