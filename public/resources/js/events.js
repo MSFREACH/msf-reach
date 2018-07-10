@@ -1289,15 +1289,25 @@ var vmObject = {
         msfMedicalMaterials:msfMedicalMaterials,
         msfNonMedicalMaterials:msfNonMedicalMaterials,
         newNotification:'',
-        panelStates:{
-            'Notification': 0, //0: view, 1: editing, 2:saved
-            'Response': 0,
-            'ExtCapacity': 0,
-            'Figures': 0,
-            'Resources': 0,
-            'Reflection': 0,
-            'Security': 0,
-            'ExtraDetails': 0
+        panelEditing:{
+            'Notification': false,
+            'Response': false,
+            'ExtCapacity': false,
+            'Figures': false,
+            'Resources': false,
+            'Reflection': false,
+            'Security': false,
+            'ExtraDetails': false
+        },
+        panelDirty:{
+            'Notification': false,
+            'Response': false,
+            'ExtCapacity': false,
+            'Figures': false,
+            'Resources': false,
+            'Reflection': false,
+            'Security': false,
+            'ExtraDetails': false
         }
     },
     mounted:function(){
@@ -1420,14 +1430,15 @@ var vmObject = {
                 onEditEvent();
                 $( '#editModal' ).modal('show');
             } else {
-                this.panelStates[category]=1;
+                this.panelEditing[category]=true;
                 $('#collapse'+category).collapse('show');
             }
         },
         stopEdit:function(category)
         {
           var vm=this;
-            vm.panelStates[category]=0;
+            vm.panelEditing[category]=false;
+            vm.panelDirty[category]=true;
             if (category=='Notification')
             {
               if (vm.newNotification) {

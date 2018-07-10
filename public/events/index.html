@@ -597,8 +597,8 @@
                       href="#collapseNotification" class="collapsed">
                       Notifications
                       </a>
-                      <button v-if="panelStates.Notification==0" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Notification')" v-if="panelStates.Notification == 1">Done</button>
+                      <button v-if="!panelEditing.Notification" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Notification')" v-else>Done</button>
                   </div>
                   <div id="collapseNotification" class="panel-collapse collapse in">
                     <div class="panel-body" >
@@ -614,7 +614,7 @@
                               </tbody>
                             </table>
                       </div>
-                      <div v-if="panelStates.Notification == 1">
+                      <div v-if="panelEditing.Notification">
                         <dt>Enter new notification</dt>
                         <dd>
                           <input type="text" class="form-control" v-model="newNotification">
@@ -629,20 +629,20 @@
                       href="#collapseResponse" class="collapsed">
                       Response
                     </a>
-                    <button v-if="panelStates.Response==0" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-if="panelStates.Response == 1">Done</button>
+                    <button v-if="!panelEditing.Response" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-else>Done</button>
                   </div>
                   <div id="collapseResponse" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div>
                             <dl class="dl-horizontal">
                               <dt>Type of programmes:</dt>
-                              <dd v-if="panelStates.Response==0" v-for="item in event.metadata.msf_response_types_of_programmes" >
+                              <dd v-if="!panelEditing.Response" v-for="item in event.metadata.msf_response_types_of_programmes" >
                                 <span class="label label-primary" >
                                      {{ getTypeOfProgramme(item) }}
                                 </span>&nbsp;
                               </dd>
-                              <dd v-if="panelStates.Response==1">
+                              <dd v-if="panelEditing.Response">
                                 <div v-for="item in msfTypeOfProgrammes" class="type-of-programmes">
                                   <label>
                                     <input type="checkbox" :value="item.value" v-model="event.metadata.msf_response_types_of_programmes" /> {{ item.text }}
@@ -650,24 +650,24 @@
                                 </div>
                               </dd>
                               <dt>MSF Response:</dt>
-                              <dd v-if="panelStates.Response==0">
+                              <dd v-if="!panelEditing.Response">
                                 {{event.metadata.msf_response}}
                               </dd>
-                              <dd  v-if="panelStates.Response==1">
+                              <dd  v-if="panelEditing.Response">
                                 <textarea v-model="event.metadata.msf_response" placeholder="MSF response" class="form-control"></textarea>
                               </dd>
                               <dt>Start Date:</dt>
-                              <dd v-if="panelStates.Response==0">
+                              <dd v-if="!panelEditing.Response">
                                 {{formatDateOnly(event.metadata.start_date_msf_response)}}
                               </dd>
-                              <dd v-if="panelStates.Response==1">
+                              <dd v-if="panelEditing.Response">
                                 <date-picker v-model="event.metadata.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
                               </dd>
                               <dt>End Date:</dt>
-                              <dd v-if="panelStates.Response==0">
+                              <dd v-if="!panelEditing.Response">
                                 {{formatDateOnly(event.metadata.end_date_msf_response)}}
                               </dd>
-                              <dd v-if="panelStates.Response==1">
+                              <dd v-if="panelEditing.Response">
                                 <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                               </dd>
                               <dt>
@@ -677,10 +677,10 @@
                                 <a @click="editEvent('Response')">Edit (CHANGE TO MODAL EDIT)</a>
                               </dd>
                               <dt>Operational Centre:</dt>
-                              <dd v-if="panelStates.Response==0">
+                              <dd v-if="!panelEditing.Response">
                                 {{event.metadata.operational_center}}
                               </dd>
-                              <dd v-if="panelStates.Response==1">
+                              <dd v-else>
                                 <div v-for="item in msfOperationalCenters" class="operational-centers">
                                   <label>
                                     <input type="checkbox" :value="item" v-model="event.metadata.msf_response_operational_centers" /> {{ item }}
@@ -690,7 +690,7 @@
                               <dt>
                                 Medical Material:
                               </dt>
-                                  <div v-if="panelStates.Response==0">
+                                  <div v-if="!panelEditing.Response">
                                     <dd v-for="item in event.metadata.msf_response_medical_material">
                                       {{item}}
                                     </dd>
@@ -727,7 +727,7 @@
                               <dt>
                                 Non-Medical Material:
                               </dt>
-                              <div v-if="panelStates.Response==0">
+                              <div v-if="!panelEditing.Response">
                                 <dd v-for="item in event.metadata.msf_response_non_medical_material">
                                   {{item}}
                                 </dd>
@@ -773,13 +773,13 @@
                       href="#collapseExtCapacity" class="collapsed">
                       External Capacity
                       </a>
-                    <button type="button" v-if="panelStates.ExtCapacity==0" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtCapacity')">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtCapacity')" v-if="panelStates.ExtCapacity == 1">Done</button>
+                    <button type="button" v-if="!panelEditing.ExtCapacity" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtCapacity')">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtCapacity')" v-else>Done</button>
                   </div>
                   <div id="collapseExtCapacity" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div>
-                            <dl v-if="panelStates.ExtCapacity == 0" class="dl-horizontal">
+                            <dl v-if="!panelEditing.ExtCapacity" class="dl-horizontal">
                               <dt>Analysis of capacity on the ground:</dt>
                               <dd>{{event.metadata.ext_capacity_type_in_ground =='medical' ? 'Medical' : 'Non-Medical'}}</dd>
                               <dd>{{event.metadata.capacity}}</dd>
@@ -792,7 +792,7 @@
                               </section>
 
                             </dl>
-                            <dl v-if="panelStates.ExtCapacity == 1" >
+                            <dl v-else >
                               <dt>Analysis of capacity on the ground</dt>
                               <dd>
                                 <label>
@@ -815,7 +815,7 @@
                                 <input type="text" v-model="event.metadata.ext_capacity_who" class="form-control" placeholder="Who" />
                               </dd>
                             </dl>
-                            <div v-if="panelStates.ExtCapacity == 1" class="row">
+                            <div v-if="panelEditing.ExtCapacity" class="row">
                               <div class="col-sm-12">
                                 <table class="table">
                                   <thead>
@@ -861,13 +861,13 @@
                         href="#collapseFigures" class="collapsed">
                         Medical Figures
                       </a>
-                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Figures')" v-if="panelStates.Figures == 0">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Figures')" v-if="panelStates.Figures == 1" >Done</button>
+                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Figures')" v-if="!panelEditing.Figures">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Figures')" v-else >Done</button>
 
                     </div>
                     <div id="collapseFigures" class="panel-collapse collapse">
                       <div class="panel-body" >
-                        <div v-if="panelStates.Figures == 0">
+                        <div v-if="!panelEditing.Figures">
                           <dl class="dl-horizontal">
                             <dt>Figures:</dt>
                             <dd v-for="(item, index) in event.metadata.keyMSFFigures">{{item.category.replace(/_/g,' ') }} , <i>value:</i> {{item.value}}</dd>
@@ -883,7 +883,7 @@
                             <dd>{{event.metadata.percentage_population_affected}}</dd>
                           </dl>
                         </div>
-                        <div v-if="panelStates.Figures == 1">
+                        <div v-else>
                           <ul class="list-group">
                             <li class="list-group-item">
                               <dl>
@@ -974,12 +974,12 @@
                       <a data-toggle="collapse" data-target="#collapseResources" href="#collapseResources" class="collapsed">
                       Staff Resources
                     </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="panelStates.Resources == 0">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-if="panelStates.Resources == 1" >Done</button>
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-else >Done</button>
                   </div>
                   <div id="collapseResources" class="panel-collapse collapse">
                     <div class="panel-body" >
-                      <div v-if="panelStates.Resources == 0">
+                      <div v-if="!panelEditing.Resources">
                         <dl class="dl-horizontal">
                           <dt>Staff list — human resources:</dt>
                           <dd>{{event.metadata.msf_resource_staff_list}}</dd>
@@ -997,7 +997,7 @@
                           <dd>{{event.metadata.msf_resource_institutional_donors}}</dd>
                         </dl>
                       </div>
-                      <ul v-if="panelStates.Resources == 1" class="list-group">
+                      <ul v-else class="list-group">
                         <li class="list-group-item">
                           <dl>
                             <dt>Staff list — human resources</dt>
@@ -1146,12 +1146,12 @@
                     href="#collapseReflection" class="collapsed">
                     Reflection
                   </a>
-                  <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Reflection')" v-if="panelStates.Reflection == 0">Edit</button>
-                  <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Reflection')" v-if="panelStates.Reflection == 1" >Done</button>
+                  <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Reflection')" v-if="!panelEditing.Reflection">Edit</button>
+                  <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Reflection')" v-else >Done</button>
                 </div>
                 <div id="collapseReflection" class="panel-collapse collapse">
                   <div class="panel-body" >
-                    <div v-if="panelStates.Reflection == 0">
+                    <div v-if="!panelEditing.Reflection">
                       <dl class="dl-horizontal">
                         <dt>Practical Details / Recommendations:</dt>
                         <dd>{{event.metadata.msf_ref_com_practical_details_recomm}}</dd>
@@ -1159,7 +1159,7 @@
                         <dd>{{event.metadata.msf_ref_com_reflection_comments}}</dd>
                       </dl>
                     </div>
-                    <ul v-if="panelStates.Reflection == 1" class="list-group">
+                    <ul v-else class="list-group">
                       <li class="list-group-item">
                         <dl>
                           <dt>Practical Details / Recommendations</dt>
