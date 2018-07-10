@@ -1288,6 +1288,7 @@ var vmObject = {
         msfOperationalCenters: msfOperationalCenters,
         msfMedicalMaterials:msfMedicalMaterials,
         msfNonMedicalMaterials:msfNonMedicalMaterials,
+        newNotification:'',
         panelStates:{
             'Notification': 0, //0: view, 1: editing, 2:saved
             'Response': 0,
@@ -1425,7 +1426,19 @@ var vmObject = {
         },
         stopEdit:function(category)
         {
-            this.panelStates[category]=0;
+          var vm=this;
+            vm.panelStates[category]=0;
+            if (category=='Notification')
+            {
+              if (vm.newNotification) {
+                if (vm.event.metadata.hasOwnProperty('notification')) {
+                  vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification});
+                } else {
+                  vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification}];
+                }
+              }
+              vm.newNotification='';
+            }
         },
         addOtherOrg: function() {
             this.event.metadata.ext_other_organizations.push({

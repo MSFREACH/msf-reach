@@ -597,11 +597,12 @@
                       href="#collapseNotification" class="collapsed">
                       Notifications
                       </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('general')">Edit</button>
+                      <button v-if="panelStates.Notification==0" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Notification')" v-if="panelStates.Notification == 1">Done</button>
                   </div>
                   <div id="collapseNotification" class="panel-collapse collapse in">
                     <div class="panel-body" >
-                      <div id="eventNotifications">
+                      <div >
 
                             <table v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
                               <thead><tr><td>Time</td><td>Notification</td></tr></thead>
@@ -612,6 +613,12 @@
                                 </tr>
                               </tbody>
                             </table>
+                      </div>
+                      <div v-if="panelStates.Notification == 1">
+                        <dt>Enter new notification</dt>
+                        <dd>
+                          <input type="text" class="form-control" v-model="newNotification">
+                        </dd>
                       </div>
                     </div>
                   </div>
