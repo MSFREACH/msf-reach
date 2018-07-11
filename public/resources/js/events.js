@@ -634,11 +634,11 @@ var mapReports = function(reports,mapForReports){
         $('#reportsTable').append('</tbody></table>');
 
         layer.bindPopup(popupContent, {  maxWidth: 'auto' }).on('popupopen', function () {
-          $('#popupReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
-          let clipboard=new ClipboardJS(document.getElementById('popupReportShare'+feature.properties.id));
-          clipboard.on('success', function(e) {
-              alert('Link to report copied to clipboard');
-          });
+            $('#popupReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
+            let clipboard=new ClipboardJS(document.getElementById('popupReportShare'+feature.properties.id));
+            clipboard.on('success', function(e) {
+                alert('Link to report copied to clipboard');
+            });
         });
 
         reportIds.push(feature.properties.id);
