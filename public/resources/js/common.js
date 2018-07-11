@@ -594,9 +594,15 @@ const mapBuniaLayer2 = function(track) {
 * @param {Object} callback - mapping callback function once reports are loaded
 **/
 function openReportPopup(id) {
+
+    console.log(reportMarkers.length);
     for (var i in reportMarkers){
+
         var markerID = reportMarkers[i].options.id;
+        console.log(markerID);
+        console.log(id);
         if (markerID == id) {
+            console.log('yay');
             mainMap.setView(reportMarkers[i].getLatLng());
             reportMarkers[i].openPopup();
             break;
