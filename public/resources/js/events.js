@@ -1459,19 +1459,19 @@ var vmObject = {
         },
         stopEdit:function(category)
         {
-          var vm=this;
+            var vm=this;
             vm.panelEditing[category]=false;
             vm.panelDirty[category]=true;
             if (category=='Notification')
             {
-              if (vm.newNotification) {
-                if (vm.event.metadata.hasOwnProperty('notification')) {
-                  vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification});
-                } else {
-                  vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification}];
+                if (vm.newNotification) {
+                    if (vm.event.metadata.hasOwnProperty('notification')) {
+                        vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification});
+                    } else {
+                        vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification}];
+                    }
                 }
-              }
-              vm.newNotification='';
+                vm.newNotification='';
             }
         },
         addOtherOrg: function() {
@@ -1536,45 +1536,45 @@ var vmObject = {
             });
         },
         saveEventEdits:function(){
-          var metadata = this.event.metadata;
+            var metadata = this.event.metadata;
 
-          //TODO: fix this
-          //metadata['region'] = $('#eventRegion').val();
+            //TODO: fix this
+            //metadata['region'] = $('#eventRegion').val();
 
-          //update sub types and add into db
-          //this.updateSubEventTypes();
-          //var subType = replaceUnderscore(this.event.sub_type.toString());
-          metadata = _.extend(metadata, {
-              operational_center: this.event.metadata.msf_response_operational_centers.toString(),
-              //type_of_emergency: subType
-              //sub_type: subType
-          });
-          var body = {
-            status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-            type: this.event.type.toString(),
-            metadata: metadata
-          }
-          //body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+            //update sub types and add into db
+            //this.updateSubEventTypes();
+            //var subType = replaceUnderscore(this.event.sub_type.toString());
+            metadata = _.extend(metadata, {
+                operational_center: this.event.metadata.msf_response_operational_centers.toString(),
+                //type_of_emergency: subType
+                //sub_type: subType
+            });
+            var body = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata: metadata
+            };
+            //body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
 
-          if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
-              alert('ensure subtype(s) is/are selected');
-          } else {
-              $.ajax({
-                type: "PUT",
-                url: "/api/events/" + currentEventId,
-                data: JSON.stringify(body),
-                contentType: 'application/json'
-              }).done(function(data, textStatus, req) {
-                window.location.href = '/events/?eventId=' + currentEventId;
-              }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                  alert("session expired");
-                }
-              });
-          }
+            if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
+                alert('ensure subtype(s) is/are selected');
+            } else {
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/events/' + currentEventId,
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                }).done(function(data, textStatus, req) {
+                    window.location.href = '/events/?eventId=' + currentEventId;
+                }).fail(function(err) {
+                    if (err.responseText.includes('expired')) {
+                        alert('session expired');
+                    }
+                });
+            }
         },
         cancelEventEdits:function(){
-          window.location.href = '/events/?eventId=' + currentEventId;
+            window.location.href = '/events/?eventId=' + currentEventId;
         }
 
     },
