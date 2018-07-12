@@ -1308,7 +1308,8 @@ var vmObject = {
             'Reflection': false,
             'Security': false,
             'ExtraDetails': false
-        }
+        },
+        somePanelDirty:false
     },
     mounted:function(){
         //console.log('mounted');
@@ -1431,6 +1432,8 @@ var vmObject = {
                 $( '#editModal' ).modal('show');
             } else {
                 this.panelEditing[category]=true;
+                this.panelDirty[category]=true;
+                this.somePanelDirty=true;
                 $('#collapse'+category).collapse('show');
             }
         },
@@ -1511,7 +1514,49 @@ var vmObject = {
                 amount: 0,
                 from_who: null,
             });
+        },
+        saveEventEdits:function(){
+          var metadata = this.event.metadata;
+
+          //TODO: fix this
+          //metadata['region'] = $('#eventRegion').val();
+
+          //update sub types and add into db
+          //this.updateSubEventTypes();
+          //var subType = replaceUnderscore(this.event.sub_type.toString());
+          metadata = _.extend(metadata, {
+              operational_center: this.event.metadata.msf_response_operational_centers.toString(),
+              //type_of_emergency: subType
+              //sub_type: subType
+          });
+          var body = {
+            status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+            type: this.event.type.toString(),
+            metadata: metadata
+          }
+          //body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+
+          if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
+              alert('ensure subtype(s) is/are selected');
+          } else {
+              $.ajax({
+                type: "PUT",
+                url: "/api/events/" + currentEventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+              }).done(function(data, textStatus, req) {
+                window.location.href = '/events/?eventId=' + currentEventId;
+              }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                  alert("session expired");
+                }
+              });
+          }
+        },
+        cancelEventEdits:function(){
+          window.location.href = '/events/?eventId=' + currentEventId;
         }
+
     },
     computed:{
         notStr:function(){

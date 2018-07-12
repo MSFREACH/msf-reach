@@ -591,7 +591,7 @@
 
               </div>
               <div class="panel-group" id="accordion">
-                <div class="panel panel-default" id="panel4">
+                <div :class="{'panel':true, 'panel-default': !panelDirty.Notification, 'panel-warning': panelDirty.Notification}">
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotification" >
                       <a data-toggle="collapse" data-target="#collapseNotification"
                       href="#collapseNotification" class="collapsed">
@@ -623,7 +623,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="panel panel-default" >
+                <div :class="{'panel':true, 'panel-default': !panelDirty.Response, 'panel-warning': panelDirty.Response}" >
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResponse" >
                       <a data-toggle="collapse" data-target="#collapseResponse"
                       href="#collapseResponse" class="collapsed">
@@ -767,7 +767,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="panel panel-default" >
+                <div :class="{'panel':true, 'panel-default': !panelDirty.ExtCapacity, 'panel-warning': panelDirty.ExtCapacity}" >
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtCapacity" >
                       <a data-toggle="collapse" data-target="#collapseExtCapacity"
                       href="#collapseExtCapacity" class="collapsed">
@@ -855,7 +855,7 @@
 
                       </div>
                     </div>
-                    <div class="panel panel-default" >
+                    <div :class="{'panel':true, 'panel-default': !panelDirty.Figures, 'panel-warning': panelDirty.Figures}">
                       <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseFigures" >
                         <a data-toggle="collapse" data-target="#collapseFigures"
                         href="#collapseFigures" class="collapsed">
@@ -969,7 +969,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="panel panel-default" >
+                  <div :class="{'panel':true, 'panel-default': !panelDirty.Resources, 'panel-warning': panelDirty.Resources}" >
                     <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResources" >
                       <a data-toggle="collapse" data-target="#collapseResources" href="#collapseResources" class="collapsed">
                       Staff Resources
@@ -1140,7 +1140,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="panel panel-default" >
+                <div :class="{'panel':true, 'panel-default': !panelDirty.Reflection, 'panel-warning': panelDirty.Reflection}" >
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseReflection" >
                     <a data-toggle="collapse" data-target="#collapseReflection"
                     href="#collapseReflection" class="collapsed">
@@ -1183,7 +1183,7 @@
 
 
 
-              <div class="panel panel-default" id="panel3">
+              <div :class="{'panel':true, 'panel-default': true}">
                 <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseSecurity">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-target="#collapseSecurity"
@@ -1199,7 +1199,7 @@
             </div>
           </div>
 
-          <div class="panel panel-default" id="panel5">
+          <div :class="{'panel':true, 'panel-default': true}" >
             <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtraDetails">
               <h4 class="panel-title">
                 <a data-toggle="collapse" data-target="#collapseExtraDetails"
@@ -1217,9 +1217,9 @@
             </div>
           </div>
       </div>
-      <button class="btn btn-primary"  @click="editEvent('general')">Edit</button>
-      <button class="btn btn-success"  @click="">Save Edits</button>
-      <button class="btn btn-default"  @click="">Cancel Edits</button>
+      <button class="btn btn-primary"  @click="editEvent('general')">Edit in new window</button>
+      <button class="btn btn-success"  @click="saveEventEdits()" v-if="somePanelDirty">Save Edits</button>
+      <button class="btn btn-default"  @click="cancelEventEdits()" v-if="somePanelDirty">Cancel Edits</button>
       <!-- Button trigger modal -->
       <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Close Event</button>
     </div>
@@ -1479,7 +1479,7 @@
 <script src="/lib/countrySelect.min.js"></script>
 
 <!-- VueJs + plug-ins -->
-<script src="/lib/vue/vue.min.js"></script>
+<script src="/lib/vue/vue.js"></script>
 <script src="/lib/vue/plugins/vue-bootstrap-datetimepicker.min.js"></script>
 
 
