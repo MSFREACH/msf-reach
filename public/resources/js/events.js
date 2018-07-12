@@ -318,9 +318,9 @@ var getEvent = function(eventId, callback){
 * @param {Object} mapForReports - map to put the reports on
 * @param {Object} callback - mapping callback function once reports are loaded
 **/
-var getReports = function(eventId, mapForReports, callback){
+var getReports = function(eventId, mapForReports, callback, callback2){
     $.getJSON('/api/reports/?eventId=' + eventId + '&geoformat=' + GEOFORMAT, function( data ){
-        callback(data.result, mapForReports);
+        callback(data.result, mapForReports, callback2);
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
             alert('session expired');
@@ -548,7 +548,7 @@ var getContacts = function(term,type){
     });
 };
 
-
+let reportIds = [];
 var points = []; // local storage for coordinates of reports (used for map bounds)
 
 /**
@@ -560,7 +560,7 @@ var mapReports = function(reports,mapForReports){
     points = [];
 
     $('#reportsContainer').html(
-        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
+        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Share</th><th>Type</th><th>Description</th><th>Reporter</th><th>Reported time</th><th>Status</th></thead><tbody>'
     );
 
     function onEachFeature(feature, layer) {
@@ -569,6 +569,7 @@ var mapReports = function(reports,mapForReports){
         var reportsTableContent = '';
 
         if (feature.properties && feature.properties.content) {
+            popupContent += '<i id="popupReportShare'+feature.properties.id+'" class="icon-link-ext icon-floating" style="font-size:12px;"></i>';
             popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
             popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
             popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
@@ -589,6 +590,7 @@ var mapReports = function(reports,mapForReports){
                 '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
               feature.properties.id +
               ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
+              '<i id="tableReportShare'+feature.properties.id+'" class="icon-link-ext icon-floating" style="font-size:18px;"></i></td><td>' +
               feature.properties.content.report_tag +
               '</td><td>' +
               feature.properties.content.description +
@@ -603,6 +605,7 @@ var mapReports = function(reports,mapForReports){
               '</select></td></tr>'
 
             );
+
             $('#report-'+feature.properties.id).val(feature.properties.status === 'confirmed' ? 'confirmed' : 'unconfirmed');
             $('#report-'+feature.properties.id).change(function() {
                 var selectedVal = $(this).val();
@@ -622,11 +625,25 @@ var mapReports = function(reports,mapForReports){
 
         }
 
+        $('#tableReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
+
+        let clipboard=new ClipboardJS(document.getElementById('tableReportShare'+feature.properties.id));
+        clipboard.on('success', function(e) {
+            alert('Link to report copied to clipboard');
+        });
+
         $('#reportsTable').append('</tbody></table>');
 
+        layer.bindPopup(popupContent, {  maxWidth: 'auto' }).on('popupopen', function () {
+            $('#popupReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
+            let clipboard=new ClipboardJS(document.getElementById('popupReportShare'+feature.properties.id));
+            clipboard.on('success', function(e) {
+                alert('Link to report copied to clipboard');
+            });
+        });
 
+        reportIds.push(feature.properties.id);
 
-        layer.bindPopup(popupContent, {  maxWidth: 'auto' });
     }
 
 
@@ -731,6 +748,9 @@ var mapReports = function(reports,mapForReports){
 
     if (points.length > 1){
         mapForReports.fitBounds(points, {padding: [200,200]});
+    }
+    if (location.hash.includes('#report')) {
+        openReportPopup(/\d+/.exec(location.hash)[0]);
     }
 
 };
