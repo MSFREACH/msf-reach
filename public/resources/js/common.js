@@ -32,7 +32,7 @@ let newData = function (dataTime) {
     } else {
         return '';
     }
-}
+};
 
 var typeStr = function(type, sub_type) {
     var result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
