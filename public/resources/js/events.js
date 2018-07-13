@@ -11,6 +11,9 @@ var vmEventDetails;
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
+// cookie for last page load
+Cookies.set('last_load',String(Date.now()/1000));
+
 
 var clipboard = new Clipboard('.btn');
 
