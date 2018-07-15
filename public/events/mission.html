@@ -1,9 +1,17 @@
 <div class="modal-content" id="missionDetailsVue">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right;">Close</button>
+    <button v-if="!inEditMode && !hasSubmissionError" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" >Edit</button>
+    <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" style="float:right;margin-right:5px;" @click="saveMissionEdits()" >Save Edits</button>
+
     <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
+
   </div>
-  <div class="modal-body" >
+  <div class="modal-body" style="height:80vh;overflow-y:scroll;" >
+    <div class="row">
+      <div class="col-sm-12" style="text-align:right;">
+        </div>
+    </div>
     <div class="msf-loader" v-if="isSubmitting">
 
     </div>
@@ -624,11 +632,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    <button v-if="!inEditMode && !hasSubmissionError" type="button" class="btn btn-success" @click="inEditMode=true;submissionSuccess=false;" >Edit</button>
-    <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" @click="saveMissionEdits()" >Save Edits</button>
   </div>
 </div>
 
