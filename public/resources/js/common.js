@@ -25,6 +25,15 @@ $(function() {
     });
 });
 
+let newData = function (dataTime) {
+    userTime = Number(Cookies.get('last_load'));
+    if (dataTime > userTime) {
+        return '<span style="color:red;">*</span>';
+    } else {
+        return '';
+    }
+};
+
 var typeStr = function(type, sub_type) {
     var result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
     if (result !== '') {
