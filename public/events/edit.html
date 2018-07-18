@@ -74,6 +74,12 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
+              <dt>Country(s)</dt>
+              <dd>
+                <input id="eventCountry" type="text" v-model="event.metadata.country" class="form-control" placeholder="Country" />
+              </dd>
+            </dl>
+            <dl>
               <dt>Region(s)</dt>
               <dd>
                 <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
@@ -1158,6 +1164,7 @@ var vm = new Vue({
       }
 
       metadata['region'] = $('#eventRegion').val();
+      metadata['country'] = $('#eventCountry').val();
 
       //update sub types and add into db
       this.updateSubEventTypes();
