@@ -3,8 +3,8 @@ var navigateTo;//exporting the function
 $(function () {
 
     if (window.location.hash) {
-      $('#noEventName').hide();
-      $('#withEventName').html('MSF would like to request any information you may have about the ' + window.location.hash + ' event that may be happening in your area.')
+        $('#noEventName').hide();
+        $('#withEventName').html('MSF would like to request any information you may have about the ' + window.location.hash + ' event that may be happening in your area.');
     }
 
     var $sections = $('.form-section');
