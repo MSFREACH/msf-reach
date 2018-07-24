@@ -1469,9 +1469,9 @@ var vmObject = {
             {
                 if (vm.newNotification) {
                     if (vm.event.metadata.hasOwnProperty('notification')) {
-                        vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification});
+                        vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': localStorage.getItem('username')});
                     } else {
-                        vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification}];
+                        vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': localStorage.getItem('username')}];
                     }
                 }
                 vm.newNotification='';
@@ -1583,7 +1583,9 @@ var vmObject = {
     },
     computed:{
         notStr:function(){
-            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
+            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+
+            (this.event.metadata.notification[this.event.metadata.notification.length-1].hasOwnProperty('username') ? ('From: ' + this.event.metadata.notification[this.event.metadata.notification.length-1].username) : '') +
+            ' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
             return WEB_HOST + 'events/?eventId=' + this.event.id;
