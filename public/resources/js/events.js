@@ -1469,9 +1469,9 @@ var vmObject = {
             {
                 if (vm.newNotification) {
                     if (vm.event.metadata.hasOwnProperty('notification')) {
-                        vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': localStorage.getItem('username')});
+                        vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')});
                     } else {
-                        vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': localStorage.getItem('username')}];
+                        vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')}];
                     }
                 }
                 vm.newNotification='';
