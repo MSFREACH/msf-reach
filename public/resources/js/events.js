@@ -1584,7 +1584,7 @@ var vmObject = {
     computed:{
         notStr:function(){
             return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+
-            (this.event.metadata.notification[this.event.metadata.notification.length-1].hasOwnProperty('username') ? ('From: ' + this.event.metadata.notification[this.event.metadata.notification.length-1].username) : '') +
+            (this.event.metadata.notification[this.event.metadata.notification.length-1].hasOwnProperty('username') ? (' From: ' + this.event.metadata.notification[this.event.metadata.notification.length-1].username) : '') +
             ' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){

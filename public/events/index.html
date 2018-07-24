@@ -612,7 +612,7 @@
                               <thead><tr><td>Username</td><td>Time</td><td>Notification</td></tr></thead>
                               <tbody>
                                 <tr v-for="elem in event.metadata.notification">
-                                  <td v-if="elem.hasOwnProperty('username')">From: {{elem.username}}</td>
+                                  <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (new Date(elem.notification_time*1000)).toLocaleString().replace(/:\d{2}$/,'') }}</td>
                                   <td> {{ elem.notification }}</td>
