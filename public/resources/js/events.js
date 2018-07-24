@@ -186,7 +186,7 @@ var printEventProperties = function(err, eventProperties){
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
-    eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
+    eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
     $('#eventShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></div>');
     $('#reportShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></div>');
