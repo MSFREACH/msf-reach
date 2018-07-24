@@ -1592,7 +1592,7 @@ var vmObject = {
         },
         eventReportLink:function()
         {
-            return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+            return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey + '#' + this.event.metadata.name;
         }
     }
 };
