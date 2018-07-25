@@ -566,8 +566,18 @@
           <div class="tab-content" id="eventVApp" v-cloak>
 
             <div id="event" class="tab-pane fade in active">
-              <div>
-                <table class="table">
+
+              <!-- here be GENERAL INFO  -->
+              <div class="panel-group" >
+                <div class="panel panel-default" >
+
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
+                    <button type="button" class="btn btn-info btn-xs pull-right" @click="toggleEdit()">
+                      <span v-show="!editing"> Edit </span>
+                      <span v-show="editing"> Save </span>
+                    </button>
+                  </div>
+                <table class="table" v-show="!editing">
                   <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
                   <tr><td>Country(s)</td><td> {{ event.metadata.country }}</td></tr>
                   <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
@@ -592,8 +602,56 @@
 
                 </table>
 
+                <table class="table" v-show="editing">
+                  <!-- here is now all input fields -->
+                  <tr>
+                    <td>Name</td>
+                    <td> <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" /></td>
+                  </tr>
+                  <tr>
+                    <td>Country(s)</td>
+                    <td><input id="eventCountry" type="text" v-model="event.metadata.country" class="form-control" placeholder="Country" /></td>
+                  </tr>
+                  <tr>
+                    <td>Status</td>
+                    <td>
+                      <select v-model="event.metadata.event_status" class="form-control">
+                        <option disabled value="">Please select one</option>
+                        <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Type</td>
+                    <td> {{ typeStr(event.type,event.metadata.sub_type) }} </td>
+                    <td>
+                      <li v-for="(item, index) in eventTypes">
+                      <input class ="newEventTypeBox" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
+                        <div v-if="item.subTypes">
+                        <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
+                            <input class ="newSubEventTypeBox" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
+                        </span>
+                        <span :value="'other_' + item.value">
+                          <input type="text" class="form-control" placeholder="(Specify)" />
+                        </span>
+                      </div>
+                      </li>
+                  </td>
+                  </tr>
 
+
+                  <tr><td>Event Date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+                  <tr>
+                    <td>Description</td>
+                    <td><input id="eventDescription" type="text" v-model="event.metadata.description" class="form-control" placeholder="Event description" /> </td>
+                  </tr>
+                </table>
+
+
+                </div>
               </div>
+
+
               <div class="panel-group" id="accordion">
                 <div class="panel panel-default" id="panel4">
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
@@ -620,6 +678,8 @@
                     </div>
                   </div>
                 </div>
+
+
                 <div class="panel panel-default" >
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResp" >
                       <a data-toggle="collapse" data-target="#collapseResp"
@@ -1219,6 +1279,20 @@ var convertToLocaleDate= function (isoDate) {
   else
   return '';
 }
+
+//// ****
+// var vm = new Vue({
+//   el: "#inlineEditEventVue",
+//   data: {
+//     editing: false
+//   },
+//   methods: {
+//     toggleEdit: function(){
+//       this.editing = !this.editing
+//     }
+//   }
+// });
+
 
 </script>
 

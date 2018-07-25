@@ -166,7 +166,9 @@ const handleGeoResponse = (data, req, res, next) => {
     return !data ?
         res.status(404).json({ statusCode: 404, found: false, result: null }) :
         formatGeo(data, req.query.geoformat)
-            .then((formatted) => res.status(200).json({ statusCode: 200, result: formatted }))
+            .then((formatted) => {
+              console.log("handleGeoResponse, formatted: ", formatted)
+              res.status(200).json({ statusCode: 200, result: formatted }))}
             .catch((err) => next(err));
 };
 

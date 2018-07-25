@@ -182,6 +182,7 @@ var printEventProperties = function(err, eventProperties){
     vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
     vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
     vmEventDetails.$mount('#eventVApp');
+
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
 
     $('#eventShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></div>');
@@ -1237,6 +1238,9 @@ var vmEventDetails = new Vue({
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
+        editing: false,
+        statuses: statuses,
+        eventTypes: eventTypes
     },
     mounted:function(){
         $('.msf-loader').hide();
@@ -1339,6 +1343,9 @@ var vmEventDetails = new Vue({
             editCategory=category;
             onEditEvent();
             $( '#editModal' ).modal('show');
+        },
+        toggleEdit: function(){
+          this.editing = !this.editing
         }
     },
     computed:{
