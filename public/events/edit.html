@@ -70,7 +70,13 @@ dd.padding-bottom {
             <dl>
               <dt>Enter new notification</dt>
               <dd>
-                <input type="text" class="form-control" id="inputNotification">
+                <textarea type="text" class="form-control" id="inputNotification"></textarea>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Country(s)</dt>
+              <dd>
+                <input id="eventCountry" type="text" v-model="event.metadata.country" class="form-control" placeholder="Country" />
               </dd>
             </dl>
             <dl>
@@ -762,7 +768,7 @@ Vue.component('country-select', {
   destroyed: function () {
     $(this.$el).off().countrySelect('destroy')
   }
-})
+});
 
 
 
@@ -1154,12 +1160,12 @@ var vm = new Vue({
   methods: {
     submitEventData() {
       var metadata = this.event.metadata;
-
-      if ($('#inputNotification').val()) {
+      var newNotif=$('#inputNotification').val();
+      if (newNotif) {
         if (currentEventProperties.metadata.hasOwnProperty('notification')) {
-          currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+          currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': newNotif, 'username': localStorage.getItem('username')});
         } else {
-          currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+          currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': newNotif, 'username': localStorage.getItem('username')}];
         }
       }
 

@@ -23,6 +23,10 @@ var MSFContactsLayer, nonMSFContactsLayer;
 // set up variable to store report ID for new event creation from unassigned report
 var report_id_for_event = null; // null = not creating event from unassigned report
 
+// cookie for last page load
+Cookies.set('last_load',String(Date.now()/1000));
+
+
 // set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
     value: 2, // default: 2
