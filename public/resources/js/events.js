@@ -1072,9 +1072,9 @@ $('#btnArchive').click(function(e){
 $('#btnSaveEdits').click(function(e){
 
     if (currentEventProperties.metadata.hasOwnProperty('notification') && currentEventProperties.metadata.notification.length > 0) {
-        currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+        currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val(), 'username': (localStorage.getItem('username')?localStorage.getItem('username') : '')});
     } else {
-        currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+        currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val(), 'username': (localStorage.getItem('username')?localStorage.getItem('username') : '')}];
     }
 
     var body = {
