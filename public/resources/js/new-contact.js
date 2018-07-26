@@ -75,12 +75,12 @@ function postContact() {
             'address': $('#mapAddress').val(),
             'title': $('#inputContactTitle').val() || $('#inputContactOtherTitle').val(),
             'otherNames': $('#inputContactOtherName').val() || '',
-            'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
+            // 'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             'name': contName.trim(),
-            'speciality': $('#inputSpeciality').val() || '',
+            // 'speciality': $('#inputSpeciality').val() || '',
             'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
-            'dob':$('#datepicker').val(),
-            'web': $('#inputContactWeb').val() || '',
+            // 'dob':$('#datepicker').val(),
+            // 'web': $('#inputContactWeb').val() || '',
             'email':$('#inputContactEmailRO').val(),
             'email2': $('#inputContactEmail2').val() || '',
             'sharepoint': $('#inputContactSharepoint').val() || '',
@@ -124,11 +124,11 @@ function postContact() {
     } else {
         body.properties['work'] = '';
     }
-    if ($('#inputContactFax').val()) {
-        body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
-    } else {
-        body.properties['fax'] = '';
-    }
+    // if ($('#inputContactFax').val()) {
+    //     body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
+    // } else {
+    //     body.properties['fax'] = '';
+    // }
 
     if ($('#inputContactType').val() === 'Current MSF Staff') {
         body.properties['OC'] = $('#inputContactOC').val();
@@ -170,12 +170,12 @@ function patchContact() {
             'address': $('#mapAddress').val(),
             'title': $('#inputContactTitle').val() || $('#inputContactOtherTitle').val(),
             'otherNames': $('#inputContactOtherName').val() || '',
-            'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
+            // 'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             'name': contName.trim(),
-            'speciality': $('#inputSpeciality').val() || '',
+            // 'speciality': $('#inputSpeciality').val() || '',
             'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
-            'dob':$('#datepicker').val(),
-            'web': $('#inputContactWeb').val() || '',
+            // 'dob':$('#datepicker').val(),
+            // 'web': $('#inputContactWeb').val() || '',
             'email':$('#inputContactEmailRO').val(),
             'email2': $('#inputContactEmail2').val() || '',
             'sharepoint': $('#inputContactSharepoint').val() || '',
@@ -219,11 +219,11 @@ function patchContact() {
     } else {
         body.properties['work'] = '';
     }
-    if ($('#inputContactFax').val()) {
-        body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
-    } else {
-        body.properties['fax'] = '';
-    }
+    // if ($('#inputContactFax').val()) {
+    //     body.properties['fax']=$('#inputContactFax').intlTelInput('getNumber');
+    // } else {
+    //     body.properties['fax'] = '';
+    // }
 
     if ($('#inputContactType').val() === 'Current MSF Staff') {
         body.properties['OC'] = $('#inputContactOC').val();
