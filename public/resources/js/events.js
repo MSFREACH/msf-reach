@@ -1231,6 +1231,8 @@ function translate(data) {
 
 var editCategory='general';
 
+Vue.component("date-picker", VueBootstrapDatetimePicker.default);
+
 // vue functions used for filling in event display
 var vmEventDetails = new Vue({
 
@@ -1243,6 +1245,10 @@ var vmEventDetails = new Vue({
         eventTypes: eventTypes,
         checkedTypes: [],
         checkedSubTypes: [],
+        typeOther: '',
+        disease_outbreakOther:'',
+        natural_disasterOther:''
+
     },
     mounted:function(){
         $('.msf-loader').hide();
@@ -1400,6 +1406,7 @@ var vmEventDetails = new Vue({
               });
           }
         }
+
 
     },
     computed:{

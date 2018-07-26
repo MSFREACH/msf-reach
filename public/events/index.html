@@ -83,6 +83,9 @@
     cursor:default;
     z-index:2150000000 !important;
   }
+  .datepicker-container{
+    position: relative;
+  }
 
   </style>
 </head>
@@ -627,24 +630,82 @@
                     <td>
                       <li v-for="(item, index) in eventTypes">
                       <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
-                        <div v-if="item.subTypes">
+                        <div v-if="item.subTypes && checkedTypes.indexOf(item.value) > 0">
                         <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
                             <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
                         </span>
                         <span :value="'other_' + item.value">
-                          <input type="text" class="form-control" placeholder="(Specify)" />
+                          <input type="text" :id="'other_' + item.value"  class="form-control" placeholder="(Specify)" />
                         </span>
                       </div>
+                      </li>
+
+                      <li>
+                        <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                        <input type="text" class="form-control" v-model="typeOther" placeholder="(Specify)" />
                       </li>
                   </td>
                   </tr>
 
 
                   <tr><td>Event Date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+
                   <tr>
                     <td>Description</td>
-                    <td><input id="eventDescription" type="text" v-model="event.metadata.description" class="form-control" placeholder="Event description" /> </td>
+                    <td><textarea id="eventDescription" type="text" v-model="event.metadata.description" class="form-control" placeholder="Event description"> </textarea> </td>
                   </tr>
+                  <tr>
+                    <td>Date and hours (local time) of the disater </td>
+                    <td class="datepicker-container">
+                      <date-picker v-model="event.metadata.event_local_time"></date-picker>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Analysis of severity</td>
+                    <td class="padding-bottom">
+                      <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="padding-bottom">
+                      <div class="form-group">
+                        Scale:
+                        <div id="inputSeverityScale">
+                          <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Mission Contact Person </td>
+                  </tr>
+                  <tr>
+                    <td class="padding-bottom">
+                      <input type="text" class="form-control" v-model="event.metadata.incharge_position" placeholder="Position" />
+                    </td>
+                    <td class="padding-bottom">
+                      <input type="text" class="form-control" v-model="event.metadata.incharge_name" placeholder="Name" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="datepicker-container">
+                      <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+                    </td>
+                    <td class="datepicker-container">
+                      <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>ID link - SharePoint</td>
+                    <td>
+                      <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint Link" />
+                    </td>
+                  </tr>
+
+
+
                 </table>
 
 

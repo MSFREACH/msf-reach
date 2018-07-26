@@ -146,7 +146,6 @@ var eventTypes = [
     ]
   },
   { value: 'search_and_rescue', text: 'Search and Rescue' },
-  { value: 'other', text: 'Others' }
 ]
 
 var emergencies = [
