@@ -47,7 +47,7 @@ var mapEditEvents = function(err, events){
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
         var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+        if (feature.properties.type.toLowerCase().includes('disease_outbreak')) {
             icon_name = 'epidemic';
         }
 

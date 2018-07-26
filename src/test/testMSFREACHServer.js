@@ -132,7 +132,7 @@ describe('Cognicity Server Testing Harness', function() {
                         .set('Cookie', 'jwt=' + token)
                         .send({
                             'status': 'active',
-                            'type': 'natural_hazard',
+                            'type': 'natural_disaster',
                             'created_at': '2017-05-22T20:35Z',
                             'location': {
                                 'lat': 45,

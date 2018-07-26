@@ -572,10 +572,11 @@
                 <div class="panel panel-default" >
 
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="toggleEdit()">
+                    <button type="button" class="btn btn-default btn-xs pull-right" @click="toggleEdit()">
                       <span v-show="!editing"> Edit </span>
-                      <span v-show="editing"> Save </span>
+                      <span v-show="editing"> Cancel </span>
                     </button>
+                    <button type="button" v-show="editing" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
                   </div>
                 <table class="table" v-show="!editing">
                   <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
@@ -623,13 +624,12 @@
                   </tr>
                   <tr>
                     <td>Type</td>
-                    <td> {{ typeStr(event.type,event.metadata.sub_type) }} </td>
                     <td>
                       <li v-for="(item, index) in eventTypes">
-                      <input class ="newEventTypeBox" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
+                      <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
                         <div v-if="item.subTypes">
                         <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
-                            <input class ="newSubEventTypeBox" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
+                            <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
                         </span>
                         <span :value="'other_' + item.value">
                           <input type="text" class="form-control" placeholder="(Specify)" />

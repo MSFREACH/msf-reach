@@ -382,7 +382,7 @@ var mapAllEvents = function(err, events){
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
         var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (icon_name.includes('epidemiological')) {
+        if (icon_name.includes('disease_outbreak')) {
             icon_name = 'epidemic';
         }
 
@@ -1240,7 +1240,9 @@ var vmEventDetails = new Vue({
         msfTypeOfProgrammes:msfTypeOfProgrammes,
         editing: false,
         statuses: statuses,
-        eventTypes: eventTypes
+        eventTypes: eventTypes,
+        checkedTypes: [],
+        checkedSubTypes: [],
     },
     mounted:function(){
         $('.msf-loader').hide();
@@ -1255,7 +1257,6 @@ var vmEventDetails = new Vue({
 
             }
         });
-
 
         var searchTerm = '';
 
@@ -1279,7 +1280,25 @@ var vmEventDetails = new Vue({
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
             $('#searchTerm').val(searchTerm);
+
+            if(currentEventProperties.type){
+              var currentTypes = currentEventProperties.type.split(',')
+              for(var i = 0; i < currentTypes.length; i ++){
+                this.checkedTypes.push(currentTypes[i])
+              }
+            }
+
+            if(currentEventProperties.metadata.sub_type){
+              var currentSubTypes = currentEventProperties.metadata.sub_type.split(',')
+              for(var i = 0; i < currentSubTypes.length; i ++){
+                this.checkedSubTypes.push(currentSubTypes[i])
+              }
+            }
         }
+
+
+
+
         $('#btnSearchTwitter').trigger('click');
 
         $('#searchTerm').keyup(function(event){
@@ -1324,29 +1343,64 @@ var vmEventDetails = new Vue({
 
         eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
 
-
     },
     methods:{
-        getTypeOfProgramme:function(val)
+        getTypeOfProgramme(val)
         {
             var filtered= msfTypeOfProgrammes.filter(function(e){
                 return e.value==val;
             });
             return filtered[0].text;
         },
-        formatDateOnly:function(value) {
+        formatDateOnly(value) {
             if (value) {
                 return moment(value).format('YYYY-MM-DD');
             }
         },
-        editEvent:function(category){
+        editEvent(category){
             editCategory=category;
             onEditEvent();
             $( '#editModal' ).modal('show');
         },
-        toggleEdit: function(){
+        toggleEdit(){
           this.editing = !this.editing
+        },
+        submitEventMetadata(){
+          var metadata = this.event.metadata
+          console.log( "pre joined subtype ---- ", this.event.type, this.event.sub_type)
+
+          this.event.type = this.checkedTypes.join()
+          this.event.sub_type = this.checkedSubTypes.join()
+          console.log( "joined subtype ---- ",  this.event.type, this.event.sub_type, this.checkedSubTypes.join())
+
+          metadata = _.extend(metadata, {
+            sub_type: this.event.sub_type
+          });
+
+          var body = {
+            status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+            type: this.event.type.toString(),
+            metadata: metadata
+          }
+
+          if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+              alert('ensure subtype(s) is/are selected');
+          } else {
+              $.ajax({
+                type: "PUT",
+                url: "/api/events/" + currentEventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+              }).done(function(data, textStatus, req) {
+                window.location.href = '/events/?eventId=' + currentEventId;
+              }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                  alert("session expired");
+                }
+              });
+          }
         }
+
     },
     computed:{
         notStr:function(){
