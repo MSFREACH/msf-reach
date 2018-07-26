@@ -168,7 +168,7 @@ const handleGeoResponse = (data, req, res, next) => {
         formatGeo(data, req.query.geoformat)
             .then((formatted) => {
               console.log("handleGeoResponse, formatted: ", formatted)
-              res.status(200).json({ statusCode: 200, result: formatted }))}
+              res.status(200).json({ statusCode: 200, result: formatted })})
             .catch((err) => next(err));
 };
 
