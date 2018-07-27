@@ -44,7 +44,9 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
                 if (place.address_components[placeIdx].types.indexOf('administrative_area_level_1')>-1) {
                     currentEventProperties.metadata['region'] = ($('#eventRegion').val() !== '' ? $('#eventRegion').val() + ', ' : '') +place.address_components[placeIdx].long_name;
+                    // ideally add currentEventProperties.metadata['regions'] as an array, for cleaner splicing edit
 
+                    var placeName = place.address_components[placeIdx].long_name
                     $.ajax({
                         type: 'PUT',
                         url: '/api/events/' + currentEventId,
@@ -56,6 +58,8 @@ function bindACInputToMap(targetMap,inputId,justLocate)
                         contentType: 'application/json'
                     }).done(function( data, textStatus, req ){
                         $('#eventRegion').val(currentEventProperties.metadata.region);
+                        $('#eventRegions').append(`<span class="regionTags"> <span v-on:click="removeRegion(item)" class="remove"> x </span>  ${placeName} </span> `)
+
                     }).fail(function(err) {
                         if (err.responseText.includes('expired')) {
                             alert('session expired');

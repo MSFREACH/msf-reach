@@ -1,0 +1,55 @@
+
+#inputSeverityScale label {
+    position: absolute;
+    width: 20px;
+    margin-left: -10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* below is not necessary, just for style */
+#inputSeverityScale {
+    width: 50%;
+    height: auto;
+    margin: 2em auto;
+}
+
+.datepicker-container{
+  position: relative;
+}
+
+.map-container{
+  position: relative;
+}
+
+.full-width{
+  width: 100%;
+}
+
+.subTypes{
+  margin-left: 20px;
+}
+
+span.remove{
+  font-size: 14px;
+  position: absolute;
+  top: -2px;
+  right: 5px;
+  font-stretch: ultra-expanded;
+  cursor: pointer;
+  color: gray;
+}
+
+span.regionTags{
+  margin: .5em;
+  padding: 3px 18px 3px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  position: relative;
+  line-height: 18px;
+  display: inline-block;
+}
+
+.table-container{
+  padding: 0;
+}

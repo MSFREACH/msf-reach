@@ -1233,6 +1233,17 @@ var editCategory='general';
 
 Vue.component("date-picker", VueBootstrapDatetimePicker.default);
 
+var eventMap;
+var eventMapLayerControl;
+
+var zoomToBounds = function(bounds) {
+    console.log(bounds);
+    var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
+    eventMap.fitBounds(rBounds);
+}
+
+
+
 // vue functions used for filling in event display
 var vmEventDetails = new Vue({
 
@@ -1247,7 +1258,8 @@ var vmEventDetails = new Vue({
         checkedSubTypes: [],
         typeOther: '',
         disease_outbreakOther:'',
-        natural_disasterOther:''
+        natural_disasterOther:'',
+        regions: []
 
     },
     mounted:function(){
@@ -1263,6 +1275,23 @@ var vmEventDetails = new Vue({
 
             }
         });
+
+        $( '#inputSeverityScale' ).slider({
+            value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
+            min: 1, max: 3, step: 1
+        }).each(function() {
+                // Get the options for this slider
+                var opt = $(this).data().uiSlider.options;
+                // Get the number of possible values
+                var vals = opt.max - opt.min;
+                // Space out values
+                for (var i = 0; i <= vals; i++) {
+                    var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+                    $( '#inputSeverityScale' ).append(el);
+                }
+            });
+
+
 
         var searchTerm = '';
 
@@ -1301,9 +1330,6 @@ var vmEventDetails = new Vue({
               }
             }
         }
-
-
-
 
         $('#btnSearchTwitter').trigger('click');
 
@@ -1370,14 +1396,171 @@ var vmEventDetails = new Vue({
         },
         toggleEdit(){
           this.editing = !this.editing
+          this.loadMap();
+          this.addRegions();
+        },
+        removeRegion(region){
+          console.log("remove region triggered", region)
+          var index = this.regions.indexOf(region)
+          this.regions.splice(index, 1);
+        },
+        addRegions(){
+          this.regions = currentEventProperties.metadata.region.split(',')
+          console.log("REGION ---- ",this.regions, currentEventProperties.metadata.region)
+          currentEventProperties.metadata
+        },
+        //*****  Event Map section ***** //
+        loadMap(){
+
+
+
+            var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
+            eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false});
+            eventMap.scrollWheelZoom.disable();
+              //Bind Autocomplete to inputs:
+              function bindAutocompletes() {
+                if ((!google)||(!google.maps))
+                  {
+                    setTimeout(bindAutocompletes,200);
+                    console.log('not ready, retrying in 0.2s...');
+                    return;
+                  }
+                bindACInputToMap(eventMap,'editEventAddress',true);
+              }
+
+              bindAutocompletes();
+
+              var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
+
+              /*
+              var latlng = null;
+              eventMap.on('click', function(e) {
+                if (eventMarker) {
+                  eventMap.removeLayer(eventMarker);
+                }
+                latlng = e.latlng;
+                Vue.set(vm.currentEventGeometry, 'coordinates', [latlng.lng, latlng.lat]);
+                eventMarker = L.marker(e.latlng).addTo(eventMap);
+              });
+              */
+              /** eventMap >> */
+
+              // Add some base tiles
+              var eventMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+                  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+                  minZoom: 0,
+                  maxZoom: 18
+              });
+              // Add some satellite tiles
+              var eventMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+                  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+              });
+
+              // OSM HOT tiles
+              var eventOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                  maxZoom: 19,
+                  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+              });
+
+              switch (Cookies.get('MapLayer')) {
+              case 'Satellite':
+                  eventMapboxSatellite.addTo(eventMap);
+                  break;
+              case 'Terrain':
+                  eventMapboxTerrain.addTo(eventMap);
+                  break;
+              default:
+                  eventOpenStreetMap_HOT.addTo(eventMap);
+              }
+
+
+              var eventBaseMaps = {
+                  'Terrain': eventMapboxTerrain,
+                  'Satellite' : eventMapboxSatellite,
+                  'Humanitarian': eventOpenStreetMap_HOT
+              };
+
+              eventMap.on('baselayerchange', function(baselayer) {
+                  Cookies.set('MapLayer',baselayer.name);
+              });
+
+              var groupedOverlays = {
+                  'RSS Feeds': {},
+                  'Contacts': {}
+              };
+
+              var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+              var overlayMaps = {};
+
+              eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
+
+              if (L.Browser.touch) {
+                 L.DomEvent
+                  .disableClickPropagation(eventMapLayerControl._container)
+                  .disableScrollPropagation(eventMapLayerControl._container);
+              } else {
+                  L.DomEvent.disableClickPropagation(eventMapLayerControl._container);
+              }
+
+              getAllEvents(mapEditGeneralEvents);
+
+              eventMap.on('overlayadd', function (layersControlEvent) {
+                  Cookies.set(layersControlEvent.name,'on');
+              });
+
+              eventMap.on('overlayremove', function (layersControlEvent) {
+                  Cookies.set(layersControlEvent.name,'off');
+              });
+              eventMap.doubleClickZoom.disable();
+              eventMap.on('dblclick', function(dblclickEvent) {
+                  latlng = dblclickEvent.latlng;
+                  $.ajax({
+                    type: "PATCH",
+                    url: "/api/events/updatelocation/" + currentEventId,
+                    data: JSON.stringify({location: {lat: latlng.lat, lng: latlng.lng}}),
+                    contentType: 'application/json'
+                  }).done(function(data, textStatus, req) {
+                      // setTimeout(function() {
+                      //   window.location.reload(true);
+                      // }, 1000);  // don't actually want it to reload
+                  }).fail(function(err) {
+                    if (err.responseText.includes('expired')) {
+                      alert("session expired");
+                    }
+                  });
+              });
+
+
+            setTimeout(function() {
+              eventMap.invalidateSize(true);
+              if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
+                console.log('cc')
+                console.log(currentEventProperties.metadata.bounds);
+                zoomToBounds(currentEventProperties.metadata.bounds);
+              } else {
+                eventMap.setView(eventDefaultLatLng, 13);
+              }
+            }, 300);
+
         },
         submitEventMetadata(){
           var metadata = this.event.metadata
-          console.log( "pre joined subtype ---- ", this.event.type, this.event.sub_type)
+
+          if ($('#inputNotification').val()) {
+            if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+              if(typeof currentEventProperties.metadata.notification != 'array'){
+                currentEventProperties.metadata.notification = []
+              }
+              currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+            } else {
+              currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+            }
+          }
+
 
           this.event.type = this.checkedTypes.join()
           this.event.sub_type = this.checkedSubTypes.join()
-          console.log( "joined subtype ---- ",  this.event.type, this.event.sub_type, this.checkedSubTypes.join())
 
           metadata = _.extend(metadata, {
             sub_type: this.event.sub_type
@@ -1388,6 +1571,7 @@ var vmEventDetails = new Vue({
             type: this.event.type.toString(),
             metadata: metadata
           }
+          body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
 
           if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
               alert('ensure subtype(s) is/are selected');

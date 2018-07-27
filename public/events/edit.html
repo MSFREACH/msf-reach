@@ -1157,6 +1157,9 @@ var vm = new Vue({
 
       if ($('#inputNotification').val()) {
         if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+          if(typeof currentEventProperties.metadata.notification != 'array'){
+            currentEventProperties.metadata.notification = []
+          }
           currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
         } else {
           currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
