@@ -41,7 +41,8 @@
           <div style="height:90%;position:relative;overflow:scroll;margin-bottom:5px;margin-top:20px;">
             <div class="form-section">
               <h4>Hello!</h4>
-              <p>MSF would like to request any information you may have about an event that may be happening in your area.</p>
+              <p id="noEventName">MSF would like to request any information you may have about an event that may be happening in your area.</p>
+              <p id="withEventName" style="display:none;"></p>
               <p>We are piloting a new system for sharing information. Please follow the instructions to submit your report.</p>
               <p>THANK YOU for being part of our team! </p>
               <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
@@ -116,6 +117,10 @@
   </div>
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
+
+  <!-- Cookies -->
+  <script src="/lib/cookie/js.cookie-2.2.0.min.js"></script>
+
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script type="text/javascript" src="/resources/js/common.js"></script>
 

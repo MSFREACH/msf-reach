@@ -148,7 +148,7 @@ $('#createReport').on('click', function (e) {
             var photo=files[0];
             $.ajax({
                 url : '/api/utils/uploadurl',
-                data: 'filename='+imgFileName,// + '&mime=' + fileType,
+                data: {'filename': imgFileName, key:'report'},
                 type : 'GET',
                 dataType : 'json',
                 cache : false,

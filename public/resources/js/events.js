@@ -6,9 +6,13 @@
 * Display and interact with event objects from events page
 */
 
+var vmEventDetails;
 
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
+
+// cookie for last page load
+Cookies.set('last_load',String(Date.now()/1000));
 
 
 var clipboard = new Clipboard('.btn');
@@ -64,7 +68,7 @@ bindAutocompletes();
 * @param {Object} latlng - coords to zoom to, Leaflet latlng object http://leafletjs.com/reference-1.3.0.html#latlng
 */
 var zoomToEventPoint = function(latlng) {
-    mainMap.setView(latlng, 5);
+    mainMap.setView(latlng, 4);
 };
 
 /**
@@ -176,14 +180,13 @@ var reduceNotificationArray = function(acc, elem) {
 */
 var printEventProperties = function(err, eventProperties){
 
-
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
-    vmEventDetails.defEvent= $.extend(true,{},defaultEvent);
-    vmEventDetails.event= $.extend(true, vmEventDetails.defEvent, currentEventProperties);
+    var newEvent= $.extend(true,{},defaultEvent);
+    vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
+    vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
-
-    eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey;
+    eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
     $('#eventShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></div>');
     $('#reportShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></div>');
@@ -1069,9 +1072,9 @@ $('#btnArchive').click(function(e){
 $('#btnSaveEdits').click(function(e){
 
     if (currentEventProperties.metadata.hasOwnProperty('notification') && currentEventProperties.metadata.notification.length > 0) {
-        currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+        currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val(), 'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')});
     } else {
-        currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+        currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val(), 'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')}];
     }
 
     var body = {
@@ -1245,27 +1248,112 @@ var zoomToBounds = function(bounds) {
 
 
 // vue functions used for filling in event display
-var vmEventDetails = new Vue({
+
+Vue.component('date-picker', VueBootstrapDatetimePicker.default);
+
+Vue.component('country-select', {
+    props: ['options', 'value'],
+    template: '<input  type="text" class="form-control input-sm" >',
+    mounted: function () {
+        var vmc = this;
+        $(this.$el)
+            .countrySelect(this.options)
+            .countrySelect('selectCountry', this.value.iso2)
+            .trigger('change')
+        // emit event on change.
+            .on('change', function () {
+                var country = $(this).countrySelect('getSelectedCountryData');
+                vmc.$emit('input', country);
+            });
+    },
+    watch: {
+        value: function (value) {
+            // update value
+            $(this.$el).countrySelect('selectCountry', value.iso2);
+        },
+        options: function (options) {
+            $(this.$el).countrySelect(options);
+        }
+    },
+    destroyed: function () {
+        $(this.$el).off().countrySelect('destroy');
+    }
+});
+
+
+Vue.filter('formatDateOnly', function(value) {
+    if (value) {
+        return moment(value).format('YYYY-MM-DD');
+    }
+});
+
+Vue.filter('formatFullDate', function(value) {
+    if (value) {
+        return moment(value).format('LLL');
+    } else {
+        return 'N/A';
+    }
+});
+
+Vue.filter('formatedNumber', function(value) {
+    return value.toString().replace(/,/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+});
+
+Vue.filter('relaceUnderscore', function(value) {
+    return replaceUnderscore(value);
+});
+
+var replaceUnderscore = function(value) {
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    value = capitalizeFirstLetter(value);
+    value = value.replace(/__/g, '-');
+    return value.replace(/_/g, ' ');
+};
+
+var vmObject = {
 
     data: {
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
-        editing: false,
-        statuses: statuses,
-        eventTypes: eventTypes,
-        checkedTypes: [],
-        checkedSubTypes: [],
-        typeOther: '',
-        disease_outbreakOther:'',
-        natural_disasterOther:'',
-        regions: []
-
+        keyMSFFigures: keyMSFFigures,
+        msfResourceCategories: msfResourceCategories,
+        countryParams:countryParams,
+        msfOperationalCenters: msfOperationalCenters,
+        msfMedicalMaterials:msfMedicalMaterials,
+        msfNonMedicalMaterials:msfNonMedicalMaterials,
+        newNotification:'',
+        panelEditing:{
+            'General': false,
+            'Notification': false,
+            'Response': false,
+            'ExtCapacity': false,
+            'Figures': false,
+            'Resources': false,
+            'Reflection': false,
+            'Security': false,
+            'ExtraDetails': false
+        },
+        panelDirty:{
+            'General': false,
+            'Notification': false,
+            'Response': false,
+            'ExtCapacity': false,
+            'Figures': false,
+            'Resources': false,
+            'Reflection': false,
+            'Security': false,
+            'ExtraDetails': false
+        },
+        somePanelDirty:false
     },
     mounted:function(){
-        $('.msf-loader').hide();
+        //console.log('mounted');
+        $('#eventMSFLoader').hide();
         //console.log('mounted event instance.');
-        //console.log(this.event);
+        //console.log(this.event.metadata.ext_other_organizations);
 
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
@@ -1375,9 +1463,25 @@ var vmEventDetails = new Vue({
 
         eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
 
+        //copy-paste from edit.html vue mounted.
+        if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
+            var optCenter = this.event.metadata.operational_center;
+            this.event.metadata.msf_response_operational_centers.push(optCenter);
+        }
+
+        if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
+            this.event.metadata.ext_other_organizations.push({
+                name: this.event.metadata.other_orgs,
+                deployment: this.event.metadata.deployment,
+                arrival_date: null
+            });
+        }
+
+
     },
     methods:{
-        getTypeOfProgramme(val)
+        typeStr:typeStr,
+        getTypeOfProgramme:function(val)
         {
             var filtered= msfTypeOfProgrammes.filter(function(e){
                 return e.value==val;
@@ -1389,6 +1493,7 @@ var vmEventDetails = new Vue({
                 return moment(value).format('YYYY-MM-DD');
             }
         },
+<<<<<<< HEAD
         editEvent(category){
             editCategory=category;
             onEditEvent();
@@ -1592,17 +1697,227 @@ var vmEventDetails = new Vue({
         }
 
 
+=======
+        editEvent:function(category){
+            if (category == 'general')
+            {
+                editCategory=category;
+                onEditEvent();
+                $( '#editModal' ).modal('show');
+            } else {
+                this.panelEditing[category]=true;
+                if (category=='Notification')
+                {
+                    if (this.panelDirty[category])
+                    {
+                        this.event.metadata.notification.pop();
+                    }
+                }
+                else{
+                    this.panelDirty[category]=true;
+                    this.somePanelDirty=true;
+                }
+
+                $('#collapse'+category).collapse('show');
+            }
+        },
+        stopEdit:function(category)
+        {
+            var vm=this;
+            vm.panelEditing[category]=false;
+
+            if (category=='Notification')
+            {
+                if (vm.newNotification) {
+                    vm.panelDirty[category]=true;
+                    this.somePanelDirty=true;
+                    var newNotificationObject={
+                        'notification_time': Date.now()/1000,
+                        'notification': vm.newNotification,
+                        'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')
+                    };
+                    if (vm.event.metadata.hasOwnProperty('notification') && vm.event.metadata.notification.length > 0) {
+                        vm.event.metadata.notification.push(newNotificationObject);
+                    } else {
+                        vm.event.metadata.notification = [newNotificationObject];
+                    }
+                }else{
+                    vm.panelDirty[category]=false;
+                }
+
+            }
+        },
+        addOtherOrg: function() {
+            this.event.metadata.ext_other_organizations.push({
+                name: null,
+                deployment: 0,
+                arrival_date: null,
+            });
+        },
+        removeOtherOrg: function(index) {
+            this.event.metadata.ext_other_organizations.splice(index, 1);
+        },
+        calculatePercentagePeopleAffected() {
+            var percentage = (this.event.metadata.population_affected / this.event.metadata.population_total) * 100;
+            this.event.metadata.percentage_population_affected = percentage.toFixed(2);
+        },
+        updateFigureValue(item, i) {
+            this.event.metadata.keyMSFFigures[i].value = Math.pow(10, item.range);
+        },
+        addSelectedMSFfigures(item) {
+            var newItem = { value: 0, range: 0, category: item, description: null };
+            if (!_.find(this.event.metadata.keyMSFFigures, { category: item })) {
+                this.event.metadata.keyMSFFigures.push(newItem);
+                var index = this.keyMSFFigures.indexOf(item);
+                if (index > -1) {
+                    this.keyMSFFigures.splice(index, 1);
+                }
+            }
+        },
+        removeMSFfigure(item, index) {
+            this.keyMSFFigures.push(item.category);
+            this.event.metadata.keyMSFFigures.splice(index, 1);
+        },
+        removeNationalityField(index){
+            this.event.metadata.msf_resource_visa_requirement.nationality.splice(index,1);
+
+        },
+        addNationalityField(){
+            this.event.metadata.msf_resource_visa_requirement.nationality.push({
+                iso2: 'xx',
+                name: null,
+                is_required:true
+            });
+
+        },
+        countryChanged(country,ind) {
+            var vm=this;
+            var obj={
+                name:country.name,
+                iso2:country.iso2,
+                is_required: vm.event.metadata.msf_resource_visa_requirement.nationality[ind].is_required
+            };
+            Vue.set(vm.event.metadata.msf_resource_visa_requirement.nationality,ind, obj);
+        },
+        removeResourceBudget(index) {
+            this.event.metadata.msf_resource_budget.splice(index, 1);
+        },
+        addResourceBudget() {
+            this.event.metadata.msf_resource_budget.push({
+                amount: 0,
+                from_who: null,
+            });
+        },
+        updateEvent:function(eventId,body,notificationFileUrl){
+            if (notificationFileUrl)
+            {
+                var lastNotification=body.metadata.notification[body.metadata.notification.length-1];
+                lastNotification['notificationFileUrl']=notificationFileUrl;
+            }
+            $.ajax({
+                type: 'PUT',
+                url: '/api/events/' + eventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                window.location.href = '/events/?eventId=' + eventId;
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        },
+        saveEventEdits:function(){
+            var vm=this;
+            var metadata = this.event.metadata;
+
+            //TODO: fix this
+            //metadata['region'] = $('#eventRegion').val();
+
+            //update sub types and add into db
+            //this.updateSubEventTypes();
+            //var subType = replaceUnderscore(this.event.sub_type.toString());
+            metadata = _.extend(metadata, {
+                operational_center: this.event.metadata.msf_response_operational_centers.toString(),
+                //type_of_emergency: subType
+                //sub_type: subType
+            });
+            var body = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata: metadata
+            };
+            //body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+
+            if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
+                alert('ensure subtype(s) is/are selected');
+            } else {
+
+                $('#dialogModalTitle').html('Uploading attachment(s)...');
+                $('#dialogModal').modal('show');
+                var files=document.getElementById('inputNotificationUpload').files;
+                var imgLink='';
+
+                if (files && files[0])
+                {
+                    var imgFileName=files[0].name;
+                    var fileType=files[0].type;
+                    var photo=files[0];
+                    $.ajax({
+                        url : '/api/utils/uploadurl',
+                        data: {'filename': imgFileName, key:('event/'+currentEventId)},
+                        type : 'GET',
+                        dataType : 'json',
+                        cache : false,
+                    })
+                        .then(function(retData) {
+                            imgLink=retData.url;
+                            return $.ajax({
+                                url : retData.signedRequest,
+                                type : 'PUT',
+                                data : photo,
+                                dataType : 'text',
+                                cache : false,
+                                //contentType : file.type,
+                                processData : false,
+                            });
+                        }).then(function(data,txt,jq){
+                            vm.updateEvent(currentEventId,body,imgLink);
+                        })
+                        .fail(function(err){
+                            //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
+                            $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
+                        });
+
+                }else {//no image just submit the report
+                    vm.updateEvent(currentEventId,body,imgLink);
+                }
+
+            }
+        },
+        cancelEventEdits:function(){
+            window.location.href = '/events/?eventId=' + currentEventId;
+        }
+
+>>>>>>> dev
     },
     computed:{
+        reversedNotifications:function() {
+            return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
+                return b.notification_time - a.notification_time;
+            }): [];
+        },
         notStr:function(){
-            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
+            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+
+            (this.event.metadata.notification[this.event.metadata.notification.length-1].hasOwnProperty('username') ? (', From: ' + this.event.metadata.notification[this.event.metadata.notification.length-1].username) : '') +
+            ' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
             return WEB_HOST + 'events/?eventId=' + this.event.id;
         },
         eventReportLink:function()
         {
-            return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
+            return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey + '#' + this.event.metadata.name;
         }
     }
-});
+};

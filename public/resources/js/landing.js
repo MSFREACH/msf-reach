@@ -23,6 +23,10 @@ var MSFContactsLayer, nonMSFContactsLayer;
 // set up variable to store report ID for new event creation from unassigned report
 var report_id_for_event = null; // null = not creating event from unassigned report
 
+// cookie for last page load
+Cookies.set('last_load',String(Date.now()/1000));
+
+
 // set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
     value: 2, // default: 2
@@ -145,7 +149,7 @@ var mapAllEvents = function(err, events){
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Opened: ' + (new Date((feature.properties.metadata.event_datetime || feature.properties.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
       'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
       (feature.properties.metadata.hasOwnProperty('country') ? 'Country(s): ' + feature.properties.metadata.country + '<br>': '') +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +

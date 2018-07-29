@@ -1,6 +1,13 @@
 var doItOnce=true;
 var navigateTo;//exporting the function
 $(function () {
+
+    if (window.location.hash) {
+        $('#noEventName').hide();
+        $('#withEventName').html('MSF would like to request any information you may have about the ' + decodeURIComponent(window.location.hash.substring(1).replace(/\+/g, ' ')) + ' event that may be happening in your area.');
+        $('#withEventName').show();
+    }
+
     var $sections = $('.form-section');
 
     navigateTo= function(index) {
