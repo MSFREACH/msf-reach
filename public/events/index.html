@@ -523,6 +523,25 @@
     </div>
   </div>
 </div>
+
+<!-- Dialog Modal -->
+<div class="modal fade" id="dialogModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="dialogModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="dialogModalBody">
+        <div class="msf-loader"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Page -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
@@ -562,7 +581,7 @@
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
-          <div class="msf-loader"></div>
+          <div class="msf-loader" id="eventMSFLoader"></div>
           <div class="tab-content" id="eventVApp" v-cloak>
 
             <div id="event" class="tab-pane fade in active">
@@ -609,22 +628,28 @@
                     <div class="panel-body" >
                       <div >
 
-                            <table v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
+                            <table v-show="!panelEditing.Notification" v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
                               <thead><tr><td>Username</td><td>Time</td><td>Notification</td></tr></thead>
                               <tbody>
-                                <tr v-for="elem in reversedNotifications">
+                                <tr v-for="(elem,index) in reversedNotifications" :style="((index==0) && panelDirty.Notification) ? 'font-weight:bold;' : '' ">
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (new Date(elem.notification_time*1000)).toLocaleString().replace(/:\d{2}$/,'') }}</td>
-                                  <td> {{ elem.notification }}</td>
+                                  <td> {{ elem.notification }} <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a> </td>
                                 </tr>
                               </tbody>
                             </table>
                       </div>
-                      <div v-if="panelEditing.Notification">
+                      <div v-show="panelEditing.Notification">
                         <dt>Enter new notification</dt>
                         <dd>
                           <textarea type="text" class="form-control" v-model="newNotification"></textarea>
+                        </dd>
+                        <dt>Attach a photo</dt>
+                        <dd>
+                          <form enctype="multipart/form-data">
+                            <input id="inputNotificationUpload" type="file" accept="image/*" />
+                          </form>
                         </dd>
                       </div>
                     </div>

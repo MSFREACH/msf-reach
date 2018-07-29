@@ -1336,7 +1336,7 @@ var vmObject = {
     },
     mounted:function(){
         //console.log('mounted');
-        $('.msf-loader').hide();
+        $('#eventMSFLoader').hide();
         //console.log('mounted event instance.');
         //console.log(this.event.metadata.ext_other_organizations);
 
@@ -1455,8 +1455,18 @@ var vmObject = {
                 $( '#editModal' ).modal('show');
             } else {
                 this.panelEditing[category]=true;
-                this.panelDirty[category]=true;
-                this.somePanelDirty=true;
+                if (category=='Notification')
+                {
+                  if (this.panelDirty[category])
+                  {
+                    this.event.metadata.notification.pop();
+                  }
+                }
+                else{
+                  this.panelDirty[category]=true;
+                  this.somePanelDirty=true;
+                }
+
                 $('#collapse'+category).collapse('show');
             }
         },
@@ -1464,17 +1474,26 @@ var vmObject = {
         {
             var vm=this;
             vm.panelEditing[category]=false;
-            vm.panelDirty[category]=true;
+
             if (category=='Notification')
             {
                 if (vm.newNotification) {
+                  vm.panelDirty[category]=true;
+                  this.somePanelDirty=true;
+                   var newNotificationObject={
+                     'notification_time': Date.now()/1000,
+                     'notification': vm.newNotification,
+                     'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')
+                   };
                     if (vm.event.metadata.hasOwnProperty('notification') && vm.event.metadata.notification.length > 0) {
-                        vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')});
+                        vm.event.metadata.notification.push(newNotificationObject);
                     } else {
-                        vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')}];
+                        vm.event.metadata.notification = [newNotificationObject];
                     }
+                }else{
+                  vm.panelDirty[category]=false;
                 }
-                vm.newNotification='';
+
             }
         },
         addOtherOrg: function() {
@@ -1538,7 +1557,27 @@ var vmObject = {
                 from_who: null,
             });
         },
+        updateEvent:function(eventId,body,notificationFileUrl){
+          if (notificationFileUrl)
+          {
+            var lastNotification=body.metadata.notification[body.metadata.notification.length-1];
+            lastNotification['notificationFileUrl']=notificationFileUrl;
+          }
+          $.ajax({
+              type: 'PUT',
+              url: '/api/events/' + eventId,
+              data: JSON.stringify(body),
+              contentType: 'application/json'
+          }).done(function(data, textStatus, req) {
+              window.location.href = '/events/?eventId=' + eventId;
+          }).fail(function(err) {
+              if (err.responseText.includes('expired')) {
+                  alert('session expired');
+              }
+          });
+        },
         saveEventEdits:function(){
+            var vm=this;
             var metadata = this.event.metadata;
 
             //TODO: fix this
@@ -1562,18 +1601,47 @@ var vmObject = {
             if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
                 alert('ensure subtype(s) is/are selected');
             } else {
-                $.ajax({
-                    type: 'PUT',
-                    url: '/api/events/' + currentEventId,
-                    data: JSON.stringify(body),
-                    contentType: 'application/json'
-                }).done(function(data, textStatus, req) {
-                    window.location.href = '/events/?eventId=' + currentEventId;
-                }).fail(function(err) {
-                    if (err.responseText.includes('expired')) {
-                        alert('session expired');
-                    }
-                });
+
+              $('#dialogModalTitle').html('Uploading attachment(s)...');
+              $('#dialogModal').modal('show');
+              var files=document.getElementById('inputNotificationUpload').files;
+              var imgLink='';
+
+              if (files && files[0])
+              {
+                  var imgFileName=files[0].name;
+                  var fileType=files[0].type;
+                  var photo=files[0];
+                  $.ajax({
+                      url : '/api/utils/uploadurl',
+                      data: {'filename': imgFileName, key:('event/'+currentEventId)},
+                      type : 'GET',
+                      dataType : 'json',
+                      cache : false,
+                  })
+                      .then(function(retData) {
+                          imgLink=retData.url;
+                          return $.ajax({
+                              url : retData.signedRequest,
+                              type : 'PUT',
+                              data : photo,
+                              dataType : 'text',
+                              cache : false,
+                              //contentType : file.type,
+                              processData : false,
+                          });
+                      }).then(function(data,txt,jq){
+                          vm.updateEvent(currentEventId,body,imgLink);
+                      })
+                      .fail(function(err){
+                          //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
+                          $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
+                      });
+
+              }else {//no image just submit the report
+                  vm.updateEvent(currentEventId,body,imgLink);
+              }
+
             }
         },
         cancelEventEdits:function(){
@@ -1583,7 +1651,7 @@ var vmObject = {
     },
     computed:{
         reversedNotifications:function() {
-            return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.sort((a,b) => {
+            return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
             }): [];
         },
