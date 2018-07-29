@@ -149,7 +149,7 @@ var mapAllEvents = function(err, events){
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Opened: ' + (new Date((feature.properties.metadata.event_datetime || feature.properties.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
       'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
       (feature.properties.metadata.hasOwnProperty('country') ? 'Country(s): ' + feature.properties.metadata.country + '<br>': '') +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +

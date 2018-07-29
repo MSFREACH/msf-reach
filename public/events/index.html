@@ -573,7 +573,7 @@
                   <tr><td>Country(s)</td><td colspan="2"> {{ event.metadata.country }}</td></tr>
                   <tr><td>Status</td><td colspan="2"> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
                   <tr><td>Type</td><td colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
-                  <tr><td>Event Date and Time</td><td colspan="2"> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+                  <tr><td>Event Date and Time</td><td colspan="2"> {{ (new Date((event.metadata.event_datetime || event.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Description</td><td colspan="2"> {{event.metadata.description }}</td></tr>
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td colspan="2">{{ notStr }}</td></tr>
