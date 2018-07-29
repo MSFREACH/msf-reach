@@ -1583,9 +1583,9 @@ var vmObject = {
     },
     computed:{
         reversedNotifications:function() {
-          return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.sort((a,b) => {
-            return b.notification_time - a.notification_time;
-          }): [];
+            return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.sort((a,b) => {
+                return b.notification_time - a.notification_time;
+            }): [];
         },
         notStr:function(){
             return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+
