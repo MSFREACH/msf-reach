@@ -612,7 +612,7 @@
                             <table v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
                               <thead><tr><td>Username</td><td>Time</td><td>Notification</td></tr></thead>
                               <tbody>
-                                <tr v-for="elem in event.metadata.notification">
+                                <tr v-for="elem in event.metadata.notification.reverse()">
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (new Date(elem.notification_time*1000)).toLocaleString().replace(/:\d{2}$/,'') }}</td>
