@@ -68,7 +68,7 @@ bindAutocompletes();
 * @param {Object} latlng - coords to zoom to, Leaflet latlng object http://leafletjs.com/reference-1.3.0.html#latlng
 */
 var zoomToEventPoint = function(latlng) {
-    mainMap.setView(latlng, 5);
+    mainMap.setView(latlng, 4);
 };
 
 /**
