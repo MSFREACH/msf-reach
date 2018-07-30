@@ -1358,7 +1358,10 @@ var vmObject = {
           disease_outbreak: '',
           natural_disaster: ''
         },
-        regions: []
+        areas: {
+          countries: [],
+          regions: []
+        }
     },
     mounted:function(){
         //console.log('mounted');
@@ -1504,20 +1507,17 @@ var vmObject = {
                 return moment(value).format('YYYY-MM-DD');
             }
         },
-        toggleEdit(){
-          this.editing = !this.editing
-          this.loadMap();
-          this.addRegions();
+        assignAreas(){
+          this.areas.regions = currentEventProperties.metadata.region.split(',')
+          this.areas.countries = currentEventProperties.metadata.country.split(',')
         },
         removeRegion(region){
-          console.log("remove region triggered", region)
-          var index = this.regions.indexOf(region)
-          this.regions.splice(index, 1);
+          var index = this.areas.regions.indexOf(region)
+          this.areas.regions.splice(index, 1);
         },
-        addRegions(){
-          this.regions = currentEventProperties.metadata.region.split(',')
-          console.log("REGION ---- ",this.regions, currentEventProperties.metadata.region)
-          currentEventProperties.metadata
+        removeCountry(country){
+          var index = this.areas.countries.indexOf(country)
+          this.areas.countries.splice(index, 1);
         },
         //*****  Event Map section ***** //
         loadMap(){
@@ -1674,7 +1674,7 @@ var vmObject = {
 
           this.event.type = this.checkedTypes.join()
           this.event.sub_type = cleanSubTypes.join()
-        }, 
+        },
         submitEventMetadata(){
           var metadata = this.event.metadata
 
@@ -1693,7 +1693,9 @@ var vmObject = {
           this.lintTypes();
 
           metadata = _.extend(metadata, {
-            sub_type: this.event.sub_type
+            sub_type: this.event.sub_type,
+            country: this.areas.countries.join(','), /// BUG:// should be bind to model
+            region: this.areas.regions.join(',') // should be bind to model
           });
 
           var body = {
@@ -1748,7 +1750,7 @@ var vmObject = {
                 // this is inline implementation
                 if(category == 'General'){
                   this.loadMap();
-                  this.addRegions();
+                  this.assignAreas();
                 }
             }
         },

@@ -41,39 +41,56 @@ function bindACInputToMap(targetMap,inputId,justLocate)
         }
 
         if (inputId === 'editEventAddress') {
-            for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
-                if (place.address_components[placeIdx].types.indexOf('administrative_area_level_1')>-1) {
-                    currentEventProperties.metadata['region'] = ($('#eventRegion').val() !== '' ? $('#eventRegion').val() + ', ' : '') +place.address_components[placeIdx].long_name;
-                    // ideally add currentEventProperties.metadata['regions'] as an array, for cleaner splicing edit
 
-                    var placeName = place.address_components[placeIdx].long_name
-                    $.ajax({
-                        type: 'PUT',
-                        url: '/api/events/' + currentEventId,
-                        data: JSON.stringify({
-                            status: currentEventProperties.status,
-                            type: currentEventProperties.type,
-                            metadata: currentEventProperties.metadata
-                        }),
-                        contentType: 'application/json'
-                    }).done(function( data, textStatus, req ){
-                        $('#eventRegion').val(currentEventProperties.metadata.region);
-                        $('#eventRegions').append(`<span class="regionTags"> <span v-on:click="removeRegion(item)" class="remove"> x </span>  ${placeName} </span> `)
-
-                    }).fail(function(err) {
-                        if (err.responseText.includes('expired')) {
-                            alert('session expired');
-                        } else {
-                            alert('error: '+ err.responseText);
-                        }
-                    });
-
-                }
-            }
-
+          var area = {
+            region: '',
+            country: ''
+          }
+          for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
+              var placeObj = place.address_components[placeIdx]
+              if (placeObj.types.indexOf('administrative_area_level_1')> -1) {
+                  currentEventProperties.metadata['region'] = ($('#eventRegion').val() !== '' ? $('#eventRegion').val() + ', ' : '') +placeObj.long_name;
+                  area.region = placeObj.long_name
+              }
+              if(placeObj.types.indexOf('country')> -1){
+                  var currentCountries = $('#eventCountries span.tags').text().replace(/ x /g, ', ')
+                  currentEventProperties.metadata['country'] = (currentCountries !== '' ? currentCountries : '') + placeObj.long_name;
+                  area.country = placeObj.long_name
+              }
+          }
+          updateAreas(area)
         }
 
     });
+
+
+    function updateAreas(area){
+      $.ajax({
+          type: 'PUT',
+          url: '/api/events/' + currentEventId,
+          data: JSON.stringify({
+              status: currentEventProperties.status,
+              type: currentEventProperties.type,
+              metadata: currentEventProperties.metadata
+          }),
+          contentType: 'application/json'
+      }).done(function( data, textStatus, req ){
+          $('#eventRegion').val(currentEventProperties.metadata.region);
+          if(!isEmpty(area.region)){
+            $('#eventRegions').append(`<span class="tags"> <span v-on:click="removeRegion(item)" class="remove"> x </span>  ${area.region} </span> `)
+          }
+
+          if($('#eventCountries span.tags').text().indexOf(area.country) == -1){ // append only if the country is not display yet
+            $('#eventCountries').append(`<span class="tags"> <span v-on:click="removeCountry(item)" class="remove"> x </span>  ${area.country} </span> `)
+          }
+      }).fail(function(err) {
+          if (err.responseText.includes('expired')) {
+              alert('session expired');
+          } else {
+              alert('error: '+ err.responseText);
+          }
+      });
+    }
 
     $('#'+inputId+'Locate').on('click',function(){
         var eLat=Number($('#'+inputId+'Lat').val());
@@ -102,4 +119,8 @@ function initGoogle()
 
     bindACInputToMap(autocompleteMap,'mapAddress');
 
+}
+
+function isEmpty(str) {
+    return (!str && 0 === str.length);
 }
