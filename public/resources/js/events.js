@@ -1353,9 +1353,11 @@ var vmObject = {
         eventTypes: eventTypes,
         checkedTypes: [],
         checkedSubTypes: [],
-        typeOther: '',
-        disease_outbreakOther: '',
-        natural_disasterOther:'',
+        otherDescription: {
+          type: '',
+          disease_outbreak: '',
+          natural_disaster: ''
+        },
         regions: []
     },
     mounted:function(){
@@ -1649,6 +1651,30 @@ var vmObject = {
             }, 300);
 
         },
+        lintTypes(){
+          var tmpEventWithSubTypes = {}
+          for(var i= 0; i < this.eventTypes.length; i++){
+            if(eventTypes[i].subTypes){
+              var tmpSubTypes = eventTypes[i].subTypes.map(function(el){return el.value})
+              tmpEventWithSubTypes[eventTypes[i].value] = tmpSubTypes
+            }
+          }
+
+          var cleanSubTypes = []
+          for(var i=0; i<this.checkedTypes.length; i++){
+            var tmpType = tmpEventWithSubTypes[this.checkedTypes[i]]
+            if(tmpType){
+              for(var j=0; j<this.checkedSubTypes.length; j++){
+                if(tmpType.indexOf(this.checkedSubTypes[j]) > -1){
+                  cleanSubTypes.push(this.checkedSubTypes[j])
+                }
+              }
+            }
+          }
+
+          this.event.type = this.checkedTypes.join()
+          this.event.sub_type = cleanSubTypes.join()
+        }, 
         submitEventMetadata(){
           var metadata = this.event.metadata
 
@@ -1664,8 +1690,7 @@ var vmObject = {
           }
 
 
-          this.event.type = this.checkedTypes.join()
-          this.event.sub_type = this.checkedSubTypes.join()
+          this.lintTypes();
 
           metadata = _.extend(metadata, {
             sub_type: this.event.sub_type
@@ -1855,7 +1880,7 @@ var vmObject = {
             };
             //body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
 
-            if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
+            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
                 alert('ensure subtype(s) is/are selected');
             } else {
 
