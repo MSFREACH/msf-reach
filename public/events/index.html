@@ -591,9 +591,9 @@
                 <div class="panel panel-default" >
 
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
-                    <button v-if="!panelEditing.Notification" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('General')">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('General')" v-else>Cancel</button>
-                    <button type="button" v-show="!panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
+                    <button v-if="!panelEditing.General" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('General')">Edit</button>
+                    <button type="button" v-show="panelEditing.General" class="btn btn-warning btn-xs pull-right" @click="stopEdit('General')">Cancel</button>
+                    <button type="button" v-show="panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
                   </div>
                 <table class="table" v-show="!panelEditing.General">
                   <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
@@ -619,7 +619,7 @@
 
                 </table>
 
-                <table class="table" v-show="editing">
+                <table class="table" v-show="panelEditing.General">
                   <!-- here is now all input fields -->
                   <script src="/resources/js/edit-maps.js"></script>
 

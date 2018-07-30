@@ -1347,7 +1347,16 @@ var vmObject = {
             'Security': false,
             'ExtraDetails': false
         },
-        somePanelDirty:false
+        somePanelDirty:false,
+        //NOTE: these variables are need for inline-editing of general information
+        statuses: statuses,
+        eventTypes: eventTypes,
+        checkedTypes: [],
+        checkedSubTypes: [],
+        typeOther: '',
+        disease_outbreakOther: '',
+        natural_disasterOther:'',
+        regions: []
     },
     mounted:function(){
         //console.log('mounted');
@@ -1510,9 +1519,6 @@ var vmObject = {
         },
         //*****  Event Map section ***** //
         loadMap(){
-
-
-
             var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
             eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false});
             eventMap.scrollWheelZoom.disable();
@@ -1692,9 +1698,12 @@ var vmObject = {
         editEvent:function(category){
             if (category == 'general')
             {
+              // this is modal implemation
                 editCategory=category;
                 onEditEvent();
                 $( '#editModal' ).modal('show');
+
+
             } else {
                 this.panelEditing[category]=true;
                 if (category=='Notification')
@@ -1710,6 +1719,12 @@ var vmObject = {
                 }
 
                 $('#collapse'+category).collapse('show');
+
+                // this is inline implementation
+                if(category == 'General'){
+                  this.loadMap();
+                  this.addRegions();
+                }
             }
         },
         stopEdit:function(category)
