@@ -1493,12 +1493,6 @@ var vmObject = {
                 return moment(value).format('YYYY-MM-DD');
             }
         },
-<<<<<<< HEAD
-        editEvent(category){
-            editCategory=category;
-            onEditEvent();
-            $( '#editModal' ).modal('show');
-        },
         toggleEdit(){
           this.editing = !this.editing
           this.loadMap();
@@ -1694,10 +1688,7 @@ var vmObject = {
                 }
               });
           }
-        }
-
-
-=======
+        },
         editEvent:function(category){
             if (category == 'general')
             {
@@ -1899,7 +1890,6 @@ var vmObject = {
             window.location.href = '/events/?eventId=' + currentEventId;
         }
 
->>>>>>> dev
     },
     computed:{
         reversedNotifications:function() {
