@@ -1347,16 +1347,30 @@ var vmObject = {
             'Security': false,
             'ExtraDetails': false
         },
+        invalid: {
+          typesSelection: false,
+          emptyStrings: false
+        },
+        fieldsInvalid: false,
         somePanelDirty:false,
         //NOTE: these variables are need for inline-editing of general information
         statuses: statuses,
         eventTypes: eventTypes,
         checkedTypes: [],
         checkedSubTypes: [],
-        otherDescription: {
-          type: '',
-          disease_outbreak: '',
-          natural_disaster: ''
+        otherFields: {
+          type: {
+            isSelected: false,
+            description: ''
+          },
+          disease_outbreak: {
+            isSelected: false,
+            description: ''
+          },
+          natural_disaster: {
+            isSelected: false,
+            description: ''
+          }
         },
         areas: {
           countries: [],
@@ -1652,6 +1666,7 @@ var vmObject = {
 
         },
         lintTypes(){
+
           var tmpEventWithSubTypes = {}
           for(var i= 0; i < this.eventTypes.length; i++){
             if(eventTypes[i].subTypes){
@@ -1671,10 +1686,62 @@ var vmObject = {
               }
             }
           }
-
-          this.event.type = this.checkedTypes.join()
-          this.event.sub_type = cleanSubTypes.join()
+          this.checkedSubTypes = cleanSubTypes
         },
+        lintSubTypesSelected(body){
+          if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+              alert('ensure subtype(s) is/are selected');
+              this.invalid.typesSelection = true;
+          }else{
+            this.invalid.typesSelection = false;
+          }
+        },
+        placeOtherFields(){
+          for(key in this.otherFields){
+            if(this.event.metadata.sub_type.indexOf(`other_${key}`)){
+              var stringStart = this.event.metadata.sub_type.indexOf('')
+              var subTypes = this.event.metadata.sub_type.split(',')
+              var index = _.findIndex(subTypes, function(el){
+                return el.indexOf(`other_${key}`)
+              })
+
+              console.log('placeOtherFields ---- ', index)
+              /// should slice before and comma after
+              this.otherFields[key].isSelected = true;
+              this.otherFields[key].description = subTypes[index];
+            }
+          }
+          if(this.event.type.indexOf('other')){
+            var stringStart = this.event.type.indexOf(':')
+            this.otherFields.type.isSelected = true;
+            this.otherFields.type.description = this.event.type.substring(stringStart+1);
+          }
+        },
+        lintOtherFields(){
+          var emptyFields = []
+
+          for(var key in this.otherFields){
+            var description = this.otherFields[key].description
+
+            if(this.otherFields[key].isSelected){
+              if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) > -1 || key == 'type')){ // to be sure that main type was selected
+                emptyFields.push(key.replace('_', ' '))
+              }else if(this.checkedTypes.indexOf(key)){
+                  this.checkedSubTypes.push('other_'+key+ ': '+ description)
+              }else if(key == 'type'){
+                  this.checkedTypes.push('other: '+ description)
+              }
+            }
+          }
+
+          if(emptyFields.length > 0 ){
+            alert(`Please enter description for other ${emptyFields.join(', ')}`)
+            this.invalid.emptyStrings = true;
+          }else{
+            this.invalid.emptyStrings = false;
+          }
+        },
+
         submitEventMetadata(){
           var metadata = this.event.metadata
 
@@ -1689,8 +1756,11 @@ var vmObject = {
             }
           }
 
+          this.lintTypes(); // make sure if type is unselected, subtype is removed
+          this.lintOtherFields(); // make sure the other string gets attached
+          this.event.type = this.checkedTypes.join()
+          this.event.sub_type = this.checkedSubTypes.join()
 
-          this.lintTypes();
 
           metadata = _.extend(metadata, {
             sub_type: this.event.sub_type,
@@ -1703,11 +1773,13 @@ var vmObject = {
             type: this.event.type.toString(),
             metadata: metadata
           }
-          body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
 
-          if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
-              alert('ensure subtype(s) is/are selected');
-          } else {
+          body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+          this.lintSubTypesSelected(body);
+
+          // body.event.type = this.event.type.toString() // make sure the other string gets attached
+
+          if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
               $.ajax({
                 type: "PUT",
                 url: "/api/events/" + currentEventId,
@@ -1751,6 +1823,7 @@ var vmObject = {
                 if(category == 'General'){
                   this.loadMap();
                   this.assignAreas();
+                  this.placeOtherFields();
                 }
             }
         },

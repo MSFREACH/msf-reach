@@ -76,7 +76,7 @@ function bindACInputToMap(targetMap,inputId,justLocate)
           contentType: 'application/json'
       }).done(function( data, textStatus, req ){
           $('#eventRegion').val(currentEventProperties.metadata.region);
-          if(!isEmpty(area.region)){
+          if(!_.isEmpty(area.region)){
             $('#eventRegions').append(`<span class="tags"> <span v-on:click="removeRegion(item)" class="remove"> x </span>  ${area.region} </span> `)
           }
 
@@ -119,8 +119,4 @@ function initGoogle()
 
     bindACInputToMap(autocompleteMap,'mapAddress');
 
-}
-
-function isEmpty(str) {
-    return (!str && 0 === str.length);
 }

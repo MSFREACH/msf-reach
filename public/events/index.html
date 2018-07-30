@@ -675,15 +675,20 @@
                             <br v-if="index % 4 == 1"/>
                         </span>
 
-                        <span :value="'other_' + item.value">
-                          <input type="text" v-model="otherDescription[item.value]"  class="form-control" placeholder="(Specify)" />
+                        <span>
+                          <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" /> <label class="eventBox"> other {{item.text}} &nbsp&nbsp </label>
+                          <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  class="form-control" placeholder="(Specify)" />
                         </span>
                       </div>
                     </div>
 
-                      <div>
+                      <!-- <div>
                         <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
-                        <input type="text" class="form-control" v-model="otherDescription.type" placeholder="(Specify)" />
+                        <input type="text" class="form-control" v-model="other.type.description" placeholder="(Specify)" />
+                      </div> -->
+                      <div>
+                        <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                        <input v-if="otherFields.type.isSelected" type="text" class="form-control" v-model="otherFields.type.description" placeholder="(Specify)" />
                       </div>
                   </td>
                   </tr>
