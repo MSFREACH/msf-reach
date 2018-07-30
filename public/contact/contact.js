@@ -103,10 +103,11 @@ $(function () {
             if (props.type === 'Current MSF Staff') {
                 $('#inputContactOC').val(props.OC);
                 $('#inputContactMSFEmploy').val(props.msf_employment);
-                $('#inputMSFSection').val(props.msf_section);
-                $('#inputMSFBranch').val(props.msf_branch);
-                $('#inputMSFProject').val(props.msf_project);
-                $('#inputMSFMission').val(props.msf_mission);
+                $('#inputMSFAdditional').val(props.msf_additional);
+                // $('#inputMSFSection').val(props.msf_section);
+                // $('#inputMSFBranch').val(props.msf_branch);
+                // $('#inputMSFProject').val(props.msf_project);
+                // $('#inputMSFMission').val(props.msf_mission);
             } else {
                 $('#inputContactMSFAssociate').prop('checked', props.msf_associate);
                 $('#inputContactMSFPeer').prop('checked', props.msf_peer);

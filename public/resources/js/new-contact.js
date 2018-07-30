@@ -228,10 +228,11 @@ function patchContact() {
     if ($('#inputContactType').val() === 'Current MSF Staff') {
         body.properties['OC'] = $('#inputContactOC').val();
         body.properties['msf_employment'] = $('#inputContactMSFEmploy').val();
-        body.properties['msf_section'] = $('#inputMSFSection').val() || '';
-        body.properties['msf_branch'] = $('#inputMSFBranch').val() || '';
-        body.properties['msf_project'] = $('#inputMSFProject').val() || '';
-        body.properties['msf_mission'] = $('#inputMSFMission').val() || '';
+        body.properties['msf_additional'] = $('#inputMSFAdditional').val();
+        // body.properties['msf_section'] = $('#inputMSFSection').val() || '';
+        // body.properties['msf_branch'] = $('#inputMSFBranch').val() || '';
+        // body.properties['msf_project'] = $('#inputMSFProject').val() || '';
+        // body.properties['msf_mission'] = $('#inputMSFMission').val() || '';
     } else {
         body.properties['msf_associate'] = $('#inputContactMSFAssociate').is(':checked');
         body.properties['msf_peer'] = $('#inputContactMSFPeer').is(':checked');
