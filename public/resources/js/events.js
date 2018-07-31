@@ -256,7 +256,7 @@ var printEventProperties = function(err, eventProperties){
         if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
             $('#inputNotification').val(eventProperties.metadata.notification.sort((a,b) => {
                 return b.notification_time - a.notification_time;
-            })[eventProperties.metadata.notification.length-1].notification);
+            })[0].notification);
         }
 
 
@@ -368,7 +368,7 @@ var mapAllEvents = function(err, events){
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
             notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.sort((a,b) => {
                 return b.notification_time - a.notification_time;
-            })[feature.properties.metadata.notification.length-1].notification + '<br>';
+            })[0].notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -910,9 +910,9 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
-                popupContent += 'Latest notification: ' + feature.properties.properties.notificationsort((a,b) => {
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification.sort((a,b) => {
                     return b.notification_time - a.notification_time;
-                })[feature.properties.properties.notification.length-1].notification + '<BR>';
+                })[0].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
@@ -1568,7 +1568,7 @@ var vmObject = {
             {
                 var lastNotification=body.metadata.notification.sort((a,b) => {
                     return b.notification_time - a.notification_time;
-                })[body.metadata.notification.length-1];
+                })[0];
                 lastNotification['notificationFileUrl']=notificationFileUrl;
             }
             $.ajax({
@@ -1667,9 +1667,9 @@ var vmObject = {
             let reversed = this.event.metadata.notification.sort((a,b) => {
                 return b.notification_time - a.notification_time;
             });
-            return (this.event.metadata.notification.length > 0) ? reversed[this.event.metadata.notification.length-1].notification+
-            (reversed[this.event.metadata.notification.length-1].hasOwnProperty('username') ? (', From: ' + reversed[this.event.metadata.notification.length-1].username) : '') +
-            ' @ ' + (new Date(reversed[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
+            return (reversed.length > 0) ? reversed[0].notification+
+            (reversed[0].hasOwnProperty('username') ? (', From: ' + reversed[0].username) : '') +
+            ' @ ' + (new Date(reversed[0].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
             return WEB_HOST + 'events/?eventId=' + this.event.id;

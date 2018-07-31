@@ -27,7 +27,7 @@ var mapEditEvents = function(err, events){
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
             notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.sort((a,b) => {
                 return b.notification_time - a.notification_time;
-            })[feature.properties.metadata.notification.length-1].notification + '<br>';
+            })[0].notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -145,7 +145,7 @@ var mapEditMissions = function(missions ){
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0){
                 popupContent += 'Latest notification: ' + feature.properties.properties.notification.sort((a,b) => {
                     return b.notification_time - a.notification_time;
-                })[feature.properties.properties.notification.length-1].notification + '<BR>';
+                })[0].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
