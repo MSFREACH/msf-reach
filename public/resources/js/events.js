@@ -1698,23 +1698,26 @@ var vmObject = {
         },
         placeOtherFields(){
           for(key in this.otherFields){
-            if(this.event.metadata.sub_type.indexOf(`other_${key}`)){
-              var stringStart = this.event.metadata.sub_type.indexOf('')
+            if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
               var subTypes = this.event.metadata.sub_type.split(',')
               var index = _.findIndex(subTypes, function(el){
-                return el.indexOf(`other_${key}`)
+                return el.indexOf(`other_${key}`) != -1
               })
 
-              console.log('placeOtherFields ---- ', index)
-              /// should slice before and comma after
               this.otherFields[key].isSelected = true;
-              this.otherFields[key].description = subTypes[index];
+              this.otherFields[key].description = subTypes[index].substring(subTypes[index].indexOf(':') + 1);
+
             }
           }
-          if(this.event.type.indexOf('other')){
-            var stringStart = this.event.type.indexOf(':')
+
+          if(this.event.type.indexOf('other:') != -1){
+            var tmpTypes = this.event.type.split(',')
+            var index = _.findIndex(tmpTypes, function(el){
+              return el.indexOf("other:") != -1
+            });
+
             this.otherFields.type.isSelected = true;
-            this.otherFields.type.description = this.event.type.substring(stringStart+1);
+            this.otherFields.type.description = tmpTypes[index].substring(tmpTypes[index].indexOf(':')+1)
           }
         },
         lintOtherFields(){
@@ -1724,12 +1727,19 @@ var vmObject = {
             var description = this.otherFields[key].description
 
             if(this.otherFields[key].isSelected){
-              if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) > -1 || key == 'type')){ // to be sure that main type was selected
+              if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) != -1 || key == 'type')){ // to be sure that main type was selected
                 emptyFields.push(key.replace('_', ' '))
-              }else if(this.checkedTypes.indexOf(key)){
+              }else if(this.checkedTypes.indexOf(key) != -1){
                   this.checkedSubTypes.push('other_'+key+ ': '+ description)
               }else if(key == 'type'){
-                  this.checkedTypes.push('other: '+ description)
+                  var index = _.findIndex(this.checkedTypes, function(el){
+                    return el.indexOf("other:") != -1
+                  });
+                  if(index){
+                    this.checkedTypes[index] = 'other: '+ description
+                  }else{
+                    this.checkedTypes.push('other: '+ description)
+                  }
               }
             }
           }

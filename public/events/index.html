@@ -676,7 +676,7 @@
                         </span>
 
                         <span>
-                          <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" /> <label class="eventBox"> other {{item.text}} &nbsp&nbsp </label>
+                          <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" /> <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
                           <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  class="form-control" placeholder="(Specify)" />
                         </span>
                       </div>
