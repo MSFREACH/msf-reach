@@ -88,9 +88,7 @@ var mapAllEvents = function(err, events){
         var notificationStr = '';
         var statusStr = '';
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.slice().sort((a,b) => {
-                return b.notification_time - a.notification_time;
-            })[0].notification + '<br>';
+            notificationStr = 'Latest notification: ' + getLatestNotification(feature.properties.metadata.notification).notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -411,9 +409,7 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification.slice().sort((a,b) => {
-                    return b.notification_time - a.notification_time;
-                })[0].notification + '<BR>';
+                popupContent += 'Latest notification: ' + getLatestNotification(feature.properties.properties.notification).notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }

@@ -252,9 +252,7 @@ var printEventProperties = function(err, eventProperties){
         //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
         $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
         if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
-            $('#inputNotification').val(eventProperties.metadata.notification.slice().sort((a,b) => {
-                return b.notification_time - a.notification_time;
-            })[0].notification);
+            $('#inputNotification').val(getLatestNotification(eventProperties.metadata.notification).notification);
         }
 
 
@@ -364,9 +362,7 @@ var mapAllEvents = function(err, events){
         var notificationStr = '';
         var statusStr = '';
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.slice().sort((a,b) => {
-                return b.notification_time - a.notification_time;
-            })[0].notification + '<br>';
+            notificationStr = 'Latest notification: ' + getLatestNotification(feature.properties.metadata.notification).notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -907,9 +903,7 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification.slice().sort((a,b) => {
-                    return b.notification_time - a.notification_time;
-                })[0].notification + '<BR>';
+                popupContent += 'Latest notification: ' + getLatestNotification(feature.properties.properties.notification).notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
@@ -1923,9 +1917,7 @@ var vmObject = {
         updateEvent:function(eventId,body,notificationFileUrl){
             if (notificationFileUrl)
             {
-                var lastNotification=body.metadata.notification.slice().sort((a,b) => {
-                    return b.notification_time - a.notification_time;
-                })[0];
+                var lastNotification=getLatestNotification(body.metadata.notification);
                 lastNotification['notificationFileUrl']=notificationFileUrl;
             }
             $.ajax({
@@ -2016,17 +2008,16 @@ var vmObject = {
     },
     computed:{
         reversedNotifications:function() {
+            //will keep the sorting here for UI
             return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
             }): [];
         },
         notStr:function(){
-            let reversed = this.event.metadata.notification.slice().sort((a,b) => {
-                return b.notification_time - a.notification_time;
-            });
-            return (reversed.length > 0) ? reversed[0].notification+
-            (reversed[0].hasOwnProperty('username') ? (', From: ' + reversed[0].username) : '') +
-            ' @ ' + (new Date(reversed[0].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
+            let lastNotification = getLatestNotification(this.event.metadata.notification);
+            return (lastNotification) ? lastNotification.notification+
+            (lastNotification.hasOwnProperty('username') ? (', From: ' + lastNotification.username) : '') +
+            ' @ ' + (new Date(lastNotification.notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
             return WEB_HOST + 'events/?eventId=' + this.event.id;
