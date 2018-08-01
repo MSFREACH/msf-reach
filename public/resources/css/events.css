@@ -84,9 +84,9 @@ textarea {
   display: none;
 }
 
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
   display: none;
-}
+}*/
 
 
 .rtype-container {
