@@ -47,8 +47,7 @@
 
   <!-- Events -->
   <link rel="stylesheet" href="/resources/css/events.css"/>
-
-
+  <link rel="stylesheet" href="/resources/css/edit-event.css"/>
   <!-- Nav -->
   <link rel="stylesheet" href="/resources/css/nav.css"/>
 
@@ -83,6 +82,7 @@
     cursor:default;
     z-index:2150000000 !important;
   }
+
 
   </style>
 </head>
@@ -119,7 +119,7 @@
           <div style="">
             <div class="form-section">
               <h4>Hello!</h4>
-              <p>MSF would like to request any information you may have about an event that may be happening in your area.</p>
+              <p id="newReportModalEventName"></p>
               <p>We are piloting a new system for sharing information. Please follow the instructions to submit your report.</p>
               <p>THANK YOU for being part of our team! </p>
               <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
@@ -430,7 +430,7 @@
             <label>Employment status:</label>
             <span class="msf_employment"></span>
           </div>
-          <div class="form-group" style="display:none;">
+          <!-- <div class="form-group" style="display:none;">
             <label>Section:</label>
             <span class="msf_section"></span>
           </div>
@@ -445,6 +445,10 @@
           <div class="form-group"  style="display:none;">
             <label>Mission:</label>
             <span class="msf_mission"></span>
+          </div> -->
+          <div class="form-group" style="display:none;">
+            <label>Additional Information:</label>
+            <span class="msf_additional"></span>
           </div>
         </div>
         <div id="employment_details">
@@ -523,6 +527,25 @@
     </div>
   </div>
 </div>
+
+<!-- Dialog Modal -->
+<div class="modal fade" id="dialogModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="dialogModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="dialogModalBody">
+        <div class="msf-loader"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Page -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
@@ -562,27 +585,34 @@
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
             <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
           </ul>
-          <div class="msf-loader"></div>
+          <div class="msf-loader" id="eventMSFLoader"></div>
           <div class="tab-content" id="eventVApp" v-cloak>
 
             <div id="event" class="tab-pane fade in active">
-              <div>
-                <table class="table">
 
-                  <tr><td>Name</td><td colspan="2"> {{ event.metadata.name }}</td></tr>
-                  <tr><td>Country(s)</td><td colspan="2"> {{ event.metadata.country }}</td></tr>
-                  <tr><td>Status</td><td colspan="2"> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
-                  <tr><td>Type</td><td colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
-                  <tr><td>Event Date and Time</td><td colspan="2"> {{ (new Date((event.metadata.event_datetime || event.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
-                  <tr><td>Description</td><td colspan="2"> {{event.metadata.description }}</td></tr>
+              <!-- here be GENERAL INFO  -->
+              <div class="panel-group" >
+                <div class="panel panel-default" >
 
-                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td colspan="2">{{ notStr }}</td></tr>
+                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotif" >
+                    <button v-if="!panelEditing.General" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('General')">Edit</button>
+                    <button type="button" v-show="panelEditing.General" class="btn btn-warning btn-xs pull-right" @click="stopEdit('General')">Cancel</button>
+                    <button type="button" v-show="panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
+                  </div>
+                <table class="table" v-show="!panelEditing.General">
+                  <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
+                  <tr><td>Country(s)</td><td> {{ event.metadata.country }}</td></tr>
+                  <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
+                  <tr><td>Type</td><td> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
+                  <tr><td>Event Date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+                  <tr><td>Description</td><td> {{event.metadata.description }}</td></tr>
 
-                  <tr v-else><td>Latest notification:  </td><td colspan="2">(none)</td></tr>
-                  <tr><td>Severity </td><td colspan="2"> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
-                  <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
-                  <tr><td>Sharepoint Link </td><td colspan="2"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link }}</a></td></tr>
-                  <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>
+                  <tr v-else><td>Latest notification:  </td><td>(none)</td></tr>
+                  <tr><td>Severity </td><td> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
+                  <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
+                  <tr><td>Sharepoint Link </td><td> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link }}</a></td></tr>
+                  <tr><td>Last updated at</td><td> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
 
                   <tr><td>Event sharing</td><td>
                     <div id="eventShareButtons"></div>
@@ -593,8 +623,143 @@
 
                 </table>
 
+                <table class="table" v-show="panelEditing.General">
+                  <!-- here is now all input fields -->
+                  <script src="/resources/js/edit-maps.js"></script>
 
+                  <tr>
+                    <td>Name</td>
+                    <td> <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" /></td>
+                  </tr>
+                  <tr>
+                    <td class="table-container" id="eventCountries" v-model="areas.countries" > <!--  filter duplicates -->
+                      Country(s) <br/>
+                      <span v-if="event.metadata.country" v-for="item in areas.countries" class="tags">{{item}}  <span class="remove" @click="removeCountry(item)"> x </span> </span>
+                    </td>
+                    <td class="table-container">
+                      Region(s) <br/>
+                      <div id="eventRegions" v-model="areas.regions" >
+                        <span v-if="event.metadata.region" v-for="item in areas.regions" class="tags">{{item}}  <span class="remove" @click="removeRegion(item)"> x </span></span>
+                      </div>
+                    </td>
+                  </tr>
+
+
+                  <tr>
+                    <td>
+                      <!-- if area append to both country & region list, if only country, still append to country list -->
+                      Add region for the emergency
+                      <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
+                      <label for="editEventAddressLat">OR</label>
+                      <input type="text" class="form-control input-sm" value="" id="editEventAddressLat" placeholder="Latitude">
+                      <input type="text" class="form-control input-sm" value="" id="editEventAddressLng" placeholder="Longitude">
+                      <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                    </td>
+                    <td> <div id="eventMap" class="map-container" style="width: 100%; height: 380px;"></div> </td>
+                  </tr>
+
+
+                  <tr>
+                    <td>Status</td>
+                    <td>
+                      <select v-model="event.metadata.event_status" class="form-control">
+                        <option disabled value="">Please select one</option>
+                        <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Type</td>
+                    <td>
+                      <div v-for="(item, index) in eventTypes">
+                      <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
+                        <div v-if="item.subTypes && checkedTypes.indexOf(item.value) > 0" class="subTypes">
+                        <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
+                            <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
+                            <br v-if="index % 4 == 1"/>
+                        </span>
+
+                        <span>
+                          <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" /> <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
+                          <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  class="form-control" placeholder="(Specify)" />
+                        </span>
+                      </div>
+                    </div>
+
+                      <!-- <div>
+                        <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                        <input type="text" class="form-control" v-model="other.type.description" placeholder="(Specify)" />
+                      </div> -->
+                      <div>
+                        <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                        <input v-if="otherFields.type.isSelected" type="text" class="form-control" v-model="otherFields.type.description" placeholder="(Specify)" />
+                      </div>
+                  </td>
+                  </tr>
+
+
+                  <tr><td>Event Date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+
+                  <tr>
+                    <td>Description</td>
+                    <td><textarea id="eventDescription" type="text" v-model="event.metadata.description" class="form-control" placeholder="Event description"> </textarea> </td>
+                  </tr>
+
+                  <tr>
+                    <td>Date and hours (local time) of the disater </td>
+                    <td class="datepicker-container">
+                      <date-picker v-model="event.metadata.event_local_time"></date-picker>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="padding-bottom">
+                      Analysis of severity
+                      <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
+                    </td>
+                    <td class="padding-bottom">
+
+                      <div class="form-group">
+                        Scale:
+                        <div id="inputSeverityScale"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Mission Contact Person </td>
+                  </tr>
+                  <tr>
+                    <td class="padding-bottom">
+                      <input type="text" class="form-control" v-model="event.metadata.incharge_position" placeholder="Position" />
+                    </td>
+                    <td class="padding-bottom">
+                      <input type="text" class="form-control" v-model="event.metadata.incharge_name" placeholder="Name" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="datepicker-container">
+                      <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+                    </td>
+                    <td class="datepicker-container">
+                      <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>ID link - SharePoint</td>
+                    <td>
+                      <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint Link" />
+                    </td>
+                  </tr>
+
+
+
+                </table>
+
+
+                </div>
               </div>
+
+
               <div class="panel-group" id="accordion">
                 <div :class="{'panel':true, 'panel-default': !panelDirty.Notification, 'panel-warning': panelDirty.Notification}">
                   <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotification" >
@@ -609,22 +774,28 @@
                     <div class="panel-body" >
                       <div >
 
-                            <table v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
+                            <table v-show="!panelEditing.Notification" v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
                               <thead><tr><td>Username</td><td>Time</td><td>Notification</td></tr></thead>
                               <tbody>
-                                <tr v-for="elem in reversedNotifications">
+                                <tr v-for="(elem,index) in reversedNotifications" :style="((index==0) && panelDirty.Notification) ? 'font-weight:bold;' : '' ">
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (new Date(elem.notification_time*1000)).toLocaleString().replace(/:\d{2}$/,'') }}</td>
-                                  <td> {{ elem.notification }}</td>
+                                  <td> {{ elem.notification }} <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a> </td>
                                 </tr>
                               </tbody>
                             </table>
                       </div>
-                      <div v-if="panelEditing.Notification">
+                      <div v-show="panelEditing.Notification">
                         <dt>Enter new notification</dt>
                         <dd>
                           <textarea type="text" class="form-control" v-model="newNotification"></textarea>
+                        </dd>
+                        <dt>Attach a photo</dt>
+                        <dd>
+                          <form enctype="multipart/form-data">
+                            <input id="inputNotificationUpload" type="file" accept="image/*" />
+                          </form>
                         </dd>
                       </div>
                     </div>
@@ -1612,8 +1783,6 @@ $(function(){
   });
 
 })
-
-
 
 var contactInfo = {};
 var convertToLocaleDate= function (isoDate) {

@@ -35,7 +35,7 @@ let newData = function (dataTime) {
 };
 
 var typeStr = function(type, sub_type) {
-    var result = type.replace(/epidemiological/,'').replace(/natural_hazard/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
+    var result = type.replace(/disease_outbreak/,'').replace(/natural_disaster/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
     if (result !== '') {
         result += sub_type ? (', ' + sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
     } else {

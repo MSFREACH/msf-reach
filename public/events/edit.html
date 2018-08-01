@@ -121,7 +121,7 @@ dd.padding-bottom {
               <dd>
 
                 <input class="newEventTypeBox" v-model="checkedType[0]" id="selectType0" type="checkbox" value="conflict" /><label class="eventBox">&nbsp Armed Conflict</label><br>
-                <input class="newEventTypeBox" v-model="checkedType[1]" id="selectType1" type="checkbox" value="epidemiological" /><label class="eventBox">&nbsp Disease Outbreak</label><br>
+                <input class="newEventTypeBox" v-model="checkedType[1]" id="selectType1" type="checkbox" value="disease_outbreak" /><label class="eventBox">&nbsp Disease Outbreak</label><br>
                 <div id="divDisease" style="display:none; margin-left: 20px;">
                   <input class="newSubEventTypeBox" v-model="diseaseType[0]" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox">&nbsp Cholera</label><br>
                   <input class="newSubEventTypeBox" v-model="diseaseType[1]" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox">&nbsp Ebola</label><br>
@@ -137,7 +137,7 @@ dd.padding-bottom {
                 </div>
                 <input class="newEventTypeBox" v-model="checkedType[2]" id="selectType2" type="checkbox" value="displacement" /><label class="eventBox">&nbsp Displacement</label><br>
                 <input class="newEventTypeBox" v-model="checkedType[3]" id="selectType3" type="checkbox" value="malnutrition" /><label class="eventBox">&nbsp Malnutrition</label><br>
-                <input class="newEventTypeBox" v-model="checkedType[4]" id="selectType4" type="checkbox" value="natural_hazard" /><label class="eventBox">&nbsp Natural Disaster</label><br>
+                <input class="newEventTypeBox" v-model="checkedType[4]" id="selectType4" type="checkbox" value="natural_disaster" /><label class="eventBox">&nbsp Natural Disaster</label><br>
                 <div id="divNaturalDisaster" style="display:none; margin-left: 20px;">
                   <input class="newSubEventTypeBox" v-model="disasterType[0]" id="disasterType0" type="checkbox" value="drought" /><label class="eventBox">&nbsp Drought</label><br>
                   <input class="newSubEventTypeBox" v-model="disasterType[1]" id="disasterType1" type="checkbox" value="earthquake" /><label class="eventBox">&nbsp Earthquake</label><br>
@@ -1160,12 +1160,15 @@ var vm = new Vue({
   methods: {
     submitEventData() {
       var metadata = this.event.metadata;
-      var newNotif=$('#inputNotification').val();
-      if (newNotif) {
-        if (currentEventProperties.metadata.hasOwnProperty('notification') && currentEventProperties.metadata.notification.length > 0) {
-          currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': newNotif, 'username': localStorage.getItem('username')});
+
+      if ($('#inputNotification').val()) {
+        if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+          if(typeof currentEventProperties.metadata.notification != 'array'){
+            currentEventProperties.metadata.notification = []
+          }
+          currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val(), 'username': localStorage.getItem('username')});
         } else {
-          currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': newNotif, 'username': localStorage.getItem('username')}];
+          currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val(), 'username': localStorage.getItem('username')}];
         }
       }
 
@@ -1187,7 +1190,7 @@ var vm = new Vue({
       }
       body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
       body.metadata['notification'] = currentEventProperties.metadata.notification;
-      if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
+      if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
           alert('ensure subtype(s) is/are selected');
       } else {
           $.ajax({
@@ -1272,10 +1275,10 @@ var vm = new Vue({
 
         var eventTypes = [];
         eventTypes[0] = 'conflict';
-        eventTypes[1] = 'epidemiological';
+        eventTypes[1] = 'disease_outbreak';
         eventTypes[2] = 'displacement';
         eventTypes[3] = 'malnutrition';
-        eventTypes[4] = 'natural_hazard';
+        eventTypes[4] = 'natural_disaster';
         eventTypes[5] = 'search_and_rescue';
         eventTypes[6] = 'other';
         var returnTypes = [];

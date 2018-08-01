@@ -29,6 +29,7 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
     api.get('/uploadurl', cacheResponse('1 minute'), validate({
         query: {
             filename: Joi.string().required(),
+            key: Joi.string().required(),
             _:Joi.any() //jQuery adds this when cache=false?
             //	mime: Joi.string().required()
         }
@@ -37,7 +38,7 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         let uid=uuidv4();
         let s3params = {
             Bucket: config.AWS_S3_BUCKETNAME,
-            Key: 'tests/' +uid+'/'+ req.query.filename
+            Key: req.query.key+'/' +uid+'_'+ req.query.filename
         //ContentType:req.query.mime
         };
         s3.getSignedUrl('putObject', s3params, (err, data) => {

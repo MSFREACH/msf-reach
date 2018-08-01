@@ -34,7 +34,6 @@ mainMap.on('load', function(loadEvent) {
         },
         success: function(data) {
             ARCGIS_TOKEN = data.token;
-            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
             getMSFPresence(mapMSFPresence);
         }
     });
@@ -54,7 +53,6 @@ function bindAutocompletes()
     if ((!google)||(!google.maps))
     {
         setTimeout(bindAutocompletes,200);
-        //console.log('not ready, retrying in 0.2s...');
         return;
     }
     bindACInputToMap(mainMap,'eventAddress');
@@ -254,7 +252,9 @@ var printEventProperties = function(err, eventProperties){
         //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
         $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
         if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
-            $('#inputNotification').val(eventProperties.metadata.notification[eventProperties.metadata.notification.length-1].notification);
+            $('#inputNotification').val(eventProperties.metadata.notification.slice().sort((a,b) => {
+                return b.notification_time - a.notification_time;
+            })[0].notification);
         }
 
 
@@ -364,7 +364,9 @@ var mapAllEvents = function(err, events){
         var notificationStr = '';
         var statusStr = '';
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification[feature.properties.metadata.notification.length-1].notification + '<br>';
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.slice().sort((a,b) => {
+                return b.notification_time - a.notification_time;
+            })[0].notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -385,7 +387,7 @@ var mapAllEvents = function(err, events){
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
         var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (icon_name.includes('epidemiological')) {
+        if (icon_name.includes('disease_outbreak')) {
             icon_name = 'epidemic';
         }
 
@@ -475,7 +477,6 @@ var loadContacts = function(err, contacts) {
             }
 
 
-            // console.log(key, value);
             $('#contactsTable').append(
                 '<tr id=\'crow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openContactPopup('+value.properties.id+')\'><td><a data-toggle=\'modal\' data-target=\'#contactDetailsModal\' href=\'#\' onclick=\'onContactLinkClick(' +
           value.properties.id +
@@ -906,7 +907,9 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification.slice().sort((a,b) => {
+                    return b.notification_time - a.notification_time;
+                })[0].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
@@ -1234,6 +1237,18 @@ function translate(data) {
 
 var editCategory='general';
 
+Vue.component('date-picker', VueBootstrapDatetimePicker.default);
+
+var eventMap;
+var eventMapLayerControl;
+
+var zoomToBounds = function(bounds) {
+    var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
+    eventMap.fitBounds(rBounds);
+};
+
+
+
 // vue functions used for filling in event display
 
 Vue.component('date-picker', VueBootstrapDatetimePicker.default);
@@ -1313,6 +1328,7 @@ var vmObject = {
         msfNonMedicalMaterials:msfNonMedicalMaterials,
         newNotification:'',
         panelEditing:{
+            'General': false,
             'Notification': false,
             'Response': false,
             'ExtCapacity': false,
@@ -1323,6 +1339,7 @@ var vmObject = {
             'ExtraDetails': false
         },
         panelDirty:{
+            'General': false,
             'Notification': false,
             'Response': false,
             'ExtCapacity': false,
@@ -1332,13 +1349,38 @@ var vmObject = {
             'Security': false,
             'ExtraDetails': false
         },
-        somePanelDirty:false
+        invalid: {
+            typesSelection: false,
+            emptyStrings: false
+        },
+        fieldsInvalid: false,
+        somePanelDirty:false,
+        //NOTE: these variables are need for inline-editing of general information
+        statuses: statuses,
+        eventTypes: eventTypes,
+        checkedTypes: [],
+        checkedSubTypes: [],
+        otherFields: {
+            type: {
+                isSelected: false,
+                description: ''
+            },
+            disease_outbreak: {
+                isSelected: false,
+                description: ''
+            },
+            natural_disaster: {
+                isSelected: false,
+                description: ''
+            }
+        },
+        areas: {
+            countries: [],
+            regions: []
+        }
     },
     mounted:function(){
-        //console.log('mounted');
-        $('.msf-loader').hide();
-        //console.log('mounted event instance.');
-        //console.log(this.event.metadata.ext_other_organizations);
+        $('#eventMSFLoader').hide();
 
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
@@ -1348,6 +1390,22 @@ var vmObject = {
 
             }
         });
+
+        $( '#inputSeverityScale' ).slider({
+            value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
+            min: 1, max: 3, step: 1
+        }).each(function() {
+            // Get the options for this slider
+            var opt = $(this).data().uiSlider.options;
+            // Get the number of possible values
+            var vals = opt.max - opt.min;
+            // Space out values
+            for (var i = 0; i <= vals; i++) {
+                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+                $( '#inputSeverityScale' ).append(el);
+            }
+        });
+
 
 
         var searchTerm = '';
@@ -1372,7 +1430,22 @@ var vmObject = {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
             $('#searchTerm').val(searchTerm);
+
+            if(currentEventProperties.type){
+                var currentTypes = currentEventProperties.type.split(',');
+                for(var i2 = 0; i < currentTypes.length; i2++){
+                    this.checkedTypes.push(currentTypes[i2]);
+                }
+            }
+
+            if(currentEventProperties.metadata.sub_type){
+                var currentSubTypes = currentEventProperties.metadata.sub_type.split(',');
+                for(var i3 = 0; i3 < currentSubTypes.length; i3++){
+                    this.checkedSubTypes.push(currentSubTypes[i3]);
+                }
+            }
         }
+
         $('#btnSearchTwitter').trigger('click');
 
         $('#searchTerm').keyup(function(event){
@@ -1442,39 +1515,348 @@ var vmObject = {
             });
             return filtered[0].text;
         },
-        formatDateOnly:function(value) {
+        formatDateOnly(value) {
             if (value) {
                 return moment(value).format('YYYY-MM-DD');
+            }
+        },
+        assignAreas(){
+            this.areas.regions = currentEventProperties.metadata.region.split(',');
+            this.areas.countries = currentEventProperties.metadata.country.split(',');
+        },
+        removeRegion(region){
+            var index = this.areas.regions.indexOf(region);
+            this.areas.regions.splice(index, 1);
+        },
+        removeCountry(country){
+            var index = this.areas.countries.indexOf(country);
+            this.areas.countries.splice(index, 1);
+        },
+        //*****  Event Map section ***** //
+        loadMap(){
+            var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
+            eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false});
+            eventMap.scrollWheelZoom.disable();
+            //Bind Autocomplete to inputs:
+            function bindAutocompletes() {
+                if ((!google)||(!google.maps))
+                {
+                    setTimeout(bindAutocompletes,200);
+                    return;
+                }
+                bindACInputToMap(eventMap,'editEventAddress',true);
+            }
+
+            bindAutocompletes();
+
+            var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
+
+            /*
+              var latlng = null;
+              eventMap.on('click', function(e) {
+                if (eventMarker) {
+                  eventMap.removeLayer(eventMarker);
+                }
+                latlng = e.latlng;
+                Vue.set(vm.currentEventGeometry, 'coordinates', [latlng.lng, latlng.lat]);
+                eventMarker = L.marker(e.latlng).addTo(eventMap);
+              });
+              */
+            /** eventMap >> */
+
+            // Add some base tiles
+            var eventMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+                minZoom: 0,
+                maxZoom: 18
+            });
+            // Add some satellite tiles
+            var eventMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+            });
+
+            // OSM HOT tiles
+            var eventOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+            });
+
+            switch (Cookies.get('MapLayer')) {
+            case 'Satellite':
+                eventMapboxSatellite.addTo(eventMap);
+                break;
+            case 'Terrain':
+                eventMapboxTerrain.addTo(eventMap);
+                break;
+            default:
+                eventOpenStreetMap_HOT.addTo(eventMap);
+            }
+
+
+            var eventBaseMaps = {
+                'Terrain': eventMapboxTerrain,
+                'Satellite' : eventMapboxSatellite,
+                'Humanitarian': eventOpenStreetMap_HOT
+            };
+
+            eventMap.on('baselayerchange', function(baselayer) {
+                Cookies.set('MapLayer',baselayer.name);
+            });
+
+            var groupedOverlays = {
+                'RSS Feeds': {},
+                'Contacts': {}
+            };
+
+            var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+            var overlayMaps = {};
+
+            eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
+
+            if (L.Browser.touch) {
+                L.DomEvent
+                    .disableClickPropagation(eventMapLayerControl._container)
+                    .disableScrollPropagation(eventMapLayerControl._container);
+            } else {
+                L.DomEvent.disableClickPropagation(eventMapLayerControl._container);
+            }
+
+            getAllEvents(mapEditGeneralEvents);
+
+            eventMap.on('overlayadd', function (layersControlEvent) {
+                Cookies.set(layersControlEvent.name,'on');
+            });
+
+            eventMap.on('overlayremove', function (layersControlEvent) {
+                Cookies.set(layersControlEvent.name,'off');
+            });
+            eventMap.doubleClickZoom.disable();
+            eventMap.on('dblclick', function(dblclickEvent) {
+                latlng = dblclickEvent.latlng;
+                $.ajax({
+                    type: 'PATCH',
+                    url: '/api/events/updatelocation/' + currentEventId,
+                    data: JSON.stringify({location: {lat: latlng.lat, lng: latlng.lng}}),
+                    contentType: 'application/json'
+                }).done(function(data, textStatus, req) {
+                    // setTimeout(function() {
+                    //   window.location.reload(true);
+                    // }, 1000);  // don't actually want it to reload
+                }).fail(function(err) {
+                    if (err.responseText.includes('expired')) {
+                        alert('session expired');
+                    }
+                });
+            });
+
+
+            setTimeout(function() {
+                eventMap.invalidateSize(true);
+                if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
+                    zoomToBounds(currentEventProperties.metadata.bounds);
+                } else {
+                    eventMap.setView(eventDefaultLatLng, 13);
+                }
+            }, 300);
+
+        },
+        lintTypes(){
+
+            var tmpEventWithSubTypes = {};
+            for(var i3= 0; i3 < this.eventTypes.length; i3++){
+                if(eventTypes[i3].subTypes){
+                    var tmpSubTypes = eventTypes[i3].subTypes.map(function(el){return el.value;});
+                    tmpEventWithSubTypes[eventTypes[i3].value] = tmpSubTypes;
+                }
+            }
+
+            var cleanSubTypes = [];
+            for(var i4=0; i4<this.checkedTypes.length; i4++){
+                var tmpType = tmpEventWithSubTypes[this.checkedTypes[i4]];
+                if(tmpType){
+                    for(var j=0; j<this.checkedSubTypes.length; j++){
+                        if(tmpType.indexOf(this.checkedSubTypes[j]) > -1){
+                            cleanSubTypes.push(this.checkedSubTypes[j]);
+                        }
+                    }
+                }
+            }
+            this.checkedSubTypes = cleanSubTypes;
+        },
+        lintSubTypesSelected(body){
+            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+                alert('ensure subtype(s) is/are selected');
+                this.invalid.typesSelection = true;
+            }else{
+                this.invalid.typesSelection = false;
+            }
+        },
+        placeOtherFields(){
+            for(key in this.otherFields){
+                if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
+                    var subTypes = this.event.metadata.sub_type.split(',');
+                    var index = _.findIndex(subTypes, function(el){
+                        return el.indexOf(`other_${key}`) != -1;
+                    });
+
+                    this.otherFields[key].isSelected = true;
+                    this.otherFields[key].description = subTypes[index].substring(subTypes[index].indexOf(':') + 1);
+
+                }
+            }
+
+            if(this.event.type.indexOf('other:') != -1){
+                var tmpTypes = this.event.type.split(',');
+                var typeIndex = _.findIndex(tmpTypes, function(el){
+                    return el.indexOf('other:') != -1;
+                });
+
+                this.otherFields.type.isSelected = true;
+                this.otherFields.type.description = tmpTypes[typeIndex].substring(tmpTypes[typeIndex].indexOf(':')+1);
+            }
+        },
+        lintOtherFields(){
+            var emptyFields = [];
+
+            for(var key in this.otherFields){
+                var description = this.otherFields[key].description;
+
+                if(this.otherFields[key].isSelected){
+                    if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) != -1 || key == 'type')){ // to be sure that main type was selected
+                        emptyFields.push(key.replace('_', ' '));
+                    }else if(this.checkedTypes.indexOf(key) != -1){
+                        this.checkedSubTypes.push('other_'+key+ ': '+ description);
+                    }else if(key == 'type'){
+                        var index = _.findIndex(this.checkedTypes, function(el){
+                            return el.indexOf('other:') != -1;
+                        });
+                        if(index){
+                            this.checkedTypes[index] = 'other: '+ description;
+                        }else{
+                            this.checkedTypes.push('other: '+ description);
+                        }
+                    }
+                }
+            }
+
+            if(emptyFields.length > 0 ){
+                alert(`Please enter description for other ${emptyFields.join(', ')}`);
+                this.invalid.emptyStrings = true;
+            }else{
+                this.invalid.emptyStrings = false;
+            }
+        },
+
+        submitEventMetadata(){
+            var metadata = this.event.metadata;
+
+            if ($('#inputNotification').val()) {
+                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+                    if(!Array.isArray(currentEventProperties.metadata.notification)){
+                        currentEventProperties.metadata.notification = [];
+                    }
+                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+                } else {
+                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+                }
+            }
+
+            this.lintTypes(); // make sure if type is unselected, subtype is removed
+            this.lintOtherFields(); // make sure the other string gets attached
+            this.event.type = this.checkedTypes.join();
+            this.event.sub_type = this.checkedSubTypes.join();
+
+
+            metadata = _.extend(metadata, {
+                sub_type: this.event.sub_type,
+                country: this.areas.countries.join(','), /// BUG:// should be bind to model
+                region: this.areas.regions.join(',') // should be bind to model
+            });
+
+            var body = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata: metadata
+            };
+
+            body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+            this.lintSubTypesSelected(body);
+
+            // body.event.type = this.event.type.toString() // make sure the other string gets attached
+
+            if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/events/' + currentEventId,
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                }).done(function(data, textStatus, req) {
+                    window.location.href = '/events/?eventId=' + currentEventId;
+                }).fail(function(err) {
+                    if (err.responseText.includes('expired')) {
+                        alert('session expired');
+                    }
+                });
             }
         },
         editEvent:function(category){
             if (category == 'general')
             {
+                // this is modal implemation
                 editCategory=category;
                 onEditEvent();
                 $( '#editModal' ).modal('show');
+
+
             } else {
                 this.panelEditing[category]=true;
-                this.panelDirty[category]=true;
-                this.somePanelDirty=true;
+                if (category=='Notification')
+                {
+                    if (this.panelDirty[category])
+                    {
+                        this.event.metadata.notification.pop();
+                    }
+                }
+                else{
+                    this.panelDirty[category]=true;
+                    this.somePanelDirty=true;
+                }
+
                 $('#collapse'+category).collapse('show');
+
+                // this is inline implementation
+                if(category == 'General'){
+                    this.loadMap();
+                    this.assignAreas();
+                    this.placeOtherFields();
+                }
             }
         },
         stopEdit:function(category)
         {
             var vm=this;
             vm.panelEditing[category]=false;
-            vm.panelDirty[category]=true;
+
             if (category=='Notification')
             {
                 if (vm.newNotification) {
+                    vm.panelDirty[category]=true;
+                    this.somePanelDirty=true;
+                    var newNotificationObject={
+                        'notification_time': Date.now()/1000,
+                        'notification': vm.newNotification,
+                        'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')
+                    };
                     if (vm.event.metadata.hasOwnProperty('notification') && vm.event.metadata.notification.length > 0) {
-                        vm.event.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')});
+                        vm.event.metadata.notification.push(newNotificationObject);
                     } else {
-                        vm.event.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': vm.newNotification, 'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')}];
+                        vm.event.metadata.notification = [newNotificationObject];
                     }
+                }else{
+                    vm.panelDirty[category]=false;
                 }
-                vm.newNotification='';
+
             }
         },
         addOtherOrg: function() {
@@ -1538,7 +1920,29 @@ var vmObject = {
                 from_who: null,
             });
         },
+        updateEvent:function(eventId,body,notificationFileUrl){
+            if (notificationFileUrl)
+            {
+                var lastNotification=body.metadata.notification.slice().sort((a,b) => {
+                    return b.notification_time - a.notification_time;
+                })[0];
+                lastNotification['notificationFileUrl']=notificationFileUrl;
+            }
+            $.ajax({
+                type: 'PUT',
+                url: '/api/events/' + eventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                window.location.href = '/events/?eventId=' + eventId;
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        },
         saveEventEdits:function(){
+            var vm=this;
             var metadata = this.event.metadata;
 
             //TODO: fix this
@@ -1559,21 +1963,50 @@ var vmObject = {
             };
             //body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
 
-            if ((body.type.includes('natural_hazard') || body.type.includes('epidemiological')) && body.metadata.sub_type == '') {
+            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
                 alert('ensure subtype(s) is/are selected');
             } else {
-                $.ajax({
-                    type: 'PUT',
-                    url: '/api/events/' + currentEventId,
-                    data: JSON.stringify(body),
-                    contentType: 'application/json'
-                }).done(function(data, textStatus, req) {
-                    window.location.href = '/events/?eventId=' + currentEventId;
-                }).fail(function(err) {
-                    if (err.responseText.includes('expired')) {
-                        alert('session expired');
-                    }
-                });
+
+                $('#dialogModalTitle').html('Uploading attachment(s)...');
+                $('#dialogModal').modal('show');
+                var files=document.getElementById('inputNotificationUpload').files;
+                var imgLink='';
+
+                if (files && files[0])
+                {
+                    var imgFileName=files[0].name;
+                    var fileType=files[0].type;
+                    var photo=files[0];
+                    $.ajax({
+                        url : '/api/utils/uploadurl',
+                        data: {'filename': imgFileName, key:('event/'+currentEventId)},
+                        type : 'GET',
+                        dataType : 'json',
+                        cache : false,
+                    })
+                        .then(function(retData) {
+                            imgLink=retData.url;
+                            return $.ajax({
+                                url : retData.signedRequest,
+                                type : 'PUT',
+                                data : photo,
+                                dataType : 'text',
+                                cache : false,
+                                //contentType : file.type,
+                                processData : false,
+                            });
+                        }).then(function(data,txt,jq){
+                            vm.updateEvent(currentEventId,body,imgLink);
+                        })
+                        .fail(function(err){
+                            //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
+                            $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
+                        });
+
+                }else {//no image just submit the report
+                    vm.updateEvent(currentEventId,body,imgLink);
+                }
+
             }
         },
         cancelEventEdits:function(){
@@ -1583,14 +2016,17 @@ var vmObject = {
     },
     computed:{
         reversedNotifications:function() {
-            return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.sort((a,b) => {
+            return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
             }): [];
         },
         notStr:function(){
-            return (this.event.metadata.notification.length > 0) ? this.event.metadata.notification[this.event.metadata.notification.length-1].notification+
-            (this.event.metadata.notification[this.event.metadata.notification.length-1].hasOwnProperty('username') ? (', From: ' + this.event.metadata.notification[this.event.metadata.notification.length-1].username) : '') +
-            ' @ ' + (new Date(this.event.metadata.notification[this.event.metadata.notification.length-1].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
+            let reversed = this.event.metadata.notification.slice().sort((a,b) => {
+                return b.notification_time - a.notification_time;
+            });
+            return (reversed.length > 0) ? reversed[0].notification+
+            (reversed[0].hasOwnProperty('username') ? (', From: ' + reversed[0].username) : '') +
+            ' @ ' + (new Date(reversed[0].notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
             return WEB_HOST + 'events/?eventId=' + this.event.id;

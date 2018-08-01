@@ -29,6 +29,7 @@ var NRlayerControl = L.control.layers(NRbaseMaps, NRoverlayMaps, {'position':'to
 
 // tie to modal display
 $('#newReportModal').on('shown.bs.modal', function() {
+    $('#newReportModalEventName').html('MSF would like to request any information you may have about the ' + currentEventProperties.metadata.name + ' event.');
     _.defer(newReportMap.invalidateSize.bind(newReportMap));
 });
 
@@ -148,7 +149,7 @@ $('#createReport').on('click', function (e) {
             var photo=files[0];
             $.ajax({
                 url : '/api/utils/uploadurl',
-                data: 'filename='+imgFileName,// + '&mime=' + fileType,
+                data: {'filename': imgFileName, key:'report'},
                 type : 'GET',
                 dataType : 'json',
                 cache : false,

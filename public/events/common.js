@@ -116,6 +116,38 @@ var statuses = [
     { value: 'complete', text: 'Complete' }
 ];
 
+/// HERE creating a new data form
+var eventTypes = [
+    { value: 'armed_conflict', text: 'Armed Conflict' },
+    { value: 'disease_outbreak', text: 'Disease Outbreak',
+        subTypes: [
+            { value: 'cholera', text: 'Cholera' },
+            { value: 'ebola', text: 'Ebola' },
+            { value: 'dengue', text: 'Dengue' },
+            { value: 'malaria', text: 'Malaria' },
+            { value: 'measles', text: 'Measles' },
+            { value: 'meningococcal_meningitis', text: 'Meningococcal Meningitis' },
+            { value: 'yellow_fever', text: 'Yellow Fever' },
+            { value: 'other_disease_outbreak', text: 'Others' }
+        ]
+    },
+
+    { value: 'displacement', text: 'Displacement' },
+    { value: 'malnutrition', text: 'Malnutrition' },
+    { value: 'natural_disaster', text: 'Natural disaster',
+        subTypes: [
+            { value: 'earthquake', text: 'Earthquake' },
+            { value: 'volcano', text: 'Volcano' },
+            { value: 'typhoon', text: 'Typhoon' },
+            { value: 'flood', text: 'Flood' },
+            { value: 'tsunami', text: 'Tsunami' },
+            { value: 'drought', text: 'Drought' },
+            { value: 'other_natural_disaster', text: 'Others' }
+        ]
+    },
+    { value: 'search_and_rescue', text: 'Search and Rescue' },
+];
+
 var emergencies = [
     { value: 'armed_conflict', text: 'Armed Conflict' },
     { value: 'displacement', text: 'Displacement' },

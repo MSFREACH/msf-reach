@@ -25,7 +25,9 @@ var mapEditEvents = function(err, events){
         var notificationStr = '';
         var statusStr = '';
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification[feature.properties.metadata.notification.length-1].notification + '<br>';
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.slice().sort((a,b) => {
+                return b.notification_time - a.notification_time;
+            })[0].notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -47,7 +49,7 @@ var mapEditEvents = function(err, events){
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
         var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (feature.properties.type.toLowerCase().includes('epidemiological')) {
+        if (feature.properties.type.toLowerCase().includes('disease_outbreak')) {
             icon_name = 'epidemic';
         }
 
@@ -122,6 +124,108 @@ var mapEditEvents = function(err, events){
 
 };
 
+
+/**
+* Function to add events to the edit maps
+* @function mapEditGeneralEvents
+* @param {Object} err - error object, null if no error
+* @param {Object} events - GeoJSON Object containing event details
+*/
+var mapEditGeneralEvents = function(err, events){
+
+    // Add popups
+    function onEachFeature(feature, layer) {
+        var affectedPopulationStr = '';
+        if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
+            affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
+        }
+
+        var totalPopulationStr = '';
+        if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
+            totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
+        }
+
+        var notificationStr = '';
+        var statusStr = '';
+        if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification[feature.properties.metadata.notification.length-1].notification + '<br>';
+        } else {
+            notificationStr = 'Latest notification: (none)<br>';
+        }
+        if(typeof(feature.properties.metadata.event_status)!=='undefined') {
+            statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
+        } else {
+            statusStr = 'Status: ' + feature.properties.status + '<br>';
+        }
+
+        var severityStr = '';
+
+        if (feature.properties.metadata.hasOwnProperty('severity')) {
+            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
+        }
+        if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
+            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
+        }
+
+
+        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+        var icon_name = type.includes(',') ? type.split(',')[0] : type;
+        if (feature.properties.type.toLowerCase().includes('disease_outbreak')) {
+            icon_name = 'epidemic';
+        }
+
+        var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
+    '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
+    '<strong><a href=\'/events/?eventId=' + feature.properties.id +
+    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
+    'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>' +
+    'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type,feature.properties.metadata.sub_type) + '<br>' +
+    statusStr +
+    severityStr +
+    notificationStr +
+    totalPopulationStr +
+    affectedPopulationStr;
+
+
+        if (popupContent.endsWith('<br>')) {
+            popupContent.substr(0,popupContent.length-4);
+        }
+
+
+        if (feature.properties && feature.properties.popupContent) {
+            popupContent += feature.properties.popupContent;
+        }
+
+        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
+    }
+
+    eventEventsLayer = L.geoJSON(events, {
+        pointToLayer: function (feature, latlng) {
+            if (feature.properties.id!==currentEventId) {
+                return L.marker(latlng, {icon: L.icon({
+                    iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                    iconSize:     [50, 50], // size of the icon
+                    iconAnchor: [25, 50]
+                    //popupAnchor: [0, -40]
+                    //iconAnchor:   [13, -13], // point of the icon which will correspond to marker's location
+                    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+                })});
+            } else {
+                return null;
+            }
+        },
+        onEachFeature: onEachFeature
+    });
+
+
+    if (Cookies.get('Ongoing MSF Responses')==='on') {
+        eventEventsLayer.addTo(eventMap);
+    }
+    eventMapLayerControl.addOverlay(eventEventsLayer, 'Ongoing MSF Responses');
+};
+
+
 /**
 * Function to add missions to the edit maps
 * @function mapEditMissions
@@ -141,7 +245,9 @@ var mapEditMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0){
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification.slice().sort((a,b) => {
+                    return b.notification_time - a.notification_time;
+                })[0].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }

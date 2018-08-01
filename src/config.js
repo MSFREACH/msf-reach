@@ -1,6 +1,6 @@
 require('dotenv').config({silent: true});
 
-var types = 'conflict,epidemiological,displacement,malnutrition,natural_hazard,search_and_rescue,other';
+var types = 'armed_conflict,disease_outbreak,displacement,malnutrition,natural_disaster,search_and_rescue,other';
 types = types.split(',');
 
 //get all possible combinations of types in correct order

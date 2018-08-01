@@ -10,8 +10,8 @@
 var GEOFORMAT='geojson'; // use geojson as preferred goepsatial data format
 
 // mapping from short type names to longer names
-var TYPES=[{'conflict':'Conflict'}, {'natural_hazard':'Natural Disaster'},
-    {'epidemiological':'Disease Outbreak'}, {'search_and_rescue':'Search & rescue'},
+var TYPES=[{'conflict':'Conflict'}, {'natural_disaster':'Natural Disaster'},
+    {'disease_outbreak':'Disease Outbreak'}, {'search_and_rescue':'Search & rescue'},
     {'displacement':'Displacement'}, {'malnutrition':'Malnutrition'}, {'other':'Other (detail in summary)'}
 ];
 
@@ -88,7 +88,9 @@ var mapAllEvents = function(err, events){
         var notificationStr = '';
         var statusStr = '';
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification[feature.properties.metadata.notification.length-1].notification + '<br>';
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.slice().sort((a,b) => {
+                return b.notification_time - a.notification_time;
+            })[0].notification + '<br>';
         } else {
             notificationStr = 'Latest notification: (none)<br>';
         }
@@ -109,7 +111,7 @@ var mapAllEvents = function(err, events){
 
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-        type = type.toLowerCase().replace('epidemiological','epidemic').replace('natural_hazard','');
+        type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','');
         var icon_names = type.split(',');
         var icon_html = icon_names.map(function(item) {
             if (item!=='' && disease_subtypes.indexOf(item)===-1) {
@@ -409,7 +411,9 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification[feature.properties.properties.notification.length-1].notification + '<BR>';
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification.slice().sort((a,b) => {
+                    return b.notification_time - a.notification_time;
+                })[0].notification + '<BR>';
             } else {
                 popupContent += 'Latest notification: (none)<BR>';
             }
