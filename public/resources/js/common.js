@@ -26,12 +26,12 @@ $(function() {
 });
 
 var getLatestNotification=function(notificationArray){
-  if (!Array.isArray(notificationArray))
-     return notificationArray;
-  return notificationArray.reduce(function(acc,cur){
-    return (acc.notification_time < cur.notification_time) ? cur : acc;
+    if (!Array.isArray(notificationArray))
+        return notificationArray;
+    return notificationArray.reduce(function(acc,cur){
+        return (acc.notification_time < cur.notification_time) ? cur : acc;
     });
-}
+};
 
 let newData = function (dataTime) {
     userTime = Number(Cookies.get('last_load'));
