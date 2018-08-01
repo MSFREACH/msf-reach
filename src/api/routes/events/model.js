@@ -21,13 +21,13 @@ export default (config, db, logger) => ({
 	 */
     all: (status, country, location) => new Promise((resolve, reject) => {
         // Construct geom, if exists
-        const geom = !!location.lng && 
+        const geom = !!location.lng &&
         !!location.lat && 'POINT(' + location.lng +' '+location.lat +')' || null;
         // Setup query
         let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
 			FROM ${config.TABLE_EVENTS}
-            WHERE ($1 is null or status = $1) AND 
-                ($2 is null or metadata->>'country' = $2) AND 
+            WHERE ($1 is null or status = $1) AND
+                ($2 is null or metadata->>'country' = $2) AND
                 ($3 is null or ST_DWITHIN(ST_TRANSFORM(the_geom,3857),ST_TRANSFORM(ST_GEOMFROMTEXT($3,4326),3857),${config.DEFAULT_EVENT_SEARCH_DISTANCE}))
 			ORDER BY updated_at DESC`;
         let values = [ status, country, geom ];
@@ -87,15 +87,29 @@ export default (config, db, logger) => ({
                     logger.error('err ' + error );
                     logger.error('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                     body.metadata.country = 'unknown';
+                    body.metadata.areas = []
                 } else {
                     body.metadata.country = 'unknown';
                     let geocoded = JSON.parse(response_body);
+                    body.metadata.areas = []
                     if (geocoded && geocoded.results && geocoded.results[0] && geocoded.results[0].address_components) {
-                        for (let i = 0; i < geocoded.results[0].address_components.length; i++ ) {
-                            if (geocoded.results[0].address_components[i].types.indexOf('country') > -1) {
-                                body.metadata.country=geocoded.results[0].address_components[i].long_name;
-                            }
+                        var address = geocoded.results[0].address_components;
+                        var area = {
+                          region: "",
+                          country: "",
+                          country_code: ""
                         }
+                        for (let i = 0; i < address.length; i++ ) {
+                          if (address[i].types.indexOf('administrative_area_level_1') > -1) {
+                              area.region=address[i].long_name;
+                          }
+                          if (address[i].types.indexOf('country') > -1) {
+                              area.country=address[i].long_name;
+                              area.country_code=address[i].short_name;
+                              console.log('create event --- country_code --- ', area.country_code)
+                          }
+                        }
+                        body.metadata.areas.push(area)
                     }
                 }
                 db.task(async t => { //eslint-disable-line no-unused-vars

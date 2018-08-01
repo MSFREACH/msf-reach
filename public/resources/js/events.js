@@ -1345,7 +1345,8 @@ var vmObject = {
         },
         invalid: {
             typesSelection: false,
-            emptyStrings: false
+            emptyStrings: false,
+            nullAreas: false
         },
         fieldsInvalid: false,
         somePanelDirty:false,
@@ -1367,10 +1368,6 @@ var vmObject = {
                 isSelected: false,
                 description: ''
             }
-        },
-        areas: {
-            countries: [],
-            regions: []
         }
     },
     mounted:function(){
@@ -1427,15 +1424,15 @@ var vmObject = {
 
             if(currentEventProperties.type){
                 var currentTypes = currentEventProperties.type.split(',');
-                for(var i2 = 0; i < currentTypes.length; i2++){
-                    this.checkedTypes.push(currentTypes[i2]);
+                for(var i = 0; i < currentTypes.length; i++){
+                    this.checkedTypes.push(currentTypes[i]);
                 }
             }
 
             if(currentEventProperties.metadata.sub_type){
                 var currentSubTypes = currentEventProperties.metadata.sub_type.split(',');
-                for(var i3 = 0; i3 < currentSubTypes.length; i3++){
-                    this.checkedSubTypes.push(currentSubTypes[i3]);
+                for(var i = 0; i < currentSubTypes.length; i++){
+                    this.checkedSubTypes.push(currentSubTypes[i]);
                 }
             }
         }
@@ -1514,9 +1511,10 @@ var vmObject = {
                 return moment(value).format('YYYY-MM-DD');
             }
         },
-        assignAreas(){
-            this.areas.regions = currentEventProperties.metadata.region.split(',');
-            this.areas.countries = currentEventProperties.metadata.country.split(',');
+        removeArea(area){
+          var index = _.findIndex(this.event.metadata.areas, area)
+          console.log("removearea ----  ", area, index)
+          this.event.metadata.areas.splice(index, 1)
         },
         removeRegion(region){
             var index = this.areas.regions.indexOf(region);
@@ -1741,6 +1739,14 @@ var vmObject = {
                 this.invalid.emptyStrings = false;
             }
         },
+        lintAreas(){
+          if(_.isEmpty(this.event.metadata.areas)){
+            alert('Please select an area')
+            this.invalid.nullAreas = true
+          }else{
+            this.invalid.nullAreas = false;
+          }
+        },
 
         submitEventMetadata(){
             var metadata = this.event.metadata;
@@ -1758,14 +1764,13 @@ var vmObject = {
 
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
+            this.lintAreas();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
 
 
             metadata = _.extend(metadata, {
-                sub_type: this.event.sub_type,
-                country: this.areas.countries.join(','), /// BUG:// should be bind to model
-                region: this.areas.regions.join(',') // should be bind to model
+                sub_type: this.event.sub_type
             });
 
             var body = {
@@ -1779,7 +1784,7 @@ var vmObject = {
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
 
-            if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
+            if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
                 $.ajax({
                     type: 'PUT',
                     url: '/api/events/' + currentEventId,
@@ -1822,7 +1827,6 @@ var vmObject = {
                 // this is inline implementation
                 if(category == 'General'){
                     this.loadMap();
-                    this.assignAreas();
                     this.placeOtherFields();
                 }
             }
