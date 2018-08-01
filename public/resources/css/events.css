@@ -1,5 +1,5 @@
 #map {
-  height: 85vh;
+  height: CALC(100vh - 160px);;
 }
 
 #title {
