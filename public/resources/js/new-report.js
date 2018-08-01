@@ -29,6 +29,7 @@ var NRlayerControl = L.control.layers(NRbaseMaps, NRoverlayMaps, {'position':'to
 
 // tie to modal display
 $('#newReportModal').on('shown.bs.modal', function() {
+    $('#newReportModalEventName').html('MSF would like to request any information you may have about the ' + currentEventProperties.metadata.name + ' event.');
     _.defer(newReportMap.invalidateSize.bind(newReportMap));
 });
 
