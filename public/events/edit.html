@@ -74,25 +74,17 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Country(s)</dt>
+              <dt>Area(s)</dt>
               <dd>
-                <input id="eventCountry" type="text" v-model="event.metadata.country" class="form-control" placeholder="Country" />
+                <span v-if="event.metadata.areas" v-for="area in event.metadata.areas" class="tags" v-model="event.metadata.areas">
+                  <span v-if="area.region.length > 0" v-model="area"> {{area.region}}, {{area.country_code}} </span>
+                  <span v-else v-model="area"> {{area.country}} </span>
+                   <span class="remove" @click="removeArea(area)"> x </span>
+                </span>
               </dd>
             </dl>
             <dl>
-              <dt>Country(s)</dt>
-              <dd>
-                <input id="eventCountry" type="text" v-model="event.metadata.country" class="form-control" placeholder="Country" />
-              </dd>
-            </dl>
-            <dl>
-              <dt>Region(s)</dt>
-              <dd>
-                <input id="eventRegion" type="text" v-model="event.metadata.region" class="form-control" placeholder="Region" />
-              </dd>
-            </dl>
-            <dl>
-              <dt>Add region for the emergency</dt>
+              <dt>Add area for the emergency</dt>
               <dd class="bottom-margined">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
               </dd>
