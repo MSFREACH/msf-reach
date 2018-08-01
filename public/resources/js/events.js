@@ -254,7 +254,7 @@ var printEventProperties = function(err, eventProperties){
         //    $('#inputPracticalDetails').val(eventProperties.metadata.practical_details);
         $('#inputSecurityDetails').val(eventProperties.metadata.security_details);
         if (typeof(eventProperties.metadata.notification)!=='undefined' && eventProperties.metadata.notification.length > 0) {
-            $('#inputNotification').val(eventProperties.metadata.notification.sort((a,b) => {
+            $('#inputNotification').val(eventProperties.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
             })[0].notification);
         }
@@ -366,7 +366,7 @@ var mapAllEvents = function(err, events){
         var notificationStr = '';
         var statusStr = '';
         if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.sort((a,b) => {
+            notificationStr = 'Latest notification: ' + feature.properties.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
             })[0].notification + '<br>';
         } else {
@@ -910,7 +910,7 @@ var mapMissions = function(missions ){
         feature.properties.id +
         ')">' + feature.properties.properties.name + '</a><br>';
             if (typeof(feature.properties.properties.notification) !== 'undefined' && feature.properties.properties.notification.length > 0) {
-                popupContent += 'Latest notification: ' + feature.properties.properties.notification.sort((a,b) => {
+                popupContent += 'Latest notification: ' + feature.properties.properties.notification.slice().sort((a,b) => {
                     return b.notification_time - a.notification_time;
                 })[0].notification + '<BR>';
             } else {
@@ -1933,7 +1933,7 @@ var vmObject = {
         updateEvent:function(eventId,body,notificationFileUrl){
             if (notificationFileUrl)
             {
-                var lastNotification=body.metadata.notification.sort((a,b) => {
+                var lastNotification=body.metadata.notification.slice().sort((a,b) => {
                     return b.notification_time - a.notification_time;
                 })[0];
                 lastNotification['notificationFileUrl']=notificationFileUrl;
@@ -2031,7 +2031,7 @@ var vmObject = {
             }): [];
         },
         notStr:function(){
-            let reversed = this.event.metadata.notification.sort((a,b) => {
+            let reversed = this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
             });
             return (reversed.length > 0) ? reversed[0].notification+
