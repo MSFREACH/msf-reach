@@ -89,12 +89,12 @@ $(function () {
             $('#mapAddress').val(props.address);
             $('#inputContactTitle').val(props.title); //'title':  || $('#inputContactOtherTitle').val(),
             $('#inputContactOtherName').val(props.otherNames);
-            if ((props.gender=='male')||(props.gender=='female'))
-                $('#inputGender').val(props.gender);
-            else {
-                $('#inputGender option:last').attr('selected',true);
-                $('#inputContactOtherGender').val(props.gender);
-            }
+            // if ((props.gender=='male')||(props.gender=='female'))
+            //     $('#inputGender').val(props.gender);
+            // else {
+            //     $('#inputGender option:last').attr('selected',true);
+            //     $('#inputContactOtherGender').val(props.gender);
+            // }
 
             $('#inputContactType').val(props.type);
             $('#divOtherType').toggle(props.type == 'Other');
@@ -103,10 +103,11 @@ $(function () {
             if (props.type === 'Current MSF Staff') {
                 $('#inputContactOC').val(props.OC);
                 $('#inputContactMSFEmploy').val(props.msf_employment);
-                $('#inputMSFSection').val(props.msf_section);
-                $('#inputMSFBranch').val(props.msf_branch);
-                $('#inputMSFProject').val(props.msf_project);
-                $('#inputMSFMission').val(props.msf_mission);
+                $('#inputMSFAdditional').val(props.msf_additional);
+                // $('#inputMSFSection').val(props.msf_section);
+                // $('#inputMSFBranch').val(props.msf_branch);
+                // $('#inputMSFProject').val(props.msf_project);
+                // $('#inputMSFMission').val(props.msf_mission);
             } else {
                 $('#inputContactMSFAssociate').prop('checked', props.msf_associate);
                 $('#inputContactMSFPeer').prop('checked', props.msf_peer);
@@ -123,19 +124,19 @@ $(function () {
             if (props.hasOwnProperty('home')) {
                 $('#inputContactHome').intlTelInput('setNumber', props.home);
             }
-            if (props.hasOwnProperty('fax')) {
-                $('#inputContactFax').intlTelInput('setNumber', props.fax);
-            }
+            // if (props.hasOwnProperty('fax')) {
+            //     $('#inputContactFax').intlTelInput('setNumber', props.fax);
+            // }
 
             //'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
             //var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
             $('#inputContactFirstName').val(props.name.split(' ')[0]);
             $('#inputContactLastName').val(props.name.split(' ')[1]);
 
-            $('#inputSpeciality').val(props.speciality);
+            // $('#inputSpeciality').val(props.speciality);
             //'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
-            $('#datepicker').val(props.dob);
-            $('#inputContactWeb').val(props.web) ;
+            // $('#datepicker').val(props.dob);
+            // $('#inputContactWeb').val(props.web) ;
             //'email':$('#inputContactEmail').val(),
             $('#inputContactEmailRO').attr('readonly',false);
             $('#inputContactEmailRO').val(props.email);
@@ -212,11 +213,11 @@ $(function () {
                 alert('Please check your work phone number to proceed.');
                 return;
             }
-            if ($('#inputContactFax').val() && !$('#inputContactFax').intlTelInput('isValidNumber'))
-            {
-                alert('Please check your fax number to proceed.');
-                return;
-            }
+            // if ($('#inputContactFax').val() && !$('#inputContactFax').intlTelInput('isValidNumber'))
+            // {
+            //     alert('Please check your fax number to proceed.');
+            //     return;
+            // }
 
             if ($('#inputContactEmail2').val() && !valid_email($('#inputContactEmail2').val())) {
                 alert('Please enter a valid second email address to proceed.');
