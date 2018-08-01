@@ -97,7 +97,7 @@ div.pac-container {
 .tab-pane-box {
   height: CALC(100vh - 200px);
   overflow-y:scroll;
-  border:1px solid black;
+  border:1px solid #ccc;
 }
 
 [v-cloak] {
