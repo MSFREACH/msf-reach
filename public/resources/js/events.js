@@ -34,7 +34,6 @@ mainMap.on('load', function(loadEvent) {
         },
         success: function(data) {
             ARCGIS_TOKEN = data.token;
-            console.log(ARCGIS_TOKEN); // eslint-disable-line no-console
             getMSFPresence(mapMSFPresence);
         }
     });
@@ -54,7 +53,6 @@ function bindAutocompletes()
     if ((!google)||(!google.maps))
     {
         setTimeout(bindAutocompletes,200);
-        //console.log('not ready, retrying in 0.2s...');
         return;
     }
     bindACInputToMap(mainMap,'eventAddress');
@@ -479,7 +477,6 @@ var loadContacts = function(err, contacts) {
             }
 
 
-            // console.log(key, value);
             $('#contactsTable').append(
                 '<tr id=\'crow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openContactPopup('+value.properties.id+')\'><td><a data-toggle=\'modal\' data-target=\'#contactDetailsModal\' href=\'#\' onclick=\'onContactLinkClick(' +
           value.properties.id +
@@ -1240,16 +1237,15 @@ function translate(data) {
 
 var editCategory='general';
 
-Vue.component("date-picker", VueBootstrapDatetimePicker.default);
+Vue.component('date-picker', VueBootstrapDatetimePicker.default);
 
 var eventMap;
 var eventMapLayerControl;
 
 var zoomToBounds = function(bounds) {
-    console.log(bounds);
     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
     eventMap.fitBounds(rBounds);
-}
+};
 
 
 
@@ -1354,8 +1350,8 @@ var vmObject = {
             'ExtraDetails': false
         },
         invalid: {
-          typesSelection: false,
-          emptyStrings: false
+            typesSelection: false,
+            emptyStrings: false
         },
         fieldsInvalid: false,
         somePanelDirty:false,
@@ -1365,29 +1361,26 @@ var vmObject = {
         checkedTypes: [],
         checkedSubTypes: [],
         otherFields: {
-          type: {
-            isSelected: false,
-            description: ''
-          },
-          disease_outbreak: {
-            isSelected: false,
-            description: ''
-          },
-          natural_disaster: {
-            isSelected: false,
-            description: ''
-          }
+            type: {
+                isSelected: false,
+                description: ''
+            },
+            disease_outbreak: {
+                isSelected: false,
+                description: ''
+            },
+            natural_disaster: {
+                isSelected: false,
+                description: ''
+            }
         },
         areas: {
-          countries: [],
-          regions: []
+            countries: [],
+            regions: []
         }
     },
     mounted:function(){
-        //console.log('mounted');
         $('#eventMSFLoader').hide();
-        //console.log('mounted event instance.');
-        //console.log(this.event.metadata.ext_other_organizations);
 
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
@@ -1402,16 +1395,16 @@ var vmObject = {
             value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
             min: 1, max: 3, step: 1
         }).each(function() {
-                // Get the options for this slider
-                var opt = $(this).data().uiSlider.options;
-                // Get the number of possible values
-                var vals = opt.max - opt.min;
-                // Space out values
-                for (var i = 0; i <= vals; i++) {
-                    var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
-                    $( '#inputSeverityScale' ).append(el);
-                }
-            });
+            // Get the options for this slider
+            var opt = $(this).data().uiSlider.options;
+            // Get the number of possible values
+            var vals = opt.max - opt.min;
+            // Space out values
+            for (var i = 0; i <= vals; i++) {
+                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+                $( '#inputSeverityScale' ).append(el);
+            }
+        });
 
 
 
@@ -1439,17 +1432,17 @@ var vmObject = {
             $('#searchTerm').val(searchTerm);
 
             if(currentEventProperties.type){
-              var currentTypes = currentEventProperties.type.split(',')
-              for(var i = 0; i < currentTypes.length; i ++){
-                this.checkedTypes.push(currentTypes[i])
-              }
+                var currentTypes = currentEventProperties.type.split(',');
+                for(var i2 = 0; i < currentTypes.length; i2++){
+                    this.checkedTypes.push(currentTypes[i2]);
+                }
             }
 
             if(currentEventProperties.metadata.sub_type){
-              var currentSubTypes = currentEventProperties.metadata.sub_type.split(',')
-              for(var i = 0; i < currentSubTypes.length; i ++){
-                this.checkedSubTypes.push(currentSubTypes[i])
-              }
+                var currentSubTypes = currentEventProperties.metadata.sub_type.split(',');
+                for(var i3 = 0; i3 < currentSubTypes.length; i3++){
+                    this.checkedSubTypes.push(currentSubTypes[i3]);
+                }
             }
         }
 
@@ -1528,38 +1521,37 @@ var vmObject = {
             }
         },
         assignAreas(){
-          this.areas.regions = currentEventProperties.metadata.region.split(',')
-          this.areas.countries = currentEventProperties.metadata.country.split(',')
+            this.areas.regions = currentEventProperties.metadata.region.split(',');
+            this.areas.countries = currentEventProperties.metadata.country.split(',');
         },
         removeRegion(region){
-          var index = this.areas.regions.indexOf(region)
-          this.areas.regions.splice(index, 1);
+            var index = this.areas.regions.indexOf(region);
+            this.areas.regions.splice(index, 1);
         },
         removeCountry(country){
-          var index = this.areas.countries.indexOf(country)
-          this.areas.countries.splice(index, 1);
+            var index = this.areas.countries.indexOf(country);
+            this.areas.countries.splice(index, 1);
         },
         //*****  Event Map section ***** //
         loadMap(){
             var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
             eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false});
             eventMap.scrollWheelZoom.disable();
-              //Bind Autocomplete to inputs:
-              function bindAutocompletes() {
+            //Bind Autocomplete to inputs:
+            function bindAutocompletes() {
                 if ((!google)||(!google.maps))
-                  {
+                {
                     setTimeout(bindAutocompletes,200);
-                    console.log('not ready, retrying in 0.2s...');
                     return;
-                  }
+                }
                 bindACInputToMap(eventMap,'editEventAddress',true);
-              }
+            }
 
-              bindAutocompletes();
+            bindAutocompletes();
 
-              var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
+            var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
 
-              /*
+            /*
               var latlng = null;
               eventMap.on('click', function(e) {
                 if (eventMarker) {
@@ -1570,250 +1562,248 @@ var vmObject = {
                 eventMarker = L.marker(e.latlng).addTo(eventMap);
               });
               */
-              /** eventMap >> */
+            /** eventMap >> */
 
-              // Add some base tiles
-              var eventMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
-                  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-                  minZoom: 0,
-                  maxZoom: 18
-              });
-              // Add some satellite tiles
-              var eventMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
-                  attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-              });
+            // Add some base tiles
+            var eventMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+                minZoom: 0,
+                maxZoom: 18
+            });
+            // Add some satellite tiles
+            var eventMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+            });
 
-              // OSM HOT tiles
-              var eventOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-                  maxZoom: 19,
-                  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
-              });
+            // OSM HOT tiles
+            var eventOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+            });
 
-              switch (Cookies.get('MapLayer')) {
-              case 'Satellite':
-                  eventMapboxSatellite.addTo(eventMap);
-                  break;
-              case 'Terrain':
-                  eventMapboxTerrain.addTo(eventMap);
-                  break;
-              default:
-                  eventOpenStreetMap_HOT.addTo(eventMap);
-              }
+            switch (Cookies.get('MapLayer')) {
+            case 'Satellite':
+                eventMapboxSatellite.addTo(eventMap);
+                break;
+            case 'Terrain':
+                eventMapboxTerrain.addTo(eventMap);
+                break;
+            default:
+                eventOpenStreetMap_HOT.addTo(eventMap);
+            }
 
 
-              var eventBaseMaps = {
-                  'Terrain': eventMapboxTerrain,
-                  'Satellite' : eventMapboxSatellite,
-                  'Humanitarian': eventOpenStreetMap_HOT
-              };
+            var eventBaseMaps = {
+                'Terrain': eventMapboxTerrain,
+                'Satellite' : eventMapboxSatellite,
+                'Humanitarian': eventOpenStreetMap_HOT
+            };
 
-              eventMap.on('baselayerchange', function(baselayer) {
-                  Cookies.set('MapLayer',baselayer.name);
-              });
+            eventMap.on('baselayerchange', function(baselayer) {
+                Cookies.set('MapLayer',baselayer.name);
+            });
 
-              var groupedOverlays = {
-                  'RSS Feeds': {},
-                  'Contacts': {}
-              };
+            var groupedOverlays = {
+                'RSS Feeds': {},
+                'Contacts': {}
+            };
 
-              var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+            var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
 
-              var overlayMaps = {};
+            var overlayMaps = {};
 
-              eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
+            eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
 
-              if (L.Browser.touch) {
-                 L.DomEvent
-                  .disableClickPropagation(eventMapLayerControl._container)
-                  .disableScrollPropagation(eventMapLayerControl._container);
-              } else {
-                  L.DomEvent.disableClickPropagation(eventMapLayerControl._container);
-              }
+            if (L.Browser.touch) {
+                L.DomEvent
+                    .disableClickPropagation(eventMapLayerControl._container)
+                    .disableScrollPropagation(eventMapLayerControl._container);
+            } else {
+                L.DomEvent.disableClickPropagation(eventMapLayerControl._container);
+            }
 
-              getAllEvents(mapEditGeneralEvents);
+            getAllEvents(mapEditGeneralEvents);
 
-              eventMap.on('overlayadd', function (layersControlEvent) {
-                  Cookies.set(layersControlEvent.name,'on');
-              });
+            eventMap.on('overlayadd', function (layersControlEvent) {
+                Cookies.set(layersControlEvent.name,'on');
+            });
 
-              eventMap.on('overlayremove', function (layersControlEvent) {
-                  Cookies.set(layersControlEvent.name,'off');
-              });
-              eventMap.doubleClickZoom.disable();
-              eventMap.on('dblclick', function(dblclickEvent) {
-                  latlng = dblclickEvent.latlng;
-                  $.ajax({
-                    type: "PATCH",
-                    url: "/api/events/updatelocation/" + currentEventId,
+            eventMap.on('overlayremove', function (layersControlEvent) {
+                Cookies.set(layersControlEvent.name,'off');
+            });
+            eventMap.doubleClickZoom.disable();
+            eventMap.on('dblclick', function(dblclickEvent) {
+                latlng = dblclickEvent.latlng;
+                $.ajax({
+                    type: 'PATCH',
+                    url: '/api/events/updatelocation/' + currentEventId,
                     data: JSON.stringify({location: {lat: latlng.lat, lng: latlng.lng}}),
                     contentType: 'application/json'
-                  }).done(function(data, textStatus, req) {
-                      // setTimeout(function() {
-                      //   window.location.reload(true);
-                      // }, 1000);  // don't actually want it to reload
-                  }).fail(function(err) {
+                }).done(function(data, textStatus, req) {
+                    // setTimeout(function() {
+                    //   window.location.reload(true);
+                    // }, 1000);  // don't actually want it to reload
+                }).fail(function(err) {
                     if (err.responseText.includes('expired')) {
-                      alert("session expired");
+                        alert('session expired');
                     }
-                  });
-              });
+                });
+            });
 
 
             setTimeout(function() {
-              eventMap.invalidateSize(true);
-              if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
-                console.log('cc')
-                console.log(currentEventProperties.metadata.bounds);
-                zoomToBounds(currentEventProperties.metadata.bounds);
-              } else {
-                eventMap.setView(eventDefaultLatLng, 13);
-              }
+                eventMap.invalidateSize(true);
+                if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
+                    zoomToBounds(currentEventProperties.metadata.bounds);
+                } else {
+                    eventMap.setView(eventDefaultLatLng, 13);
+                }
             }, 300);
 
         },
         lintTypes(){
 
-          var tmpEventWithSubTypes = {}
-          for(var i= 0; i < this.eventTypes.length; i++){
-            if(eventTypes[i].subTypes){
-              var tmpSubTypes = eventTypes[i].subTypes.map(function(el){return el.value})
-              tmpEventWithSubTypes[eventTypes[i].value] = tmpSubTypes
-            }
-          }
-
-          var cleanSubTypes = []
-          for(var i=0; i<this.checkedTypes.length; i++){
-            var tmpType = tmpEventWithSubTypes[this.checkedTypes[i]]
-            if(tmpType){
-              for(var j=0; j<this.checkedSubTypes.length; j++){
-                if(tmpType.indexOf(this.checkedSubTypes[j]) > -1){
-                  cleanSubTypes.push(this.checkedSubTypes[j])
+            var tmpEventWithSubTypes = {};
+            for(var i3= 0; i3 < this.eventTypes.length; i3++){
+                if(eventTypes[i3].subTypes){
+                    var tmpSubTypes = eventTypes[i3].subTypes.map(function(el){return el.value;});
+                    tmpEventWithSubTypes[eventTypes[i3].value] = tmpSubTypes;
                 }
-              }
             }
-          }
-          this.checkedSubTypes = cleanSubTypes
+
+            var cleanSubTypes = [];
+            for(var i4=0; i4<this.checkedTypes.length; i4++){
+                var tmpType = tmpEventWithSubTypes[this.checkedTypes[i4]];
+                if(tmpType){
+                    for(var j=0; j<this.checkedSubTypes.length; j++){
+                        if(tmpType.indexOf(this.checkedSubTypes[j]) > -1){
+                            cleanSubTypes.push(this.checkedSubTypes[j]);
+                        }
+                    }
+                }
+            }
+            this.checkedSubTypes = cleanSubTypes;
         },
         lintSubTypesSelected(body){
-          if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
-              alert('ensure subtype(s) is/are selected');
-              this.invalid.typesSelection = true;
-          }else{
-            this.invalid.typesSelection = false;
-          }
+            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+                alert('ensure subtype(s) is/are selected');
+                this.invalid.typesSelection = true;
+            }else{
+                this.invalid.typesSelection = false;
+            }
         },
         placeOtherFields(){
-          for(key in this.otherFields){
-            if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
-              var subTypes = this.event.metadata.sub_type.split(',')
-              var index = _.findIndex(subTypes, function(el){
-                return el.indexOf(`other_${key}`) != -1
-              })
+            for(key in this.otherFields){
+                if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
+                    var subTypes = this.event.metadata.sub_type.split(',');
+                    var index = _.findIndex(subTypes, function(el){
+                        return el.indexOf(`other_${key}`) != -1;
+                    });
 
-              this.otherFields[key].isSelected = true;
-              this.otherFields[key].description = subTypes[index].substring(subTypes[index].indexOf(':') + 1);
+                    this.otherFields[key].isSelected = true;
+                    this.otherFields[key].description = subTypes[index].substring(subTypes[index].indexOf(':') + 1);
 
+                }
             }
-          }
 
-          if(this.event.type.indexOf('other:') != -1){
-            var tmpTypes = this.event.type.split(',')
-            var index = _.findIndex(tmpTypes, function(el){
-              return el.indexOf("other:") != -1
-            });
+            if(this.event.type.indexOf('other:') != -1){
+                var tmpTypes = this.event.type.split(',');
+                var typeIndex = _.findIndex(tmpTypes, function(el){
+                    return el.indexOf('other:') != -1;
+                });
 
-            this.otherFields.type.isSelected = true;
-            this.otherFields.type.description = tmpTypes[index].substring(tmpTypes[index].indexOf(':')+1)
-          }
+                this.otherFields.type.isSelected = true;
+                this.otherFields.type.description = tmpTypes[typeIndex].substring(tmpTypes[typeIndex].indexOf(':')+1);
+            }
         },
         lintOtherFields(){
-          var emptyFields = []
+            var emptyFields = [];
 
-          for(var key in this.otherFields){
-            var description = this.otherFields[key].description
+            for(var key in this.otherFields){
+                var description = this.otherFields[key].description;
 
-            if(this.otherFields[key].isSelected){
-              if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) != -1 || key == 'type')){ // to be sure that main type was selected
-                emptyFields.push(key.replace('_', ' '))
-              }else if(this.checkedTypes.indexOf(key) != -1){
-                  this.checkedSubTypes.push('other_'+key+ ': '+ description)
-              }else if(key == 'type'){
-                  var index = _.findIndex(this.checkedTypes, function(el){
-                    return el.indexOf("other:") != -1
-                  });
-                  if(index){
-                    this.checkedTypes[index] = 'other: '+ description
-                  }else{
-                    this.checkedTypes.push('other: '+ description)
-                  }
-              }
+                if(this.otherFields[key].isSelected){
+                    if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) != -1 || key == 'type')){ // to be sure that main type was selected
+                        emptyFields.push(key.replace('_', ' '));
+                    }else if(this.checkedTypes.indexOf(key) != -1){
+                        this.checkedSubTypes.push('other_'+key+ ': '+ description);
+                    }else if(key == 'type'){
+                        var index = _.findIndex(this.checkedTypes, function(el){
+                            return el.indexOf('other:') != -1;
+                        });
+                        if(index){
+                            this.checkedTypes[index] = 'other: '+ description;
+                        }else{
+                            this.checkedTypes.push('other: '+ description);
+                        }
+                    }
+                }
             }
-          }
 
-          if(emptyFields.length > 0 ){
-            alert(`Please enter description for other ${emptyFields.join(', ')}`)
-            this.invalid.emptyStrings = true;
-          }else{
-            this.invalid.emptyStrings = false;
-          }
+            if(emptyFields.length > 0 ){
+                alert(`Please enter description for other ${emptyFields.join(', ')}`);
+                this.invalid.emptyStrings = true;
+            }else{
+                this.invalid.emptyStrings = false;
+            }
         },
 
         submitEventMetadata(){
-          var metadata = this.event.metadata
+            var metadata = this.event.metadata;
 
-          if ($('#inputNotification').val()) {
-            if (currentEventProperties.metadata.hasOwnProperty('notification')) {
-              if(typeof currentEventProperties.metadata.notification != 'array'){
-                currentEventProperties.metadata.notification = []
-              }
-              currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
-            } else {
-              currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
-            }
-          }
-
-          this.lintTypes(); // make sure if type is unselected, subtype is removed
-          this.lintOtherFields(); // make sure the other string gets attached
-          this.event.type = this.checkedTypes.join()
-          this.event.sub_type = this.checkedSubTypes.join()
-
-
-          metadata = _.extend(metadata, {
-            sub_type: this.event.sub_type,
-            country: this.areas.countries.join(','), /// BUG:// should be bind to model
-            region: this.areas.regions.join(',') // should be bind to model
-          });
-
-          var body = {
-            status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-            type: this.event.type.toString(),
-            metadata: metadata
-          }
-
-          body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
-          this.lintSubTypesSelected(body);
-
-          // body.event.type = this.event.type.toString() // make sure the other string gets attached
-
-          if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
-              $.ajax({
-                type: "PUT",
-                url: "/api/events/" + currentEventId,
-                data: JSON.stringify(body),
-                contentType: 'application/json'
-              }).done(function(data, textStatus, req) {
-                window.location.href = '/events/?eventId=' + currentEventId;
-              }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                  alert("session expired");
+            if ($('#inputNotification').val()) {
+                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+                    if(!Array.isArray(currentEventProperties.metadata.notification)){
+                        currentEventProperties.metadata.notification = [];
+                    }
+                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+                } else {
+                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
                 }
-              });
-          }
+            }
+
+            this.lintTypes(); // make sure if type is unselected, subtype is removed
+            this.lintOtherFields(); // make sure the other string gets attached
+            this.event.type = this.checkedTypes.join();
+            this.event.sub_type = this.checkedSubTypes.join();
+
+
+            metadata = _.extend(metadata, {
+                sub_type: this.event.sub_type,
+                country: this.areas.countries.join(','), /// BUG:// should be bind to model
+                region: this.areas.regions.join(',') // should be bind to model
+            });
+
+            var body = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata: metadata
+            };
+
+            body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
+            this.lintSubTypesSelected(body);
+
+            // body.event.type = this.event.type.toString() // make sure the other string gets attached
+
+            if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/events/' + currentEventId,
+                    data: JSON.stringify(body),
+                    contentType: 'application/json'
+                }).done(function(data, textStatus, req) {
+                    window.location.href = '/events/?eventId=' + currentEventId;
+                }).fail(function(err) {
+                    if (err.responseText.includes('expired')) {
+                        alert('session expired');
+                    }
+                });
+            }
         },
         editEvent:function(category){
             if (category == 'general')
             {
-              // this is modal implemation
+                // this is modal implemation
                 editCategory=category;
                 onEditEvent();
                 $( '#editModal' ).modal('show');
@@ -1837,9 +1827,9 @@ var vmObject = {
 
                 // this is inline implementation
                 if(category == 'General'){
-                  this.loadMap();
-                  this.assignAreas();
-                  this.placeOtherFields();
+                    this.loadMap();
+                    this.assignAreas();
+                    this.placeOtherFields();
                 }
             }
         },
