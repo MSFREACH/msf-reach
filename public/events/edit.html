@@ -1163,7 +1163,7 @@ var vm = new Vue({
 
       if ($('#inputNotification').val()) {
         if (currentEventProperties.metadata.hasOwnProperty('notification')) {
-          if(typeof currentEventProperties.metadata.notification != 'array'){
+          if(!(Array.isArray(currentEventProperties.metadata.notification))) {
             currentEventProperties.metadata.notification = []
           }
           currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val(), 'username': localStorage.getItem('username')});
