@@ -427,6 +427,7 @@ var vmAnalytics = new Vue({
 
                     return (layer.feature.properties.type || layer.feature.properties.name) ;
                 });
+
                 try {
                     analysisLayer.addTo(analyticsMap);
                     analyticsMap.fitBounds(analysisLayer.getBounds());

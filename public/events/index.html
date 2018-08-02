@@ -601,13 +601,21 @@
                     <button type="button" v-show="panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
                   </div>
                   <div class="panel-body" >
-                <table class="table" v-show="!panelEditing.General" style="table-layout: fixed;">
-                  <tr><td>Name</td><td colspan="2"> {{ event.metadata.name }}</td></tr>
-                  <tr><td>Country(s)</td><td colspan="2"> {{ event.metadata.country }}</td></tr>
-                  <tr><td>Status</td><td colspan="2"> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
-                  <tr><td>Type</td><td colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
-                  <tr><td>Event Date and Time</td><td colspan="2"> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
-                  <tr><td>Description</td><td colspan="2" > {{event.metadata.description }}</td></tr>
+                <table class="table" v-show="!panelEditing.General">
+                  <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
+                  <tr><td>Area(s)</td>
+                    <td>
+                      <span v-for="(area, index) in event.metadata.areas">
+                        <span v-if="area.region.length > 0"> {{area.region}} {{area.country_code}}</span>
+                        <span v-else> {{area.country}}</span>
+                        <span v-if="event.metadata.areas.length > 1 && index < event.metadata.areas.length">, </span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
+                  <tr><td>Type</td><td> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
+                  <tr><td>Event Date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+                  <tr><td>Description</td><td> {{event.metadata.description }}</td></tr>
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td colspan="2">{{ notStr }}</td></tr>
                   <tr v-else><td>Latest notification:  </td><td colspan="2">(none)</td></tr>
@@ -634,23 +642,20 @@
                     <td> <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" /></td>
                   </tr>
                   <tr>
-                    <td class="table-container" id="eventCountries" v-model="areas.countries" > <!--  filter duplicates -->
-                      Country(s) <br/>
-                      <span v-if="event.metadata.country" v-for="item in areas.countries" class="tags">{{item}}  <span class="remove" @click="removeCountry(item)"> x </span> </span>
+                    <td class="table-container" id="eventAreas">
+                      Area(s) <br/>
                     </td>
-                    <td class="table-container">
-                      Region(s) <br/>
-                      <div id="eventRegions" v-model="areas.regions" >
-                        <span v-if="event.metadata.region" v-for="item in areas.regions" class="tags">{{item}}  <span class="remove" @click="removeRegion(item)"> x </span></span>
-                      </div>
+                    <td>
+                      <span v-if="event.metadata.areas" v-for="area in event.metadata.areas" class="tags" v-model="event.metadata.areas">
+                        <span v-if="area.region.length > 0" v-model="area"> {{area.region}}, {{area.country_code}} </span>
+                        <span v-else v-model="area"> {{area.country}} </span>
+                         <span class="remove" @click="removeArea(area)"> x </span>
+                      </span>
                     </td>
                   </tr>
-
-
                   <tr>
                     <td>
-                      <!-- if area append to both country & region list, if only country, still append to country list -->
-                      Add region for the emergency
+                      Add area for the emergency
                       <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
                       <label for="editEventAddressLat">OR</label>
                       <input type="text" class="form-control input-sm" value="" id="editEventAddressLat" placeholder="Latitude">

@@ -146,12 +146,21 @@ var mapAllEvents = function(err, events){
         if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
             feature.properties.metadata.name = '(no name specified)';
         }
+
+        var areaList = _.map(feature.properties.metadata.areas, function(el){
+          if(!_.isEmpty(el.region)){
+            return el.region +" "+ el.country_code
+          }else{
+            return el.country
+          }
+        });
+
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (new Date((feature.properties.metadata.event_datetime || feature.properties.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
       'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
-      (feature.properties.metadata.hasOwnProperty('country') ? 'Country(s): ' + feature.properties.metadata.country + '<br>': '') +
+      (feature.properties.metadata.hasOwnProperty('areas') ? 'Area(s): ' + areaList.join(', ') + '<br>': '') +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
       notificationStr +
