@@ -1795,6 +1795,7 @@ var vmObject = {
             }
         },
         editEvent:function(category){
+            $('#collapse'+category).collapse('show');
             if (category == 'general')
             {
                 // this is modal implemation
@@ -1816,8 +1817,6 @@ var vmObject = {
                     this.panelDirty[category]=true;
                     this.somePanelDirty=true;
                 }
-
-                $('#collapse'+category).collapse('show');
 
                 // this is inline implementation
                 if(category == 'General'){
