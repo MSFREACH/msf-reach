@@ -765,11 +765,13 @@
 
               <div class="panel-group" id="accordion">
                 <div :class="{'panel':true, 'panel-default': !panelDirty.Notification, 'panel-warning': panelDirty.Notification}">
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotification" >
+                  <div class="panel-heading" >
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseNotification">
                       <a data-toggle="collapse" data-target="#collapseNotification"
-                      href="#collapseNotification" class="collapsed">
+                      href="#" class="collapsed">
                       Notifications
                       </a>
+                    </div>
                       <button v-if="!panelEditing.Notification" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
                       <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Notification')" v-else>Done</button>
                   </div>
@@ -804,11 +806,13 @@
                   </div>
                 </div>
                 <div :class="{'panel':true, 'panel-default': !panelDirty.Response, 'panel-warning': panelDirty.Response}" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResponse" >
+                  <div class="panel-heading">
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseResponse">
                       <a data-toggle="collapse" data-target="#collapseResponse"
-                      href="#collapseResponse" class="collapsed">
+                      href="#" class="collapsed">
                       Response
                     </a>
+                  </div>
                     <button v-if="!panelEditing.Response" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
                     <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-else>Done</button>
                   </div>
@@ -948,11 +952,13 @@
                   </div>
                 </div>
                 <div :class="{'panel':true, 'panel-default': !panelDirty.ExtCapacity, 'panel-warning': panelDirty.ExtCapacity}" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtCapacity" >
+                  <div class="panel-heading">
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseExtCapacity">
                       <a data-toggle="collapse" data-target="#collapseExtCapacity"
-                      href="#collapseExtCapacity" class="collapsed">
+                      href="#" class="collapsed">
                       External Capacity
                       </a>
+                    </div>
                     <button type="button" v-if="!panelEditing.ExtCapacity" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtCapacity')">Edit</button>
                       <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtCapacity')" v-else>Done</button>
                   </div>
@@ -1036,11 +1042,13 @@
                       </div>
                     </div>
                     <div :class="{'panel':true, 'panel-default': !panelDirty.Figures, 'panel-warning': panelDirty.Figures}">
-                      <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseFigures" >
-                        <a data-toggle="collapse" data-target="#collapseFigures"
-                        href="#collapseFigures" class="collapsed">
-                        Medical Figures
-                      </a>
+                      <div class="panel-heading">
+                        <div class="panel-header-click-area"  data-toggle="collapse"  data-target="#collapseFigures">
+                          <a data-toggle="collapse" data-target="#collapseFigures"
+                          href="#" class="collapsed">
+                          Medical Figures
+                        </a>
+                      </div>
                       <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Figures')" v-if="!panelEditing.Figures">Edit</button>
                       <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Figures')" v-else >Done</button>
 
@@ -1150,13 +1158,15 @@
                     </div>
                   </div>
                   <div :class="{'panel':true, 'panel-default': !panelDirty.Resources, 'panel-warning': panelDirty.Resources}" >
-                    <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResources" >
-                      <a data-toggle="collapse" data-target="#collapseResources" href="#collapseResources" class="collapsed">
-                      Staff Resources
-                    </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-else >Done</button>
-                  </div>
+                    <div class="panel-heading">
+                      <div class="panel-header-click-area"  data-toggle="collapse"  data-target="#collapseResources">
+                        <a data-toggle="collapse" data-target="#collapseResources" href="#" class="collapsed">
+                          Staff Resources
+                        </a>
+                      </div>
+                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-else >Done</button>
+                    </div>
                   <div id="collapseResources" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div v-if="!panelEditing.Resources">
@@ -1321,11 +1331,13 @@
                   </div>
                 </div>
                 <div :class="{'panel':true, 'panel-default': !panelDirty.Reflection, 'panel-warning': panelDirty.Reflection}" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseReflection" >
-                    <a data-toggle="collapse" data-target="#collapseReflection"
-                    href="#collapseReflection" class="collapsed">
-                    Reflection
-                  </a>
+                  <div class="panel-heading">
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseReflection">
+                      <a data-toggle="collapse" data-target="#collapseReflection"
+                      href="#" class="collapsed">
+                      Reflection
+                    </a>
+                  </div>
                   <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Reflection')" v-if="!panelEditing.Reflection">Edit</button>
                   <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Reflection')" v-else >Done</button>
                 </div>
@@ -1772,12 +1784,6 @@ $('#countryDetailsTab').on('click', function(e){
     setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
-$(function(){
-  $('.panel-heading .btn').click(function (e) {
-      e.stopPropagation();
-  });
-
-})
 
 var contactInfo = {};
 var convertToLocaleDate= function (isoDate) {
