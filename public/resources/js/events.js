@@ -1436,7 +1436,6 @@ var vmObject = {
                 }
             }
         }
-
         $('#btnSearchTwitter').trigger('click');
 
         $('#searchTerm').keyup(function(event){

@@ -123,17 +123,30 @@ $(function(){
         else {
             var sub_type = $('input[class=newSubEventTypeBox]:checked').map(
                 function () {return this.value;}).get().join(',');
+            var subTypes = $('input[class=newSubEventTypeBox]:checked').map(
+                function () {return this.value;}).get()
+
+            var types = $('input[class=newEventTypeBox]:checked').map(
+                function () {return this.value;}).get()
+            if ($('input[id=selectType6]:checked')){
+              var iO = _.findIndex(types, function(el){
+                return el.indexOf('other') != -1
+              })
+              types[iO] = 'other: ' + $('#inputOther').val()
+              console.log(' 000 EVENT CREATess ----- ', types[iO],  $('#inputOther').val())
+
+            }
+            console.log('111 EVENT CREATess ----- ', types )
             var body = {
                 'status': 'active',
-                'type': $('input[class=newEventTypeBox]:checked').map(
-                    function () {return this.value;}).get().join(','),
+                'type': types.join(','),
                 'created_at': new Date().toISOString(),
                 'location': (areaSelect ? areaSelect.getBounds().getCenter() : latlng),
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),
                     'description': $('#inputEventDescription').val(),
-                    'sub_type': sub_type,
+                    'sub_type': subTypes.join(', '),
                     'event_datetime': $('#inputEvDateTime').val(),
                     'event_status': $('#inputEvStatus').val(),
                     'incharge_name': $('#inputInChargeName').val(),
@@ -246,30 +259,25 @@ $(function(){
         if($(this).attr('id') == 'diseaseType7') {
             $('#divOtherDisease').css('display', (this.checked ? '' : 'none'));
             var diseaseTxt = $('#diseaseType8').val();
-            $(this).val(diseaseTxt);
+            $(this).val(`other_disease_outbreak: ${diseaseTxt}`);
         }
 
         if($(this).attr('id') == 'disasterType7') {
             $('#divOtherDisaster').css('display', (this.checked ? '' : 'none'));
             var disasterTxt = $('#disasterType8').val();
-            $(this).val(disasterTxt);
+            $(this).val(`other_natural_disaster: ${disasterTxt}`);
         }
     });
 
     $('.form-control').focusout(function () {
-
-        //console.log($(this).attr('id'));
-
         if($(this).attr('id') == 'disasterType8') {
             var disasterTxt = $(this).val();
-            $('#disasterType7').val(disasterTxt);
-            //console.log(disasterTxt);
+            $('#disasterType7').val(`other_disease_outbreak: ${disasterTxt}`);
         }
 
         if($(this).attr('id') == 'diseaseType8') {
             var diseaseTxt = $(this).val();
-            $('#diseaseType7').val(diseaseTxt);
-            //console.log(diseaseTxt);
+            $('#diseaseType7').val(`other_natural_disaster: ${diseaseTxt}`);
         }
     });
 

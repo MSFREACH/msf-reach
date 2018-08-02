@@ -69,6 +69,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
+                // types: Joi.array().items(Joi.string()),
                 report_id: Joi.number().min(1),
                 created_at: Joi.date().iso().required(),
                 metadata: Joi.object().required().keys({
@@ -76,6 +77,7 @@ export default ({ config, db, logger }) => {
                   name: Joi.string().allow(''),
                   description: Joi.string().allow(''),
                   sub_type: Joi.string().allow(''), // TODO: change to array later
+                  // sub_types: Joi.array().items(Joi.string()),
                   event_datetime: Joi.string().allow(''),
                   event_status: Joi.string(),
                   incharge_name: Joi.string().allow(''),
