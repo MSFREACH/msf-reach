@@ -467,11 +467,11 @@
           </div>
           <div class="bg-success">MSF relationship</div>
           <div class="form-group"  style="display:none;">
-            <label>MSF associate member:</label>
+            <label>Association Member:</label>
             <span class="msf_associate"></span>
           </div>
           <div class="form-group"  style="display:none;">
-            <label>MSF peer:</label>
+            <label>Former Staff:</label>
             <span class="msf_peer"></span>
           </div>
         </div>
@@ -770,17 +770,19 @@
 
               <div class="panel-group" id="accordion">
                 <div :class="{'panel':true, 'panel-default': !panelDirty.Notification, 'panel-warning': panelDirty.Notification}">
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseNotification" >
+                  <div class="panel-heading" >
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseNotification">
                       <a data-toggle="collapse" data-target="#collapseNotification"
-                      href="#collapseNotification" class="collapsed">
+                      href="#" class="collapsed">
                       Notifications
                       </a>
+                    </div>
                       <button v-if="!panelEditing.Notification" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
                       <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Notification')" v-else>Done</button>
                   </div>
                   <div id="collapseNotification" class="panel-collapse collapse in">
                     <div class="panel-body" >
-                      <div >
+
 
                             <table v-show="!panelEditing.Notification" v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
                               <thead><tr><td>Username</td><td>Time</td><td>Notification</td></tr></thead>
@@ -793,13 +795,12 @@
                                 </tr>
                               </tbody>
                             </table>
-                      </div>
                       <div v-show="panelEditing.Notification">
                         <dt>Enter new notification</dt>
                         <dd>
                           <textarea type="text" class="form-control" v-model="newNotification"></textarea>
                         </dd>
-                        <dt>Attach a photo</dt>
+                        <dt>Attach a file</dt>
                         <dd>
                           <form enctype="multipart/form-data">
                             <input id="inputNotificationUpload" type="file" accept="image/*" />
@@ -810,11 +811,13 @@
                   </div>
                 </div>
                 <div :class="{'panel':true, 'panel-default': !panelDirty.Response, 'panel-warning': panelDirty.Response}" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResponse" >
+                  <div class="panel-heading">
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseResponse">
                       <a data-toggle="collapse" data-target="#collapseResponse"
-                      href="#collapseResponse" class="collapsed">
+                      href="#" class="collapsed">
                       Response
                     </a>
+                  </div>
                     <button v-if="!panelEditing.Response" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
                     <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-else>Done</button>
                   </div>
@@ -954,11 +957,13 @@
                   </div>
                 </div>
                 <div :class="{'panel':true, 'panel-default': !panelDirty.ExtCapacity, 'panel-warning': panelDirty.ExtCapacity}" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtCapacity" >
+                  <div class="panel-heading">
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseExtCapacity">
                       <a data-toggle="collapse" data-target="#collapseExtCapacity"
-                      href="#collapseExtCapacity" class="collapsed">
+                      href="#" class="collapsed">
                       External Capacity
                       </a>
+                    </div>
                     <button type="button" v-if="!panelEditing.ExtCapacity" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtCapacity')">Edit</button>
                       <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtCapacity')" v-else>Done</button>
                   </div>
@@ -1042,11 +1047,13 @@
                       </div>
                     </div>
                     <div :class="{'panel':true, 'panel-default': !panelDirty.Figures, 'panel-warning': panelDirty.Figures}">
-                      <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseFigures" >
-                        <a data-toggle="collapse" data-target="#collapseFigures"
-                        href="#collapseFigures" class="collapsed">
-                        Medical Figures
-                      </a>
+                      <div class="panel-heading">
+                        <div class="panel-header-click-area"  data-toggle="collapse"  data-target="#collapseFigures">
+                          <a data-toggle="collapse" data-target="#collapseFigures"
+                          href="#" class="collapsed">
+                          Medical Figures
+                        </a>
+                      </div>
                       <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Figures')" v-if="!panelEditing.Figures">Edit</button>
                       <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Figures')" v-else >Done</button>
 
@@ -1156,13 +1163,15 @@
                     </div>
                   </div>
                   <div :class="{'panel':true, 'panel-default': !panelDirty.Resources, 'panel-warning': panelDirty.Resources}" >
-                    <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseResources" >
-                      <a data-toggle="collapse" data-target="#collapseResources" href="#collapseResources" class="collapsed">
-                      Staff Resources
-                    </a>
-                    <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-else >Done</button>
-                  </div>
+                    <div class="panel-heading">
+                      <div class="panel-header-click-area"  data-toggle="collapse"  data-target="#collapseResources">
+                        <a data-toggle="collapse" data-target="#collapseResources" href="#" class="collapsed">
+                          Staff Resources
+                        </a>
+                      </div>
+                      <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-else >Done</button>
+                    </div>
                   <div id="collapseResources" class="panel-collapse collapse">
                     <div class="panel-body" >
                       <div v-if="!panelEditing.Resources">
@@ -1327,11 +1336,13 @@
                   </div>
                 </div>
                 <div :class="{'panel':true, 'panel-default': !panelDirty.Reflection, 'panel-warning': panelDirty.Reflection}" >
-                  <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseReflection" >
-                    <a data-toggle="collapse" data-target="#collapseReflection"
-                    href="#collapseReflection" class="collapsed">
-                    Reflection
-                  </a>
+                  <div class="panel-heading">
+                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseReflection">
+                      <a data-toggle="collapse" data-target="#collapseReflection"
+                      href="#" class="collapsed">
+                      Reflection
+                    </a>
+                  </div>
                   <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Reflection')" v-if="!panelEditing.Reflection">Edit</button>
                   <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Reflection')" v-else >Done</button>
                 </div>
@@ -1551,8 +1562,8 @@
             <select class="form-control" style="color:black;" id="inputContactType" >
               <option value="" selected>(no category filtering)</option>
               <option value="Current MSF Staff">Current MSF Staff</option>
-              <option value="msf_peer">MSF Peer</option>
-              <option value="msf_associate">MSF Associate</option>
+              <option value="msf_peer">Former Staff</option>
+              <option value="msf_associate">Association Member</option>
               <option value="Supplier">Supplier</option>
               <option value="United Nations">United Nations</option>
               <option value="Government">Government</option>
@@ -1563,13 +1574,6 @@
           </div>
           <div class="form-group">
             <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ... ..."><br />
-            <!--<table><tr><td>
-            <input type="radio" id="radio_msf_peer"
-             name="msf_relationship" value="msf_peer">
-            <label for="radio_msf_peer">MSF Peers only</label></td><td>
-            <input type="radio" id="radio_msf_associate"
-             name="msf_relationship" value="msf_associate">
-            <label for="msf_associate">MSF Associates only</label></td></tr></table>-->
           </div>
           <div id="contactsContainer" style="height:70vh;overflow:auto;"></div>
         </div>
@@ -1785,12 +1789,6 @@ $('#countryDetailsTab').on('click', function(e){
     setTimeout(function(){mainMap.invalidateSize()}, 400);
   }
 });
-$(function(){
-  $('.panel-heading .btn').click(function (e) {
-      e.stopPropagation();
-  });
-
-})
 
 var contactInfo = {};
 var convertToLocaleDate= function (isoDate) {

@@ -1800,6 +1800,7 @@ var vmObject = {
             }
         },
         editEvent:function(category){
+            $('#collapse'+category).collapse('show');
             if (category == 'general')
             {
                 // this is modal implemation
@@ -1821,8 +1822,6 @@ var vmObject = {
                     this.panelDirty[category]=true;
                     this.somePanelDirty=true;
                 }
-
-                $('#collapse'+category).collapse('show');
 
                 // this is inline implementation
                 if(category == 'General'){
@@ -1963,13 +1962,14 @@ var vmObject = {
                 alert('ensure subtype(s) is/are selected');
             } else {
 
-                $('#dialogModalTitle').html('Uploading attachment(s)...');
-                $('#dialogModal').modal('show');
+
                 var files=document.getElementById('inputNotificationUpload').files;
                 var imgLink='';
 
                 if (files && files[0])
                 {
+                    $('#dialogModalTitle').html('Uploading attachment(s)...');
+                    $('#dialogModal').modal('show');
                     var imgFileName=files[0].name;
                     var fileType=files[0].type;
                     var photo=files[0];

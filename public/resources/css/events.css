@@ -175,3 +175,9 @@ div.pac-container {
   border:1px ridge ;
   padding:0px 5px 5px;
 }
+
+.panel-header-click-area {
+  width:CALC(100% - 45px);
+  display:inline-block;
+  cursor:pointer;
+}

@@ -987,10 +987,10 @@ var getContact = function(id) {
 
         // also hyperlink emails
         if (contact.result.properties.email) {
-            contact.result.properties.email = '<a href="'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
+            contact.result.properties.email = '<a href="mailto:'+contact.result.properties.email + '">'+contact.result.properties.email+'</a>';
         }
         if (contact.result.properties.email2) {
-            contact.result.properties.email2 = '<a href="'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
+            contact.result.properties.email2 = '<a href="mailto:'+contact.result.properties.email2 + '">'+contact.result.properties.email2+'</a>';
         }
 
         _(contact.result.properties).forIn(function(value, key) {
