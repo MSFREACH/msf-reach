@@ -181,9 +181,17 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
     var newEvent= $.extend(true,{},defaultEvent);
+
+
+    if(!currentEventProperties.metadata.areas){
+        var mockArea = {country: currentEventProperties.metadata.country, region: ''};
+        currentEventProperties.metadata.areas = [mockArea];
+    }
+
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
+
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
     $('#eventShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></div>');
@@ -206,8 +214,6 @@ var printEventProperties = function(err, eventProperties){
             );
 
         },100);});
-
-
 
     if (currentEventProperties.metadata.country) {
         getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
@@ -234,8 +240,6 @@ var printEventProperties = function(err, eventProperties){
                 is_required: currentEventProperties.metadata.msf_resource_visa_requirement.nationality || 'yes'
             }];
     }
-
-
 
     // If called with err, print that instead
     if (err){
@@ -674,7 +678,7 @@ var mapReports = function(reports,mapForReports){
         iconUrl: '/resources/images/icons/reports/needs_icon.svg',
         iconSize:     [60, 60], // size of the icon
         iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
 
     });
 
@@ -1345,7 +1349,8 @@ var vmObject = {
         },
         invalid: {
             typesSelection: false,
-            emptyStrings: false
+            emptyStrings: false,
+            nullAreas: false
         },
         fieldsInvalid: false,
         somePanelDirty:false,
@@ -1367,10 +1372,6 @@ var vmObject = {
                 isSelected: false,
                 description: ''
             }
-        },
-        areas: {
-            countries: [],
-            regions: []
         }
     },
     mounted:function(){
@@ -1401,10 +1402,10 @@ var vmObject = {
         });
 
 
-
         var searchTerm = '';
 
         if (currentEventProperties) {
+            // debugger;
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
                     elements = currentEventProperties.metadata.name.split('_');
@@ -1420,6 +1421,14 @@ var vmObject = {
                     searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
                 }
             }
+
+            // if(!currentEventProperties.metadata.areas){
+            //   var mockArea = {country: currentEventProperties.metadata.country}
+            //   currentEventProperties.metadata.areas = [mockArea]
+            //
+            //   console.log('no areas ----- ',mockArea,  currentEventProperties.metadata.areas)
+            // }
+
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
@@ -1427,15 +1436,15 @@ var vmObject = {
 
             if(currentEventProperties.type){
                 var currentTypes = currentEventProperties.type.split(',');
-                for(var i2 = 0; i < currentTypes.length; i2++){
-                    this.checkedTypes.push(currentTypes[i2]);
+                for(var t = 0; t < currentTypes.length; t++){
+                    this.checkedTypes.push(currentTypes[t]);
                 }
             }
 
             if(currentEventProperties.metadata.sub_type){
                 var currentSubTypes = currentEventProperties.metadata.sub_type.split(',');
-                for(var i3 = 0; i3 < currentSubTypes.length; i3++){
-                    this.checkedSubTypes.push(currentSubTypes[i3]);
+                for(var st = 0; st < currentSubTypes.length; st++){
+                    this.checkedSubTypes.push(currentSubTypes[st]);
                 }
             }
         }
@@ -1514,9 +1523,9 @@ var vmObject = {
                 return moment(value).format('YYYY-MM-DD');
             }
         },
-        assignAreas(){
-            this.areas.regions = currentEventProperties.metadata.region.split(',');
-            this.areas.countries = currentEventProperties.metadata.country.split(',');
+        removeArea(area){
+            var index = _.findIndex(this.event.metadata.areas, area);
+            this.event.metadata.areas.splice(index, 1);
         },
         removeRegion(region){
             var index = this.areas.regions.indexOf(region);
@@ -1741,6 +1750,14 @@ var vmObject = {
                 this.invalid.emptyStrings = false;
             }
         },
+        lintAreas(){
+            if(_.isEmpty(this.event.metadata.areas)){
+                alert('Please select an area');
+                this.invalid.nullAreas = true;
+            }else{
+                this.invalid.nullAreas = false;
+            }
+        },
 
         submitEventMetadata(){
             var metadata = this.event.metadata;
@@ -1758,14 +1775,13 @@ var vmObject = {
 
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
+            this.lintAreas();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
 
 
             metadata = _.extend(metadata, {
-                sub_type: this.event.sub_type,
-                country: this.areas.countries.join(','), /// BUG:// should be bind to model
-                region: this.areas.regions.join(',') // should be bind to model
+                sub_type: this.event.sub_type
             });
 
             var body = {
@@ -1779,7 +1795,7 @@ var vmObject = {
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
 
-            if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
+            if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
                 $.ajax({
                     type: 'PUT',
                     url: '/api/events/' + currentEventId,
@@ -1821,7 +1837,6 @@ var vmObject = {
                 // this is inline implementation
                 if(category == 'General'){
                     this.loadMap();
-                    this.assignAreas();
                     this.placeOtherFields();
                 }
             }

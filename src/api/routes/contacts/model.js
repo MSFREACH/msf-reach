@@ -144,7 +144,7 @@ export default (config, db, logger) => ({
     */
     setLastEmailTime: (id, body) => new Promise((resolve, reject) => {
 
-    // Setup query
+        // Setup query
         let query = `UPDATE ${config.TABLE_CONTACTS}
      SET last_email_sent_at = $2
      WHERE id = $1
@@ -190,7 +190,7 @@ export default (config, db, logger) => ({
     */
     shareWith: (id, requestor_oid, dst_oid) => new Promise((resolve, reject) => {
 
-    // Setup query
+        // Setup query
         let query = `update ${config.TABLE_CONTACTS} set properties = jsonb_set(properties::jsonb,'{"sharedWith"}', ((properties->'sharedWith')::jsonb || ($1)::jsonb)) where id=$2
         and ad_oid = $3
         RETURNING private, created_at, updated_at, last_email_sent_at, properties,
@@ -216,7 +216,7 @@ export default (config, db, logger) => ({
     */
     privacy: (id, ad_oid, privacy) => new Promise((resolve, reject) => {
 
-    // Setup query
+        // Setup query
         let query = `update ${config.TABLE_CONTACTS} set private=$1 where id=$2 and ad_oid=$3
         RETURNING ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
         the_geom`;
