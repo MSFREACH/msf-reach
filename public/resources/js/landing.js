@@ -147,20 +147,20 @@ var mapAllEvents = function(err, events){
             feature.properties.metadata.name = '(no name specified)';
         }
 
-        var location = ""
+        var location = '';
         if(!feature.properties.metadata.areas){
-          location = feature.properties.metadata.country
+            location = feature.properties.metadata.country;
         }else{
-          location = _.map(feature.properties.metadata.areas, function(el){
-            if(!_.isEmpty(el.region)){
-              return el.region +" "+ el.country_code
-            }else{
-              return el.country
-            }
-          }).join(', ');
+            location = _.map(feature.properties.metadata.areas, function(el){
+                if(!_.isEmpty(el.region)){
+                    return el.region +' '+ el.country_code;
+                }else{
+                    return el.country;
+                }
+            }).join(', ');
         }
 
-        var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country')
+        var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
 
         $(eventDiv).append(
             '<div class="list-group-item">' +
@@ -656,7 +656,7 @@ var mapReports = function(reports,mapForReports){
         iconUrl: '/resources/images/icons/reports/needs_icon.svg',
         iconSize:     [60, 60], // size of the icon
         iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
 
     });
 

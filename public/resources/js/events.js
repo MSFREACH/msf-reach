@@ -184,8 +184,8 @@ var printEventProperties = function(err, eventProperties){
 
 
     if(!currentEventProperties.metadata.areas){
-      var mockArea = {country: currentEventProperties.metadata.country, region: ''}
-      currentEventProperties.metadata.areas = [mockArea]
+        var mockArea = {country: currentEventProperties.metadata.country, region: ''};
+        currentEventProperties.metadata.areas = [mockArea];
     }
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
@@ -678,7 +678,7 @@ var mapReports = function(reports,mapForReports){
         iconUrl: '/resources/images/icons/reports/needs_icon.svg',
         iconSize:     [60, 60], // size of the icon
         iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
 
     });
 
@@ -1405,7 +1405,7 @@ var vmObject = {
         var searchTerm = '';
 
         if (currentEventProperties) {
-          // debugger;
+            // debugger;
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
                     elements = currentEventProperties.metadata.name.split('_');
@@ -1436,15 +1436,15 @@ var vmObject = {
 
             if(currentEventProperties.type){
                 var currentTypes = currentEventProperties.type.split(',');
-                for(var i = 0; i < currentTypes.length; i++){
-                    this.checkedTypes.push(currentTypes[i]);
+                for(var t = 0; t < currentTypes.length; t++){
+                    this.checkedTypes.push(currentTypes[t]);
                 }
             }
 
             if(currentEventProperties.metadata.sub_type){
                 var currentSubTypes = currentEventProperties.metadata.sub_type.split(',');
-                for(var i = 0; i < currentSubTypes.length; i++){
-                    this.checkedSubTypes.push(currentSubTypes[i]);
+                for(var st = 0; st < currentSubTypes.length; st++){
+                    this.checkedSubTypes.push(currentSubTypes[st]);
                 }
             }
         }
@@ -1524,8 +1524,8 @@ var vmObject = {
             }
         },
         removeArea(area){
-          var index = _.findIndex(this.event.metadata.areas, area)
-          this.event.metadata.areas.splice(index, 1)
+            var index = _.findIndex(this.event.metadata.areas, area);
+            this.event.metadata.areas.splice(index, 1);
         },
         removeRegion(region){
             var index = this.areas.regions.indexOf(region);
@@ -1751,12 +1751,12 @@ var vmObject = {
             }
         },
         lintAreas(){
-          if(_.isEmpty(this.event.metadata.areas)){
-            alert('Please select an area')
-            this.invalid.nullAreas = true
-          }else{
-            this.invalid.nullAreas = false;
-          }
+            if(_.isEmpty(this.event.metadata.areas)){
+                alert('Please select an area');
+                this.invalid.nullAreas = true;
+            }else{
+                this.invalid.nullAreas = false;
+            }
         },
 
         submitEventMetadata(){
