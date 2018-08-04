@@ -181,9 +181,17 @@ var printEventProperties = function(err, eventProperties){
     // Make a global store of current event properties
     currentEventProperties = eventProperties;
     var newEvent= $.extend(true,{},defaultEvent);
+
+
+    if(!currentEventProperties.metadata.areas){
+      var mockArea = {country: currentEventProperties.metadata.country, region: ''}
+      currentEventProperties.metadata.areas = [mockArea]
+    }
+
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
+
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
     $('#eventShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></div>');
@@ -206,8 +214,6 @@ var printEventProperties = function(err, eventProperties){
             );
 
         },100);});
-
-
 
     if (currentEventProperties.metadata.country) {
         getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
@@ -234,8 +240,6 @@ var printEventProperties = function(err, eventProperties){
                 is_required: currentEventProperties.metadata.msf_resource_visa_requirement.nationality || 'yes'
             }];
     }
-
-
 
     // If called with err, print that instead
     if (err){
@@ -1398,10 +1402,10 @@ var vmObject = {
         });
 
 
-
         var searchTerm = '';
 
         if (currentEventProperties) {
+          // debugger;
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
                     elements = currentEventProperties.metadata.name.split('_');
@@ -1417,6 +1421,14 @@ var vmObject = {
                     searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
                 }
             }
+
+            // if(!currentEventProperties.metadata.areas){
+            //   var mockArea = {country: currentEventProperties.metadata.country}
+            //   currentEventProperties.metadata.areas = [mockArea]
+            //
+            //   console.log('no areas ----- ',mockArea,  currentEventProperties.metadata.areas)
+            // }
+
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
@@ -1513,7 +1525,6 @@ var vmObject = {
         },
         removeArea(area){
           var index = _.findIndex(this.event.metadata.areas, area)
-          console.log("removearea ----  ", area, index)
           this.event.metadata.areas.splice(index, 1)
         },
         removeRegion(region){
