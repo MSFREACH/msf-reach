@@ -21,6 +21,24 @@ function drag(ev) {
         tweetDivId = ($('#'+ev.srcElement.id).parent()[0].id);
     }
     ev.dataTransfer.setData('tweetDivId', tweetDivId);
+
+}
+
+function dragOut(ev){
+    var leftBound = $('#savedTweets')[0].offsetWidth;
+    if(ev.clientX < leftBound){
+        var tweetID = ev.target.id;
+        $('#'+tweetID).empty();
+        // this is needed as the reply btn of tweets with media cards doesn't remove completely
+        $('#'+tweetID).children().remove();
+        $('#'+tweetID).remove();
+        var position = _.findIndex(currentEventProperties.metadata.saved_tweets, function(el){
+            return el.tweetId == tweetID;
+        });
+        currentEventProperties.metadata.saved_tweets.splice(position, 1);
+
+        updateSavedTweets();
+    }
 }
 
 /**
@@ -34,7 +52,7 @@ function dropSaveTweet(ev) {
     var tweetEventReportLink = eventReportLink.replace('&', '%26');
     $('#savedTweets').prepend(document.getElementById(tweetDivId));
     $('#'+tweetDivId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+tweetDivId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
-
+    $('#'+tweetDivId).attr('ondragend', 'dragOut(event)');
 
     if (currentEventProperties.metadata.saved_tweets){
         // add tweet to the existing list of saved tweets
@@ -45,6 +63,10 @@ function dropSaveTweet(ev) {
         currentEventProperties.metadata.saved_tweets = [{'tweetId':tweetDivId, 'html':tweetIdHTMLMap[tweetDivId]}];
     }
 
+    updateSavedTweets();
+}
+
+function updateSavedTweets(){
     // fill in PUT body
     var body = {
         'status':'active',
