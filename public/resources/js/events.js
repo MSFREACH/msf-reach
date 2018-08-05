@@ -277,7 +277,7 @@ var printEventProperties = function(err, eventProperties){
     if (currentEventProperties) {
         if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
             $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
-                $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
+                $('#savedTweets').prepend('<div id="'+value.tweetId+'" draggable="true" ondragend="dragOut(event)">'+value.html+'</div>');
                 var tweetEventReportLink = eventReportLink.replace('&', '%26');
                 $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
                 twttr.widgets.load();
