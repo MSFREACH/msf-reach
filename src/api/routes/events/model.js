@@ -106,6 +106,8 @@ export default (config, db, logger) => ({
                             if (address[i].types.indexOf('country') > -1) {
                                 area.country=address[i].long_name;
                                 area.country_code=address[i].short_name;
+
+                                body.metadata.country=address[i].long_name; 
                             }
                         }
                         body.metadata.areas.push(area);
