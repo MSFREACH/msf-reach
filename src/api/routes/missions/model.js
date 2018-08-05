@@ -72,7 +72,7 @@ export default (config, db, logger) => ({
                     VALUES ($1, ST_SetSRID(ST_Point($2,$3),4326))
                     RETURNING id, properties, the_geom`;
 
-            // Setup values
+        // Setup values
         let values = [body.metadata, body.location.lng, body.location.lat];
 
         // Execute

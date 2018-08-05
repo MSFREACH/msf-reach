@@ -148,20 +148,27 @@ var mapAllEvents = function(err, events){
             feature.properties.metadata.name = '(no name specified)';
         }
 
-        var areaList = _.map(feature.properties.metadata.areas, function(el){
-          if(!_.isEmpty(el.region)){
-            return el.region +" "+ el.country_code
-          }else{
-            return el.country
-          }
-        });
+        var location = '';
+        if(!feature.properties.metadata.areas){
+            location = feature.properties.metadata.country;
+        }else{
+            location = _.map(feature.properties.metadata.areas, function(el){
+                if(!_.isEmpty(el.region)){
+                    return el.region +' '+ el.country_code;
+                }else{
+                    return el.country;
+                }
+            }).join(', ');
+        }
+
+        var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
 
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + (new Date((feature.properties.metadata.event_datetime || feature.properties.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
       'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
-      (feature.properties.metadata.hasOwnProperty('areas') ? 'Area(s): ' + areaList.join(', ') + '<br>': '') +
+      (hasLocation ? 'Area(s): ' + location + '<br>': '') +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
       notificationStr +
@@ -650,7 +657,7 @@ var mapReports = function(reports,mapForReports){
         iconUrl: '/resources/images/icons/reports/needs_icon.svg',
         iconSize:     [60, 60], // size of the icon
         iconAnchor:   [30, 60], // point of the icon which will correspond to marker's location
-    //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
+        //popupAnchor:  [13, 13] // point from which the popup should open relative to the iconAnchor
 
     });
 

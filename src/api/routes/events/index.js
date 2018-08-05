@@ -73,24 +73,23 @@ export default ({ config, db, logger }) => {
                 report_id: Joi.number().min(1),
                 created_at: Joi.date().iso().required(),
                 metadata: Joi.object().required().keys({
-                  user: Joi.string().allow(null),
-                  name: Joi.string().allow(''),
-                  description: Joi.string().allow(''),
-                  sub_type: Joi.string().allow(''), // TODO: change to array later
-                  // sub_types: Joi.array().items(Joi.string()),
-                  event_datetime: Joi.string().allow(''),
-                  event_status: Joi.string(),
-                  incharge_name: Joi.string().allow(''),
-                  incharge_position: Joi.string().allow(''),
-                  severity: Joi.string().allow(''),
-                  severity_scale: Joi.number().min(1).max(3),
-                  sharepoint_link: Joi.string().allow(''),
-                  security_details: Joi.string().allow(''),
-                  bounds: Joi.object(),
-                  areas: Joi.array().items(Joi.object().keys({
-                    country: Joi.string(),
-                    region: Joi.string()
-                  }))
+                    user: Joi.string().allow(null),
+                    name: Joi.string().allow(''),
+                    description: Joi.string().allow(''),
+                    sub_type: Joi.string().allow(''), // TODO: change to array later
+                    event_datetime: Joi.string().allow(''),
+                    event_status: Joi.string(),
+                    incharge_name: Joi.string().allow(''),
+                    incharge_position: Joi.string().allow(''),
+                    severity: Joi.string().allow(''),
+                    severity_scale: Joi.number().min(1).max(3),
+                    sharepoint_link: Joi.string().allow(''),
+                    security_details: Joi.string().allow(''),
+                    bounds: Joi.object(),
+                    areas: Joi.array().items(Joi.object().keys({
+                        country: Joi.string(),
+                        region: Joi.string()
+                    }))
                 }),
                 location: Joi.object().required().keys({
                     lat: Joi.number().min(-90).max(90).required(),
@@ -119,10 +118,10 @@ export default ({ config, db, logger }) => {
                 type: Joi.string().required(),
                 metadata: Joi.object().required()
                 //.keys({
-                  // areas: Joi.array().items(Joi.object().keys({
-                  //   country: Joi.string(),
-                  //   region: Joi.string()
-                  // }))
+                // areas: Joi.array().items(Joi.object().keys({
+                //   country: Joi.string(),
+                //   region: Joi.string()
+                // }))
                 // })
             })
         }),

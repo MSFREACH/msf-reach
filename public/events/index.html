@@ -617,12 +617,12 @@
                   <tr><td>Event Date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Description</td><td> {{event.metadata.description }}</td></tr>
 
-                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td colspan="2">{{ notStr }}</td></tr>
-                  <tr v-else><td>Latest notification:  </td><td colspan="2">(none)</td></tr>
-                  <tr><td>Severity </td><td colspan="2"> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
-                  <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
-                  <tr><td>Sharepoint Link </td><td colspan="2" style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link }}</a></td></tr>
-                  <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td>{{ notStr }}</td></tr>
+                  <tr v-else><td>Latest notification:  </td><td>(none)</td></tr>
+                  <tr><td>Severity </td><td> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
+                  <tr><td>Person In charge </td><td> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
+                  <tr><td>Sharepoint Link </td><td> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link }}</a></td></tr>
+                  <tr><td>Last updated at</td><td> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
 
                   <tr><td>Event sharing</td><td>
                     <div id="eventShareButtons"></div>

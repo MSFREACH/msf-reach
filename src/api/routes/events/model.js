@@ -87,29 +87,28 @@ export default (config, db, logger) => ({
                     logger.error('err ' + error );
                     logger.error('statusCode:', response && response.statusCode); // Print the response status code if a response was received
                     body.metadata.country = 'unknown';
-                    body.metadata.areas = []
+                    body.metadata.areas = [];
                 } else {
                     body.metadata.country = 'unknown';
                     let geocoded = JSON.parse(response_body);
-                    body.metadata.areas = []
+                    body.metadata.areas = [];
                     if (geocoded && geocoded.results && geocoded.results[0] && geocoded.results[0].address_components) {
                         var address = geocoded.results[0].address_components;
                         var area = {
-                          region: "",
-                          country: "",
-                          country_code: ""
-                        }
+                            region: '',
+                            country: '',
+                            country_code: ''
+                        };
                         for (let i = 0; i < address.length; i++ ) {
-                          if (address[i].types.indexOf('administrative_area_level_1') > -1) {
-                              area.region=address[i].long_name;
-                          }
-                          if (address[i].types.indexOf('country') > -1) {
-                              area.country=address[i].long_name;
-                              area.country_code=address[i].short_name;
-                              console.log('create event --- country_code --- ', area.country_code)
-                          }
+                            if (address[i].types.indexOf('administrative_area_level_1') > -1) {
+                                area.region=address[i].long_name;
+                            }
+                            if (address[i].types.indexOf('country') > -1) {
+                                area.country=address[i].long_name;
+                                area.country_code=address[i].short_name;
+                            }
                         }
-                        body.metadata.areas.push(area)
+                        body.metadata.areas.push(area);
                     }
                 }
                 db.task(async t => { //eslint-disable-line no-unused-vars

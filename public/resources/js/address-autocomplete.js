@@ -61,12 +61,12 @@ function bindACInputToMap(targetMap,inputId,justLocate)
                 }
             }
 
-          if(_.findIndex(currentEventProperties.metadata.areas, area) != -1){
-              alert('Area is already listed')
-          }else{
-            currentEventProperties.metadata.areas.push(area)
-            updateAreas(area);
-          }
+            if(_.findIndex(currentEventProperties.metadata.areas, area) != -1){
+                alert('Area is already listed');
+            }else{
+                currentEventProperties.metadata.areas.push(area);
+                updateAreas(area);
+            }
 
         }
 
@@ -84,8 +84,8 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             }),
             contentType: 'application/json'
         }).done(function( data, textStatus, req ){
-            vmObject.data.event.metadata.areas = currentEventProperties.metadata.areas // updates model in inline editing
-            vm.event.metadata.areas = currentEventProperties.metadata.areas // updates model in modal editing
+            vmObject.data.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in inline editing
+            vm.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in modal editing
         }).fail(function(err) {
             if (err.responseText.includes('expired')) {
                 alert('session expired');
