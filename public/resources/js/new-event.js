@@ -77,7 +77,7 @@ var NEoverlayMaps = {};
 
  var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
 */
-var marker;
+// var marker;
 
 /*
 newEventMap.on('click', function(e) {
@@ -124,19 +124,19 @@ $(function(){
             var sub_type = $('input[class=newSubEventTypeBox]:checked').map(
                 function () {return this.value;}).get().join(',');
             var subTypes = $('input[class=newSubEventTypeBox]:checked').map(
-                function () {return this.value;}).get()
+                function () {return this.value;}).get();
 
             var types = $('input[class=newEventTypeBox]:checked').map(
-                function () {return this.value;}).get()
+                function () {return this.value;}).get();
             if ($('input[id=selectType6]:checked')){
-              var iO = _.findIndex(types, function(el){
-                return el.indexOf('other') != -1
-              })
-              types[iO] = 'other: ' + $('#inputOther').val()
-              console.log(' 000 EVENT CREATess ----- ', types[iO],  $('#inputOther').val())
+                var iO = _.findIndex(types, function(el){
+                    return el.indexOf('other') != -1;
+                });
+                types[iO] = 'other: ' + $('#inputOther').val();
+                // console.log(' 000 EVENT CREATess ----- ', types[iO],  $('#inputOther').val());
 
             }
-            console.log('111 EVENT CREATess ----- ', types )
+            // console.log('111 EVENT CREATess ----- ', types );
             var body = {
                 'status': 'active',
                 'type': types.join(','),
@@ -272,12 +272,12 @@ $(function(){
     $('.form-control').focusout(function () {
         if($(this).attr('id') == 'disasterType8') {
             var disasterTxt = $(this).val();
-            $('#disasterType7').val(`other_disease_outbreak: ${disasterTxt}`);
+            $('#disasterType7').val(`other_natural_disaster: ${disasterTxt}`);
         }
 
         if($(this).attr('id') == 'diseaseType8') {
             var diseaseTxt = $(this).val();
-            $('#diseaseType7').val(`other_natural_disaster: ${diseaseTxt}`);
+            $('#diseaseType7').val(`other_disease_outbreak: ${diseaseTxt}`);
         }
     });
 

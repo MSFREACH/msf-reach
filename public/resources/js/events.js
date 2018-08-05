@@ -1697,11 +1697,12 @@ var vmObject = {
         placeOtherFields(){
             for(key in this.otherFields){
                 if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
+
                     var subTypes = this.event.metadata.sub_type.split(',');
                     var index = _.findIndex(subTypes, function(el){
                         return el.indexOf(`other_${key}`) != -1;
                     });
-
+                    
                     this.otherFields[key].isSelected = true;
                     this.otherFields[key].description = subTypes[index].substring(subTypes[index].indexOf(':') + 1);
 
