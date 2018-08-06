@@ -1052,7 +1052,7 @@ $('#btnArchive').click(function(e){
         'status':'inactive',
         'metadata':{}
     };
-    this.updateEvent(currentEventId, body, goHome)
+    this.updateEvent(currentEventId, body, goHome);
 });
 
 // Edit support
@@ -1901,11 +1901,11 @@ var vmObject = {
                 data: JSON.stringify(body),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
-              if(goHome){
-                window.location.href = '/';
-              }else{
-                window.location.href = '/events/?eventId=' + eventId;
-              }
+                if(goHome){
+                    window.location.href = '/';
+                }else{
+                    window.location.href = '/events/?eventId=' + eventId;
+                }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
                     alert('session expired');
@@ -1950,11 +1950,11 @@ var vmObject = {
             }
         },
         saveEventEdits:function(){
-          var files=document.getElementById('inputNotificationUpload').files;
-          if(files){
-            return this.uploadNotifications(files);
-          }
-          this.submitEventMetadata();
+            var files=document.getElementById('inputNotificationUpload').files;
+            if(files){
+                return this.uploadNotifications(files);
+            }
+            this.submitEventMetadata();
         },
         cancelEventEdits:function(){
             window.location.href = '/events/?eventId=' + currentEventId;

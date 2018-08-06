@@ -1224,8 +1224,8 @@ var vm = new Vue({
       this.event.sub_type = this.checkedSubTypes.join();
 
       metadata = _.extend(metadata, {
-        sub_type: this.event.sub_type
-        operational_center: this.event.metadata.msf_response_operational_centers.toString(),
+        sub_type: this.event.sub_type,
+        operational_center: this.event.metadata.msf_response_operational_centers.toString()
       });
 
       var body = {
@@ -1239,7 +1239,6 @@ var vm = new Vue({
       this.lintSubTypesSelected(body);
 
       if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
-          this.updateEvent(currentEventId, body);
           $.ajax({
             type: "PUT",
             url: "/api/events/" + currentEventId,
