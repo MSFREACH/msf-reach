@@ -1422,7 +1422,7 @@
     </div>
     <div id="tweets" class="tab-pane fade">
       <div class="row">
-        <div class="col-md-5" style="height:80vh;overflow-y:auto;" >
+        <div class="col-md-5" @scroll="checkTweetScroll" style="height:80vh;overflow-y:auto;" >
           <h4>Twitter Feed</h4>
           <div class="input-group add-on">
             <input  class="form-control" placeholder="Search e.g. #earthquake" name="srch-term" id="searchTerm" type="text">
