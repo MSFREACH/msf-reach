@@ -1884,11 +1884,10 @@ var vmObject = {
             });
         },
         checkTweetScroll: function(e){
-          var elem = $(e.currentTarget);
-          if(elem[0].scrollHeight - elem.scrollTop() == elem.outerHeight()){
-            console.log('here at the botttom of tweets', this._data.searchTerm)
-            getTweets(vmObject.data.searchTerm, true);
-          }
+            var elem = $(e.currentTarget);
+            if(elem[0].scrollHeight - elem.scrollTop() == elem.outerHeight()){
+                getTweets(vmObject.data.searchTerm, true);
+            }
 
         },
         removeOtherOrg: function(index) {

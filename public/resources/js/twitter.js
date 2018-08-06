@@ -8,7 +8,7 @@ var loadTweets = function(err, tweets, next) {
     }
     else {
         if(!next){
-          $('#tweetFeed').empty(); // here if same searchString then we just append
+            $('#tweetFeed').empty(); // here if same searchString then we just append
         }
         $.each(tweets, function(key, value){
             $('#tweetFeed').append('<div id="'+value.tweetId+'" draggable="true" ondragstart="drag(event)">'+value.tweetEmbed.html+'</div>');
@@ -26,14 +26,12 @@ var loadTweets = function(err, tweets, next) {
 var max_id = '';
 // Perform GET call to get tweets
 var getTweets = function(searchString, next) { // eslint-disable-line no-unused-vars
-  var url = '/api/twitter/?searchString=' + searchString
-  if(next){
-    url += ('&max_id=' + max_id)
-  }
+    var url = '/api/twitter/?searchString=' + searchString;
+    if(next){
+        url += ('&max_id=' + max_id);
+    }
     $.getJSON(url, function (data){
-
         max_id = data.lastId;
-        console.log(url, data, data.result, max_id)
         loadTweets(null, data.result, next);
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
@@ -43,19 +41,3 @@ var getTweets = function(searchString, next) { // eslint-disable-line no-unused-
         }
     });
 };
-//
-// $(document).ready(function(){
-//
-//   $( window ).scroll(function() {
-//     console.log(" scroooolll ",)
-//   });
-// });
-
-function checkScroll(e){
-  console.log('scrooollllll ---- ', e)
-
-  var elem = $(e.currentTarget);
-  if(elem[0].scrollHeight - elem.scrollTop() == elem.outerHeight()){
-    console.log('here at the botttom of tweets')
-  }
-}

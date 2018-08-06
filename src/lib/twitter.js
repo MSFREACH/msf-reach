@@ -31,8 +31,6 @@ const searchTwitter = (queryTerm, id) => new Promise((resolve, reject) => {
 
     client.get('search/tweets', {q: queryTerm + ' -filter:retweets -from:petabencana', geocode: '-5,120,3000km', count: 100, max_id: id}, function(error, tweets, response) {
         if (error) reject(error + ': ' + response);
-
-        console.log('searchTwiiiee ------- ', tweets.statuses)
         resolve(tweets);
     });
 });

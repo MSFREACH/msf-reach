@@ -27,8 +27,8 @@ export default ({ logger }) => {
                 let promiseArray = [];
                 /// here should get a new id string
                 if(data.statuses && data.statuses.length > 0){
-                  var lastId = data.statuses[data.statuses.length-1].id // also the oldest one, so working backwards
-                  // console.log('routes/twitter/index.js ------ new IDStr____ ',lastId)
+                    var lastId = data.statuses[data.statuses.length-1].id; // also the oldest one, so working backwards
+                    // console.log('routes/twitter/index.js ------ new IDStr____ ',lastId)
 
                 }
 
