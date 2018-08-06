@@ -22,13 +22,13 @@ export default ({ logger }) => {
                 max_id: Joi.string().allow('') /// current id string
             }
         }),
-        (req, res, next) => searchTwitter(req.query.searchString, req.query.id)
+        (req, res, next) => searchTwitter(req.query.searchString, req.query.max_id)
             .then((data) => {
                 let promiseArray = [];
                 /// here should get a new id string
                 if(data.statuses && data.statuses.length > 0){
                   var lastId = data.statuses[data.statuses.length-1].id // also the oldest one, so working backwards
-                  console.log('routes/twitter/index.js ------ new IDStr____ ',lastId)
+                  // console.log('routes/twitter/index.js ------ new IDStr____ ',lastId)
 
                 }
 

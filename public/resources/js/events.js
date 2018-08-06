@@ -1884,9 +1884,6 @@ var vmObject = {
             });
         },
         checkTweetScroll: function(e){
-
-          console.log('checkMainScroll ------ ')
-
           var elem = $(e.currentTarget);
           if(elem[0].scrollHeight - elem.scrollTop() == elem.outerHeight()){
             console.log('here at the botttom of tweets', this._data.searchTerm)
