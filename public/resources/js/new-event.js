@@ -117,6 +117,8 @@ $(function(){
     // create a new event - get the values and store them using a POST
     $('#createEvent').on('click', function (e) {
 
+
+
         if (areaSelect === null && !latlng ){
             alert('Please select the epicenter of the event using the map.');
         }
@@ -141,7 +143,7 @@ $(function(){
                 'status': 'active',
                 'type': types.join(','),
                 'created_at': new Date().toISOString(),
-                'location': (areaSelect ? areaSelect.getBounds().getCenter() : latlng),
+                'location': (areaSelect ? areaSelect.getBounds().getCenter().wrap() : latlng.wrap()),
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),
@@ -179,7 +181,7 @@ $(function(){
             };
 
             if (areaSelect) {
-                body.metadata['bounds'] = areaSelect.getBounds();
+                body.metadata['bounds'] = L.latLngBounds([areaSelect.getBounds().getSouthWest().wrap(), areaSelect.getBounds().getNorthEast().wrap()]);
             }
 
             // add report id if creating from existing report
