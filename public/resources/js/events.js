@@ -277,7 +277,7 @@ var printEventProperties = function(err, eventProperties){
     if (currentEventProperties) {
         if (currentEventProperties.metadata.saved_tweets && currentEventProperties.metadata.saved_tweets.length > 0) {
             $.each(currentEventProperties.metadata.saved_tweets, function(key, value){
-                $('#savedTweets').prepend('<div id="'+value.tweetId+'">'+value.html+'</div>');
+                $('#savedTweets').prepend('<div id="'+value.tweetId+'" draggable="true" ondragend="dragOut(event)">'+value.html+'</div>');
                 var tweetEventReportLink = eventReportLink.replace('&', '%26');
                 $('#'+value.tweetId).append('<a class="btn btn-primary" href="https://twitter.com/intent/tweet?in_reply_to='+value.tweetId+'&text=Please+send+further+information+'+tweetEventReportLink+'">Reply</a><hr>');
                 twttr.widgets.load();
@@ -588,10 +588,8 @@ var mapReports = function(reports,mapForReports){
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
             }
 
-
-
             $('#reportsTable').append(
-                '<tr><td><a href=\'#\' onclick=\'openReportPopup(' +
+                '<tr id="reports-table-row-'+feature.properties.id+'"><td><a href=\'#\' onclick=\'openReportPopup(' +
               feature.properties.id +
               ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
               '<i id="tableReportShare'+feature.properties.id+'" class="icon-link-ext icon-floating" style="font-size:18px;"></i></td><td>' +
@@ -606,11 +604,13 @@ var mapReports = function(reports,mapForReports){
               '<select id="report-'+feature.properties.id+'">'+
                 '<option value="unconfirmed">unconfirmed</option>' +
                 '<option value="confirmed">confirmed</option>' +
+                '<option value="ignored">ignored</option>' +
               '</select></td></tr>'
 
             );
 
-            $('#report-'+feature.properties.id).val(feature.properties.status === 'confirmed' ? 'confirmed' : 'unconfirmed');
+            $('#report-'+feature.properties.id).val(feature.properties.status);
+
             $('#report-'+feature.properties.id).change(function() {
                 var selectedVal = $(this).val();
                 var id = $(this).attr('id').split('-')[1];
@@ -625,6 +625,11 @@ var mapReports = function(reports,mapForReports){
                     data: JSON.stringify(body),
                     contentType: 'application/json'
                 });
+
+                if (selectedVal==='ignored') {
+                    $('#reports-table-row-'+$(this).attr('id').split('-')[1]).remove();
+
+                }
             });
 
         }
@@ -684,7 +689,7 @@ var mapReports = function(reports,mapForReports){
 
     accessLayer = L.geoJSON(reports, {
         filter: function (feature) {
-            return (feature.properties.content.report_tag === 'ACCESS');
+            return (feature.properties.content.report_tag === 'ACCESS' && feature.properties.status != 'ignored');
         },
         pointToLayer: function (feature, latlng) {
             points.push([latlng.lat, latlng.lng]);
