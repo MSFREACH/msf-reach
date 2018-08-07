@@ -130,7 +130,7 @@ $(function(){
                 'type': $('input[class=newEventTypeBox]:checked').map(
                     function () {return this.value;}).get().join(','),
                 'created_at': new Date().toISOString(),
-                'location': (areaSelect ? areaSelect.getBounds().getCenter().wrap() : latlng.wrap()),
+                'location': (areaSelect ? areaSelect.getBounds().getCenter().wrap() : latlng),
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),

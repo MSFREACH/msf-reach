@@ -70,7 +70,7 @@ function postContact() {
     var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
 
     var body = {
-        'location':newContactMap.msf_latlng.wrap(),
+        'location':newContactMap.msf_latlng,
         'properties':{
             'address': $('#mapAddress').val(),
             'title': $('#inputContactTitle').val() || $('#inputContactOtherTitle').val(),
@@ -166,7 +166,7 @@ function patchContact() {
     var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
 
     var body = {
-        'location':newContactMap.msf_latlng.wrap(),
+        'location':newContactMap.msf_latlng,
         'properties':{
             'address': $('#mapAddress').val(),
             'title': $('#inputContactTitle').val() || $('#inputContactOtherTitle').val(),
