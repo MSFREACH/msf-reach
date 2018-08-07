@@ -1886,12 +1886,12 @@ var vmObject = {
         checkTweetScroll: function(e){
             var elem = $(e.currentTarget);
 
-            // console.log('scrollling ------ ', elem[0].scrollHeight, elem.scrollTop(), elem.outerHeight())
+            console.log('scrollling ------ ', elem[0].scrollHeight, elem.scrollTop(), elem.outerHeight())
             var heightDiff = elem[0].scrollHeight - elem.scrollTop()
             var containerHeightWPadding = elem.outerHeight()
 
             if( heightDiff == containerHeightWPadding){
-              // console.log('hit the bottom here ------- ! ')
+              console.log('hit the bottom here ------- ! ')
                 return getTweets(vmObject.data.searchTerm, true);
             }
         },
