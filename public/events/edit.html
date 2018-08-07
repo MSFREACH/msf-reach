@@ -109,45 +109,27 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
-              <dt>Event Type</dt>
+              <dt>Event Type </dt>
               <dd>
+                <div v-for="(item, index) in eventTypes">
+                <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
+                  <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
+                  <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
+                      <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
+                      <br v-if="index % 4 == 1"/>
+                  </span>
 
-                <input class="newEventTypeBox" v-model="checkedType[0]" id="selectType0" type="checkbox" value="conflict" /><label class="eventBox">&nbsp Armed Conflict</label><br>
-                <input class="newEventTypeBox" v-model="checkedType[1]" id="selectType1" type="checkbox" value="disease_outbreak" /><label class="eventBox">&nbsp Disease Outbreak</label><br>
-                <div id="divDisease" style="display:none; margin-left: 20px;">
-                  <input class="newSubEventTypeBox" v-model="diseaseType[0]" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox">&nbsp Cholera</label><br>
-                  <input class="newSubEventTypeBox" v-model="diseaseType[1]" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox">&nbsp Ebola</label><br>
-                  <input class="newSubEventTypeBox" v-model="diseaseType[2]" id="diseaseType2" type="checkbox" value="Dengue" /><label class="eventBox">&nbsp Dengue</label><br>
-                  <input class="newSubEventTypeBox" v-model="diseaseType[3]" id="diseaseType3" type="checkbox" value="Malaria" /><label class="eventBox">&nbsp Malaria</label><br>
-                  <input class="newSubEventTypeBox" v-model="diseaseType[4]" id="diseaseType4" type="checkbox" value="Measles" /><label class="eventBox">&nbsp Measles</label><br>
-                  <input class="newSubEventTypeBox" v-model="diseaseType[5]" id="diseaseType5" type="checkbox" value="Meningococcal Meningitis" /><label class="eventBox">&nbsp Meningococcal Meningitis</label><br>
-                  <input class="newSubEventTypeBox" v-model="diseaseType[6]" id="diseaseType6" type="checkbox" value="Yellow Fever" /><label class="eventBox">&nbsp Yellow Fever</label><br>
-                  <input class="newSubEventTypeBox" v-model="diseaseType[7]" id="diseaseType7" type="checkbox" value="Other Disease" /><label class="eventBox">&nbsp Other (Specify)</label>
-                  <div class="form-group" id="divOtherDisease"  style="display:none;">
-                    <input type="text" v-model="diseaseOther" id="diseaseType8" class="form-control" placeholder="(Specify)" >
-                  </div>
+                  <span>
+                    <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" /> <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
+                    <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  class="form-control" placeholder="(Specify)" />
+                  </span>
                 </div>
-                <input class="newEventTypeBox" v-model="checkedType[2]" id="selectType2" type="checkbox" value="displacement" /><label class="eventBox">&nbsp Displacement</label><br>
-                <input class="newEventTypeBox" v-model="checkedType[3]" id="selectType3" type="checkbox" value="malnutrition" /><label class="eventBox">&nbsp Malnutrition</label><br>
-                <input class="newEventTypeBox" v-model="checkedType[4]" id="selectType4" type="checkbox" value="natural_disaster" /><label class="eventBox">&nbsp Natural Disaster</label><br>
-                <div id="divNaturalDisaster" style="display:none; margin-left: 20px;">
-                  <input class="newSubEventTypeBox" v-model="disasterType[0]" id="disasterType0" type="checkbox" value="drought" /><label class="eventBox">&nbsp Drought</label><br>
-                  <input class="newSubEventTypeBox" v-model="disasterType[1]" id="disasterType1" type="checkbox" value="earthquake" /><label class="eventBox">&nbsp Earthquake</label><br>
-                  <input class="newSubEventTypeBox" v-model="disasterType[2]" id="disasterType2" type="checkbox" value="flood" /><label class="eventBox">&nbsp Flood</label><br>
-                  <input class="newSubEventTypeBox" v-model="disasterType[3]" id="disasterType3" type="checkbox" value="tsunami" /><label class="eventBox">&nbsp Tsunami</label><br>
-                  <input class="newSubEventTypeBox" v-model="disasterType[4]" id="disasterType4" type="checkbox" value="typhoon" /><label class="eventBox">&nbsp Typhoon</label><br>
-                  <input class="newSubEventTypeBox" v-model="disasterType[5]" id="disasterType5" type="checkbox" value="volcano" /><label class="eventBox">&nbsp Volcano</label><br>
-                  <input class="newSubEventTypeBox" v-model="disasterType[6]" id="disasterType6" type="checkbox" value="landslides" /><label class="eventBox">&nbsp Landslides</label><br>
-                  <input class="newSubEventTypeBox" v-model="disasterType[7]" id="disasterType7" type="checkbox" value="other disaster" /><label class="eventBox">&nbsp Other (Specify)</label>
-                  <div class="form-group" id="divOtherDisaster"  style="display:none;">
-                    <input type="text" v-model="disasterOther" id="disasterType8" class="form-control" placeholder="(Specify)" >
-                  </div>
-                </div>
-                <input class="newEventTypeBox" v-model="checkedType[5]" id="selectType5" type="checkbox" value="search_and_rescue" /><label class="eventBox">&nbsp Search & Rescue</label><br>
-                <input class="newEventTypeBox" v-model="checkedType[6]" id="selectType6" type="checkbox" value="other" /><label class="eventBox">&nbsp Other (Specify)</label>
-                <div class="form-group" id="divOther"  style="display:none;">
-                  <input type="text" v-model="typeOther" id="selectType7" class="form-control" placeholder="(Specify)" >
-                </div>
+              </div>
+              <div>
+                <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                <input v-if="otherFields.type.isSelected" type="text" class="form-control" v-model="otherFields.type.description" placeholder="(Specify)" />
+              </div>
+              </dd>
 
               </dd>
             </dl>
@@ -820,43 +802,34 @@ var vm = new Vue({
     msfResourceCategories: msfResourceCategories,
     event: $.extend(true, defaultEvent, currentEventProperties),
     currentEventGeometry: currentEventGeometry,
-    checkedType: [],
-    typeOther: '',
-    diseaseType: [],
-    diseaseOther: '',
-    disasterType: [],
-    disasterOther: '',
+    /// here's the inline part migrated
+    invalid: {
+        typesSelection: false,
+        emptyStrings: false,
+    },
+    eventTypes: eventTypes,
+    checkedTypes: [],
+    checkedSubTypes: [],
+    otherFields: {
+        type: {
+            isSelected: false,
+            description: ''
+        },
+        disease_outbreak: {
+            isSelected: false,
+            description: ''
+        },
+        natural_disaster: {
+            isSelected: false,
+            description: ''
+        }
+    },
+
+
     editCategory:editCategory
   },
   mounted: function() {
     console.log("Vue already mounted.");
-
-    // for each checkbox
-    // check if type is a substr of event.types
-    // if so, check it
-
-    for (var i = 0; i < 7; i++) {
-        if (this.event.type.toString().toLowerCase().indexOf($('#selectType' + i).val().toString().toLowerCase()) !== -1) {
-            this.checkedType[i] = true;
-            if (i === 1) {
-                $('#divDisease').css('display', '');
-            } else if (i === 4) {
-                $('#divNaturalDisaster').css('display', '');
-            }
-        }
-    }
-
-    for (var i = 0; i < 8; i++) {
-        if (this.event.metadata.sub_type.toString().toLowerCase().indexOf($('#diseaseType' + i).val().toString().toLowerCase()) !== -1) {
-            this.diseaseType[i] = true;
-        }
-    }
-
-    for (var i = 0; i < 8; i++) {
-        if (this.event.metadata.sub_type.toString().toLowerCase().indexOf($('#disasterType' + i).val().toString().toLowerCase()) !== -1) {
-            this.disasterType[i] = true;
-        }
-    }
 
     if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
       var optCenter = this.event.metadata.operational_center;
@@ -871,37 +844,62 @@ var vm = new Vue({
       });
     }
 
+    /// --- mount datamodel of checkedTypes & checkedSubTypes
+    if(this.event.type){
+        var currentTypes = this.event.type.split(',');
+        for(var t = 0; t < currentTypes.length; t++){
+            this.checkedTypes.push(currentTypes[t]);
+        }
+    }
+
+    if(this.event.metadata.sub_type){
+        var currentSubTypes = this.event.metadata.sub_type.split(',');
+        for(var st = 0; st < currentSubTypes.length; st++){
+            this.checkedSubTypes.push(currentSubTypes[st]);
+        }
+    }
+    ///start------- placeOtherFields
+    for(key in this.otherFields){
+        if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
+
+            var subTypes = this.event.metadata.sub_type.split(',');
+            var index = _.findIndex(subTypes, function(el){
+                return el.indexOf(`other_${key}`) != -1;
+            });
+
+            this.otherFields[key].isSelected = true;
+            this.otherFields[key].description = subTypes[index].substring(subTypes[index].indexOf(':') + 1);
+
+        }
+    }
+    if(this.event.type.indexOf('other:') != -1){
+        var tmpTypes = this.event.type.split(',');
+        var typeIndex = _.findIndex(tmpTypes, function(el){
+            return el.indexOf('other:') != -1;
+        });
+
+        this.otherFields.type.isSelected = true;
+        this.otherFields.type.description = tmpTypes[typeIndex].substring(tmpTypes[typeIndex].indexOf(':')+1);
+    }
+
+    ///end ------- placeOtherFields
+
     $( '#inputSeverityScale' ).slider({
         value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
         min: 1,
         max: 3,
         step: 1
     })
-        .each(function() {
-            console.log('each');
-
-            //
-            // Add labels to slider whose values
-            // are specified by min, max and whose
-            // step is set to 1
-            //
-
-            // Get the options for this slider
-            var opt = $(this).data().uiSlider.options;
-
-            // Get the number of possible values
-            var vals = opt.max - opt.min;
-
-            // Space out values
-            for (var i = 0; i <= vals; i++) {
-
-                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
-
-                $( '#inputSeverityScale' ).append(el);
-
-            }
-
-        });
+    .each(function() {
+        var opt = $(this).data().uiSlider.options;
+        // Get the number of possible values
+        var vals = opt.max - opt.min;
+        // Space out values
+        for (var i = 0; i <= vals; i++) {
+            var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+            $( '#inputSeverityScale' ).append(el);
+        }
+    });
 
     $('textarea').flexText();
     this.calculatePercentagePeopleAffected();
@@ -911,13 +909,8 @@ var vm = new Vue({
     this.$nextTick(function() {
 
         var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
-
-
-
           /** << eventMap */
           eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false});
-
-
           eventMap.scrollWheelZoom.disable();
 
           //Bind Autocomplete to inputs:
@@ -1150,6 +1143,68 @@ var vm = new Vue({
     });
   },
   methods: {
+    lintTypes(){
+
+        var tmpEventWithSubTypes = {};
+        for(var i3= 0; i3 < this.eventTypes.length; i3++){
+            if(eventTypes[i3].subTypes){
+                var tmpSubTypes = eventTypes[i3].subTypes.map(function(el){return el.value;});
+                tmpEventWithSubTypes[eventTypes[i3].value] = tmpSubTypes;
+            }
+        }
+
+        var cleanSubTypes = [];
+        for(var i4=0; i4<this.checkedTypes.length; i4++){
+            var tmpType = tmpEventWithSubTypes[this.checkedTypes[i4]];
+            if(tmpType){
+                for(var j=0; j<this.checkedSubTypes.length; j++){
+                    if(tmpType.indexOf(this.checkedSubTypes[j]) > -1){
+                        cleanSubTypes.push(this.checkedSubTypes[j]);
+                    }
+                }
+            }
+        }
+        this.checkedSubTypes = cleanSubTypes;
+    },
+    lintSubTypesSelected(body){
+        if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+            alert('ensure subtype(s) is/are selected');
+            this.invalid.typesSelection = true;
+        }else{
+            this.invalid.typesSelection = false;
+        }
+    },
+    lintOtherFields(){
+        var emptyFields = [];
+
+        for(var key in this.otherFields){
+            var description = this.otherFields[key].description;
+
+            if(this.otherFields[key].isSelected){
+                if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) != -1 || key == 'type')){ // to be sure that main type was selected
+                    emptyFields.push(key.replace('_', ' '));
+                }else if(this.checkedTypes.indexOf(key) != -1){
+                    this.checkedSubTypes.push('other_'+key+ ': '+ description);
+                }else if(key == 'type'){
+                    var index = _.findIndex(this.checkedTypes, function(el){
+                        return el.indexOf('other:') != -1; // find index
+                    });
+                    if(index != -1){ // if none 
+                        this.checkedTypes[index] = 'other: '+ description;
+                    }else{
+                        this.checkedTypes.push('other: '+ description);
+                    }
+                }
+            }
+        }
+
+        if(emptyFields.length > 0 ){
+            alert(`Please enter description for other ${emptyFields.join(', ')}`);
+            this.invalid.emptyStrings = true;
+        }else{
+            this.invalid.emptyStrings = false;
+        }
+    },
     submitEventData() {
       var metadata = this.event.metadata;
 
@@ -1167,14 +1222,16 @@ var vm = new Vue({
       metadata['region'] = $('#eventRegion').val();
       metadata['country'] = $('#eventCountry').val();
 
-      //update sub types and add into db
-      this.updateSubEventTypes();
-      var subType = replaceUnderscore(this.event.sub_type.toString());
+      this.lintTypes(); // make sure if type is unselected, subtype is removed
+      this.lintOtherFields(); // make sure the other string gets attached
+      this.event.type = this.checkedTypes.join();
+      this.event.sub_type = this.checkedSubTypes.join();
+
       metadata = _.extend(metadata, {
-          operational_center: this.event.metadata.msf_response_operational_centers.toString(),
-          //type_of_emergency: subType
-          sub_type: subType
+        sub_type: this.event.sub_type,
+        operational_center: this.event.metadata.msf_response_operational_centers.toString()
       });
+
       var body = {
         status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
         type: this.event.type.toString(),
@@ -1182,9 +1239,10 @@ var vm = new Vue({
       }
       body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
       body.metadata['notification'] = currentEventProperties.metadata.notification;
-      if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
-          alert('ensure subtype(s) is/are selected');
-      } else {
+
+      this.lintSubTypesSelected(body);
+
+      if(!this.invalid.typesSelection && !this.invalid.emptyStrings){
           $.ajax({
             type: "PUT",
             url: "/api/events/" + currentEventId,
@@ -1258,89 +1316,7 @@ var vm = new Vue({
         amount: 0,
         from_who: null,
       });
-    },
-
-    //update changes to event checkboxes and store value/s
-
-    updateEventTypes() {
-        console.log(this.event.type.toString());
-
-        var eventTypes = [];
-        eventTypes[0] = 'conflict';
-        eventTypes[1] = 'disease_outbreak';
-        eventTypes[2] = 'displacement';
-        eventTypes[3] = 'malnutrition';
-        eventTypes[4] = 'natural_disaster';
-        eventTypes[5] = 'search_and_rescue';
-        eventTypes[6] = 'other';
-        var returnTypes = [];
-
-        for(var i=0; i<7; i++) {
-            if (this.checkedType[i] === true) {returnTypes.push(eventTypes[i]);}
-        }
-
-        this.event.type = returnTypes.join();
-        console.log(this.event.type);
-    },
-    updateSubEventTypes() {
-
-        var diseaseEventTypes = [];
-        diseaseEventTypes[0] = 'Cholera';
-        diseaseEventTypes[1] = 'Ebola';
-        diseaseEventTypes[2] = 'Dengue';
-        diseaseEventTypes[3] = 'Malaria';
-        diseaseEventTypes[4] = 'Measles';
-        diseaseEventTypes[5] = 'Meningococcal Meningitis';
-        diseaseEventTypes[6] = 'Yellow Fever';
-        diseaseEventTypes[7] = 'Other Disease';
-        diseaseEventTypes[8] = this.diseaseOther;
-        var returnDiseaseTypes = [];
-
-        for(var i=0; i<8; i++) {
-            if (this.diseaseType[i] === true) {returnDiseaseTypes.push(diseaseEventTypes[i]);}
-        }
-        if (diseaseEventTypes[8] !== '') {
-            returnDiseaseTypes.push(diseaseEventTypes[8]);
-        }
-
-        var disasterEventTypes = [];
-        disasterEventTypes[0] = 'drought';
-        disasterEventTypes[1] = 'earthquake';
-        disasterEventTypes[2] = 'flood';
-        disasterEventTypes[3] = 'tsunami';
-        disasterEventTypes[4] = 'typhoon';
-        disasterEventTypes[5] = 'volcano';
-        disasterEventTypes[6] = 'landslides';
-        disasterEventTypes[7] = 'other disaster';
-        disasterEventTypes[8] = this.disasterOther;
-        var returnDisasterTypes = [];
-
-        for(var i=0; i<8; i++) {
-            if (this.disasterType[i] === true) {returnDisasterTypes.push(disasterEventTypes[i]);}
-        }
-        if (disasterEventTypes[8] !== '') {
-            returnDisasterTypes.push(disasterEventTypes[8]);
-        }
-
-        //if statement adding subtypes together or separate
-        if (Boolean(returnDisasterTypes.toString()) == false) {
-            this.event.sub_type = returnDiseaseTypes.join();
-        } else if (Boolean(returnDiseaseTypes.toString()) == false) {
-            this.event.sub_type = returnDisasterTypes.join();
-        } else {
-            this.event.sub_type = returnDiseaseTypes.join() + ',' + returnDisasterTypes.join();
-        }
-        console.log(this.event.sub_type);
-    },
-  },
-  // watch when a checkbox is changed
-  watch: {
-      checkedType: {
-          handler: function (val, oldVal) {
-              this.updateEventTypes();
-          },
-          deep: true
-      }
+    }
   }
 });
 

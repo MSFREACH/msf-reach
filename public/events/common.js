@@ -8,6 +8,7 @@ var defaultEvent = {
     id: null,
     status: null,
     type: null,
+    types:[],
     created_at: null,
     reportkey: null,
     metadata: {
@@ -29,6 +30,7 @@ var defaultEvent = {
         event_local_time: null,
         type_of_emergency: [], // Type of Emergency (nature)
         sub_type: null,
+        sub_types: [],
         incharge_position: null, // mission_contact_person.position
         incharge_name: null, // mission_contact_person.name
         mission_contact_person: {
@@ -128,7 +130,6 @@ var eventTypes = [
             { value: 'measles', text: 'Measles' },
             { value: 'meningococcal_meningitis', text: 'Meningococcal Meningitis' },
             { value: 'yellow_fever', text: 'Yellow Fever' },
-            { value: 'other_disease_outbreak', text: 'Others' }
         ]
     },
 
@@ -142,7 +143,6 @@ var eventTypes = [
             { value: 'flood', text: 'Flood' },
             { value: 'tsunami', text: 'Tsunami' },
             { value: 'drought', text: 'Drought' },
-            { value: 'other_natural_disaster', text: 'Others' }
         ]
     },
     { value: 'search_and_rescue', text: 'Search and Rescue' },

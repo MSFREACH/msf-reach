@@ -1057,21 +1057,7 @@ $('#btnArchive').click(function(e){
         'status':'inactive',
         'metadata':{}
     };
-
-    $.ajax({
-        type: 'PUT',
-        url: '/api/events/' + currentEventId,
-        data: JSON.stringify(body),
-        contentType: 'application/json'
-    }).done(function( data, textStatus, req ){
-        window.location.href = '/';
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
-        }
-    });
+    this.updateEvent(currentEventId, body, goHome);
 });
 
 // Edit support
@@ -1096,21 +1082,7 @@ $('#btnSaveEdits').click(function(e){
         }
     };
 
-    $.ajax({
-        type: 'PUT',
-        url: '/api/events/' + currentEventId,
-        data: JSON.stringify(body),
-        contentType: 'application/json'
-    }).done(function( data, textStatus, req ){
-    //$('#editModal').modal('toggle'); // toggling doesn't refresh data on page.
-        window.location.href = '/events/?eventId=' + currentEventId;
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
-        }
-    });
+    this.updateEvent(currentEventId, body);
 });
 
 var onEditEvent = function() {
@@ -1454,7 +1426,6 @@ var vmObject = {
                 }
             }
         }
-
         $('#btnSearchTwitter').trigger('click');
 
         $('#searchTerm').keyup(function(event){
@@ -1707,6 +1678,7 @@ var vmObject = {
         placeOtherFields(){
             for(key in this.otherFields){
                 if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
+
                     var subTypes = this.event.metadata.sub_type.split(',');
                     var index = _.findIndex(subTypes, function(el){
                         return el.indexOf(`other_${key}`) != -1;
@@ -1743,7 +1715,8 @@ var vmObject = {
                         var index = _.findIndex(this.checkedTypes, function(el){
                             return el.indexOf('other:') != -1;
                         });
-                        if(index){
+
+                        if(index != -1){
                             this.checkedTypes[index] = 'other: '+ description;
                         }else{
                             this.checkedTypes.push('other: '+ description);
@@ -1790,7 +1763,8 @@ var vmObject = {
 
 
             metadata = _.extend(metadata, {
-                sub_type: this.event.sub_type
+                sub_type: this.event.sub_type,
+                operational_center: this.event.metadata.msf_response_operational_centers.toString(),
             });
 
             var body = {
@@ -1798,25 +1772,13 @@ var vmObject = {
                 type: this.event.type.toString(),
                 metadata: metadata
             };
-
             body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
             this.lintSubTypesSelected(body);
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
 
             if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
-                $.ajax({
-                    type: 'PUT',
-                    url: '/api/events/' + currentEventId,
-                    data: JSON.stringify(body),
-                    contentType: 'application/json'
-                }).done(function(data, textStatus, req) {
-                    window.location.href = '/events/?eventId=' + currentEventId;
-                }).fail(function(err) {
-                    if (err.responseText.includes('expired')) {
-                        alert('session expired');
-                    }
-                });
+                this.updateEvent(currentEventId, body);
             }
         },
         editEvent:function(category){
@@ -1949,93 +1911,71 @@ var vmObject = {
                 from_who: null,
             });
         },
-        updateEvent:function(eventId,body,notificationFileUrl){
-            if (notificationFileUrl)
-            {
-                var lastNotification=getLatestNotification(body.metadata.notification);
-                lastNotification['notificationFileUrl']=notificationFileUrl;
-            }
+        updateNotification:function(fileUrl){
+            var lastNotification=getLatestNotification(body.metadata.notification);
+            lastNotification['notificationFileUrl']= fileUrl;
+        },
+        updateEvent:function(eventId,body, goHome){
             $.ajax({
                 type: 'PUT',
                 url: '/api/events/' + eventId,
                 data: JSON.stringify(body),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
-                window.location.href = '/events/?eventId=' + eventId;
+                if(goHome){
+                    window.location.href = '/';
+                }else{
+                    window.location.href = '/events/?eventId=' + eventId;
+                }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
                     alert('session expired');
                 }
             });
         },
-        saveEventEdits:function(){
+        uploadNotifications:function(files){
             var vm=this;
-            var metadata = this.event.metadata;
+            var imgLink='';
 
-            //TODO: fix this
-            //metadata['region'] = $('#eventRegion').val();
-
-            //update sub types and add into db
-            //this.updateSubEventTypes();
-            //var subType = replaceUnderscore(this.event.sub_type.toString());
-            metadata = _.extend(metadata, {
-                operational_center: this.event.metadata.msf_response_operational_centers.toString(),
-                //type_of_emergency: subType
-                //sub_type: subType
-            });
-            var body = {
-                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-                type: this.event.type.toString(),
-                metadata: metadata
-            };
-            //body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
-
-            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
-                alert('ensure subtype(s) is/are selected');
-            } else {
-
-
-                var files=document.getElementById('inputNotificationUpload').files;
-                var imgLink='';
-
-                if (files && files[0])
-                {
-                    $('#dialogModalTitle').html('Uploading attachment(s)...');
-                    $('#dialogModal').modal('show');
-                    var imgFileName=files[0].name;
-                    var fileType=files[0].type;
-                    var photo=files[0];
-                    $.ajax({
-                        url : '/api/utils/uploadurl',
-                        data: {'filename': imgFileName, key:('event/'+currentEventId)},
-                        type : 'GET',
-                        dataType : 'json',
+            if (files[0]){
+                $('#dialogModalTitle').html('Uploading attachment(s)...');
+                $('#dialogModal').modal('show');
+                var imgFileName=files[0].name;
+                var fileType=files[0].type;
+                var photo=files[0];
+                $.ajax({
+                    url : '/api/utils/uploadurl',
+                    data: {'filename': imgFileName, key:('event/'+currentEventId)},
+                    type : 'GET',
+                    dataType : 'json',
+                    cache : false,
+                }).then(function(retData) {
+                    imgLink=retData.url;
+                    return $.ajax({
+                        url : retData.signedRequest,
+                        type : 'PUT',
+                        data : photo,
+                        dataType : 'text',
                         cache : false,
-                    })
-                        .then(function(retData) {
-                            imgLink=retData.url;
-                            return $.ajax({
-                                url : retData.signedRequest,
-                                type : 'PUT',
-                                data : photo,
-                                dataType : 'text',
-                                cache : false,
-                                //contentType : file.type,
-                                processData : false,
-                            });
-                        }).then(function(data,txt,jq){
-                            vm.updateEvent(currentEventId,body,imgLink);
-                        })
-                        .fail(function(err){
-                            //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
-                            $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
-                        });
+                        //contentType : file.type,
+                        processData : false,
+                    });
+                }).then(function(data,txt,jq){
+                    vm.updateNotification(imgLink);
+                    vm.submitEventMetadata();
 
-                }else {//no image just submit the report
-                    vm.updateEvent(currentEventId,body,imgLink);
-                }
-
+                }).fail(function(err){
+                    //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
+                    $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
+                });
             }
+        },
+        saveEventEdits:function(){
+            var files=document.getElementById('inputNotificationUpload').files;
+            if(files){
+                return this.uploadNotifications(files);
+            }
+            this.submitEventMetadata();
         },
         cancelEventEdits:function(){
             window.location.href = '/events/?eventId=' + currentEventId;

@@ -680,7 +680,7 @@
                     <td>
                       <div v-for="(item, index) in eventTypes">
                       <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
-                        <div v-if="item.subTypes && checkedTypes.indexOf(item.value) > 0" class="subTypes">
+                        <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
                         <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
                             <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
                             <br v-if="index % 4 == 1"/>
@@ -692,11 +692,6 @@
                         </span>
                       </div>
                     </div>
-
-                      <!-- <div>
-                        <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
-                        <input type="text" class="form-control" v-model="other.type.description" placeholder="(Specify)" />
-                      </div> -->
                       <div>
                         <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
                         <input v-if="otherFields.type.isSelected" type="text" class="form-control" v-model="otherFields.type.description" placeholder="(Specify)" />

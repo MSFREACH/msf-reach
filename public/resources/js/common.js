@@ -43,11 +43,12 @@ let newData = function (dataTime) {
 };
 
 var typeStr = function(type, sub_type) {
-    var result = type.replace(/disease_outbreak/,'').replace(/natural_disaster/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
+    var result = type.replace(/other:/g, '').replace(/disease_outbreak/,'').replace(/natural_disaster/,'').replace(/_/g,' ').replace(/^,/,'').replace(/,$/,'').replace(/,,/g,',').replace(/,/g,', ');
+
     if (result !== '') {
-        result += sub_type ? (', ' + sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
+        result += sub_type ? (', ' + sub_type.replace(/other_disease_outbreak:/g, ' ').replace(/other_natural_disaster:/g, ' ').replace(/_/g,' ').replace(/,/g,', ')) : '';
     } else {
-        result += sub_type ? (sub_type.replace(/_/g,' ').replace(/,/g,', ')) : '';
+        result += sub_type ? (sub_type.replace(/other_disease_outbreak:/g, ' ').replace(/other_natural_disaster:/g, ' ').replace(/_/g,' ').replace(/,/g,', ')) : '';
     }
     return result.slice(0,1).toUpperCase()+result.slice(1);
 };
