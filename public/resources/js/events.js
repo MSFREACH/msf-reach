@@ -1885,10 +1885,15 @@ var vmObject = {
         },
         checkTweetScroll: function(e){
             var elem = $(e.currentTarget);
-            if(elem[0].scrollHeight - elem.scrollTop() == elem.outerHeight()){
-                getTweets(vmObject.data.searchTerm, true);
-            }
 
+            // console.log('scrollling ------ ', elem[0].scrollHeight, elem.scrollTop(), elem.outerHeight())
+            var heightDiff = elem[0].scrollHeight - elem.scrollTop()
+            var containerHeightWPadding = elem.outerHeight()
+
+            if( heightDiff == containerHeightWPadding){
+              // console.log('hit the bottom here ------- ! ')
+                return getTweets(vmObject.data.searchTerm, true);
+            }
         },
         removeOtherOrg: function(index) {
             this.event.metadata.ext_other_organizations.splice(index, 1);
