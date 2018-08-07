@@ -1711,7 +1711,8 @@ var vmObject = {
                         var index = _.findIndex(this.checkedTypes, function(el){
                             return el.indexOf('other:') != -1;
                         });
-                        if(index){
+
+                        if(index != -1){
                             this.checkedTypes[index] = 'other: '+ description;
                         }else{
                             this.checkedTypes.push('other: '+ description);
@@ -1767,7 +1768,6 @@ var vmObject = {
                 type: this.event.type.toString(),
                 metadata: metadata
             };
-
             body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
             this.lintSubTypesSelected(body);
 

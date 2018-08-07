@@ -692,11 +692,6 @@
                         </span>
                       </div>
                     </div>
-
-                      <!-- <div>
-                        <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
-                        <input type="text" class="form-control" v-model="other.type.description" placeholder="(Specify)" />
-                      </div> -->
                       <div>
                         <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
                         <input v-if="otherFields.type.isSelected" type="text" class="form-control" v-model="otherFields.type.description" placeholder="(Specify)" />
