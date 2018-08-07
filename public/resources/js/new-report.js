@@ -84,7 +84,7 @@ function postReport(eventID,reportKey,imgLink) {
     var body = {
         'status': 'unconfirmed',
         'created': new Date().toISOString(),
-        'location':newReportMap.msf_latlng.wrap(),
+        'location':newReportMap.msf_latlng,
         'content':{
             'report_tag': $('.rtype-selected').attr('data-msf-value'),
             'username/alias':$('#inputReportUserName').val(),
