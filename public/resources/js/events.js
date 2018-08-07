@@ -1377,7 +1377,8 @@ var vmObject = {
                 isSelected: false,
                 description: ''
             }
-        }
+        },
+        searchTerm: ''
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1386,8 +1387,8 @@ var vmObject = {
         $('#btnSearchTwitter').click(function() {
             if ($('#searchTerm').val() !== '') {
                 var search = $('#searchTerm').val();
+                vmObject.data.searchTerm = search;
                 getTweets(search);
-
             }
         });
 
@@ -1410,7 +1411,6 @@ var vmObject = {
         var searchTerm = '';
 
         if (currentEventProperties) {
-            // debugger;
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
                     elements = currentEventProperties.metadata.name.split('_');
@@ -1438,6 +1438,7 @@ var vmObject = {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
             $('#searchTerm').val(searchTerm);
+            this.searchTerm = searchTerm;
 
             if(currentEventProperties.type){
                 var currentTypes = currentEventProperties.type.split(',');
@@ -1461,6 +1462,9 @@ var vmObject = {
                 $('#btnSearchTwitter').trigger('click');
             }
         });
+
+
+
 
 
         window.makeApiRequest = makeApiRequest;
@@ -1878,6 +1882,18 @@ var vmObject = {
                 deployment: 0,
                 arrival_date: null,
             });
+        },
+        checkTweetScroll: function(e){
+            var elem = $(e.currentTarget);
+
+            console.log('scrollling ------ ', elem[0].scrollHeight, elem.scrollTop(), elem.outerHeight())
+            var heightDiff = elem[0].scrollHeight - elem.scrollTop()
+            var containerHeightWPadding = elem.outerHeight()
+
+            if( heightDiff == containerHeightWPadding){
+              console.log('hit the bottom here ------- ! ')
+                return getTweets(vmObject.data.searchTerm, true);
+            }
         },
         removeOtherOrg: function(index) {
             this.event.metadata.ext_other_organizations.splice(index, 1);

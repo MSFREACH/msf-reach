@@ -26,9 +26,10 @@ const client = new Twitter({
  * @function searchTwitter
  * @param {string} queryTerm - term to search by
  */
-const searchTwitter = (queryTerm) => new Promise((resolve, reject) => {
+const searchTwitter = (queryTerm, id) => new Promise((resolve, reject) => {
     // search
-    client.get('search/tweets', {q: queryTerm + ' -filter:retweets -from:petabencana', geocode: '-5,120,3000km'}, function(error, tweets, response) {
+
+    client.get('search/tweets', {q: queryTerm + ' -filter:retweets -from:petabencana', geocode: '-5,120,3000km', count: 100, max_id: id}, function(error, tweets, response) {
         if (error) reject(error + ': ' + response);
         resolve(tweets);
     });
