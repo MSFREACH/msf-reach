@@ -10,7 +10,6 @@ $(function () {
     $('#permission').toggle(localStorage.getItem('username')!=null);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
     $('#private').toggle(localStorage.getItem('username')!=null);
-    $('#peerQuestion').toggle(localStorage.getItem('username')!=null);
 
     const STARTPAGEINDEX = 0;
     const CHECKEMAILPAGEINDEX =1;
@@ -251,6 +250,7 @@ $(function () {
                     $('.form-navigation .next').html('Please check your email.');
                 }
                 else{
+                    $('#peerQuestion').toggle(!$('#inputContactEmail').val().includes('msf.org'));
                     $('#checkEmailDiv').html('Email checked.');
                     $('#inputContactEmailRO').val($('#inputContactEmail').val());
                     $('.form-navigation .next').html('Next');
