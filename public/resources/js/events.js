@@ -264,10 +264,6 @@ var printEventProperties = function(err, eventProperties){
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
         $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
-
-
-
-
         var extra_metadata = unpackMetadata(eventProperties.metadata);
 
 
@@ -1386,9 +1382,8 @@ var vmObject = {
         $('.tags .remove').mouseout(function(){
           $(this).parent().removeClass('close-box')
         })
-        var severities = [1, 2]
+
         $( '.inputSlider' ).slider({
-            value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
             min: 1, max: 3, step: 1
         }).each(function() {
             // Get the options for this slider
@@ -1400,6 +1395,9 @@ var vmObject = {
                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
                 $(this).append(el);
             }
+            var index = $( '.inputSlider' ).index($(this))
+            var scale = currentEventProperties.metadata.severity_measures[index].scale
+            $(this).slider('value', scale)
         });
 
         var searchTerm = '';

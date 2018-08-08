@@ -610,12 +610,9 @@
                         <span v-else>{{area.country}}</span>
                         <span v-if="event.metadata.areas.length > 1 && index < event.metadata.areas.length"> </span>
 
-                        <!-- event.metadata.severities[index].scale -->
-                        <!-- event.metadata.severities[index].description -->
-
-                          <span class="sub-tag" v-if="event.metadata.severity_scale"> <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}} severity</span>
-                        </span>
-                        <span class="notes" v-if="event.metadata.severity"><br/>notes: {{ event.metadata.severity }} </span>
+                        <span class="sub-tag" v-if="event.metadata.severity_measures[index].scale"> <span :style="'color:'+severityColors[event.metadata.severity_measures[index].scale-1]">{{severityLongTexts[event.metadata.severity_measures[index].scale-1]}} severity</span>
+                      </span>
+                      <span class="notes" v-if="event.metadata.severity"><br/>notes: {{ event.metadata.severity_measures[index].description }} </span>
                       </div>
                     </td>
                   </tr>
@@ -656,14 +653,14 @@
                       Area(s) <br/>
                     </td>
                     <td>
-                      <div v-if="event.metadata.areas" v-for="area in event.metadata.areas" class="tags" v-model="event.metadata.areas">
+                      <div v-if="event.metadata.areas" v-for="(area, index) in event.metadata.areas" class="tags" v-model="event.metadata.areas">
                         <span v-if="area.region.length > 0" v-model="area"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else v-model="area"> {{area.country}} </span>
                          <span class="remove" @click="removeArea(area)"> x </span>
                          <div class="severity-wrapper">
                          <span class="label"> Severity analysis </span>
                          <span class="inputSlider"></span>
-                         <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea></div>
+                         <textarea v-model.trim="event.metadata.severity_measures[index].description" placeholder="Severity description" class="form-control"></textarea></div>
                       </div>
                     </td>
                   </tr>

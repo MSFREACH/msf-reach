@@ -89,6 +89,10 @@ export default ({ config, db, logger }) => {
                     areas: Joi.array().items(Joi.object().keys({
                         country: Joi.string(),
                         region: Joi.string()
+                    })),
+                    severity_measures: Joi.array().items(Joi.object().keys({
+                      scale: Joi.number().min(1).max(3),
+                      description: Joi.string().allow('')
                     }))
                 }),
                 location: Joi.object().required().keys({
@@ -117,12 +121,6 @@ export default ({ config, db, logger }) => {
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
                 metadata: Joi.object().required()
-                //.keys({
-                // areas: Joi.array().items(Joi.object().keys({
-                //   country: Joi.string(),
-                //   region: Joi.string()
-                // }))
-                // })
             })
         }),
         (req, res, next) => {
