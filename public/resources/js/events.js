@@ -1848,12 +1848,10 @@ var vmObject = {
         checkTweetScroll: function(e){
             var elem = $(e.currentTarget);
 
-            console.log('scrollling ------ ', elem[0].scrollHeight, elem.scrollTop(), elem.outerHeight()); // eslint-disable-line no-console
             var heightDiff = elem[0].scrollHeight - elem.scrollTop();
             var containerHeightWPadding = elem.outerHeight();
 
             if( heightDiff == containerHeightWPadding){
-                console.log('hit the bottom here ------- ! '); // eslint-disable-line no-console
                 return getTweets(vmObject.data.searchTerm, true);
             }
         },

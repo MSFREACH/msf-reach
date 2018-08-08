@@ -29,7 +29,6 @@ var getTweets = function(searchString, next) { // eslint-disable-line no-unused-
     var url = '/api/twitter/?searchString=' + searchString;
     if(next){
         url += ('&max_id=' + max_id);
-        console.log('get next batch -- max_id= ', max_id); // eslint-disable-line no-console
     }
     $.getJSON(url, function (data){
         max_id = data.lastId;

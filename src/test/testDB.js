@@ -10,10 +10,10 @@ describe('Test CogniCity Server Database Module', function() {
         let config = {};
         let logger = {};
         logger.error = function(err) {
-            console.log(err);
+            console.log(err); // eslint-disable-line no-console
         };
         logger.debug = function(err) {
-            console.log(err);
+            console.log(err); // eslint-disable-line no-console
         };
         initializeDb(config, logger)
             .then((db) => {
@@ -21,7 +21,7 @@ describe('Test CogniCity Server Database Module', function() {
                 //done(); do nothing here, an error should be forced by empty config
             })
             .catch((err) => {
-                console.log(err);
+                console.log(err); // eslint-disable-line no-console
                 done();
             });
     });

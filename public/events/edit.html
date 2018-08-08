@@ -783,8 +783,6 @@ var eventMapLayerControl;
 var msfResponseMapLayerControl;
 
 var zoomToBounds = function(bounds) {
-    console.log("cc3")
-    console.log(bounds);
     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
     eventMap.fitBounds(rBounds);
     msfResponseMap.fitBounds(rBounds);
@@ -829,7 +827,6 @@ var vm = new Vue({
     editCategory:editCategory
   },
   mounted: function() {
-    console.log("Vue already mounted.");
 
     if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
       var optCenter = this.event.metadata.operational_center;
@@ -919,7 +916,7 @@ var vm = new Vue({
             if ((!google)||(!google.maps))
               {
                 setTimeout(bindAutocompletes,200);
-                console.log('not ready, retrying in 0.2s...');
+                console.log('not ready, retrying in 0.2s...'); // eslint-disable-line no-console
                 return;
               }
             bindACInputToMap(eventMap,'editEventAddress',true);
@@ -957,7 +954,7 @@ var vm = new Vue({
             if ((!google)||(!google.maps))
               {
                 setTimeout(bindRespAutocompletes,200);
-                console.log('not ready, retrying in 0.2s...');
+                console.log('not ready, retrying in 0.2s...'); // eslint-disable-line no-console
                 return;
               }
             bindACInputToMap(msfResponseMap,'editEventRespAddress',true);
@@ -1129,8 +1126,6 @@ var vm = new Vue({
         eventMap.invalidateSize(true);
         msfResponseMap.invalidateSize(true);
         if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
-          console.log('cc')
-          console.log(currentEventProperties.metadata.bounds);
           zoomToBounds(currentEventProperties.metadata.bounds);
         } else {
           eventMap.setView(eventDefaultLatLng, 13);
@@ -1189,7 +1184,7 @@ var vm = new Vue({
                     var index = _.findIndex(this.checkedTypes, function(el){
                         return el.indexOf('other:') != -1; // find index
                     });
-                    if(index != -1){ // if none 
+                    if(index != -1){ // if none
                         this.checkedTypes[index] = 'other: '+ description;
                     }else{
                         this.checkedTypes.push('other: '+ description);
@@ -1322,9 +1317,6 @@ var vm = new Vue({
 
 // show/hide divs containing subtype checkboxes and 'other' text input
 $('.newEventTypeBox').change(function () {
-
-    console.log($('input[class=newEventTypeBox]:checked').map(
-        function () {return this.value;}).get().join(', '));
 
     if($(this).attr('id') == 'selectType4') {
         $('#divNaturalDisaster').css('display', (this.checked ? '' : 'none'));
