@@ -1380,6 +1380,28 @@ var vmObject = {
         });
 
 
+        $('.tags .remove').hover(function(){
+          $(this).parent().addClass('close-box')
+        });
+        $('.tags .remove').mouseout(function(){
+          $(this).parent().removeClass('close-box')
+        })
+        var severities = [1, 2]
+        $( '.inputSlider' ).slider({
+            value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
+            min: 1, max: 3, step: 1
+        }).each(function() {
+            // Get the options for this slider
+            var opt = $(this).data().uiSlider.options;
+            // Get the number of possible values
+            var vals = opt.max - opt.min;
+            // Space out values
+            for (var i = 0; i <= vals; i++) {
+                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+                $(this).append(el);
+            }
+        });
+
         var searchTerm = '';
 
         if (currentEventProperties) {

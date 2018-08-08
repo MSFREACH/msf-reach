@@ -605,13 +605,23 @@
                   <tr><td>Name</td><td> {{ event.metadata.name }}</td></tr>
                   <tr><td>Area(s)</td>
                     <td>
-                      <span v-for="(area, index) in event.metadata.areas">
+                      <div class="chunks" v-for="(area, index) in event.metadata.areas">
                         <span v-if="area.region.length > 0"> {{area.region}} {{area.country_code}}</span>
-                        <span v-else> {{area.country}}</span>
-                        <span v-if="event.metadata.areas.length > 1 && index < event.metadata.areas.length">, </span>
-                      </span>
+                        <span v-else>{{area.country}}</span>
+                        <span v-if="event.metadata.areas.length > 1 && index < event.metadata.areas.length"> </span>
+
+                        <!-- event.metadata.severities[index].scale -->
+                        <!-- event.metadata.severities[index].description -->
+
+                          <span class="sub-tag" v-if="event.metadata.severity_scale"> <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}} severity</span>
+                        </span>
+                        <span class="notes" v-if="event.metadata.severity"><br/>notes: {{ event.metadata.severity }} </span>
+                      </div>
                     </td>
                   </tr>
+
+
+
                   <tr><td>Status</td><td> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
                   <tr><td>Type</td><td> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
                   <tr><td>Event Date and Time</td><td> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
@@ -646,11 +656,15 @@
                       Area(s) <br/>
                     </td>
                     <td>
-                      <span v-if="event.metadata.areas" v-for="area in event.metadata.areas" class="tags" v-model="event.metadata.areas">
+                      <div v-if="event.metadata.areas" v-for="area in event.metadata.areas" class="tags" v-model="event.metadata.areas">
                         <span v-if="area.region.length > 0" v-model="area"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else v-model="area"> {{area.country}} </span>
                          <span class="remove" @click="removeArea(area)"> x </span>
-                      </span>
+                         <div class="severity-wrapper">
+                         <span class="label"> Severity analysis </span>
+                         <span class="inputSlider"></span>
+                         <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea></div>
+                      </div>
                     </td>
                   </tr>
                   <tr>
