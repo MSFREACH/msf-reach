@@ -56,7 +56,6 @@ $(function () {
                     data: {},
                     contentType: 'application/json'
                 }).done(function( resp, textStatus, req ){ // eslint-disable-line no-unused-vars
-                    //console.log(resp);
                     if (resp.statusCode==200)
                     {
                         alert('Contact successfully removed');
@@ -79,7 +78,6 @@ $(function () {
         }).done(function( resp, textStatus, req ){ // eslint-disable-line no-unused-vars
             $('#updateModalBody .msf-contact-loader').hide();
             $('#updateModalMsg').html('Your contact details have been successfully retrieved.');
-            //console.log(resp);
             //'location':newContactMap.msf_latlng,
             newContactMap.setView([resp.result.lat, resp.result.lng],17);
             newContactMap.msf_latlng = {lat: resp.result.lat, lng: resp.result.lng};
@@ -242,7 +240,6 @@ $(function () {
                 },
                 contentType: 'application/json'
             }).done(function( data, textStatus, req ){ // eslint-disable-line no-unused-vars
-                //console.log(data);
                 $('.msf-contact-loader').hide();
                 if (data.emailExists)
                 {

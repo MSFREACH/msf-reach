@@ -42,7 +42,7 @@
     "ajv": "^6.5.2",
     "api-error-handler": "^1.0.0",
     "apicache": "^1.2.3",
-    "aws-sdk": "^2.286.2",
+    "aws-sdk": "^2.289.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "celebrate": "^8.0.1",
