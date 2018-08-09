@@ -1375,22 +1375,6 @@ var vmObject = {
             }
         });
 
-        $( '#inputSeverityScale' ).slider({
-            value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
-            min: 1, max: 3, step: 1
-        }).each(function() {
-            // Get the options for this slider
-            var opt = $(this).data().uiSlider.options;
-            // Get the number of possible values
-            var vals = opt.max - opt.min;
-            // Space out values
-            for (var i = 0; i <= vals; i++) {
-                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
-                $( '#inputSeverityScale' ).append(el);
-            }
-        });
-
-
         $('.tags .remove').hover(function(){
             $(this).parent().addClass('close-box');
         });
@@ -1461,10 +1445,6 @@ var vmObject = {
                 $('#btnSearchTwitter').trigger('click');
             }
         });
-
-
-
-
 
         window.makeApiRequest = makeApiRequest;
         var translationObj = {};
@@ -1770,7 +1750,7 @@ var vmObject = {
             }
         },
         lintSeverity(){
-            this.event.metadata.severity_measures.map(function(sm, index){
+            this.event.metadata.severity_measures = this.event.metadata.severity_measures.map(function(sm, index){
                 return {
                     scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
                     description: sm.description
@@ -1801,16 +1781,14 @@ var vmObject = {
             metadata = _.extend(metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
-                severity_measures: this.event.metadata.severity_measures
             });
+
 
             var body = {
                 status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
                 type: this.event.type.toString(),
                 metadata: metadata
             };
-
-            body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
             this.lintSubTypesSelected(body);
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
@@ -2046,22 +2024,25 @@ var vmObject = {
             var mostRecentSlider = $('.inputSeveritySlider').eq($('.inputSeveritySlider').length);
             var filled = mostRecentSlider.has('span.ui-slider-handle').length;
             if(filled == 0){
+
                 if(currentEventProperties.metadata.areas.length > currentEventProperties.metadata.severity_measures.length){
                     var mockSeverity = {scale: 2, description: ''};
                     vmObject.data.event.metadata.severity_measures.push(mockSeverity);
+
+                    setTimeout(function(){
+                        $('.inputSeveritySlider').last().slider({
+                            min: 1, max: 3, step: 1, value: 2
+                        }).each(function() {
+                            var opt = $(this).data().uiSlider.options;
+                            var vals = opt.max - opt.min;
+                            for (var i = 0; i <= vals; i++) {
+                                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+                                $(this).append(el);
+                            }
+                        });
+                    }, 300);
                 }
-                setTimeout(function(){
-                    $('.inputSeveritySlider').last().slider({
-                        min: 1, max: 3, step: 1, value: 2
-                    }).each(function() {
-                        var opt = $(this).data().uiSlider.options;
-                        var vals = opt.max - opt.min;
-                        for (var i = 0; i <= vals; i++) {
-                            var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
-                            $(this).append(el);
-                        }
-                    });
-                }, 300);
+
             }
 
         }
