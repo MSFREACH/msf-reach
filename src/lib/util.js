@@ -45,8 +45,6 @@ const ensureAuthenticated = (req, res, next) => {
         /* passport.authenticate runs req.login which sets the user object on req
 		req.isAuthenticated checks the req object for a user attribute, its part of express. */
         if (req.isAuthenticated()) {
-            console.log(req); //eslint-disable-line no-console
-            console.log(req.user); //eslint-disable-line no-console
             return next();
         }
         res.redirect('/login');
@@ -80,8 +78,6 @@ const ensureAuthenticatedLanding = (req, res, next) => {
         /* passport.authenticate runs req.login which sets the user object on req
 		req.isAuthenticated checks the req object for a user attribute, its part of express. */
         if (req.isAuthenticated()) {
-            console.log(req); //eslint-disable-line no-console
-            console.log(req.user); //eslint-disable-line no-console
             return next();
         }
         res.redirect('/landing');
