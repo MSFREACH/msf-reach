@@ -609,10 +609,10 @@
                         <span v-if="area.region.length > 0"> {{area.region}} {{area.country_code}}</span>
                         <span v-else>{{area.country}}</span>
                         <span v-if="event.metadata.areas.length > 1 && index < event.metadata.areas.length"> </span>
-
-                        <span class="sub-tag" v-if="event.metadata.severity_measures[index].scale"> <span :style="'color:'+severityColors[event.metadata.severity_measures[index].scale-1]">{{severityLongTexts[event.metadata.severity_measures[index].scale-1]}} severity</span>
-                      </span>
-                      <span class="notes" v-if="event.metadata.severity_measures[index].description"><br/> {{ event.metadata.severity_measures[index].description }} </span>
+                        <span class="sub-tag" v-if="event.metadata.severity_measures[index]">
+                          <span :style="'color:'+severityColors[event.metadata.severity_measures[index].scale-1]">{{severityLongTexts[event.metadata.severity_measures[index].scale-1]}} severity</span>
+                          <span class="notes"><br/> {{ event.metadata.severity_measures[index].description }} </span>
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -657,10 +657,11 @@
                         <span v-if="area.region.length > 0" v-model="area"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else v-model="area"> {{area.country}} </span>
                          <span class="remove" @click="removeArea(area)"> x </span>
-                         <div class="severity-wrapper">
-                         <span class="label"> Severity analysis </span>
-                         <span class="inputSeveritySlider"></span>
-                         <textarea v-model.trim="event.metadata.severity_measures[index].description" placeholder="Severity description" class="form-control"></textarea></div>
+                         <div class="severity-wrapper" v-if="event.metadata.severity_measures[index]">
+                           <span class="label"> Severity analysis </span>
+                           <span class="inputSeveritySlider"></span>
+                           <textarea v-model.trim="event.metadata.severity_measures[index].description" placeholder="Severity description" class="form-control"></textarea>
+                         </div>
                       </div>
                     </td>
                   </tr>

@@ -189,17 +189,17 @@ var printEventProperties = function(err, eventProperties){
     }
 
     if(!currentEventProperties.metadata.severity_measures){
-      var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.description};
-      currentEventProperties.metadata.severity_measures = [mockSeverity];
+        var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.description};
+        currentEventProperties.metadata.severity_measures = [mockSeverity];
     }
 
-    var filedSeverities = currentEventProperties.metadata.severity_measures.length
-    var filedAreas = currentEventProperties.metadata.areas.length
+    var filedSeverities = currentEventProperties.metadata.severity_measures.length;
+    var filedAreas = currentEventProperties.metadata.areas.length;
     if(filedSeverities < filedAreas) {
-      // in the case that only one severity was set, we need to prepopulate severity obj to num of areas
-      for(var s = filedSeverities; s < filedAreas; s++ ){
-        currentEventProperties.metadata.severity_measures[s] = {scale: null, description: ''}
-      }
+        // in the case that only one severity was set, we need to prepopulate severity obj to num of areas
+        for(var s = filedSeverities; s < filedAreas; s++ ){
+            currentEventProperties.metadata.severity_measures[s] = {scale: null, description: ''};
+        }
     }
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
@@ -1360,7 +1360,8 @@ var vmObject = {
                 description: ''
             }
         },
-        searchTerm: ''
+        searchTerm: '',
+        areas: []
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1397,6 +1398,7 @@ var vmObject = {
             $(this).parent().removeClass('close-box');
         });
 
+        vmObject.data.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
         $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
         }).each(function() {
@@ -1432,14 +1434,6 @@ var vmObject = {
                     searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
                 }
             }
-
-            // if(!currentEventProperties.metadata.areas){
-            //   var mockArea = {country: currentEventProperties.metadata.country}
-            //   currentEventProperties.metadata.areas = [mockArea]
-            //
-            //   console.log('no areas ----- ',mockArea,  currentEventProperties.metadata.areas)
-            // }
-
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
@@ -1540,6 +1534,7 @@ var vmObject = {
         removeArea(area){
             var index = _.findIndex(this.event.metadata.areas, area);
             this.event.metadata.areas.splice(index, 1);
+            this.event.metadata.severity_measures.splice(index,1);
         },
         removeRegion(region){
             var index = this.areas.regions.indexOf(region);
@@ -1775,12 +1770,12 @@ var vmObject = {
             }
         },
         lintSeverity(){
-          this.event.metadata.severity_measures = currentEventProperties.metadata.severity_measures.map(function(sm, index){
-            return {
-              scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
-              description: sm.description
-            }
-          });
+            this.event.metadata.severity_measures.map(function(sm, index){
+                return {
+                    scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
+                    description: sm.description
+                };
+            });
         },
         submitEventMetadata(){
             var metadata = this.event.metadata;
@@ -2044,6 +2039,31 @@ var vmObject = {
         eventReportLink:function()
         {
             return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey + '#' + this.event.metadata.name;
+        }
+    },
+    watch: {
+        areas: function(val){
+            var mostRecentSlider = $('.inputSeveritySlider').eq($('.inputSeveritySlider').length);
+            var filled = mostRecentSlider.has('span.ui-slider-handle').length;
+            if(filled == 0){
+                if(currentEventProperties.metadata.areas.length > currentEventProperties.metadata.severity_measures.length){
+                    var mockSeverity = {scale: 2, description: ''};
+                    vmObject.data.event.metadata.severity_measures.push(mockSeverity);
+                }
+                setTimeout(function(){
+                    $('.inputSeveritySlider').last().slider({
+                        min: 1, max: 3, step: 1, value: 2
+                    }).each(function() {
+                        var opt = $(this).data().uiSlider.options;
+                        var vals = opt.max - opt.min;
+                        for (var i = 0; i <= vals; i++) {
+                            var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+                            $(this).append(el);
+                        }
+                    });
+                }, 300);
+            }
+
         }
     }
 };
