@@ -156,8 +156,8 @@ $(function(){
                     'severity':  $('#inputSeverity').val(),
                     'severity_scale': $('#inputSeverityScale').slider('option', 'value'),
                     'severity_measures': [{
-                      'scale' : $('#inputSeverityScale').slider('option', 'value'),
-                      'description': $('#inputSeverity').val()
+                        'scale' : $('#inputSeverityScale').slider('option', 'value'),
+                        'description': $('#inputSeverity').val()
                     }],
                     'sharepoint_link':  $('#inputSharepointLink').val(),
                     'security_details': $('#inputSecurity').val(),

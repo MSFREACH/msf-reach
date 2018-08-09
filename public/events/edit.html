@@ -1189,7 +1189,7 @@ var vm = new Vue({
                     var index = _.findIndex(this.checkedTypes, function(el){
                         return el.indexOf('other:') != -1; // find index
                     });
-                    if(index != -1){ // if none 
+                    if(index != -1){ // if none
                         this.checkedTypes[index] = 'other: '+ description;
                     }else{
                         this.checkedTypes.push('other: '+ description);
@@ -1237,6 +1237,7 @@ var vm = new Vue({
         type: this.event.type.toString(),
         metadata: metadata
       }
+
       body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
       body.metadata['notification'] = currentEventProperties.metadata.notification;
 

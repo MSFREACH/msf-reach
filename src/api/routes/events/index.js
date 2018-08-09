@@ -91,8 +91,8 @@ export default ({ config, db, logger }) => {
                         region: Joi.string()
                     })),
                     severity_measures: Joi.array().items(Joi.object().keys({
-                      scale: Joi.number().min(1).max(3),
-                      description: Joi.string().allow('')
+                        scale: Joi.number().min(1).max(3),
+                        description: Joi.string().allow('')
                     }))
                 }),
                 location: Joi.object().required().keys({

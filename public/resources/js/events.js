@@ -188,6 +188,20 @@ var printEventProperties = function(err, eventProperties){
         currentEventProperties.metadata.areas = [mockArea];
     }
 
+    if(!currentEventProperties.metadata.severity_measures){
+      var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.description};
+      currentEventProperties.metadata.severity_measures = [mockSeverity];
+    }
+
+    var filedSeverities = currentEventProperties.metadata.severity_measures.length
+    var filedAreas = currentEventProperties.metadata.areas.length
+    if(filedSeverities < filedAreas) {
+      // in the case that only one severity was set, we need to prepopulate severity obj to num of areas
+      for(var s = filedSeverities; s < filedAreas; s++ ){
+        currentEventProperties.metadata.severity_measures[s] = {scale: null, description: ''}
+      }
+    }
+
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
@@ -1377,13 +1391,13 @@ var vmObject = {
 
 
         $('.tags .remove').hover(function(){
-          $(this).parent().addClass('close-box')
+            $(this).parent().addClass('close-box');
         });
         $('.tags .remove').mouseout(function(){
-          $(this).parent().removeClass('close-box')
-        })
+            $(this).parent().removeClass('close-box');
+        });
 
-        $( '.inputSlider' ).slider({
+        $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
         }).each(function() {
             // Get the options for this slider
@@ -1395,9 +1409,9 @@ var vmObject = {
                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
                 $(this).append(el);
             }
-            var index = $( '.inputSlider' ).index($(this))
-            var scale = currentEventProperties.metadata.severity_measures[index].scale
-            $(this).slider('value', scale)
+            var index = $( '.inputSeveritySlider' ).index($(this));
+            var scale = currentEventProperties.metadata.severity_measures[index].scale;
+            $(this).slider('value', scale);
         });
 
         var searchTerm = '';
@@ -1760,7 +1774,14 @@ var vmObject = {
                 this.invalid.nullAreas = false;
             }
         },
-
+        lintSeverity(){
+          this.event.metadata.severity_measures = currentEventProperties.metadata.severity_measures.map(function(sm, index){
+            return {
+              scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
+              description: sm.description
+            }
+          });
+        },
         submitEventMetadata(){
             var metadata = this.event.metadata;
 
@@ -1780,11 +1801,12 @@ var vmObject = {
             this.lintAreas();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
-
+            this.lintSeverity();
 
             metadata = _.extend(metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
+                severity_measures: this.event.metadata.severity_measures
             });
 
             var body = {
@@ -1792,6 +1814,7 @@ var vmObject = {
                 type: this.event.type.toString(),
                 metadata: metadata
             };
+
             body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
             this.lintSubTypesSelected(body);
 

@@ -612,7 +612,7 @@
 
                         <span class="sub-tag" v-if="event.metadata.severity_measures[index].scale"> <span :style="'color:'+severityColors[event.metadata.severity_measures[index].scale-1]">{{severityLongTexts[event.metadata.severity_measures[index].scale-1]}} severity</span>
                       </span>
-                      <span class="notes" v-if="event.metadata.severity"><br/>notes: {{ event.metadata.severity_measures[index].description }} </span>
+                      <span class="notes" v-if="event.metadata.severity_measures[index].description"><br/> {{ event.metadata.severity_measures[index].description }} </span>
                       </div>
                     </td>
                   </tr>
@@ -659,7 +659,7 @@
                          <span class="remove" @click="removeArea(area)"> x </span>
                          <div class="severity-wrapper">
                          <span class="label"> Severity analysis </span>
-                         <span class="inputSlider"></span>
+                         <span class="inputSeveritySlider"></span>
                          <textarea v-model.trim="event.metadata.severity_measures[index].description" placeholder="Severity description" class="form-control"></textarea></div>
                       </div>
                     </td>
