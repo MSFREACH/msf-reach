@@ -1057,7 +1057,20 @@ $('#btnArchive').click(function(e){
         'status':'inactive',
         'metadata':{}
     };
-    this.updateEvent(currentEventId, body, goHome);
+    $.ajax({
+        type: 'PUT',
+        url: '/api/events/' + currentEventId,
+        data: JSON.stringify(body),
+        contentType: 'application/json'
+    }).done(function( data, textStatus, req ){
+        window.location.href = '/';
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            alert('error: '+ err.responseText);
+        }
+    });
 });
 
 // Edit support
@@ -1909,33 +1922,26 @@ var vmObject = {
                 from_who: null,
             });
         },
-        updateNotification:function(fileUrl){
-            var lastNotification=getLatestNotification(body.metadata.notification);
-            lastNotification['notificationFileUrl']= fileUrl;
-        },
-        updateEvent:function(eventId,body, goHome){
+        updateEvent:function(eventId,body){
             $.ajax({
                 type: 'PUT',
                 url: '/api/events/' + eventId,
                 data: JSON.stringify(body),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
-                if(goHome){
-                    window.location.href = '/';
-                }else{
-                    window.location.href = '/events/?eventId=' + eventId;
-                }
+                window.location.href = '/events/?eventId=' + eventId;
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
                     alert('session expired');
                 }
             });
         },
-        uploadNotifications:function(files){
+        uploadNotifications:function(callback) {
             var vm=this;
+            var files=document.getElementById('inputNotificationUpload').files;
             var imgLink='';
 
-            if (files[0]){
+            if (files && files[0]) {
                 $('#dialogModalTitle').html('Uploading attachment(s)...');
                 $('#dialogModal').modal('show');
                 var imgFileName=files[0].name;
@@ -1949,7 +1955,7 @@ var vmObject = {
                     cache : false,
                 }).then(function(retData) {
                     imgLink=retData.url;
-                    return $.ajax({
+                    $.ajax({
                         url : retData.signedRequest,
                         type : 'PUT',
                         data : photo,
@@ -1957,23 +1963,22 @@ var vmObject = {
                         cache : false,
                         //contentType : file.type,
                         processData : false,
+                        success: function(data) {
+                            var lastNotification=getLatestNotification(vm.event.metadata.notification);
+                            lastNotification['notificationFileUrl']= imgLink;
+                            callback();
+                        }
                     });
-                }).then(function(data,txt,jq){
-                    vm.updateNotification(imgLink);
-                    vm.submitEventMetadata();
-
                 }).fail(function(err){
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
                     $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
                 });
+            } else {
+                callback();
             }
         },
         saveEventEdits:function(){
-            var files=document.getElementById('inputNotificationUpload').files;
-            if(files){
-                return this.uploadNotifications(files);
-            }
-            this.submitEventMetadata();
+            this.uploadNotifications(this.submitEventMetadata);
         },
         cancelEventEdits:function(){
             window.location.href = '/events/?eventId=' + currentEventId;
