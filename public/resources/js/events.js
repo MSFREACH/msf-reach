@@ -1754,6 +1754,26 @@ var vmObject = {
             }
         },
 
+        updateEventWithUrl:function(eventId,body,notificationFileUrl){
+            if (notificationFileUrl)
+            {
+                var lastNotification=body.metadata.notification[body.metadata.notification.length-1];
+                lastNotification['notificationFileUrl']=notificationFileUrl;
+            }
+            $.ajax({
+                type: 'PUT',
+                url: '/api/events/' + eventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                window.location.href = '/events/?eventId=' + eventId;
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        },
+
         submitEventMetadata(){
             var metadata = this.event.metadata;
 
@@ -1960,7 +1980,7 @@ var vmObject = {
                     cache : false,
                 }).then(function(retData) {
                     imgLink=retData.url;
-                    $.ajax({
+                    return $.ajax({
                         url : retData.signedRequest,
                         type : 'PUT',
                         data : photo,
@@ -1968,8 +1988,9 @@ var vmObject = {
                         cache : false,
                         //contentType : file.type,
                         processData : false,
-                        complete: function (data) { vm.updateNotification(imgLink); }
                     });
+                }).then(function(data,txt,jq){
+                    vm.updateEventWithUrl(currentEventId,body,imgLink);
                 }).fail(function(err){
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
                     $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
