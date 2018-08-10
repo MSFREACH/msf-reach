@@ -499,7 +499,7 @@ var mapMissions = function(missions ){
 var mapReports = function(reports,mapForReports){
 
     $('#reportsContainer').html(
-        '<table class="table table-hover" id="reportsTable"><thead><tr><th>Open</th><th>Type</th><th>Description</th><th>Status</th><th>Select event</th></thead><tbody>'
+        '<ul class="table table-hover" id="reportsTable">'
     );
 
     function onEachFeature(feature, layer) {
@@ -508,7 +508,7 @@ var mapReports = function(reports,mapForReports){
         var reportsTableContent = '';
 
         if (feature.properties && feature.properties.content) {
-            popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
+            popupContent += 'Decription: '+ feature.properties.content.description.substring(0,150) + '...<BR>';
             popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
             popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
@@ -524,19 +524,18 @@ var mapReports = function(reports,mapForReports){
 
 
             $('#reportsTable').append(
-                '<tr id="reports-table-row-'+feature.properties.id+'"><td ><a href=\'#\' onclick=\'openReportPopup(' +
-              feature.properties.id +
-              ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
-              feature.properties.content.report_tag +
-              '</td><td>' +
-              feature.properties.content.description +
-              '</td><td>' +
-              '<select id="report-'+feature.properties.id+'">'+
+                `<li id="reports-table-row-${feature.properties.id}">
+                <span ><a href=\'#\' onclick=\'openReportPopup(${
+              feature.properties.id})\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i> Open</a></span>`+
+              `<span><label> Type  </label>${feature.properties.content.report_tag}</span>`+
+              `<span><label> Status  </label><select id="report-${feature.properties.id}">`+
                 '<option value="unconfirmed">unconfirmed</option>' +
                 '<option value="confirmed">confirmed</option>' +
                 '<option value="ignored">ignored</option>' +
-              '</select></td><td>' +
-              '<select id="events-for-report-'+feature.properties.id+'"></select></td></tr>'
+              '</select></span>' +
+              `<span><label> Assign Event </label><select id="events-for-report-${feature.properties.id}"></select></span>`+
+              `<div>Description ${feature.properties.content.description}</div></li>`
+
             );
 
             $('#report-'+feature.properties.id).val(feature.properties.status);

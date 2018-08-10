@@ -574,7 +574,7 @@ var mapReports = function(reports,mapForReports){
 
         if (feature.properties && feature.properties.content) {
             popupContent += '<i id="popupReportShare'+feature.properties.id+'" class="icon-link-ext icon-floating" style="font-size:12px;"></i>';
-            popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
+            popupContent += 'Decription: '+ feature.properties.content.description.substring(0, 150)+ ' ...  <BR>';
             popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
             popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
