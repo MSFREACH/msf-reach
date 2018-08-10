@@ -1754,26 +1754,6 @@ var vmObject = {
             }
         },
 
-        updateEventWithUrl:function(eventId,body,notificationFileUrl){
-            if (notificationFileUrl)
-            {
-                var lastNotification=body.metadata.notification[body.metadata.notification.length-1];
-                lastNotification['notificationFileUrl']=notificationFileUrl;
-            }
-            $.ajax({
-                type: 'PUT',
-                url: '/api/events/' + eventId,
-                data: JSON.stringify(body),
-                contentType: 'application/json'
-            }).done(function(data, textStatus, req) {
-                window.location.href = '/events/?eventId=' + eventId;
-            }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                    alert('session expired');
-                }
-            });
-        },
-
         submitEventMetadata(){
             var metadata = this.event.metadata;
 
@@ -1942,10 +1922,10 @@ var vmObject = {
                 from_who: null,
             });
         },
-        updateNotification:function(fileUrl){
-            console.log('update notification' + fileUrl); // eslint-disable-line no-console
+        updateNotification:function(fileUrl, callback){
             var lastNotification=getLatestNotification(body.metadata.notification);
             lastNotification['notificationFileUrl']= fileUrl;
+            callback();
         },
         updateEvent:function(eventId,body){
             $.ajax({
@@ -1961,12 +1941,12 @@ var vmObject = {
                 }
             });
         },
-        uploadNotifications:function(){
+        uploadNotifications:function(callback) {
             var vm=this;
             var files=document.getElementById('inputNotificationUpload').files;
             var imgLink='';
 
-            if (files && files[0]){
+            if (files && files[0]) {
                 $('#dialogModalTitle').html('Uploading attachment(s)...');
                 $('#dialogModal').modal('show');
                 var imgFileName=files[0].name;
@@ -1980,7 +1960,7 @@ var vmObject = {
                     cache : false,
                 }).then(function(retData) {
                     imgLink=retData.url;
-                    return $.ajax({
+                    $.ajax({
                         url : retData.signedRequest,
                         type : 'PUT',
                         data : photo,
@@ -1988,20 +1968,18 @@ var vmObject = {
                         cache : false,
                         //contentType : file.type,
                         processData : false,
+                        complete: function(data) { vm.updateNotification(imgLink,callback); }
                     });
-                }).then(function(data,txt,jq){
-                    vm.updateEventWithUrl(currentEventId,body,imgLink);
                 }).fail(function(err){
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
                     $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
                 });
             } else {
-                vm.updateEventWithUrl(currentEventId,body,imgLink);
+                callback()
             }
         },
         saveEventEdits:function(){
-            this.submitEventMetadata();
-            this.uploadNotifications();
+            this.uploadNotifications(this.submitEventMetadata());
         },
         cancelEventEdits:function(){
             window.location.href = '/events/?eventId=' + currentEventId;
