@@ -1923,6 +1923,7 @@ var vmObject = {
             });
         },
         updateNotification:function(fileUrl){
+            console.log('update notification' + fileUrl);
             var lastNotification=getLatestNotification(body.metadata.notification);
             lastNotification['notificationFileUrl']= fileUrl;
         },
@@ -1959,7 +1960,7 @@ var vmObject = {
                     cache : false,
                 }).then(function(retData) {
                     imgLink=retData.url;
-                    return $.ajax({
+                    $.ajax({
                         url : retData.signedRequest,
                         type : 'PUT',
                         data : photo,
@@ -1967,11 +1968,8 @@ var vmObject = {
                         cache : false,
                         //contentType : file.type,
                         processData : false,
+                        complete: function (data) { vm.updateNotification(imgLink); }
                     });
-                }).then(function(data,txt,jq){
-                    vm.updateNotification(imgLink);
-
-
                 }).fail(function(err){
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
                     $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
