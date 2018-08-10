@@ -1923,7 +1923,7 @@ var vmObject = {
             });
         },
         updateNotification:function(fileUrl){
-            console.log('update notification' + fileUrl);
+            console.log('update notification' + fileUrl); // eslint-disable-line no-console
             var lastNotification=getLatestNotification(body.metadata.notification);
             lastNotification['notificationFileUrl']= fileUrl;
         },
