@@ -1923,7 +1923,7 @@ var vmObject = {
             });
         },
         updateNotification:function(fileUrl, callback){
-            var lastNotification=getLatestNotification(body.metadata.notification);
+            var lastNotification=getLatestNotification(vm.event.metadata.notification);
             lastNotification['notificationFileUrl']= fileUrl;
             callback();
         },
