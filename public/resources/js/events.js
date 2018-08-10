@@ -1995,6 +1995,8 @@ var vmObject = {
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
                     $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
                 });
+            } else {
+              vm.updateEventWithUrl(currentEventId,body,imgLink);
             }
         },
         saveEventEdits:function(){
