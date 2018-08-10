@@ -1975,7 +1975,7 @@ var vmObject = {
                     $('#dialogModalBody').html('An error ' + err + ' occured while uploading the photo.');
                 });
             } else {
-                callback()
+                callback();
             }
         },
         saveEventEdits:function(){
