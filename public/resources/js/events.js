@@ -1922,11 +1922,6 @@ var vmObject = {
                 from_who: null,
             });
         },
-        updateNotification:function(fileUrl, callback){
-            var lastNotification=getLatestNotification(this.metadata.notification);
-            lastNotification['notificationFileUrl']= fileUrl;
-            callback();
-        },
         updateEvent:function(eventId,body){
             $.ajax({
                 type: 'PUT',
@@ -1968,7 +1963,11 @@ var vmObject = {
                         cache : false,
                         //contentType : file.type,
                         processData : false,
-                        success: function(data) { vm.updateNotification(imgLink,callback); }
+                        success: function(data) {
+                          var lastNotification=getLatestNotification(vm.event.metadata.notification);
+                          lastNotification['notificationFileUrl']= fileUrl;
+                          callback();
+                        }
                     });
                 }).fail(function(err){
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
