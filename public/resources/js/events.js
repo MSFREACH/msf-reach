@@ -1965,7 +1965,7 @@ var vmObject = {
                         processData : false,
                         success: function(data) {
                             var lastNotification=getLatestNotification(vm.event.metadata.notification);
-                            lastNotification['notificationFileUrl']= fileUrl;
+                            lastNotification['notificationFileUrl']= imgLink;
                             callback();
                         }
                     });
