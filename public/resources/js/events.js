@@ -1657,6 +1657,18 @@ var vmObject = {
             }, 300);
 
         },
+        lintNotification(){
+            if ($('#inputNotification').val()) {
+                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+                    if(!Array.isArray(currentEventProperties.metadata.notification)){
+                        currentEventProperties.metadata.notification = [];
+                    }
+                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+                } else {
+                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+                }
+            }
+        },
         lintTypes(){
 
             var tmpEventWithSubTypes = {};
@@ -1753,21 +1765,52 @@ var vmObject = {
                 this.invalid.nullAreas = false;
             }
         },
-
+        submitEventSection(category){
+            var vm = this;
+            var body = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata : this.event.metadata
+            };
+            $.ajax({
+                type: 'PUT',
+                url: '/api/events/' + currentEventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req){
+                if(!category){
+                    vm.panelEditing.Notification=false;
+                }else{
+                    vm.panelEditing[category] = false;
+                }
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        },
+        /// consider the follow submits in a switch case
+        updateSection(category){
+            if(category == 'Notification' && this.newNotification){
+                var newNotificationObject={
+                    'notification_time': Date.now()/1000,
+                    'notification': this.newNotification,
+                    'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')
+                };
+                if (this.event.metadata.hasOwnProperty('notification') && this.event.metadata.notification.length > 0) {
+                    this.event.metadata.notification.push(newNotificationObject);
+                } else {
+                    this.event.metadata.notification = [newNotificationObject];
+                }
+                this.uploadNotifications(this.submitEventSection);
+            }else{
+                this.submitEventSection(category);
+            }
+        },
         submitEventMetadata(){
             var metadata = this.event.metadata;
 
-            if ($('#inputNotification').val()) {
-                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
-                    if(!Array.isArray(currentEventProperties.metadata.notification)){
-                        currentEventProperties.metadata.notification = [];
-                    }
-                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
-                } else {
-                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
-                }
-            }
-
+            this.lintNotification();
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
             this.lintAreas();
