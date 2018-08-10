@@ -1979,7 +1979,7 @@ var vmObject = {
             }
         },
         saveEventEdits:function(){
-            this.uploadNotifications(this.submitEventMetadata());
+            this.uploadNotifications(this.submitEventMetadata);
         },
         cancelEventEdits:function(){
             window.location.href = '/events/?eventId=' + currentEventId;
