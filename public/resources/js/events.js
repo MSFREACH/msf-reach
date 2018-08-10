@@ -1968,7 +1968,7 @@ var vmObject = {
                         cache : false,
                         //contentType : file.type,
                         processData : false,
-                        complete: function(data) { vm.updateNotification(imgLink,callback); }
+                        success: function(data) { vm.updateNotification(imgLink,callback); }
                     });
                 }).fail(function(err){
                     //$('#statusFile'+this.sssFileNo).html(glbFailedHTML+' failed to upload '+this.sssFileName+' <br>');
