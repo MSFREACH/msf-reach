@@ -1964,9 +1964,9 @@ var vmObject = {
                         //contentType : file.type,
                         processData : false,
                         success: function(data) {
-                          var lastNotification=getLatestNotification(vm.event.metadata.notification);
-                          lastNotification['notificationFileUrl']= fileUrl;
-                          callback();
+                            var lastNotification=getLatestNotification(vm.event.metadata.notification);
+                            lastNotification['notificationFileUrl']= fileUrl;
+                            callback();
                         }
                     });
                 }).fail(function(err){
