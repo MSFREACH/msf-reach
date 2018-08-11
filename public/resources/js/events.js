@@ -2009,6 +2009,7 @@ var vmObject = {
                         success: function(data) {
                             var lastNotification=getLatestNotification(vm.event.metadata.notification);
                             lastNotification['notificationFileUrl']= imgLink;
+                            $('#dialogModal').modal('hide');
                             callback();
                         }
                     });
