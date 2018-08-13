@@ -81,10 +81,7 @@ var zoomToEventBounds = function(bounds) {
 
 // long form of labels:
 var labels = {
-  'region': 'Region',
-  'capacity': 'Capacity',
   'deployment': 'Deployment details',
-  'other_orgs': 'Other organisations',
   'incharge_name': 'In charge name',
   'incharge_position': 'In charge position',
   'exploratory_details': 'Exploratory details'
