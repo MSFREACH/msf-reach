@@ -1897,6 +1897,9 @@ var vmObject = {
                     vm.panelDirty[category]=false;
                 }
 
+            }else{
+
+              vm.panelDirty[category]=false;
             }
         },
         addOtherOrg: function() {
