@@ -155,6 +155,10 @@ $(function(){
                     'incharge_position': $('#inputInChargePosition').val(),
                     'severity':  $('#inputSeverity').val(),
                     'severity_scale': $('#inputSeverityScale').slider('option', 'value'),
+                    'severity_measures': [{
+                        'scale' : $('#inputSeverityScale').slider('option', 'value'),
+                        'description': $('#inputSeverity').val()
+                    }],
                     'sharepoint_link':  $('#inputSharepointLink').val(),
                     'security_details': $('#inputSecurity').val(),
                     /* Exploratory details: free text, ask user for
