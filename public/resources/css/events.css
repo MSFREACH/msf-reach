@@ -20,8 +20,15 @@
   font-size:20px;
   color:yellow;
 }
-
-
+.chunks{
+  padding-bottom: 14px; 
+}
+.sub-tag{
+  font-size: 12px;
+}
+.notes{
+  font-size: 11px;
+}
 
 .panel-heading a {
   font-size:14px;

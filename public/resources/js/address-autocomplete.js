@@ -67,7 +67,6 @@ function bindACInputToMap(targetMap,inputId,justLocate)
                 currentEventProperties.metadata.areas.push(area);
                 updateAreas(area);
             }
-
         }
 
     });
@@ -85,6 +84,8 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             contentType: 'application/json'
         }).done(function( data, textStatus, req ){
             vmObject.data.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in inline editing
+            vmObject.data.areas = vmObject.data.event.metadata.areas ;
+            
             vm.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in modal editing
         }).fail(function(err) {
             if (err.responseText.includes('expired')) {

@@ -604,12 +604,17 @@
                 <table class="table" v-show="!panelEditing.General" style="table-layout: fixed;">
                   <tr><td>Name</td><td  colspan="2"> {{ event.metadata.name }}</td></tr>
                   <tr><td>Area(s)</td>
-                    <td  colspan="2">
-                      <span v-for="(area, index) in event.metadata.areas">
+
+                    <td colspan="2">
+                      <div class="chunks" v-for="(area, index) in event.metadata.areas">
                         <span v-if="area.region.length > 0"> {{area.region}} {{area.country_code}}</span>
-                        <span v-else> {{area.country}}</span>
-                        <span v-if="event.metadata.areas.length > 1 && index < event.metadata.areas.length">, </span>
-                      </span>
+                        <span v-else>{{area.country}}</span>
+                        <span v-if="event.metadata.areas.length > 1 && index < event.metadata.areas.length"> </span>
+                        <span class="sub-tag" v-if="event.metadata.severity_measures[index]">
+                          <span :style="'color:'+severityColors[event.metadata.severity_measures[index].scale-1]">{{severityLongTexts[event.metadata.severity_measures[index].scale-1]}} severity</span>
+                          <span class="notes"><br/> {{ event.metadata.severity_measures[index].description }} </span>
+                        </span>
+                      </div>
                     </td>
                   </tr>
                   <tr><td>Status</td><td  colspan="2"> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
@@ -619,11 +624,9 @@
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2">{{ notStr }}</td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
-                  <tr><td>Severity </td><td  colspan="2"> <span v-if="event.metadata.severity_scale">scale:  <span :style="'color:'+severityColors[event.metadata.severity_scale-1]">{{severityLongTexts[event.metadata.severity_scale-1]}}</span></span>, description: {{ event.metadata.severity }} </td></tr>
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a></td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
-
                   <tr><td>Event sharing</td><td>
                     <div id="eventShareButtons"></div>
                   </td><td><div id="eventCopyButton" class="st-animated"></div></td></tr>
@@ -646,11 +649,16 @@
                       Area(s) <br/>
                     </td>
                     <td>
-                      <span v-if="event.metadata.areas" v-for="area in event.metadata.areas" class="tags" v-model="event.metadata.areas">
+                      <div v-if="event.metadata.areas" v-for="(area, index) in event.metadata.areas" class="tags" v-model="event.metadata.areas">
                         <span v-if="area.region.length > 0" v-model="area"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else v-model="area"> {{area.country}} </span>
                          <span class="remove" @click="removeArea(area)"> x </span>
-                      </span>
+                         <div class="severity-wrapper" v-if="event.metadata.severity_measures[index]">
+                           <span class="label"> Severity analysis </span>
+                           <span class="inputSeveritySlider"></span>
+                           <textarea v-model.trim="event.metadata.severity_measures[index].description" placeholder="Severity description" class="form-control"></textarea>
+                         </div>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -711,20 +719,6 @@
                     <td>Date and hours (local time) of the disater </td>
                     <td class="datepicker-container">
                       <date-picker v-model="event.metadata.event_local_time"></date-picker>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td class="padding-bottom">
-                      Analysis of severity
-                      <textarea v-model.trim="event.metadata.severity" placeholder="Severity description" class="form-control"></textarea>
-                    </td>
-                    <td class="padding-bottom">
-
-                      <div class="form-group">
-                        Scale:
-                        <div id="inputSeverityScale"></div>
-                      </div>
                     </td>
                   </tr>
                   <tr>
