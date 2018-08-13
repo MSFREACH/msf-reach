@@ -81,13 +81,13 @@ var zoomToEventBounds = function(bounds) {
 
 // long form of labels:
 var labels = {
-    'exploratory_details': 'Exploratory details',
-    'other_orgs': 'Other organisations',
-    'capacity': 'Capacity',
-    'deployment': 'Deployment details',
-    'region': 'Region',
-    'incharge_position': 'In charge position',
-    'incharge_name': 'In charge name'
+  'region': 'Region',
+  'capacity': 'Capacity',
+  'deployment': 'Deployment details',
+  'other_orgs': 'Other organisations',
+  'incharge_name': 'In charge name',
+  'incharge_position': 'In charge position',
+  'exploratory_details': 'Exploratory details'
 };
 
 /**
@@ -276,12 +276,10 @@ var printEventProperties = function(err, eventProperties){
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
-        $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
+        // $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
-        var extra_metadata = unpackMetadata(eventProperties.metadata);
-
-
-        $('#eventExtra').append(extra_metadata);
+        // var extra_metadata = unpackMetadata(eventProperties.metadata);
+        // $('#eventExtra').append(extra_metadata);
 
     }
     if (currentEventProperties) {
@@ -1374,7 +1372,7 @@ var vmObject = {
             }
         },
         searchTerm: '',
-        areas: []
+        extraDetailsLabel: labels
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1458,6 +1456,7 @@ var vmObject = {
                 $('#btnSearchTwitter').trigger('click');
             }
         });
+
 
         window.makeApiRequest = makeApiRequest;
         var translationObj = {};
@@ -1791,6 +1790,7 @@ var vmObject = {
                     vm.panelEditing.Notification=false;
                 }else{
                     vm.panelEditing[category] = false;
+                    vm.panelDirty[category] = false;
                 }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {

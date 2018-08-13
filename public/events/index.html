@@ -1375,43 +1375,52 @@
 
 
 
-              <div :class="{'panel':true, 'panel-default': true}">
-                <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseSecurity">
-                  <h4 class="panel-title">
-                    <a data-toggle="collapse" data-target="#collapseSecurity"
+        <div :class="{'panel':true, 'panel-default': true}">
+            <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseSecurity">
+                <a data-toggle="collapse" data-target="#collapseSecurity"
                     href="#collapseSecurity" class="collapsed">
                     Security Details
-                  </details>
                 </a>
-              </h4>
-
+                <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Security')" v-if="!panelEditing.Security">Edit</button>
+                <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Security')" v-show="panelEditing.Security">Cancel</button>
+                <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Security')" v-show="panelEditing.Security">Save</button>
             </div>
             <div id="collapseSecurity" class="panel-collapse collapse">
-              <div class="panel-body" id="eventSecurityDetails"></div>
+              <div v-if="!panelEditing.Security" class="panel-body" id="eventSecurityDetails" >{{event.metadata.security_details}}</div>
+              <textarea v-model.trim="event.metadata.security_details" placeholder="Security details" class="form-control" v-else></textarea>
+
             </div>
           </div>
 
-          <div :class="{'panel':true, 'panel-default': true}" >
+          <div :class="{'panel':true, 'panel-default': !panelDirty.ExtraDetails, 'panel-warning': panelDirty.ExtraDetails}" >
             <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtraDetails">
-              <h4 class="panel-title">
                 <a data-toggle="collapse" data-target="#collapseExtraDetails"
                 href="#collapseExtraDetails" class="collapsed">
                 Extra details
                 </a>
-              </h4>
+                <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtraDetails')" v-if="!panelEditing.ExtraDetails">Edit</button>
+                <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtraDetails')" v-show="panelEditing.ExtraDetails">Cancel</button>
+                <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('ExtraDetails')" v-show="panelEditing.ExtraDetails">Save</button>
             </div>
             <div id="collapseExtraDetails" class="panel-collapse collapse">
-              <div class="panel-body" >
-                <dl id="eventExtra" class="dl-horizontal">
-
+              <div class="panel-body" v-if="!panelEditing.ExtraDetails">
+                <dl id="eventExtra" class="dl-horizontal" v-for="item in Object.keys(extraDetailsLabel)">
+                  <dt>{{labels[item]}}</dt><dd> {{event.metadata[item]}}</dd>
                 </dl>
               </div>
+              <ul class="list-group" v-else>
+                <li class="list-group-item" v-for="item in Object.keys(extraDetailsLabel)">
+                <label >{{labels[item]}}</label>
+                <textarea v-model="event.metadata[item]" class="form-control"></textarea>
+                </li>
+              </ul>
+
             </div>
           </div>
       </div>
-      <button class="btn btn-primary"  @click="editEvent('general')">Edit in new window</button>
-      <button class="btn btn-success"  @click="saveEventEdits()" v-if="somePanelDirty">Save Edits</button>
-      <button class="btn btn-default"  @click="cancelEventEdits()" v-if="somePanelDirty">Cancel Edits</button>
+      <!-- <button class="btn btn-primary"  @click="editEvent('general')">Edit in new window</button> -->
+      <!-- <button class="btn btn-success"  @click="saveEventEdits()" v-if="somePanelDirty">Save Edits</button> -->
+      <!-- <button class="btn btn-default"  @click="cancelEventEdits()" v-if="somePanelDirty">Cancel Edits</button> -->
       <!-- Button trigger modal -->
       <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#archiveModal" onclick="onArchiveEvent()">Close Event</button>
     </div>
