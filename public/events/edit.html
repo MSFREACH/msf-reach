@@ -1232,6 +1232,7 @@ var vm = new Vue({
         type: this.event.type.toString(),
         metadata: metadata
       }
+
       body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
       body.metadata['notification'] = currentEventProperties.metadata.notification;
 
