@@ -525,8 +525,8 @@ var mapReports = function(reports,mapForReports){
 
             $('#reportsTable').append(
                 `<li id="reports-table-row-${feature.properties.id}">
-                <span ><a href=\'#\' onclick=\'openReportPopup(${
-              feature.properties.id})\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i> Open</a></span>`+
+                <span ><a href='#' onclick='openReportPopup(${
+    feature.properties.id})' class='contact-link btn btn-sm btn-primary' title='Quick View'><i class='glyphicon glyphicon-eye-open'></i> Open</a></span>`+
               `<span><label> Type  </label>${feature.properties.content.report_tag}</span>`+
               `<span><label> Status  </label><select id="report-${feature.properties.id}">`+
                 '<option value="unconfirmed">unconfirmed</option>' +
