@@ -459,6 +459,7 @@
 	margin-bottom: 20px;
 	}
 .leaflet-popup-content-wrapper {
+	width: 200px;
 	padding: 1px;
 	text-align: left;
 	border-radius: 12px;
