@@ -2087,3 +2087,174 @@ var vmObject = {
         }
     }
 };
+
+var analyticsMap;
+
+var vmAnalytics = new Vue({
+
+    data: {
+        isSubmitting:false,
+        isAnalyzed:false,
+        isEventCreated:false,
+        vizalyticsError: false,
+        isAnalyzing: false,
+        hasNearBys:false,
+        hasSubmissionError:false,
+        showNearByEvents:true,
+        submissionErrorMsg:'',
+        nearByEvents:[],
+        response:{}
+
+    },
+    methods:{
+        resetSubmission:function(){
+            clearGlobalVars();
+            this.isSubmitting=false;
+            this.isAnalyzed=false;
+            this.isEventCreated=false;
+            this.vizalyticsError=false;
+            this.isAnalyzing =false;
+            this.hasNearBys= false;
+            this.showNearByEvents=true,
+            this.hasSubmissionError = false;
+            this.submissionErrorMsg ='';
+            this.nearByEvents=[];
+            this.response={};
+            //console.log('cleared');
+        },
+        submitAndAnalyze:function(evBody)
+        {
+            var vm=this;
+            vm.isSubmitting=true;
+            vm.showNearByEvents=false;
+            $.ajax({
+                type: 'POST',
+                url: '/api/events',
+                data: JSON.stringify(evBody),
+                contentType: 'application/json'
+            }).done(function( data, textStatus, req ){
+            // var eventId = data.result.objects.output.geometries[0].properties.id;
+                refreshLandingPage();
+                vm.isEventCreated=true;
+                vm.isSubmitting=false;
+                vm.isAnalyzing=true;
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/analytics/analyze',
+                    data: JSON.stringify(evBody),
+                    contentType: 'application/json'
+                }).done(function( data, textStatus, req ){
+
+                    vm.response=data;
+                    vm.isAnalyzing=false;
+                    vm.isAnalyzed=true;
+                    vm.mapAnalysisResult();
+
+                //console.log(data);
+                }).fail(function (reqm, textStatus, err){
+                    vm.isAnalyzing=false;
+                    vm.vizalyticsError=true;
+
+                });
+
+            }).fail(function (reqm, textStatus, err){
+                vm.isSubmitting=false;
+                vm.hasSubmissionError=true;
+                if (reqm.responseText.includes('expired')) {
+                    vm.submissionErrorMsg='session expired';
+                }});
+
+
+        },
+        mapAnalysisResult:function(){
+            if (analyticsMap)
+                analyticsMap.remove();
+            analyticsMap = L.map('analyticsMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
+
+            // To get healthsites loaded, need to first add load event and then setView separately
+
+            //analyticsMap.fitBounds([[-13, 84],[28,148]]);
+
+            // Add some base tiles
+            var anMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+                minZoom: 0,
+                maxZoom: 18
+            });
+
+            // Add some satellite tiles
+            var anMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+            });
+
+            // OSM HOT tiles
+            var anOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+            });
+
+            switch (Cookies.get('MapLayer')) {
+            case 'Satellite':
+                anMapboxSatellite.addTo(analyticsMap);
+                break;
+            case 'Terrain':
+                anMapboxTerrain.addTo(analyticsMap);
+                break;
+            default:
+                anOpenStreetMap_HOT.addTo(analyticsMap);
+            }
+
+
+            var analyticsBaseMaps = {
+                'Terrain': anMapboxTerrain,
+                'Satellite' : anMapboxSatellite,
+                'Humanitarian': anOpenStreetMap_HOT
+            };
+
+            analyticsMap.on('baselayerchange', function(baselayer) {
+                Cookies.set('MapLayer',baselayer.name);
+            });
+
+            var groupedOverlays = {
+                'RSS Feeds': {},
+                'Contacts': {}
+            };
+
+
+            var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+            var layerControl = L.control.groupedLayers(analyticsBaseMaps,groupedOverlays, groupOptions).addTo(analyticsMap);
+
+            if (L.Browser.touch) {
+                L.DomEvent
+                    .disableClickPropagation(layerControl._container)
+                    .disableScrollPropagation(layerControl._container);
+            } else {
+                L.DomEvent.disableClickPropagation(layerControl._container);
+            }
+
+            if (this.response.results)
+            {
+                var analysisLayer=L.geoJSON(this.response.results[0].geo, {
+                }).bindPopup(function (layer) {
+
+                    return (layer.feature.properties.type || layer.feature.properties.name) ;
+                });
+
+                try {
+                    analysisLayer.addTo(analyticsMap);
+                    analyticsMap.fitBounds(analysisLayer.getBounds());
+                } catch (err) {
+                    console.log(err); // eslint-disable-line no-console
+                }
+
+            }
+
+        }//function
+
+    },
+    mounted: function(){
+        //console.log('mounted');
+        // Create map
+    }
+});

@@ -546,6 +546,110 @@
   </div>
 </div>
 
+<!-- Analytics for status change modal -->
+<div class="modal fade" tabindex="-1" role="dialog"  id="analyticsStatusModal">
+  <div class="modal-dialog modal-lg ">
+    <div id="analysisResultVue" class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myNewAnalyticsModalLabel">Event Analytics</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div  class="col-sm-7 analyticsDiv">
+              <div>
+                <div v-if="isSubmitting" class="msf-loader"></div>
+                <div class="" v-if="hasNearBys  && showNearByEvents">
+                  <h4>The following near-by events has been found. Would you like to create a new event anyway? </h4>
+                    <div class="list-group">
+                        <a v-for="ev in nearByEvents" :href="'/events/?id='+ ev.properties.id" target="_blank" class="list-group-item list-group-item-action list-group-item-light">Event {{ev.properties.id}}, {{ev.properties.metadata.name}}, <i>{{ev.properties.type}}</i> </a>
+                    </div>
+
+
+                </div>
+                <div v-if="hasSubmissionError"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in event submission <span v-if="submissionErrorMsg">:{{submissionErrorMsg}}</span></div>
+                <div v-if="isEventCreated"><span  class="glyphicon glyphicon-check" style="color:green;"></span> Event successfully created.</div>
+
+
+              </div>
+
+              <div v-if="isAnalyzing">
+                <span>Analyzing event ...</span> <div class="msf-loader"></div>
+              </div>
+              <div v-if="vizalyticsError"> <span  class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in analyzing event.</div>
+
+              <div v-if="isAnalyzed">
+                <h4>Anlysis result:</h4>
+                <span v-if="response.status.success" > <span class="glyphicon glyphicon-check" style="color:green;"></span> OK </span>
+                <span v-else> <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Unsuccessful </span>
+
+                <div class="" v-for="res in response.results">
+                  <h5> Topic: {{ res.topic }}</h5>
+                  <h5> Insights</h5>
+                  <ul>
+                    <li v-for="ins in res.insights">{{ins}}</li>
+                  </ul>
+                  <h5> Contacts: </h5>
+                  <p class="help-block"> Below are the contacts (if any have been found) that are located in the area of disaster.</p>
+                  <ul>
+                    <li v-for="c in res.data.contacts">{{c.name}}, <i> <a :href="'mailto:' + c.email">{{c.email}}</i>, <a>{{c.cell}}</a> </li>
+                  </ul>
+                  <h5> Maps: </h5>
+                  <p class="help-block"> Below are relevant maps (if any have been found):</p>
+                  <ul>
+                    <li v-for="m in res.data.maps">{{m.details ? m.details + ',' : ''}} <a :href='m.url' target="_blank">open map</a> </li>
+                  </ul>
+                  <h5> Documents: </h5>
+                  <p class="help-block"> Below are relevant documents (if any have been found):</p>
+                  <ul>
+                    <li v-for="d in res.data.documents">{{d.summary }} <a :href='d.url' target="_blank">{{d.filename}}</a> </li>
+                  </ul>
+                  <h5> Supplies:</h5>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr v-for="head in res.data.supplies.slice(0,1)">
+                        <th v-for="h in head">{{h}}</th>
+
+                      </tr>
+
+                    </thead>
+                    <tbody>
+                      <tr v-for="row in res.data.supplies.slice(1)">
+                        <td v-for="col in row">{{col}}</td>
+
+                      </tr>
+
+                    </tbody>
+
+
+
+                  </table>
+
+
+                </div>
+              </div>
+
+            </div>
+            <div class="col-sm-5">
+              <div id="analyticsMap"></div>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
+        <button v-if="!hasNearBys || isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Page -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
