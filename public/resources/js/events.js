@@ -2034,6 +2034,17 @@ var vmObject = {
         },
         cancelEventEdits:function(){
             window.location.href = '/events/?eventId=' + currentEventId;
+        },
+        analyzeEvent: function (){
+          $('#analyticsStatusModal').modal('show');
+          vmAnalytics.$mount('#analysisResultVue');
+          vmAnalytics.isAnalyzing=true;
+          var evBody = {
+              status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+              type: this.event.type.toString(),
+              metadata : this.event.metadata
+          };
+          vmAnalytics.analyzeEvent(evBody);
         }
 
     },
@@ -2093,14 +2104,10 @@ var analyticsMap;
 var vmAnalytics = new Vue({
 
     data: {
-        isSubmitting:false,
         isAnalyzed:false,
-        isEventCreated:false,
         vizalyticsError: false,
         isAnalyzing: false,
-        hasNearBys:false,
         hasSubmissionError:false,
-        showNearByEvents:true,
         submissionErrorMsg:'',
         nearByEvents:[],
         response:{}
@@ -2108,35 +2115,17 @@ var vmAnalytics = new Vue({
     },
     methods:{
         resetSubmission:function(){
-            clearGlobalVars();
-            this.isSubmitting=false;
             this.isAnalyzed=false;
-            this.isEventCreated=false;
             this.vizalyticsError=false;
             this.isAnalyzing =false;
-            this.hasNearBys= false;
-            this.showNearByEvents=true,
             this.hasSubmissionError = false;
             this.submissionErrorMsg ='';
             this.nearByEvents=[];
             this.response={};
-            //console.log('cleared');
         },
-        submitAndAnalyze:function(evBody)
+        analyzeEvent:function(evBody)
         {
             var vm=this;
-            vm.isSubmitting=true;
-            vm.showNearByEvents=false;
-            $.ajax({
-                type: 'POST',
-                url: '/api/events',
-                data: JSON.stringify(evBody),
-                contentType: 'application/json'
-            }).done(function( data, textStatus, req ){
-            // var eventId = data.result.objects.output.geometries[0].properties.id;
-                refreshLandingPage();
-                vm.isEventCreated=true;
-                vm.isSubmitting=false;
                 vm.isAnalyzing=true;
                 $.ajax({
                     type: 'POST',
@@ -2144,6 +2133,7 @@ var vmAnalytics = new Vue({
                     data: JSON.stringify(evBody),
                     contentType: 'application/json'
                 }).done(function( data, textStatus, req ){
+                   console.log(data);
 
                     vm.response=data;
                     vm.isAnalyzing=false;
@@ -2154,15 +2144,9 @@ var vmAnalytics = new Vue({
                 }).fail(function (reqm, textStatus, err){
                     vm.isAnalyzing=false;
                     vm.vizalyticsError=true;
+                    console.log(err);
 
                 });
-
-            }).fail(function (reqm, textStatus, err){
-                vm.isSubmitting=false;
-                vm.hasSubmissionError=true;
-                if (reqm.responseText.includes('expired')) {
-                    vm.submissionErrorMsg='session expired';
-                }});
 
 
         },

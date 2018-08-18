@@ -557,23 +557,7 @@
       <div class="modal-body">
         <div class="container-fluid">
           <div class="row">
-            <div  class="col-sm-7 analyticsDiv">
-              <div>
-                <div v-if="isSubmitting" class="msf-loader"></div>
-                <div class="" v-if="hasNearBys  && showNearByEvents">
-                  <h4>The following near-by events has been found. Would you like to create a new event anyway? </h4>
-                    <div class="list-group">
-                        <a v-for="ev in nearByEvents" :href="'/events/?id='+ ev.properties.id" target="_blank" class="list-group-item list-group-item-action list-group-item-light">Event {{ev.properties.id}}, {{ev.properties.metadata.name}}, <i>{{ev.properties.type}}</i> </a>
-                    </div>
-
-
-                </div>
-                <div v-if="hasSubmissionError"><span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in event submission <span v-if="submissionErrorMsg">:{{submissionErrorMsg}}</span></div>
-                <div v-if="isEventCreated"><span  class="glyphicon glyphicon-check" style="color:green;"></span> Event successfully created.</div>
-
-
-              </div>
-
+            <div  class="col-sm-3 analyticsDiv">
               <div v-if="isAnalyzing">
                 <span>Analyzing event ...</span> <div class="msf-loader"></div>
               </div>
@@ -631,8 +615,11 @@
               </div>
 
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-3">
               <div id="analyticsMap"></div>
+            </div>
+            <div class="col-sm-6">
+              <h5> Suggestions on event metadata </h5>
             </div>
           </div>
 
@@ -641,9 +628,8 @@
 
       </div>
       <div class="modal-footer">
-        <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
-        <button v-if="!hasNearBys || isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+        <button v-if=" !isAnalyzed && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button v-if="isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
       </div>
     </div>
   </div>
@@ -721,7 +707,7 @@
                       </div>
                     </td>
                   </tr>
-                  <tr><td>Status</td><td  colspan="2"> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
+                  <tr><td>Status</td><td  colspan="1"> {{ event.metadata.event_status || 'monitoring' }}</td><td  colspan="1"> <button type="button" @click="analyzeEvent" class="btn btn-info">Analyze</button> </td></tr>
                   <tr><td>Type</td><td  colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
                   <tr><td>Event Date and Time</td><td  colspan="2"> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Description</td><td  colspan="2"> {{event.metadata.description }}</td></tr>
