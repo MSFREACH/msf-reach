@@ -279,9 +279,10 @@ var printEventProperties = function(err, eventProperties){
         $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
         var extra_metadata = unpackMetadata(eventProperties.metadata);
-
-
         $('#eventExtra').append(extra_metadata);
+        if(extra_metadata){
+            $('#collapseExtraDetails').addClass('in');
+        }
 
     }
     if (currentEventProperties) {
@@ -1412,9 +1413,16 @@ var vmObject = {
             var scale = currentEventProperties.metadata.severity_measures[index].scale;
             $(this).slider('value', scale);
         });
+        if(currentEventProperties.metadata.msf_response){
+            $('#collapseResponse').addClass('in');
+        }
+        this.openDirtyPanel('ext_', '#collapseExtCapacity');
+        this.openDirtyPanel('population', '#collapseFigures');
+        this.openDirtyPanel('msf_resource', '#collapseResources');
+        this.openDirtyPanel('msf_ref', '#collapseReflection');
+        this.openDirtyPanel('security', '#collapseSecurity');
 
         var searchTerm = '';
-
         if (currentEventProperties) {
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
@@ -1481,7 +1489,6 @@ var vmObject = {
             } else {
                 thGetContacts(this.value);
             }
-
         });
 
         $('#inputContactType').on('change',function(){
@@ -1512,6 +1519,23 @@ var vmObject = {
     },
     methods:{
         typeStr:typeStr,
+        openDirtyPanel:function(str, domElement){
+            var panelDirty = false;
+            var filteredKeys = Object.keys(currentEventProperties.metadata).filter(function(k) {
+                return  k.indexOf(str) == 0;
+            });
+            for(var fk = 0; fk < filteredKeys.length; fk++){
+                var value = currentEventProperties.metadata[filteredKeys[fk]];
+                if(typeof value == 'object' && value.length > 0){
+                    panelDirty = true;
+                }else if(value != null && value.length > 0){
+                    panelDirty = true;
+                }
+            }
+            if(panelDirty){
+                $(domElement).addClass('in');
+            }
+        },
         getTypeOfProgramme:function(val)
         {
             var filtered= msfTypeOfProgrammes.filter(function(e){
