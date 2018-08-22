@@ -731,10 +731,12 @@ var vmInstance = new Vue({
         return;
       }
       vm.isSubmitting=true;
-
       var body={
+        status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
         metadata: vm.mission
       }
+
+      // console.log("saveMissionEdits ---- ", body); 
       vm.inEditMode=false;
       vm.submissionSuccess=false;
       $.ajax({
