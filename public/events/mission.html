@@ -55,7 +55,13 @@
             </dl>
             <dl>
               <dt>Status</dt>
-              <dd><span class="event-status">{{mission.event_status}}</span></dd>
+              <dd v-if="!inEditMode"><span class="event-status">{{mission.event_status}}</span></dd>
+              <dd v-else>
+                <select v-model="mission.event_status" class="form-control">
+                  <option disabled value="">Please select one</option>
+                  <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                </select>
+              </dd>
             </dl>
             <dl>
               <dt>Type of Emergency (nature)</dt>
@@ -713,7 +719,8 @@ var vmInstance = new Vue({
     hasSubmissionError:false,
     submissionSuccess:false,
     submissionErrorText: '',
-    currentMissionId: currentMissionId
+    currentMissionId: currentMissionId,
+    statuses: statuses
   },
   methods: {
     saveMissionEdits: function(){
