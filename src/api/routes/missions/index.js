@@ -62,6 +62,7 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
+                status: Joi.string().required(),
                 metadata: Joi.object().required()
             })
         }),
