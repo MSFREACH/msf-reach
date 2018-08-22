@@ -1526,7 +1526,7 @@ var vmObject = {
             });
             for(var fk = 0; fk < filteredKeys.length; fk++){
                 var value = currentEventProperties.metadata[filteredKeys[fk]];
-                if((typeof value == 'string' || Array.isArray(value)) && value.length > 0){
+                if(typeof(value)!=='undefined' && (typeof(value) == 'string' || Array.isArray(value)) && value.length > 0){
                     panelDirty = true;
                 }
             }
