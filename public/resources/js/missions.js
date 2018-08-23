@@ -20,7 +20,6 @@ var loadMissions = function(err, missions) {
         $('#missionsContainer').html(
             '<table class="table table-hover" id="missionsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Description</th><th>Region</th><th>Start</th><th>End</th><th>Severity</th><th>Capacity</th></tr></thead><tbody>'
         );
-
         $.each(missions, function(key, value) {
             $('#missionsTable').append(
                 '<tr id=\'mrow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openMissionPopup('+value.properties.id+')\'>'

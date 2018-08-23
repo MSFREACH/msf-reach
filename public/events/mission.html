@@ -736,7 +736,7 @@ var vmInstance = new Vue({
         metadata: vm.mission
       }
 
-      // console.log("saveMissionEdits ---- ", body); 
+      // console.log("saveMissionEdits ---- ", body);
       vm.inEditMode=false;
       vm.submissionSuccess=false;
       $.ajax({
@@ -748,7 +748,7 @@ var vmInstance = new Vue({
         vm.isSubmitting=false;
         vm.hasSubmissionError=false;
         vm.submissionSuccess=true;
-
+        if(body.status === "active") vm.reactivateMission(body)
       }).fail(function(err) {
         vm.isSubmitting=false;
         vm.hasSubmissionError=true;
@@ -760,6 +760,21 @@ var vmInstance = new Vue({
         }
       });
 
+    },
+    reactivateMission(payload){
+        payload.type = "" // here we don't know what type is at this level
+        $.ajax({
+            type: "PUT",
+            url: "/api/events/" + currentEventId,
+            data: JSON.stringify(payload),
+            contentType: 'application/json'
+        }).done(function(data, textStatus, req){
+            window.location.href = 'events/?eventId=' + eventId;
+        }).fail(function(err){
+            if(err.responseText.includes('expired')){
+                alert('session expired')
+            }
+        });
     },
     addOtherOrg() {
       this.mission.ext_other_organizations.push({
