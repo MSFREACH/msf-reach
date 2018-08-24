@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 // Import our data model
 import missions from './model';
+import events from './../events/model';
 
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
@@ -63,12 +64,27 @@ export default ({ config, db, logger }) => {
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
                 status: Joi.string().required(),
-                metadata: Joi.object().required()
+                metadata: Joi.object().required(),
+                eventId: Joi.number().integer().required()
             })
         }),
         (req, res, next) => {
             missions(config, db, logger).updateMission(req.params.id, req.body)
-                .then((data) => handleGeoResponse(data, req, res, next))
+                .then((data) => {
+                    if(req.body.status === 'active'){
+                        console.log(data); // eslint-disable-line no-console
+                        events(config, db, logger).activateEvent(req.body)
+                            .then((data) => handleGeoResponse(data, req, res, next))
+                            .catch((err) => {
+                                /* istanbul ignore next */
+                                logger.error(err);
+                                /* istanbul ignore next */
+                                next(err);
+                            });
+                    }else{
+                        handleGeoResponse(data, req, res, next)
+                    }
+                })
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);
