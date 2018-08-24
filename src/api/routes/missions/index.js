@@ -72,7 +72,6 @@ export default ({ config, db, logger }) => {
             missions(config, db, logger).updateMission(req.params.id, req.body)
                 .then((data) => {
                     if(req.body.status === 'active'){
-                        console.log(data); // eslint-disable-line no-console
                         events(config, db, logger).activateEvent(req.body)
                             .then((data) => handleGeoResponse(data, req, res, next))
                             .catch((err) => {
