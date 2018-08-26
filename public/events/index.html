@@ -579,7 +579,7 @@
       <div class="modal-body">
         <div class="container-fluid">
           <div class="row">
-            <div  class="col-sm-3 analyticsDiv">
+            <div  class="col-sm-12 analyticsDiv">
               <div v-if="isAnalyzing">
                 <span>Analyzing event ...</span> <div class="msf-loader"></div>
               </div>
@@ -637,12 +637,9 @@
               </div>
 
             </div>
-            <div class="col-sm-3">
+            <!--<div class="col-sm-3">
               <div id="analyticsMap"></div>
-            </div>
-            <div class="col-sm-6">
-              <h5> Suggestions on event metadata </h5>
-            </div>
+            </div>-->
           </div>
 
         </div>
@@ -856,6 +853,28 @@
                     <td>ID link - SharePoint</td>
                     <td>
                       <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint Link" />
+                      <div class="panel panel-info" v-if="hasBeenAnalyzed" style="margin-top:5px;">
+                        <div class="panel-heading" >
+                          <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseSug">
+                            <a data-toggle="collapse" data-target="#collapseSug"
+                            href="#" class="collapsed">
+                            * AI suggestions: maps and documents
+                            </a>
+                          </div>
+                        </div>
+                        <div id="collapseSug" class="panel-collapse collapse">
+                          <div class="panel-body" >
+                            <h5> Maps: </h5>
+                            <ul>
+                              <li v-for="m in vizalyticsResp.maps">{{m.details ? m.details + ',' : ''}} <a :href='m.url' target="_blank">{{m.url}}</a> </li>
+                            </ul>
+                            <h5> Documents: </h5>
+                            <ul>
+                              <li v-for="d in vizalyticsResp.documents">{{d.summary }} <a :href='d.url' target="_blank">{{d.filename}}</a> </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </td>
                   </tr>
 

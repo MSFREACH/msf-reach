@@ -200,6 +200,7 @@ var printEventProperties = function(err, eventProperties){
     }
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
+    console.log(vmObject.data.event);
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
 
@@ -1383,7 +1384,9 @@ var vmObject = {
             }
         },
         searchTerm: '',
-        extraDetailsLabel: labels
+        extraDetailsLabel: labels,
+        hasBeenAnalyzed: false,
+        vizalyticsResp: {}
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -2160,7 +2163,6 @@ var vmAnalytics = new Vue({
         isAnalyzing: false,
         hasSubmissionError:false,
         submissionErrorMsg:'',
-        nearByEvents:[],
         response:{}
 
     },
@@ -2171,7 +2173,6 @@ var vmAnalytics = new Vue({
             this.isAnalyzing =false;
             this.hasSubmissionError = false;
             this.submissionErrorMsg ='';
-            this.nearByEvents=[];
             this.response={};
         },
         analyzeEvent:function(evBody)
@@ -2187,9 +2188,11 @@ var vmAnalytics = new Vue({
                    console.log(data);
 
                     vm.response=data;
+                    vmEventDetails.hasBeenAnalyzed=true;
+                    vmEventDetails.vizalyticsResp=data.results[0].data;
                     vm.isAnalyzing=false;
                     vm.isAnalyzed=true;
-                    vm.mapAnalysisResult();
+                    //vm.mapAnalysisResult();
 
                 //console.log(data);
                 }).fail(function (reqm, textStatus, err){
