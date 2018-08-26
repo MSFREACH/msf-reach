@@ -596,42 +596,9 @@
                   <ul>
                     <li v-for="ins in res.insights">{{ins}}</li>
                   </ul>
-                  <h5> Contacts: </h5>
-                  <p class="help-block"> Below are the contacts (if any have been found) that are located in the area of disaster.</p>
-                  <ul>
-                    <li v-for="c in res.data.contacts">{{c.name}}, <i> <a :href="'mailto:' + c.email">{{c.email}}</i>, <a>{{c.cell}}</a> </li>
-                  </ul>
-                  <h5> Maps: </h5>
-                  <p class="help-block"> Below are relevant maps (if any have been found):</p>
-                  <ul>
-                    <li v-for="m in res.data.maps">{{m.details ? m.details + ',' : ''}} <a :href='m.url' target="_blank">open map</a> </li>
-                  </ul>
-                  <h5> Documents: </h5>
-                  <p class="help-block"> Below are relevant documents (if any have been found):</p>
-                  <ul>
-                    <li v-for="d in res.data.documents">{{d.summary }} <a :href='d.url' target="_blank">{{d.filename}}</a> </li>
-                  </ul>
-                  <h5> Supplies:</h5>
-                  <table class="table table-striped">
-                    <thead>
-                      <tr v-for="head in res.data.supplies.slice(0,1)">
-                        <th v-for="h in head">{{h}}</th>
-
-                      </tr>
-
-                    </thead>
-                    <tbody>
-                      <tr v-for="row in res.data.supplies.slice(1)">
-                        <td v-for="col in row">{{col}}</td>
-
-                      </tr>
-
-                    </tbody>
-
-
-
-                  </table>
-
+                  <div class="alert alert-success">
+                    <strong><i class="glyphicon glyphicon-check"></i></strong> Analysis data is avilable next to relavant fields (in edit mode)
+                  </div>
 
                 </div>
               </div>
@@ -726,7 +693,7 @@
                       </div>
                     </td>
                   </tr>
-                  <tr><td>Status</td><td  colspan="1"> {{ event.metadata.event_status || 'monitoring' }}</td><td  colspan="1"> <button type="button" @click="analyzeEvent" class="btn btn-info">Analyze</button> </td></tr>
+                  <tr><td>Status</td><td  colspan="1"> {{ event.metadata.event_status || 'monitoring' }}</td><td  colspan="1"> <button type="button" @click="analyzeEvent" class="btn btn-warning"><i class="glyphicon glyphicon-refresh"></i> Analyze</button> </td></tr>
                   <tr><td>Type</td><td  colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
                   <tr><td>Event Date and Time</td><td  colspan="2"> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Description</td><td  colspan="2"> {{event.metadata.description }}</td></tr>
@@ -734,7 +701,7 @@
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2">{{ notStr }}</td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
-                  <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a></td></tr>
+                  <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && (vizalyticsResp.documents.length>0 || vizalyticsResp.maps.length>0)">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Event sharing</td><td>
                     <div id="eventShareButtons"></div>
@@ -745,7 +712,7 @@
 
                 </table>
 
-                <table class="table" v-show="panelEditing.General" id="fields-General">
+                <table class="table" v-show="panelEditing.General" id="fields-General" style="table-layout:fixed;">
                   <!-- here is now all input fields -->
                   <script src="/resources/js/edit-maps.js"></script>
 
@@ -853,25 +820,32 @@
                     <td>ID link - SharePoint</td>
                     <td>
                       <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint Link" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
                       <div class="panel panel-info" v-if="hasBeenAnalyzed" style="margin-top:5px;">
                         <div class="panel-heading" >
                           <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseSug">
                             <a data-toggle="collapse" data-target="#collapseSug"
-                            href="#" class="collapsed">
-                            * AI suggestions: maps and documents
+                            href="#" class="collapsed in">
+                            * Analysis suggestions: maps and documents
                             </a>
                           </div>
                         </div>
-                        <div id="collapseSug" class="panel-collapse collapse">
+                        <div id="collapseSug" class="panel-collapse collapse in">
                           <div class="panel-body" >
-                            <h5> Maps: </h5>
-                            <ul>
-                              <li v-for="m in vizalyticsResp.maps">{{m.details ? m.details + ',' : ''}} <a :href='m.url' target="_blank">{{m.url}}</a> </li>
-                            </ul>
                             <h5> Documents: </h5>
                             <ul>
-                              <li v-for="d in vizalyticsResp.documents">{{d.summary }} <a :href='d.url' target="_blank">{{d.filename}}</a> </li>
+                              <li v-for="d in vizalyticsResp.documents" style="word-break:break-all;">{{d.summary }} <a :href='d.url' target="_blank">{{d.filename}}</a> </li>
                             </ul>
+                              <div v-if="vizalyticsResp.documents.length==0">No documents found.</div>
+                            <h5> Maps: </h5>
+                            <ul>
+                              <li v-for="m in vizalyticsResp.maps" style="word-break:break-all;">{{m.details ? m.details + ',' : ''}} <a :href='m.url' target="_blank">{{m.url}}</a> </li>
+                            </ul>
+                            <div v-if="vizalyticsResp.maps.length==0">No maps found.</div>
+
                           </div>
                         </div>
                       </div>
@@ -937,7 +911,7 @@
                       <a data-toggle="collapse" data-target="#collapseResponse"
                       href="#" class="collapsed">
                       Response
-                    </a>
+                    </a> <span class="label label-success" v-if="hasBeenAnalyzed && vizalyticsResp.supplies">(**suggestions available in edit mode)</span>
                   </div>
                     <button v-if="!panelEditing.Response" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
                     <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-show="panelEditing.Response">Cancel</button>
@@ -1069,6 +1043,43 @@
                                     </dd>
                                   </dl>
                                 </dd>
+                                <div class="panel panel-info" style="margin-top:5px;" v-if="hasBeenAnalyzed">
+                                  <div class="panel-heading" >
+                                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseSupp">
+                                      <a data-toggle="collapse" data-target="#collapseSupp"
+                                      href="#" class="collapsed">
+                                      * Analysis suggestions: contacts
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div id="collapseSupp" class="panel-collapse collapse in">
+                                    <div class="panel-body" >
+                                      <h5> Supplies:</h5>
+                                      <p class="help-block" v-if="vizalyticsResp.supplies.length==0">
+                                         No supplies suggested.
+                                      </p>
+                                      <table class="table table-striped">
+                                        <thead>
+                                          <tr v-for="head in vizalyticsResp.supplies.slice(0,1)">
+                                            <th v-for="h in head">{{h}}</th>
+
+                                          </tr>
+
+                                        </thead>
+                                        <tbody>
+                                          <tr v-for="row in vizalyticsResp.supplies.slice(1)">
+                                            <td v-for="col in row">{{col}}</td>
+
+                                          </tr>
+
+                                        </tbody>
+                                      </table>
+
+                                    </div>
+                                  </div>
+                                </div>
+
+
                               </div>
 
 
@@ -1292,6 +1303,7 @@
                         <a data-toggle="collapse" data-target="#collapseResources" href="#" class="collapsed">
                           Staff Resources
                         </a>
+                        <span class="label label-success" v-if="hasBeenAnalyzed && vizalyticsResp.contacts.length>0">(**suggestions available in edit mode)</span>
                       </div>
                       <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
                       <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-show="panelEditing.Resources" >Cancel</button>
@@ -1341,6 +1353,27 @@
                               <textarea v-model.trim="event.metadata.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
                             </dd>
                           </dl>
+                        </li>
+                        <li class="list-group-item" v-if="hasBeenAnalyzed">
+                          <div class="panel panel-info" style="margin-top:5px;">
+                            <div class="panel-heading" >
+                              <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseCont">
+                                <a data-toggle="collapse" data-target="#collapseCont"
+                                href="#" class="collapsed">
+                                * Analysis suggestions: contacts
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseCont" class="panel-collapse collapse in">
+                              <div class="panel-body" >
+                                <h5> Contacts: </h5>
+                                <p class="help-block"> Below are the contacts (if any have been found) that are located in the area of disaster.</p>
+                                <ul>
+                                  <li v-for="c in vizalyticsResp.contacts">{{c.name}}, <i> <a :href="'mailto:' + c.email">{{c.email}}</i>, <a>{{c.cell}}</a> </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
                         </li>
                         <li class="list-group-item hidden">
                           <div class="row">
