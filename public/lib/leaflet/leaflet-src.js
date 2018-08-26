@@ -9406,7 +9406,7 @@ var Popup = DivOverlay.extend({
 
 		this._tipContainer = create$1('div', prefix + '-tip-container', container);
 		this._tip = create$1('div', prefix + '-tip', this._tipContainer);
-
+		
 		if (this.options.closeButton) {
 			var closeButton = this._closeButton = create$1('a', prefix + '-close-button', container);
 			closeButton.href = '#close';

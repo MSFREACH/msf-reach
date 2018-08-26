@@ -188,6 +188,20 @@ var printEventProperties = function(err, eventProperties){
         currentEventProperties.metadata.areas = [mockArea];
     }
 
+    if(!currentEventProperties.metadata.severity_measures){
+        var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.description};
+        currentEventProperties.metadata.severity_measures = [mockSeverity];
+    }
+
+    var filedSeverities = currentEventProperties.metadata.severity_measures.length;
+    var filedAreas = currentEventProperties.metadata.areas.length;
+    if(filedSeverities < filedAreas) {
+        // in the case that only one severity was set, we need to prepopulate severity obj to num of areas
+        for(var s = filedSeverities; s < filedAreas; s++ ){
+            currentEventProperties.metadata.severity_measures[s] = {scale: null, description: ''};
+        }
+    }
+
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
@@ -264,14 +278,11 @@ var printEventProperties = function(err, eventProperties){
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
         $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
-
-
-
-
         var extra_metadata = unpackMetadata(eventProperties.metadata);
-
-
         $('#eventExtra').append(extra_metadata);
+        if(extra_metadata){
+            $('#collapseExtraDetails').addClass('in');
+        }
 
     }
     if (currentEventProperties) {
@@ -574,7 +585,7 @@ var mapReports = function(reports,mapForReports){
 
         if (feature.properties && feature.properties.content) {
             popupContent += '<i id="popupReportShare'+feature.properties.id+'" class="icon-link-ext icon-floating" style="font-size:12px;"></i>';
-            popupContent += 'Decription: '+ feature.properties.content.description + '<BR>';
+            popupContent += 'Decription: '+ feature.properties.content.description.substring(0, 150)+ ' ...  <BR>';
             popupContent += 'Tag: '+ feature.properties.content.report_tag + '<BR>';
             popupContent += 'Reporter: ' + feature.properties.content['username/alias'] + '<BR>';
             popupContent += 'Reported time: ' + feature.properties.created + '<BR>';
@@ -1363,7 +1374,8 @@ var vmObject = {
                 description: ''
             }
         },
-        searchTerm: ''
+        searchTerm: '',
+        areas: []
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1377,8 +1389,15 @@ var vmObject = {
             }
         });
 
-        $( '#inputSeverityScale' ).slider({
-            value: typeof(this.event.metadata.severity_scale) !=='undefined' ? Number(this.event.metadata.severity_scale) : 2,
+        $('.tags .remove').hover(function(){
+            $(this).parent().addClass('close-box');
+        });
+        $('.tags .remove').mouseout(function(){
+            $(this).parent().removeClass('close-box');
+        });
+
+        vmObject.data.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
+        $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
         }).each(function() {
             // Get the options for this slider
@@ -1388,13 +1407,22 @@ var vmObject = {
             // Space out values
             for (var i = 0; i <= vals; i++) {
                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
-                $( '#inputSeverityScale' ).append(el);
+                $(this).append(el);
             }
+            var index = $( '.inputSeveritySlider' ).index($(this));
+            var scale = currentEventProperties.metadata.severity_measures[index].scale;
+            $(this).slider('value', scale);
         });
-
+        if(currentEventProperties.metadata.msf_response){
+            $('#collapseResponse').addClass('in');
+        }
+        this.openDirtyPanel('ext_', '#collapseExtCapacity');
+        this.openDirtyPanel('population', '#collapseFigures');
+        this.openDirtyPanel('msf_resource', '#collapseResources');
+        this.openDirtyPanel('msf_ref', '#collapseReflection');
+        this.openDirtyPanel('security', '#collapseSecurity');
 
         var searchTerm = '';
-
         if (currentEventProperties) {
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
@@ -1411,14 +1439,6 @@ var vmObject = {
                     searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
                 }
             }
-
-            // if(!currentEventProperties.metadata.areas){
-            //   var mockArea = {country: currentEventProperties.metadata.country}
-            //   currentEventProperties.metadata.areas = [mockArea]
-            //
-            //   console.log('no areas ----- ',mockArea,  currentEventProperties.metadata.areas)
-            // }
-
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
@@ -1447,10 +1467,6 @@ var vmObject = {
             }
         });
 
-
-
-
-
         window.makeApiRequest = makeApiRequest;
         var translationObj = {};
 
@@ -1473,7 +1489,6 @@ var vmObject = {
             } else {
                 thGetContacts(this.value);
             }
-
         });
 
         $('#inputContactType').on('change',function(){
@@ -1504,6 +1519,21 @@ var vmObject = {
     },
     methods:{
         typeStr:typeStr,
+        openDirtyPanel:function(str, domElement){
+            var panelDirty = false;
+            var filteredKeys = Object.keys(currentEventProperties.metadata).filter(function(k) {
+                return  k.indexOf(str) == 0;
+            });
+            for(var fk = 0; fk < filteredKeys.length; fk++){
+                var value = currentEventProperties.metadata[filteredKeys[fk]];
+                if(typeof(value)!=='undefined' && (typeof(value) == 'string' || Array.isArray(value)) && value.length > 0){
+                    panelDirty = true;
+                }
+            }
+            if(panelDirty){
+                $(domElement).addClass('in');
+            }
+        },
         getTypeOfProgramme:function(val)
         {
             var filtered= msfTypeOfProgrammes.filter(function(e){
@@ -1519,6 +1549,7 @@ var vmObject = {
         removeArea(area){
             var index = _.findIndex(this.event.metadata.areas, area);
             this.event.metadata.areas.splice(index, 1);
+            this.event.metadata.severity_measures.splice(index,1);
         },
         removeRegion(region){
             var index = this.areas.regions.indexOf(region);
@@ -1753,7 +1784,14 @@ var vmObject = {
                 this.invalid.nullAreas = false;
             }
         },
-
+        lintSeverity(){
+            this.event.metadata.severity_measures = this.event.metadata.severity_measures.map(function(sm, index){
+                return {
+                    scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
+                    description: sm.description
+                };
+            });
+        },
         submitEventMetadata(){
             var metadata = this.event.metadata;
 
@@ -1773,19 +1811,19 @@ var vmObject = {
             this.lintAreas();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
-
+            this.lintSeverity();
 
             metadata = _.extend(metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
             });
 
+
             var body = {
                 status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
                 type: this.event.type.toString(),
                 metadata: metadata
             };
-            body.metadata['severity_scale']=$('#inputSeverityScale').slider('option', 'value');
             this.lintSubTypesSelected(body);
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
@@ -2004,6 +2042,34 @@ var vmObject = {
         eventReportLink:function()
         {
             return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey + '#' + this.event.metadata.name;
+        }
+    },
+    watch: {
+        areas: function(val){
+            var mostRecentSlider = $('.inputSeveritySlider').eq($('.inputSeveritySlider').length);
+            var filled = mostRecentSlider.has('span.ui-slider-handle').length;
+            if(filled == 0){
+
+                if(currentEventProperties.metadata.areas.length > currentEventProperties.metadata.severity_measures.length){
+                    var mockSeverity = {scale: 2, description: ''};
+                    vmObject.data.event.metadata.severity_measures.push(mockSeverity);
+
+                    setTimeout(function(){
+                        $('.inputSeveritySlider').last().slider({
+                            min: 1, max: 3, step: 1, value: 2
+                        }).each(function() {
+                            var opt = $(this).data().uiSlider.options;
+                            var vals = opt.max - opt.min;
+                            for (var i = 0; i <= vals; i++) {
+                                var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
+                                $(this).append(el);
+                            }
+                        });
+                    }, 300);
+                }
+
+            }
+
         }
     }
 };
