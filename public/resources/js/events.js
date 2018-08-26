@@ -1908,22 +1908,9 @@ var vmObject = {
         stopEdit:function(category)
         {
             var vm=this;
-            switch(category){
-              case 'General':
-                this.event.metadata = currentEventProperties.metadata
-                Vue.set(vm.event.metadata, currentEventProperties.metadata);
-            }
+
             this.editingObj[category] = {}
 
-            var allTextFields = $(`#fields-${category}`).find('textarea');
-            var allInputFields = $(`#fields-${category}`).find('input');
-
-            for(var atf = 0; atf < allTextFields.length; atf++){
-                allTextFields[atf].value = ""
-            }
-            for(var aif =0; aif < allInputFields.length; aif++){
-                allInputFields[aif].value = ""
-            }
 
 
             vm.panelEditing[category]=false;
