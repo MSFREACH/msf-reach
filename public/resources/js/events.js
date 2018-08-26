@@ -2091,7 +2091,9 @@ var vmObject = {
           var evBody = {
               status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
               type: this.event.type.toString(),
-              metadata : this.event.metadata
+              metadata : this.event.metadata,
+              created_at: this.event.created_at,
+              location: {lat: currentEventGeometry.coordinates[1],lng: currentEventGeometry.coordinates[0]}
           };
           vmAnalytics.analyzeEvent(evBody);
         }
