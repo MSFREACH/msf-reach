@@ -275,8 +275,12 @@ var printEventProperties = function(err, eventProperties){
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
         // $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
-        // var extra_metadata = unpackMetadata(eventProperties.metadata);
-        // $('#eventExtra').append(extra_metadata);
+
+        var extra_metadata = unpackMetadata(eventProperties.metadata);
+        $('#eventExtra').append(extra_metadata);
+        if(extra_metadata){
+            $('#collapseExtraDetails').addClass('in');
+        }
 
     }
     if (currentEventProperties) {
@@ -1342,6 +1346,16 @@ var vmObject = {
             'Security': false,
             'ExtraDetails': false
         },
+        editingObj: {
+          'General': {},
+          'Notification': {},
+          'Response': {},
+          'ExtCapacity': {},
+          'Figures': {},
+          'Resources': {},
+          'Security': {},
+          'ExtraDetails': {}
+        },
         invalid: {
             typesSelection: false,
             emptyStrings: false,
@@ -1407,9 +1421,16 @@ var vmObject = {
             var scale = currentEventProperties.metadata.severity_measures[index].scale;
             $(this).slider('value', scale);
         });
+        if(currentEventProperties.metadata.msf_response){
+            $('#collapseResponse').addClass('in');
+        }
+        this.openDirtyPanel('ext_', '#collapseExtCapacity');
+        this.openDirtyPanel('population', '#collapseFigures');
+        this.openDirtyPanel('msf_resource', '#collapseResources');
+        this.openDirtyPanel('msf_ref', '#collapseReflection');
+        this.openDirtyPanel('security', '#collapseSecurity');
 
         var searchTerm = '';
-
         if (currentEventProperties) {
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
@@ -1477,7 +1498,6 @@ var vmObject = {
             } else {
                 thGetContacts(this.value);
             }
-
         });
 
         $('#inputContactType').on('change',function(){
@@ -1508,6 +1528,21 @@ var vmObject = {
     },
     methods:{
         typeStr:typeStr,
+        openDirtyPanel:function(str, domElement){
+            var panelDirty = false;
+            var filteredKeys = Object.keys(currentEventProperties.metadata).filter(function(k) {
+                return  k.indexOf(str) == 0;
+            });
+            for(var fk = 0; fk < filteredKeys.length; fk++){
+                var value = currentEventProperties.metadata[filteredKeys[fk]];
+                if(typeof(value)!=='undefined' && (typeof(value) == 'string' || Array.isArray(value)) && value.length > 0){
+                    panelDirty = true;
+                }
+            }
+            if(panelDirty){
+                $(domElement).addClass('in');
+            }
+        },
         getTypeOfProgramme:function(val)
         {
             var filtered= msfTypeOfProgrammes.filter(function(e){
@@ -1697,8 +1732,10 @@ var vmObject = {
             }
             this.checkedSubTypes = cleanSubTypes;
         },
-        lintSubTypesSelected(body){
-            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+        lintSubTypesSelected(){
+          var tmpType = this.event.type.toString()
+          var tmpSubType = this.event.sub_type
+            if ((tmpType.includes('natural_disaster') || tmpType.includes('disease_outbreak')) && tmpSubType == '') {
                 alert('ensure subtype(s) is/are selected');
                 this.invalid.typesSelection = true;
             }else{
@@ -1814,8 +1851,6 @@ var vmObject = {
             }
         },
         submitEventMetadata(){
-            var metadata = this.event.metadata;
-
             this.lintNotification();
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
@@ -1823,29 +1858,23 @@ var vmObject = {
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
 
-            metadata = _.extend(metadata, {
+            _.extend(this.event.metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
             });
 
-
-            var body = {
-                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-                type: this.event.type.toString(),
-                metadata: metadata
-            };
-            this.lintSubTypesSelected(body);
+            this.lintSubTypesSelected();
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
 
             if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
-                this.updateEvent(currentEventId, body);
+                this.submitEventSection('General');
             }
         },
         editEvent:function(category){
+            var vm=this;
             $('#collapse'+category).collapse('show');
-            if (category == 'general')
-            {
+            if (category == 'general'){
                 // this is modal implemation
                 editCategory=category;
                 onEditEvent();
@@ -1865,17 +1894,35 @@ var vmObject = {
                     this.panelDirty[category]=true;
                     this.somePanelDirty=true;
                 }
-
                 // this is inline implementation
                 if(category == 'General'){
                     this.loadMap();
                     this.placeOtherFields();
                 }
             }
+
         },
         stopEdit:function(category)
         {
             var vm=this;
+            switch(category){
+              case 'General':
+                this.event.metadata = currentEventProperties.metadata
+                Vue.set(vm.event.metadata, currentEventProperties.metadata);
+            }
+            this.editingObj[category] = {}
+
+            var allTextFields = $(`#fields-${category}`).find('textarea');
+            var allInputFields = $(`#fields-${category}`).find('input');
+
+            for(var atf = 0; atf < allTextFields.length; atf++){
+                allTextFields[atf].value = ""
+            }
+            for(var aif =0; aif < allInputFields.length; aif++){
+                allInputFields[aif].value = ""
+            }
+
+
             vm.panelEditing[category]=false;
 
             if (category=='Notification')
@@ -1901,6 +1948,8 @@ var vmObject = {
 
               vm.panelDirty[category]=false;
             }
+
+
         },
         addOtherOrg: function() {
             this.event.metadata.ext_other_organizations.push({
