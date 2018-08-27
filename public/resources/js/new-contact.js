@@ -134,6 +134,7 @@ function postContact() {
         body.properties['OC'] = $('#inputContactOC').val();
         body.properties['msf_employment'] = $('#inputContactMSFEmploy').val();
         body.properties['msf_additional'] = $('#inputMSFAdditional').val() || '';
+        body.properties['job_title'] = $('#inputContactJobTitle').val() || '';
         // body.properties['msf_section'] = $('#inputMSFSection').val() || '';
         // body.properties['msf_branch'] = $('#inputMSFBranch').val() || '';
         // body.properties['msf_project'] = $('#inputMSFProject').val() || '';
