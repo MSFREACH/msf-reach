@@ -701,7 +701,7 @@
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2">{{ notStr }}</td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
-                  <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && (vizalyticsResp.documents.length>0 || vizalyticsResp.maps.length>0)">(**suggestions available in edit mode)</span> </td></tr>
+                  <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Event sharing</td><td>
                     <div id="eventShareButtons"></div>
@@ -839,12 +839,12 @@
                             <ul>
                               <li v-for="d in vizalyticsResp.documents" style="word-break:break-all;">{{d.summary }} <a :href='d.url' target="_blank">{{d.filename}}</a> </li>
                             </ul>
-                              <div v-if="vizalyticsResp.documents.length==0">No documents found.</div>
+                              <div v-if="!(vizalyticsResp.documents) || vizalyticsResp.documents.length==0">No documents found.</div>
                             <h5> Maps: </h5>
                             <ul>
                               <li v-for="m in vizalyticsResp.maps" style="word-break:break-all;">{{m.details ? m.details + ',' : ''}} <a :href='m.url' target="_blank">{{m.url}}</a> </li>
                             </ul>
-                            <div v-if="vizalyticsResp.maps.length==0">No maps found.</div>
+                            <div v-if="!(vizalyticsResp.maps) || vizalyticsResp.maps.length==0">No maps found.</div>
 
                           </div>
                         </div>
@@ -1569,12 +1569,12 @@
             <div id="collapseExtraDetails" class="panel-collapse collapse">
               <div class="panel-body" v-if="!panelEditing.ExtraDetails">
                 <dl id="eventExtra" class="dl-horizontal" v-for="item in Object.keys(extraDetailsLabel)">
-                  <dt>{{labels[item]}}</dt><dd> {{event.metadata[item]}}</dd>
+                  <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
                 </dl>
               </div>
               <ul class="list-group" v-else>
                 <li class="list-group-item" v-for="item in Object.keys(extraDetailsLabel)">
-                <label >{{labels[item]}}</label>
+                <label >{{extraDetailsLabel[item]}}</label>
                 <textarea v-model="event.metadata[item]" class="form-control"></textarea>
                 </li>
               </ul>

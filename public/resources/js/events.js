@@ -200,7 +200,7 @@ var printEventProperties = function(err, eventProperties){
     }
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
-    console.log(vmObject.data.event);
+
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
 
@@ -1513,21 +1513,25 @@ var vmObject = {
 
         eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
 
-        //copy-paste from edit.html vue mounted.
-        if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
-            var optCenter = this.event.metadata.operational_center;
-            this.event.metadata.msf_response_operational_centers.push(optCenter);
-        }
-
-        if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
-            this.event.metadata.ext_other_organizations.push({
-                name: this.event.metadata.other_orgs,
-                deployment: this.event.metadata.deployment,
-                arrival_date: null
-            });
-        }
 
 
+
+    },
+    created:function(){
+      //copy-paste from edit.html vue mounted.
+      if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
+          var optCenter = this.event.metadata.operational_center;
+          this.event.metadata.msf_response_operational_centers.push(optCenter);
+      }
+
+      if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
+        console.log('here');
+          this.event.metadata.ext_other_organizations.push({
+              name: this.event.metadata.other_orgs,
+              deployment: this.event.metadata.deployment,
+              arrival_date: null
+          });
+      }
     },
     methods:{
         typeStr:typeStr,
