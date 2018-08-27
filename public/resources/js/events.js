@@ -1021,10 +1021,10 @@ var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{
 });
 
 switch (Cookies.get('MapLayer')) { // add base map layer based on cookie setting
-case 'satellite':
+case 'Satellite':
     mapboxSatellite.addTo(mainMap);
     break;
-case 'terrain':
+case 'Terrain':
     mapboxTerrain.addTo(mainMap);
     break;
 default:
