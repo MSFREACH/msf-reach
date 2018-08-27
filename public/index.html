@@ -51,9 +51,12 @@
 
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
+    <link rel="stylesheet" href="/resources/css/contacts.css"/>
 
     <!-- country selector -->
     <link rel="stylesheet" href="/resources/css/countrySelect.min.css">
+
+
     <style>
     .ui-autocomplete {
           position:absolute;
@@ -721,25 +724,12 @@
 
                 <!--contact tab menu-->
                 <div id="contact" class="tab-pane">
-                    <ul class="nav nav-tabs" id="contact_tabs">
-                        <li><a href="#contact_list" data-toggle="tab">List Contacts</a></li>
-                        <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
-                    </ul>
-
                     <!--contact tab content-->
                     <div class="tab-content">
-
-                      <div id="contact_new" class="tab-pane">
-                        <div id="newContact">
-                          <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
-                        </div>
-                      </div>
-
                       <div id="contact_list" class="tab-pane active">
                         <div class="form-group" >
-                          Contact search category
                             <select class="form-control" style="color:black;" id="inputContactType" >
-                              <option value="" selected>(no category filtering)</option>
+                              <option value="" selected> category </option>
                               <option value="Current MSF Staff">Current MSF Staff</option>
                               <option value="msf_peer">Former Staff</option>
                               <option value="msf_associate">Association Member</option>
@@ -750,11 +740,11 @@
                               <option value="Academic">Academic</option>
                               <option value="Private Medical Practice">Private Medical Practice</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                          <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
-                        </div>
+                            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Name, Phone, Email, etc. ...">
+                            <span class="glyphicon glyphicon-search"></span>
+                            <a href="/contact" target="_blank" class="addContact">Add <span class ="glyphicon glyphicon-plus-sign"> </span> </a>
 
+                        </div>
                         <div id="contact_container" class="tab-pane tab-pane-box">
                         </div>
                       </div>
