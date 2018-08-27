@@ -7,9 +7,11 @@ var qEmail=null;
 $(function () {
     qGUID=getQueryVariable('token');
     qEmail=getQueryVariable('email');
+    $('#GDPR').toggle(localStorage.getItem('username')==null);
     $('#permission').toggle(localStorage.getItem('username')!=null);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
     $('#private').toggle(localStorage.getItem('username')!=null);
+    // $('#GDPR').toggle(localStorage.getItem('username')!=null);
 
     const STARTPAGEINDEX = 0;
     const CHECKEMAILPAGEINDEX =1;
@@ -181,6 +183,11 @@ $(function () {
                 return;
             }
         }
+        if (cInd==STARTPAGEINDEX && !localStorage.getItem('username') && !$('#inputGDPRAcknowledge').is(':checked')) {
+                alert('Please tick the Information consent box to continue.');
+                return;
+        }
+
         if (cInd==MAPSECTIONINDEX)
         {
             if (!newContactMap.msf_latlng)
