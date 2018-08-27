@@ -1022,10 +1022,10 @@ var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{
 });
 
 switch (Cookies.get('MapLayer')) { // add base map layer based on cookie setting
-case 'satellite':
+case 'Satellite':
     mapboxSatellite.addTo(mainMap);
     break;
-case 'terrain':
+case 'Terrain':
     mapboxTerrain.addTo(mainMap);
     break;
 default:
@@ -1832,6 +1832,7 @@ var vmObject = {
                 }else{
                     vm.panelEditing[category] = false;
                     vm.panelDirty[category] = false;
+                    vm.somePanelDirty=false;
                 }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
@@ -1881,6 +1882,12 @@ var vmObject = {
         editEvent:function(category){
             var vm=this;
             $('#collapse'+category).collapse('show');
+            if (vm.somePanelDirty)
+            {
+              alert("Please save or cancel the current section before editing this section.");
+              return;
+            }
+
             if (category == 'general'){
                 // this is modal implemation
                 editCategory=category;
@@ -1889,22 +1896,22 @@ var vmObject = {
 
 
             } else {
-                this.panelEditing[category]=true;
+                vm.panelEditing[category]=true;
                 if (category=='Notification')
                 {
-                    if (this.panelDirty[category])
+                    if (vm.panelDirty[category])
                     {
-                        this.event.metadata.notification.pop();
+                        vm.event.metadata.notification.pop();
                     }
                 }
                 else{
-                    this.panelDirty[category]=true;
-                    this.somePanelDirty=true;
+                    vm.panelDirty[category]=true;
+                    vm.somePanelDirty=true;
                 }
                 // this is inline implementation
                 if(category == 'General'){
-                    this.loadMap();
-                    this.placeOtherFields();
+                    vm.loadMap();
+                    vm.placeOtherFields();
                 }
             }
 
@@ -1912,10 +1919,21 @@ var vmObject = {
         stopEdit:function(category)
         {
             var vm=this;
+            switch(category){
+              case 'General':
+                this.event.metadata = currentEventProperties.metadata
+                Vue.set(vm.event.metadata, currentEventProperties.metadata);
+            }
 
             this.editingObj[category] = {}
-
-
+            var allTextFields = $(`#fields-${category}`).find('textarea');
+            var allInputFields = $(`#fields-${category}`).find('input');
+            for(var atf = 0; atf < allTextFields.length; atf++){
+                allTextFields[atf].value = ""
+            }
+            for(var aif =0; aif < allInputFields.length; aif++){
+                allInputFields[aif].value = ""
+            }
 
             vm.panelEditing[category]=false;
 
