@@ -144,18 +144,22 @@
                 </div>
                 <div id="divMSFFields" style="display:none;">
                   <div class="form-group">
-                    <label for="inputContactMSFEmploy" style="text-transform:uppercase;"><span style="color:red;">*</span>Current employment status</label>
+                    <label for="inputContactMSFEmploy" style="text-transform:uppercase;">Current employment status</label>
                     <select class="form-control" style="color:black;" id="inputContactMSFEmploy">
-                      <option value="" disabled selected>Please select...</option>
+                      <option value="" selected>Please select...</option>
                       <option value="Field worker (national)">Field worker (national)</option>
                       <option value="Field worker (international)">Field worker (international)</option>
                       <option value="HQ staff (OC/PS)">HQ staff (OC/PS)</option>
                     </select>
                   </div>
+                  <div class="form-group" id="divJobTitle">
+                    <label for="inputContactJobTitle" style="text-transform:uppercase;">Job title</label>
+                    <input maxlength="150" placeholder="Job title ..." class="form-control" style="color:black;" id="inputContactJobTitle" >
+                  </div>
                   <div class="form-group">
-                    <label for="inputContactOC" style="text-transform:uppercase;"><span style="color:red;">*</span>Operational Centre</label>
+                    <label for="inputContactOC" style="text-transform:uppercase;">Operational Centre</label>
                     <select class="form-control" style="color:black;" id="inputContactOC">
-                      <option value="" disabled selected>Please select...</option>
+                      <option value="" selected>Please select...</option>
                       <option value="OCA">OCA</option>
                       <option value="OCB">OCB</option>
                       <option value="OCBA">OCBA</option>
@@ -169,22 +173,7 @@
                     <label for="inputMSFSection" style="text-transform:uppercase;"> Partner sections/Branch office/Mission/Project (if any) </label>
                     <textarea class="form-control" style="color:black; height: 30vh;" id="inputMSFAdditional"> </textarea>
                   </div>
-                  <!-- <div class="form-group">
-                    <label for="inputMSFSection" style="text-transform:uppercase;">Partner sections (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFSection" >
-                  </div>
-                  <div class="form-group">
-                    <label for="inputMSFBranch" style="text-transform:uppercase;">Branch office (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFBranch" >
-                  </div>
-                  <div class="form-group">
-                    <label for="inputMSFMission" style="text-transform:uppercase;">Mission (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFMission" >
-                  </div>
-                  <div class="form-group">
-                    <label for="inputMSFProject" style="text-transform:uppercase;">Project (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFProject" >
-                  </div> -->
+
                 </div>
                 <div class="form-group" id="divOtherType" style="display:none;">
                   <input maxlength="150" placeholder="Specify other type..." class="form-control" style="color:black;" id="inputContactTypeOther">
