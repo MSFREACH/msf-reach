@@ -619,7 +619,7 @@
                   <div class="panel-heading" style="cursor:pointer;"  >
                     <a> General details </a>
                     <button v-if="!panelEditing.General" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('General')">Edit</button>
-                    <button type="button" v-show="panelEditing.General" class="btn btn-warning btn-xs pull-right" @click="stopEdit('General')">Cancel</button>
+                    <button type="button" v-show="panelEditing.General" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()">Cancel</button>
                     <button type="button" v-show="panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
                   </div>
                   <div class="panel-body" >
@@ -789,7 +789,7 @@
                       </a>
                     </div>
                       <button v-if="!panelEditing.Notification" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Notification')" v-show="panelEditing.Notification">Cancel</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Notification">Cancel</button>
                       <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Notification')" v-show="panelEditing.Notification">Save</button>
                   </div>
                   <div id="collapseNotification" class="panel-collapse collapse in">
@@ -831,7 +831,7 @@
                     </a>
                   </div>
                     <button v-if="!panelEditing.Response" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-show="panelEditing.Response">Cancel</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Response">Cancel</button>
                     <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Response')" v-show="panelEditing.Response">Save</button>
                   </div>
                   <div id="collapseResponse" class="panel-collapse collapse">
@@ -978,7 +978,7 @@
                       </a>
                     </div>
                     <button type="button" v-if="!panelEditing.ExtCapacity" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtCapacity')">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtCapacity')" v-show="panelEditing.ExtCapacity">Cancel</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.ExtCapacity">Cancel</button>
                     <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('ExtCapacity')" v-show="panelEditing.ExtCapacity">Save</button>
                   </div>
                   <div id="collapseExtCapacity" class="panel-collapse collapse">
@@ -1069,7 +1069,7 @@
                         </a>
                       </div>
                       <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Figures')" v-if="!panelEditing.Figures">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Figures')" v-show="panelEditing.Figures" >Cancel</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Figures" >Cancel</button>
                       <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Figures')" v-show="panelEditing.Figures" >Save</button>
 
                     </div>
@@ -1185,7 +1185,7 @@
                         </a>
                       </div>
                       <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-show="panelEditing.Resources" >Cancel</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Resources" >Cancel</button>
                       <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Resources')" v-show="panelEditing.Resources">Save</button>
                     </div>
                   <div id="collapseResources" class="panel-collapse collapse">
@@ -1360,7 +1360,7 @@
                     </a>
                   </div>
                   <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Reflection')" v-if="!panelEditing.Reflection">Edit</button>
-                  <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Reflection')" v-show="panelEditing.Reflection" >Cancel</button>
+                  <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Reflection" >Cancel</button>
                   <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Reflection')" v-show="panelEditing.Reflection" >Save</button>
                 </div>
                 <div id="collapseReflection" class="panel-collapse collapse">
@@ -1404,7 +1404,7 @@
                     Security Details
                 </a>
                 <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Security')" v-if="!panelEditing.Security">Edit</button>
-                <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Security')" v-show="panelEditing.Security">Cancel</button>
+                <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Security">Cancel</button>
                 <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Security')" v-show="panelEditing.Security">Save</button>
             </div>
             <div id="collapseSecurity" class="panel-collapse collapse">
@@ -1421,7 +1421,7 @@
                 Extra details
                 </a>
                 <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtraDetails')" v-if="!panelEditing.ExtraDetails">Edit</button>
-                <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtraDetails')" v-show="panelEditing.ExtraDetails">Cancel</button>
+                <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.ExtraDetails">Cancel</button>
                 <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('ExtraDetails')" v-show="panelEditing.ExtraDetails">Save</button>
             </div>
             <div id="collapseExtraDetails" class="panel-collapse collapse">
