@@ -1,6 +1,6 @@
 /*eslint no-unused-vars: off*/
 
-//var newEventMap = L.map('newEventMap').setView([20, 110], 4);
+
 function clearGlobalVars(){
     // clear global vars
     if (report_id_for_event) {
@@ -55,39 +55,45 @@ $('#analyticsModal').on('shown.bs.modal', function(){
     $('body').addClass('modal-open');
 });
 
-// Add some base tiles
-/*
-var NEmapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
-    attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-    minZoom: 0,
-    maxZoom: 18
-}).addTo(newEventMap);
 
-// Add some satellite tiles
-var NEmapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
-    attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-});
 
-var NEbaseMaps = {
-    'Terrain': NEmapboxTerrain,
-    'Satellite' : NEmapboxSatellite
-};
+function loadNewEventMap(){
+    var newEventMap = L.map('newEventMap', {dragging: !L.Browser.mobile, tap:false});
+    console.log('FIRE FIRE ___ ')
 
-var NEoverlayMaps = {};
+    // Add some base tiles
 
- var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
-*/
-// var marker;
+    var NEmapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+        attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+        minZoom: 0,
+        maxZoom: 18
+    }).addTo(newEventMap);
+    // Add some satellite tiles
+    var NEmapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+        attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+    });
 
-/*
-newEventMap.on('click', function(e) {
-    if(marker)
-        newEventMap.removeLayer(marker);
-    latlng = e.latlng; // e is an event object (MouseEvent in this case)
-    marker = L.marker(e.latlng).addTo(newEventMap);
-});
+    var NEbaseMaps = {
+        'Terrain': NEmapboxTerrain,
+        'Satellite' : NEmapboxSatellite
+    };
 
-*/
+    var NEoverlayMaps = {};
+
+     var NElayerControl = L.control.layers(NEbaseMaps, NEoverlayMaps, {'position':'bottomleft'}).addTo(newEventMap);
+
+    var marker;
+    setTimeout(newEventMap.setView([-6.8, 108.7], 7), 300);
+    setTimeout(newEventMap.invalidateSize(), 400);
+
+    newEventMap.on('click', function(e) {
+        if(marker)
+            newEventMap.removeLayer(marker);
+        latlng = e.latlng; // e is an event object (MouseEvent in this case)
+        marker = L.marker(e.latlng).addTo(newEventMap);
+    });
+}
+
 
 /**
  * refresh the landing page to show up a new event

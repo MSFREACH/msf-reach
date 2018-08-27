@@ -98,140 +98,116 @@
           </div>
           <div class="modal-body">
             <div class="container-fluid">
-              <div class="row">
                 <!-- Map -->
-
+                <div class="form-section">
+                    <div class="mapSearch">
+                    <label>Double click to create bounding box</span>
+                    <div id="newEventMap"></div>
+                    </div>
+                    <div class="mapSearch">
+                        <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
+                        <label for="mapAddressLat">OR locate by coordinates:</label>
+                        <input type="text" class="form-control" value="" id="mapAddressLat" placeholder="Latitude">
+                        <input type="text" class="form-control" value="" id="mapAddressLng" placeholder="Longitude">
+                        <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                    </div>
+                  </div>
                 <!-- Side pane -->
-                <div id="newEventSidepane" class="col-sm-12">
                   <div id="geocodingNotice"><strong>Note that the event coordinates (only) are sent to Google for geocoding events to country</strong></div>
                   <div id="newEventProperties">
-                        <div class="panel panel-default" style="margin-bottom:0px;">
-                          <div class="panel-body">
-                            <div class="form-group">
-                              <label for="inputEventName">Event Name</label>
-                              <input class="form-control"  id="inputEventName" placeholder="Event name ..." required>
-                            </div>
-                            <div class="form-group">
-                              <label for="inputEventDescription">Event Description</label>
-                              <input class="form-control"  id="inputEventDescription" placeholder="Event description ..." required>
-                            </div>
-                            <div class="form-group">
-                              <label for="selectType">Event Type</label>
+                    <div class="form-group">
+                      <label for="inputEventName">Event Name</label>
+                      <input class="form-control"  id="inputEventName" placeholder="Event name ..." required>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputEventDescription">Event Description</label>
+                      <input class="form-control"  id="inputEventDescription" placeholder="Event description ..." required>
+                    </div>
+                    <div class="form-group">
+                      <label for="selectType">Event Type</label>
 
 
-                                <div>
-                                    <input class="newEventTypeBox" id="selectType0" type="checkbox" value="armed_conflict" /><label class="eventBox" for="selectType0">&nbsp Armed Conflict</label><br>
-                                    <input class="newEventTypeBox" id="selectType1" type="checkbox" value="disease_outbreak" /><label class="eventBox" for="selectType1">&nbsp Disease Outbreak</label><br>
-                                    <div id="divDisease" style="display:none; margin-left: 20px;">
-                                        <input class="newSubEventTypeBox" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox" for="diseaseType0">&nbsp Cholera</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox" for="diseaseType1">&nbsp Ebola</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType2" type="checkbox" value="Dengue" /><label class="eventBox" for="diseaseType2">&nbsp Dengue</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType3" type="checkbox" value="Malaria" /><label class="eventBox" for="diseaseType3">&nbsp Malaria</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType4" type="checkbox" value="Measles" /><label class="eventBox" for="diseaseType4">&nbsp Measles</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType5" type="checkbox" value="Meningococcal Meningitis" /><label class="eventBox" for="diseaseType5">&nbsp Meningococcal Meningitis</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType6" type="checkbox" value="Yellow Fever" /><label class="eventBox" for="diseaseType6">&nbsp Yellow Fever</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType7" type="checkbox" value="Other Disease" /><label class="eventBox" for="diseaseType7">&nbsp Other (Specify)</label>
-                                        <div class="form-group" id="divOtherDisease"  style="display:none;">
-                                            <input type="text" id="diseaseType8" class="form-control" placeholder="(Specify)" >
-                                        </div>
-                                    </div>
-                                    <input class="newEventTypeBox" id="selectType2" type="checkbox" value="displacement" /><label for="selectType2" class="eventBox">&nbsp Displacement</label><br>
-                                    <input class="newEventTypeBox" id="selectType3" type="checkbox" value="malnutrition" /><label for="selectType3" class="eventBox">&nbsp Malnutrition</label><br>
-                                    <input class="newEventTypeBox" id="selectType4" type="checkbox" value="natural_disaster" /><label for="selectType4" class="eventBox">&nbsp Natural Disaster</label><br>
-                                    <div id="divNaturalDisaster" style="display:none; margin-left: 20px;">
-                                        <input class="newSubEventTypeBox" id="disasterType0" type="checkbox" value="drought" /><label for="disasterType0" class="eventBox">&nbsp Drought</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType1" type="checkbox" value="earthquake" /><label for="disasterType1" class="eventBox">&nbsp Earthquake</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType2" type="checkbox" value="flood" /><label for="disasterType2" class="eventBox">&nbsp Flood</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType3" type="checkbox" value="tsunami" /><label for="disasterType3" class="eventBox">&nbsp Tsunami</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType4" type="checkbox" value="typhoon" /><label for="disasterType4" class="eventBox">&nbsp Typhoon</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType5" type="checkbox" value="volcano" /><label for="disasterType5" class="eventBox">&nbsp Volcano</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType6" type="checkbox" value="landslides" /><label for="disasterType6" class="eventBox">&nbsp Landslides</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType7" type="checkbox" value="other disaster" /><label for="disasterType7" class="eventBox">&nbsp Other (Specify)</label>
-                                        <div class="form-group" id="divOtherDisaster"  style="display:none;">
-                                            <input type="text" id="disasterType8" class="form-control" placeholder="(Specify)" >
-                                        </div>
-                                    </div>
-                                    <input class="newEventTypeBox" id="selectType5" type="checkbox" value="search_and_rescue" /><label for="selectType5" class="eventBox">&nbsp Search & Rescue</label><br>
-                                    <input class="newEventTypeBox" id="selectType6" type="checkbox" value="other" /><label for="selectType6" class="eventBox">&nbsp Other (Specify)</label>
+                        <div>
+                            <input class="newEventTypeBox" id="selectType0" type="checkbox" value="armed_conflict" /><label class="eventBox" for="selectType0">&nbsp Armed Conflict</label><br>
+                            <input class="newEventTypeBox" id="selectType1" type="checkbox" value="disease_outbreak" /><label class="eventBox" for="selectType1">&nbsp Disease Outbreak</label><br>
+                            <div id="divDisease" style="display:none; margin-left: 20px;">
+                                <input class="newSubEventTypeBox" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox" for="diseaseType0">&nbsp Cholera</label><br>
+                                <input class="newSubEventTypeBox" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox" for="diseaseType1">&nbsp Ebola</label><br>
+                                <input class="newSubEventTypeBox" id="diseaseType2" type="checkbox" value="Dengue" /><label class="eventBox" for="diseaseType2">&nbsp Dengue</label><br>
+                                <input class="newSubEventTypeBox" id="diseaseType3" type="checkbox" value="Malaria" /><label class="eventBox" for="diseaseType3">&nbsp Malaria</label><br>
+                                <input class="newSubEventTypeBox" id="diseaseType4" type="checkbox" value="Measles" /><label class="eventBox" for="diseaseType4">&nbsp Measles</label><br>
+                                <input class="newSubEventTypeBox" id="diseaseType5" type="checkbox" value="Meningococcal Meningitis" /><label class="eventBox" for="diseaseType5">&nbsp Meningococcal Meningitis</label><br>
+                                <input class="newSubEventTypeBox" id="diseaseType6" type="checkbox" value="Yellow Fever" /><label class="eventBox" for="diseaseType6">&nbsp Yellow Fever</label><br>
+                                <input class="newSubEventTypeBox" id="diseaseType7" type="checkbox" value="Other Disease" /><label class="eventBox" for="diseaseType7">&nbsp Other (Specify)</label>
+                                <div class="form-group" id="divOtherDisease"  style="display:none;">
+                                    <input type="text" id="diseaseType8" class="form-control" placeholder="(Specify)" >
                                 </div>
-
-
                             </div>
-                            <!--<div class="form-group" id="divNaturalDisaster" style="display:none;">
-                              <select class="form-control" id="inputDisasterType">
-                                <option value="" disabled selected>Please select ...</option>
-                                <option value="drought">Drought</option>
-                                <option value="earthquake">Earthquake</option>
-                                <option value="flood">Flood</option>
-                                <option value="tsunami">Tsunami</option>
-                                <option value="typhoon">Typhoon</option>
-                                <option value="volcano">Volcano</option>
-                                <option value="landslide">Landslide</option>
-                                <option value="">Other</option>
-                              </select>
+                            <input class="newEventTypeBox" id="selectType2" type="checkbox" value="displacement" /><label for="selectType2" class="eventBox">&nbsp Displacement</label><br>
+                            <input class="newEventTypeBox" id="selectType3" type="checkbox" value="malnutrition" /><label for="selectType3" class="eventBox">&nbsp Malnutrition</label><br>
+                            <input class="newEventTypeBox" id="selectType4" type="checkbox" value="natural_disaster" /><label for="selectType4" class="eventBox">&nbsp Natural Disaster</label><br>
+                            <div id="divNaturalDisaster" style="display:none; margin-left: 20px;">
+                                <input class="newSubEventTypeBox" id="disasterType0" type="checkbox" value="drought" /><label for="disasterType0" class="eventBox">&nbsp Drought</label><br>
+                                <input class="newSubEventTypeBox" id="disasterType1" type="checkbox" value="earthquake" /><label for="disasterType1" class="eventBox">&nbsp Earthquake</label><br>
+                                <input class="newSubEventTypeBox" id="disasterType2" type="checkbox" value="flood" /><label for="disasterType2" class="eventBox">&nbsp Flood</label><br>
+                                <input class="newSubEventTypeBox" id="disasterType3" type="checkbox" value="tsunami" /><label for="disasterType3" class="eventBox">&nbsp Tsunami</label><br>
+                                <input class="newSubEventTypeBox" id="disasterType4" type="checkbox" value="typhoon" /><label for="disasterType4" class="eventBox">&nbsp Typhoon</label><br>
+                                <input class="newSubEventTypeBox" id="disasterType5" type="checkbox" value="volcano" /><label for="disasterType5" class="eventBox">&nbsp Volcano</label><br>
+                                <input class="newSubEventTypeBox" id="disasterType6" type="checkbox" value="landslides" /><label for="disasterType6" class="eventBox">&nbsp Landslides</label><br>
+                                <input class="newSubEventTypeBox" id="disasterType7" type="checkbox" value="other disaster" /><label for="disasterType7" class="eventBox">&nbsp Other (Specify)</label>
+                                <div class="form-group" id="divOtherDisaster"  style="display:none;">
+                                    <input type="text" id="disasterType8" class="form-control" placeholder="(Specify)" >
+                                </div>
                             </div>
-                            <div class="form-group" id="divDisease"  style="display:none;">
-                              <select class="form-control" id="inputDiseaseType">
-                                <option value="" disabled selected>Please select ...</option>
-                                <option value="Cholera">Cholera</option>
-                                <option value="Ebola">Ebola</option>
-                                <option value="Dengue">Dengue</option>
-                                <option value="Malaria">Malaria</option>
-                                <option value="Measles">Measles</option>
-                                <option value="Meningococcal Meningitis">Meningococcal Meningitis</option>
-                                <option value="Yellow Fever">Yellow Fever</option>
-                                <option value="">Other</option>
-                              </select>
-                            </div>-->
-                            <div class="form-group" id="divOther"  style="display:none;">
-                              <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
-                            </div>
-                            <div class="form-group">
-                              <label for="inputEvDateTime">Date and time of Event (local time of operator)</label>
-                              <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD HH:MM" >
-                            </div>
-                            <div class="form-group" >
-                              <label for="inputEvStatus">Status</label>
-                              <select class="form-control" id="inputEvStatus">
-                                <option value="Monitoring">Monitoring </option>
-                                <option value="Exploration">Exploration</option>
-                                <option value="Intervention">Intervention</option>
-                                <option value="Completed Missions">Completed Missions</option>
-                              </select>
-                            </div>
-                            <div class="form-group">
-                              <label for="">Person in charge</label>
-                              <input type="text" id="inputInChargeName" class="form-control" placeholder="Name" >
-                              <input type="text" id="inputInChargePosition" class="form-control" placeholder="Position" >
-                            </div>
-                            <div class="form-group">
-                              <label for="inputSeverity">Severity details</label>
-                              <input type="text" id="inputSeverity" class="form-control" placeholder="Severity details ..." >
-                              <label for="inputSeverityScale" style="vertical-align:top;margin-top:5px;">Severity scale</label><div style="display:inline-block;margin-left:10%;" id="inputSeverityScale"></div>
-                            </div>
-                            <div class="form-group">
-                              <label for="inputSecurity">Security details</label>
-                              <textarea class="form-control" rows="1" id="inputSecurity" placeholder="Security details ..." required></textarea>
-                            </div>
-                            <div class="form-group">
-                              <label for="inputSharepointLink">Link to SharePoint folder</label>
-                              <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
-                            </div>
-                            <!--<button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>-->
-
-                          </div>
+                            <input class="newEventTypeBox" id="selectType5" type="checkbox" value="search_and_rescue" /><label for="selectType5" class="eventBox">&nbsp Search & Rescue</label><br>
+                            <input class="newEventTypeBox" id="selectType6" type="checkbox" value="other" /><label for="selectType6" class="eventBox">&nbsp Other (Specify)</label>
                         </div>
 
 
+                    </div>
+                    <div class="form-group" id="divOther"  style="display:none;">
+                      <input type="text" id="inputOther" class="form-control" placeholder="(Specify)" >
+                    </div>
+                    <div class="form-group">
+                      <label for="inputEvDateTime">Date and time of Event (local time of operator)</label>
+                      <input type="text" id="inputEvDateTime" class="form-control" placeholder="YYYY-MM-DD HH:MM" >
+                    </div>
+                    <div class="form-group" >
+                      <label for="inputEvStatus">Status</label>
+                      <select class="form-control" id="inputEvStatus">
+                        <option value="Monitoring">Monitoring </option>
+                        <option value="Exploration">Exploration</option>
+                        <option value="Intervention">Intervention</option>
+                        <option value="Completed Missions">Completed Missions</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Person in charge</label>
+                      <input type="text" id="inputInChargeName" class="form-control" placeholder="Name" >
+                      <input type="text" id="inputInChargePosition" class="form-control" placeholder="Position" >
+                    </div>
+                    <div class="form-group">
+                      <label for="inputSeverity">Severity details</label>
+                      <input type="text" id="inputSeverity" class="form-control" placeholder="Severity details ..." >
+                      <label for="inputSeverityScale" style="vertical-align:top;margin-top:5px;">Severity scale</label><div style="display:inline-block;margin-left:10%;" id="inputSeverityScale"></div>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputSecurity">Security details</label>
+                      <textarea class="form-control" rows="1" id="inputSecurity" placeholder="Security details ..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputSharepointLink">Link to SharePoint folder</label>
+                      <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
+                    </div>
+                    <!--<button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>-->
                   </div>
-                </div>
               </div>
             </div>
-          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             <button type="button" id="createEvent" class="btn btn-msf">Create</button>
           </div>
+      </div>
         </div>
       </div>
     </div>
@@ -648,31 +624,7 @@
       <div class="container-fluid" style="margin-top:5px;">
         <div class="row">
           <div class="col-md-8">
-            <span style="font-weight:bold;">Double click on approximate location of event on map to create a new event.</span>
-            <div class="form-section">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
-                  </div>
-                </div>
-              </div>
-              <div class="row bottom-margined">
-                <div class="col-sm-3">
-                  <label for="mapAddressLat">OR locate by coordinates:</label>
-                </div>
-                <div class="col-sm-2">
-                  <input type="text" class="form-control" value="" id="mapAddressLat" placeholder="Latitude">
-                </div>
-                <div class="col-sm-2">
-                  <input type="text" class="form-control" value="" id="mapAddressLng" placeholder="Longitude">
-                </div>
-                <div class="col-sm-5">
-                  <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
-                </div>
-              </div>
-              <div id="mainMap" ></div>
-            </div>
+            <div id="mainMap" ></div>
           </div>
 
           <div id="sidepane" class="col-md-4" >
@@ -689,10 +641,11 @@
                 <!--event tab menu-->
                 <div id="event" class="tab-pane active">
                     <ul class="nav nav-tabs" id="event_tabs">
-                        <li class="active"><a href="#event_monitoring" data-toggle="tab">Monitoring & Assessment</a></li>
-                        <li><a href="#event_ongoing" data-toggle="tab">Ongoing MSF Responses</a></li>
-                        <li><a href="#event_missions" data-toggle="tab">Previous MSF Responses</a></li>
+                        <li class="active"><a href="#event_monitoring" data-toggle="tab">Monitoring</a></li>
+                        <li><a href="#event_ongoing" data-toggle="tab">Ongoing</a></li>
+                        <li><a href="#event_missions" data-toggle="tab">Previous</a></li>
                         <li><a href="#event_RSS" data-toggle="tab">RSS Feeds</a></li>
+                        <li><a id="new_event">Create <span class="glyphicon glyphicon-plus-sign"></span></a></li>
                     </ul>
 
                     <!--event tab content-->

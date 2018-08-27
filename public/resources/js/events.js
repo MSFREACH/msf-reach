@@ -1578,19 +1578,6 @@ var vmObject = {
 
             var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
 
-            /*
-              var latlng = null;
-              eventMap.on('click', function(e) {
-                if (eventMarker) {
-                  eventMap.removeLayer(eventMarker);
-                }
-                latlng = e.latlng;
-                Vue.set(vm.currentEventGeometry, 'coordinates', [latlng.lng, latlng.lat]);
-                eventMarker = L.marker(e.latlng).addTo(eventMap);
-              });
-              */
-            /** eventMap >> */
-
             // Add some base tiles
             var eventMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
                 attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',

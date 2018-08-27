@@ -1094,15 +1094,18 @@ var latlng = null;
 
 var areaSelect = null;
 
-mainMap.on('dblclick', function(dblclickEvent) {
-    if (!areaSelect) {
-        areaSelect = L.areaSelect({width:300, height:200});
-        areaSelect.addTo(mainMap);
-    } else {
-        $('#newEventModal').modal('show');
-    }
+// mainMap.on('dblclick', function(dblclickEvent) {
+//     if (!areaSelect) {
+//         areaSelect = L.areaSelect({width:300, height:200});
+//         areaSelect.addTo(mainMap);
+//     } else {
+//         $('#newEventModal').modal('show');
+//     }
+// });
+$('#new_event').on('click', function(){
+    $('#newEventModal').modal('show');
+     loadNewEventMap();
 });
-
 
 $('#contSearchTerm').on('input',function(){
     if ($('#inputContactType').val()!=='') {

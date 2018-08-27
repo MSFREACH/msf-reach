@@ -19,3 +19,33 @@
   display:inline-block;
   cursor:pointer;
 }
+#newEventMap{
+    height: 50vh;
+    width: 100%;
+    display: block;
+}
+
+.mapSearch{
+    width: 48%;
+    display: inline-block;
+}
+
+.nav-tabs li a,
+.nav-tabs li.active a,
+.nav-tabs li.active a:focus,
+.nav-tabs li.active a:hover{
+    border: none;
+}
+
+.nav-tabs li a{
+    padding: 8px 10px; 
+}
+.nav-tabs li.active a{
+    color: #000;
+    font-weight: bold;
+}
+
+#new_event{
+    color: #F00;
+    cursor: pointer;
+}

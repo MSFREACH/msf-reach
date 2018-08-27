@@ -1,7 +1,7 @@
 html, body { height: 100% }
 
 #mainMap {
-  height:CALC(100vh - 170px);
+  height:CALC(100vh - 60px);
   width:100%;
 }
 
