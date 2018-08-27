@@ -81,10 +81,10 @@ var zoomToEventBounds = function(bounds) {
 
 // long form of labels:
 var labels = {
-  'deployment': 'Deployment details',
-  'incharge_name': 'In charge name',
-  'incharge_position': 'In charge position',
-  'exploratory_details': 'Exploratory details'
+    'deployment': 'Deployment details',
+    'incharge_name': 'In charge name',
+    'incharge_position': 'In charge position',
+    'exploratory_details': 'Exploratory details'
 };
 
 /**
@@ -1347,14 +1347,14 @@ var vmObject = {
             'ExtraDetails': false
         },
         editingObj: {
-          'General': {},
-          'Notification': {},
-          'Response': {},
-          'ExtCapacity': {},
-          'Figures': {},
-          'Resources': {},
-          'Security': {},
-          'ExtraDetails': {}
+            'General': {},
+            'Notification': {},
+            'Response': {},
+            'ExtCapacity': {},
+            'Figures': {},
+            'Resources': {},
+            'Security': {},
+            'ExtraDetails': {}
         },
         invalid: {
             typesSelection: false,
@@ -1733,8 +1733,8 @@ var vmObject = {
             this.checkedSubTypes = cleanSubTypes;
         },
         lintSubTypesSelected(){
-          var tmpType = this.event.type.toString()
-          var tmpSubType = this.event.sub_type
+            var tmpType = this.event.type.toString();
+            var tmpSubType = this.event.sub_type;
             if ((tmpType.includes('natural_disaster') || tmpType.includes('disease_outbreak')) && tmpSubType == '') {
                 alert('ensure subtype(s) is/are selected');
                 this.invalid.typesSelection = true;
@@ -1877,8 +1877,8 @@ var vmObject = {
             $('#collapse'+category).collapse('show');
             if (vm.somePanelDirty)
             {
-              alert("Please save or cancel the current section before editing this section.");
-              return;
+                alert('Please save or cancel the current section before editing this section.');
+                return;
             }
 
             if (category == 'general'){
@@ -1913,19 +1913,19 @@ var vmObject = {
         {
             var vm=this;
             switch(category){
-              case 'General':
-                this.event.metadata = currentEventProperties.metadata
+            case 'General':
+                this.event.metadata = currentEventProperties.metadata;
                 Vue.set(vm.event.metadata, currentEventProperties.metadata);
             }
 
-            this.editingObj[category] = {}
+            this.editingObj[category] = {};
             var allTextFields = $(`#fields-${category}`).find('textarea');
             var allInputFields = $(`#fields-${category}`).find('input');
             for(var atf = 0; atf < allTextFields.length; atf++){
-                allTextFields[atf].value = ""
+                allTextFields[atf].value = '';
             }
             for(var aif =0; aif < allInputFields.length; aif++){
-                allInputFields[aif].value = ""
+                allInputFields[aif].value = '';
             }
 
             vm.panelEditing[category]=false;
@@ -1951,7 +1951,7 @@ var vmObject = {
 
             }else{
 
-              vm.panelDirty[category]=false;
+                vm.panelDirty[category]=false;
             }
 
 
