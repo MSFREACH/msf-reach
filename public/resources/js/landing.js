@@ -574,7 +574,7 @@ var mapReports = function(reports,mapForReports){
 
 
             if (!feature.properties.event_id) {
-                $('#events-for-report-'+feature.properties.id).append('<option value="">Please select...</option>');
+                $('#events-for-report-'+feature.properties.id).append('<option value="">Select...</option>');
                 $.getJSON('api/events', function(data) {
                     $.map(data.result.objects.output.geometries, function(item) {
                         var name = item.properties.metadata.name;
