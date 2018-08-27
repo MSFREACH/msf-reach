@@ -7,6 +7,7 @@ var qEmail=null;
 $(function () {
     qGUID=getQueryVariable('token');
     qEmail=getQueryVariable('email');
+    $('#GDPR').toggle(localStorage.getItem('username')==null);
     $('#permission').toggle(localStorage.getItem('username')!=null);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
     $('#private').toggle(localStorage.getItem('username')!=null);
@@ -184,7 +185,7 @@ $(function () {
                 return;
             }
         }
-        if (cInd==STARTPAGEINDEX && !$('#inputGDPRAcknowledge').is(':checked')) {
+        if (cInd==STARTPAGEINDEX && !localStorage.getItem('username') && !$('#inputGDPRAcknowledge').is(':checked')) {
                 alert('Please tick the Information consent box to continue.');
                 return;
         }
