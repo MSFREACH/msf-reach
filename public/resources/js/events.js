@@ -81,10 +81,10 @@ var zoomToEventBounds = function(bounds) {
 
 // long form of labels:
 var labels = {
-  'deployment': 'Deployment details',
-  'incharge_name': 'In charge name',
-  'incharge_position': 'In charge position',
-  'exploratory_details': 'Exploratory details'
+    'deployment': 'Deployment details',
+    'incharge_name': 'In charge name',
+    'incharge_position': 'In charge position',
+    'exploratory_details': 'Exploratory details'
 };
 
 /**
@@ -1348,14 +1348,14 @@ var vmObject = {
             'ExtraDetails': false
         },
         editingObj: {
-          'General': {},
-          'Notification': {},
-          'Response': {},
-          'ExtCapacity': {},
-          'Figures': {},
-          'Resources': {},
-          'Security': {},
-          'ExtraDetails': {}
+            'General': {},
+            'Notification': {},
+            'Response': {},
+            'ExtCapacity': {},
+            'Figures': {},
+            'Resources': {},
+            'Security': {},
+            'ExtraDetails': {}
         },
         invalid: {
             typesSelection: false,
@@ -1518,20 +1518,19 @@ var vmObject = {
 
     },
     created:function(){
-      //copy-paste from edit.html vue mounted.
-      if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
-          var optCenter = this.event.metadata.operational_center;
-          this.event.metadata.msf_response_operational_centers.push(optCenter);
-      }
+        //copy-paste from edit.html vue mounted.
+        if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
+            var optCenter = this.event.metadata.operational_center;
+            this.event.metadata.msf_response_operational_centers.push(optCenter);
+        }
 
-      if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
-        console.log('here');
-          this.event.metadata.ext_other_organizations.push({
-              name: this.event.metadata.other_orgs,
-              deployment: this.event.metadata.deployment,
-              arrival_date: null
-          });
-      }
+        if (_.isEmpty(this.event.metadata.ext_other_organizations)) {
+            this.event.metadata.ext_other_organizations.push({
+                name: this.event.metadata.other_orgs,
+                deployment: this.event.metadata.deployment,
+                arrival_date: null
+            });
+        }
     },
     methods:{
         typeStr:typeStr,
@@ -1740,8 +1739,8 @@ var vmObject = {
             this.checkedSubTypes = cleanSubTypes;
         },
         lintSubTypesSelected(){
-          var tmpType = this.event.type.toString()
-          var tmpSubType = this.event.sub_type
+            var tmpType = this.event.type.toString();
+            var tmpSubType = this.event.sub_type;
             if ((tmpType.includes('natural_disaster') || tmpType.includes('disease_outbreak')) && tmpSubType == '') {
                 alert('ensure subtype(s) is/are selected');
                 this.invalid.typesSelection = true;
@@ -1884,8 +1883,8 @@ var vmObject = {
             $('#collapse'+category).collapse('show');
             if (vm.somePanelDirty)
             {
-              alert("Please save or cancel the current section before editing this section.");
-              return;
+                alert('Please save or cancel the current section before editing this section.');
+                return;
             }
 
             if (category == 'general'){
@@ -1920,19 +1919,19 @@ var vmObject = {
         {
             var vm=this;
             switch(category){
-              case 'General':
-                this.event.metadata = currentEventProperties.metadata
+            case 'General':
+                this.event.metadata = currentEventProperties.metadata;
                 Vue.set(vm.event.metadata, currentEventProperties.metadata);
             }
 
-            this.editingObj[category] = {}
+            this.editingObj[category] = {};
             var allTextFields = $(`#fields-${category}`).find('textarea');
             var allInputFields = $(`#fields-${category}`).find('input');
             for(var atf = 0; atf < allTextFields.length; atf++){
-                allTextFields[atf].value = ""
+                allTextFields[atf].value = '';
             }
             for(var aif =0; aif < allInputFields.length; aif++){
-                allInputFields[aif].value = ""
+                allInputFields[aif].value = '';
             }
 
             vm.panelEditing[category]=false;
@@ -1958,7 +1957,7 @@ var vmObject = {
 
             }else{
 
-              vm.panelDirty[category]=false;
+                vm.panelDirty[category]=false;
             }
 
 
@@ -2097,17 +2096,17 @@ var vmObject = {
             window.location.href = '/events/?eventId=' + currentEventId;
         },
         analyzeEvent: function (){
-          $('#analyticsStatusModal').modal('show');
-          vmAnalytics.$mount('#analysisResultVue');
-          vmAnalytics.isAnalyzing=true;
-          var evBody = {
-              status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-              type: this.event.type.toString(),
-              metadata : this.event.metadata,
-              created_at: this.event.created_at,
-              location: {lat: currentEventGeometry.coordinates[1],lng: currentEventGeometry.coordinates[0]}
-          };
-          vmAnalytics.analyzeEvent(evBody);
+            $('#analyticsStatusModal').modal('show');
+            vmAnalytics.$mount('#analysisResultVue');
+            vmAnalytics.isAnalyzing=true;
+            var evBody = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata : this.event.metadata,
+                created_at: this.event.created_at,
+                location: {lat: currentEventGeometry.coordinates[1],lng: currentEventGeometry.coordinates[0]}
+            };
+            vmAnalytics.analyzeEvent(evBody);
         }
 
     },
@@ -2187,29 +2186,28 @@ var vmAnalytics = new Vue({
         analyzeEvent:function(evBody)
         {
             var vm=this;
-                vm.isAnalyzing=true;
-                $.ajax({
-                    type: 'POST',
-                    url: '/api/analytics/analyze',
-                    data: JSON.stringify(evBody),
-                    contentType: 'application/json'
-                }).done(function( data, textStatus, req ){
-                   console.log(data);
+            vm.isAnalyzing=true;
+            $.ajax({
+                type: 'POST',
+                url: '/api/analytics/analyze',
+                data: JSON.stringify(evBody),
+                contentType: 'application/json'
+            }).done(function( data, textStatus, req ){
 
-                    vm.response=data;
-                    vmEventDetails.hasBeenAnalyzed=true;
-                    vmEventDetails.vizalyticsResp=data.results[0].data;
-                    vm.isAnalyzing=false;
-                    vm.isAnalyzed=true;
-                    //vm.mapAnalysisResult();
+                vm.response=data;
+                vmEventDetails.hasBeenAnalyzed=true;
+                vmEventDetails.vizalyticsResp=data.results[0].data;
+                vm.isAnalyzing=false;
+                vm.isAnalyzed=true;
+                //vm.mapAnalysisResult();
 
                 //console.log(data);
-                }).fail(function (reqm, textStatus, err){
-                    vm.isAnalyzing=false;
-                    vm.vizalyticsError=true;
-                    console.log(err);
+            }).fail(function (reqm, textStatus, err){
+                vm.isAnalyzing=false;
+                vm.vizalyticsError=true;
+                //console.log(err);
 
-                });
+            });
 
 
         },
