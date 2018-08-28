@@ -81,13 +81,10 @@ var zoomToEventBounds = function(bounds) {
 
 // long form of labels:
 var labels = {
-    'exploratory_details': 'Exploratory details',
-    'other_orgs': 'Other organisations',
-    'capacity': 'Capacity',
     'deployment': 'Deployment details',
-    'region': 'Region',
+    'incharge_name': 'In charge name',
     'incharge_position': 'In charge position',
-    'incharge_name': 'In charge name'
+    'exploratory_details': 'Exploratory details'
 };
 
 /**
@@ -276,7 +273,8 @@ var printEventProperties = function(err, eventProperties){
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
-        $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
+        // $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
+
 
         var extra_metadata = unpackMetadata(eventProperties.metadata);
         $('#eventExtra').append(extra_metadata);
@@ -1348,6 +1346,16 @@ var vmObject = {
             'Security': false,
             'ExtraDetails': false
         },
+        editingObj: {
+            'General': {},
+            'Notification': {},
+            'Response': {},
+            'ExtCapacity': {},
+            'Figures': {},
+            'Resources': {},
+            'Security': {},
+            'ExtraDetails': {}
+        },
         invalid: {
             typesSelection: false,
             emptyStrings: false,
@@ -1375,7 +1383,7 @@ var vmObject = {
             }
         },
         searchTerm: '',
-        areas: []
+        extraDetailsLabel: labels
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1466,6 +1474,7 @@ var vmObject = {
                 $('#btnSearchTwitter').trigger('click');
             }
         });
+
 
         window.makeApiRequest = makeApiRequest;
         var translationObj = {};
@@ -1688,6 +1697,18 @@ var vmObject = {
             }, 300);
 
         },
+        lintNotification(){
+            if ($('#inputNotification').val()) {
+                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+                    if(!Array.isArray(currentEventProperties.metadata.notification)){
+                        currentEventProperties.metadata.notification = [];
+                    }
+                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+                } else {
+                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+                }
+            }
+        },
         lintTypes(){
 
             var tmpEventWithSubTypes = {};
@@ -1711,8 +1732,10 @@ var vmObject = {
             }
             this.checkedSubTypes = cleanSubTypes;
         },
-        lintSubTypesSelected(body){
-            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+        lintSubTypesSelected(){
+            var tmpType = this.event.type.toString();
+            var tmpSubType = this.event.sub_type;
+            if ((tmpType.includes('natural_disaster') || tmpType.includes('disease_outbreak')) && tmpSubType == '') {
                 alert('ensure subtype(s) is/are selected');
                 this.invalid.typesSelection = true;
             }else{
@@ -1784,58 +1807,81 @@ var vmObject = {
                 this.invalid.nullAreas = false;
             }
         },
-        lintSeverity(){
-            this.event.metadata.severity_measures = this.event.metadata.severity_measures.map(function(sm, index){
-                return {
-                    scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
-                    description: sm.description
-                };
+        submitEventSection(category){
+            var vm = this;
+            var body = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata : this.event.metadata
+            };
+            $.ajax({
+                type: 'PUT',
+                url: '/api/events/' + currentEventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req){
+                if(!category){
+                    vm.panelEditing.Notification=false;
+                }else{
+                    vm.panelEditing[category] = false;
+                    vm.panelDirty[category] = false;
+                    vm.somePanelDirty=false;
+                }
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
             });
         },
-        submitEventMetadata(){
-            var metadata = this.event.metadata;
-
-            if ($('#inputNotification').val()) {
-                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
-                    if(!Array.isArray(currentEventProperties.metadata.notification)){
-                        currentEventProperties.metadata.notification = [];
-                    }
-                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+        /// consider the follow submits in a switch case
+        updateSection(category){
+            if(category == 'Notification' && this.newNotification){
+                var newNotificationObject={
+                    'notification_time': Date.now()/1000,
+                    'notification': this.newNotification,
+                    'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')
+                };
+                if (this.event.metadata.hasOwnProperty('notification') && this.event.metadata.notification.length > 0) {
+                    this.event.metadata.notification.push(newNotificationObject);
                 } else {
-                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+                    this.event.metadata.notification = [newNotificationObject];
                 }
+                this.uploadNotifications(this.submitEventSection);
+            }else{
+                this.submitEventSection(category);
             }
-
+        },
+        submitEventMetadata(){
+            this.lintNotification();
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
             this.lintAreas();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
-            this.lintSeverity();
 
-            metadata = _.extend(metadata, {
+            _.extend(this.event.metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
             });
 
-
-            var body = {
-                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-                type: this.event.type.toString(),
-                metadata: metadata
-            };
-            this.lintSubTypesSelected(body);
+            this.lintSubTypesSelected();
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
 
             if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
-                this.updateEvent(currentEventId, body);
+                this.submitEventSection('General');
             }
         },
         editEvent:function(category){
+            var vm=this;
             $('#collapse'+category).collapse('show');
-            if (category == 'general')
+            if (vm.somePanelDirty)
             {
+                alert('Please save or cancel the current section before editing this section.');
+                return;
+            }
+
+            if (category == 'general'){
                 // this is modal implemation
                 editCategory=category;
                 onEditEvent();
@@ -1843,29 +1889,45 @@ var vmObject = {
 
 
             } else {
-                this.panelEditing[category]=true;
+                vm.panelEditing[category]=true;
                 if (category=='Notification')
                 {
-                    if (this.panelDirty[category])
+                    if (vm.panelDirty[category])
                     {
-                        this.event.metadata.notification.pop();
+                        vm.event.metadata.notification.pop();
                     }
                 }
                 else{
-                    this.panelDirty[category]=true;
-                    this.somePanelDirty=true;
+                    vm.panelDirty[category]=true;
+                    vm.somePanelDirty=true;
                 }
-
                 // this is inline implementation
                 if(category == 'General'){
-                    this.loadMap();
-                    this.placeOtherFields();
+                    vm.loadMap();
+                    vm.placeOtherFields();
                 }
             }
+
         },
         stopEdit:function(category)
         {
             var vm=this;
+            switch(category){
+            case 'General':
+                this.event.metadata = currentEventProperties.metadata;
+                Vue.set(vm.event.metadata, currentEventProperties.metadata);
+            }
+
+            this.editingObj[category] = {};
+            var allTextFields = $(`#fields-${category}`).find('textarea');
+            var allInputFields = $(`#fields-${category}`).find('input');
+            for(var atf = 0; atf < allTextFields.length; atf++){
+                allTextFields[atf].value = '';
+            }
+            for(var aif =0; aif < allInputFields.length; aif++){
+                allInputFields[aif].value = '';
+            }
+
             vm.panelEditing[category]=false;
 
             if (category=='Notification')
@@ -1887,7 +1949,12 @@ var vmObject = {
                     vm.panelDirty[category]=false;
                 }
 
+            }else{
+
+                vm.panelDirty[category]=false;
             }
+
+
         },
         addOtherOrg: function() {
             this.event.metadata.ext_other_organizations.push({
@@ -2004,6 +2071,7 @@ var vmObject = {
                         success: function(data) {
                             var lastNotification=getLatestNotification(vm.event.metadata.notification);
                             lastNotification['notificationFileUrl']= imgLink;
+                            $('#dialogModal').modal('hide');
                             callback();
                         }
                     });
