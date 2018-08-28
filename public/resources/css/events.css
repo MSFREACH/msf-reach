@@ -214,3 +214,9 @@ ul#missionsTable li span{
 label{
 display: block;
 }
+
+.eventBox {
+  font-weight: normal;
+  display:inline-block;
+  cursor:pointer;
+}
