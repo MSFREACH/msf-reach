@@ -693,7 +693,7 @@
                   <tr><td>Event Date and Time</td><td  colspan="2"> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Description</td><td  colspan="2"> {{event.metadata.description }}</td></tr>
 
-                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2">{{ notStr }}</td></tr>
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;">{{ notStr }}</td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
@@ -874,14 +874,14 @@
                     <div class="panel-body" >
 
 
-                            <table v-show="!panelEditing.Notification" v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
+                            <table v-show="!panelEditing.Notification" v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table" >
                               <thead><tr><td>Username</td><td>Time</td><td>Notification</td></tr></thead>
                               <tbody>
                                 <tr v-for="(elem,index) in reversedNotifications" :style="((index==0) && panelDirty.Notification) ? 'font-weight:bold;' : '' ">
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (new Date(elem.notification_time*1000)).toLocaleString().replace(/:\d{2}$/,'') }}</td>
-                                  <td> {{ elem.notification }} <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a> </td>
+                                  <td style="word-break: break-word;"> {{ elem.notification }} <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a> </td>
                                 </tr>
                               </tbody>
                             </table>
