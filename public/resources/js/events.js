@@ -2107,6 +2107,13 @@ var vmObject = {
                 location: {lat: currentEventGeometry.coordinates[1],lng: currentEventGeometry.coordinates[0]}
             };
             vmAnalytics.analyzeEvent(evBody);
+        },
+
+        updateMarkdown: _.debounce(function(e){
+            this.newNotification = e.target.value
+        }, 300),
+        openMarkdownSyntax: function(){
+            $('#markdownModal').modal('show')
         }
 
     },
@@ -2129,6 +2136,10 @@ var vmObject = {
         eventReportLink:function()
         {
             return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey + '#' + this.event.metadata.name;
+        },
+
+        compiledMarkdown: function(){
+            return marked(this.newNotification, {sanitize: true})
         }
     },
     watch: {
