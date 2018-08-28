@@ -1,0 +1,23 @@
+#contact_list .form-group{
+
+}
+
+#contact_list .form-group select,
+#contact_list .form-group input{
+    width: auto;
+    display: inline-block;
+}
+
+
+#contact_list .form-group select{
+    width: 20%;
+}
+#contact_list .form-group input{
+    width: 60%;
+}
+
+.addContact{
+    margin-left: 2%;
+    color: red;
+    display: inline-block;
+}
