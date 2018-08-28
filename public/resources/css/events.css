@@ -21,7 +21,7 @@
   color:yellow;
 }
 .chunks{
-  padding-bottom: 14px; 
+  padding-bottom: 14px;
 }
 .sub-tag{
   font-size: 12px;
@@ -185,6 +185,11 @@ div.pac-container {
 
 .panel-header-click-area {
   width:CALC(100% - 45px);
+  display:inline-block;
+  cursor:pointer;
+}
+.eventBox {
+  font-weight: normal;
   display:inline-block;
   cursor:pointer;
 }
