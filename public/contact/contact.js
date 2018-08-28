@@ -184,8 +184,8 @@ $(function () {
             }
         }
         if (cInd==STARTPAGEINDEX && !localStorage.getItem('username') && !$('#inputGDPRAcknowledge').is(':checked')) {
-                alert('Please tick the Information consent box to continue.');
-                return;
+            alert('Please tick the Information consent box to continue.');
+            return;
         }
 
         if (cInd==MAPSECTIONINDEX)
