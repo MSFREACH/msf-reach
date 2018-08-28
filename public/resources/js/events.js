@@ -1315,6 +1315,7 @@ var replaceUnderscore = function(value) {
 var vmObject = {
 
     data: {
+        areas: {}, 
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
@@ -2135,6 +2136,7 @@ var vmObject = {
         areas: function(val){
             var mostRecentSlider = $('.inputSeveritySlider').eq($('.inputSeveritySlider').length);
             var filled = mostRecentSlider.has('span.ui-slider-handle').length;
+
             if(filled == 0){
 
                 if(currentEventProperties.metadata.areas.length > currentEventProperties.metadata.severity_measures.length){
