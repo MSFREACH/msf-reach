@@ -81,13 +81,10 @@ var zoomToEventBounds = function(bounds) {
 
 // long form of labels:
 var labels = {
-    'exploratory_details': 'Exploratory details',
-    'other_orgs': 'Other organisations',
-    'capacity': 'Capacity',
     'deployment': 'Deployment details',
-    'region': 'Region',
+    'incharge_name': 'In charge name',
     'incharge_position': 'In charge position',
-    'incharge_name': 'In charge name'
+    'exploratory_details': 'Exploratory details'
 };
 
 /**
@@ -203,6 +200,7 @@ var printEventProperties = function(err, eventProperties){
     }
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
+
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
 
@@ -276,12 +274,14 @@ var printEventProperties = function(err, eventProperties){
 
         //    $("#eventSummary").append(eventProperties.metadata.summary);
         //    $("#eventPracticalDetails").append(eventProperties.metadata.practical_details);
-        $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
+        // $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
+
 
         var extra_metadata = unpackMetadata(eventProperties.metadata);
-
-
         $('#eventExtra').append(extra_metadata);
+        if(extra_metadata){
+            $('#collapseExtraDetails').addClass('in');
+        }
 
     }
     if (currentEventProperties) {
@@ -813,7 +813,7 @@ var mapContacts = function(contacts) {
       '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
       '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
       '<br>Organisation: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.employer) +
-      '<br>Job title: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.job_title);
+      '<br>Job title: '+(typeof(feature.properties.properties.job_title)==='undefined' ? '' : feature.properties.properties.job_title);
         }
 
         layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
@@ -1022,10 +1022,10 @@ var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{
 });
 
 switch (Cookies.get('MapLayer')) { // add base map layer based on cookie setting
-case 'satellite':
+case 'Satellite':
     mapboxSatellite.addTo(mainMap);
     break;
-case 'terrain':
+case 'Terrain':
     mapboxTerrain.addTo(mainMap);
     break;
 default:
@@ -1347,6 +1347,16 @@ var vmObject = {
             'Security': false,
             'ExtraDetails': false
         },
+        editingObj: {
+            'General': {},
+            'Notification': {},
+            'Response': {},
+            'ExtCapacity': {},
+            'Figures': {},
+            'Resources': {},
+            'Security': {},
+            'ExtraDetails': {}
+        },
         invalid: {
             typesSelection: false,
             emptyStrings: false,
@@ -1374,7 +1384,9 @@ var vmObject = {
             }
         },
         searchTerm: '',
-        areas: []
+        extraDetailsLabel: labels,
+        hasBeenAnalyzed: false,
+        vizalyticsResp: {}
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1412,9 +1424,16 @@ var vmObject = {
             var scale = currentEventProperties.metadata.severity_measures[index].scale;
             $(this).slider('value', scale);
         });
+        if(currentEventProperties.metadata.msf_response){
+            $('#collapseResponse').addClass('in');
+        }
+        this.openDirtyPanel('ext_', '#collapseExtCapacity');
+        this.openDirtyPanel('population', '#collapseFigures');
+        this.openDirtyPanel('msf_resource', '#collapseResources');
+        this.openDirtyPanel('msf_ref', '#collapseReflection');
+        this.openDirtyPanel('security', '#collapseSecurity');
 
         var searchTerm = '';
-
         if (currentEventProperties) {
             if (currentEventProperties.metadata.name) {
                 if (currentEventProperties.metadata.name.includes('_')) {
@@ -1459,6 +1478,7 @@ var vmObject = {
             }
         });
 
+
         window.makeApiRequest = makeApiRequest;
         var translationObj = {};
 
@@ -1481,7 +1501,6 @@ var vmObject = {
             } else {
                 thGetContacts(this.value);
             }
-
         });
 
         $('#inputContactType').on('change',function(){
@@ -1494,6 +1513,11 @@ var vmObject = {
 
         eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
 
+
+
+
+    },
+    created:function(){
         //copy-paste from edit.html vue mounted.
         if (_.isEmpty(this.event.metadata.msf_response_operational_centers)) {
             var optCenter = this.event.metadata.operational_center;
@@ -1507,11 +1531,24 @@ var vmObject = {
                 arrival_date: null
             });
         }
-
-
     },
     methods:{
         typeStr:typeStr,
+        openDirtyPanel:function(str, domElement){
+            var panelDirty = false;
+            var filteredKeys = Object.keys(currentEventProperties.metadata).filter(function(k) {
+                return  k.indexOf(str) == 0;
+            });
+            for(var fk = 0; fk < filteredKeys.length; fk++){
+                var value = currentEventProperties.metadata[filteredKeys[fk]];
+                if(typeof(value)!=='undefined' && (typeof(value) == 'string' || Array.isArray(value)) && value.length > 0){
+                    panelDirty = true;
+                }
+            }
+            if(panelDirty){
+                $(domElement).addClass('in');
+            }
+        },
         getTypeOfProgramme:function(val)
         {
             var filtered= msfTypeOfProgrammes.filter(function(e){
@@ -1666,6 +1703,18 @@ var vmObject = {
             }, 300);
 
         },
+        lintNotification(){
+            if ($('#inputNotification').val()) {
+                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
+                    if(!Array.isArray(currentEventProperties.metadata.notification)){
+                        currentEventProperties.metadata.notification = [];
+                    }
+                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+                } else {
+                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+                }
+            }
+        },
         lintTypes(){
 
             var tmpEventWithSubTypes = {};
@@ -1689,8 +1738,10 @@ var vmObject = {
             }
             this.checkedSubTypes = cleanSubTypes;
         },
-        lintSubTypesSelected(body){
-            if ((body.type.includes('natural_disaster') || body.type.includes('disease_outbreak')) && body.metadata.sub_type == '') {
+        lintSubTypesSelected(){
+            var tmpType = this.event.type.toString();
+            var tmpSubType = this.event.sub_type;
+            if ((tmpType.includes('natural_disaster') || tmpType.includes('disease_outbreak')) && tmpSubType == '') {
                 alert('ensure subtype(s) is/are selected');
                 this.invalid.typesSelection = true;
             }else{
@@ -1762,58 +1813,81 @@ var vmObject = {
                 this.invalid.nullAreas = false;
             }
         },
-        lintSeverity(){
-            this.event.metadata.severity_measures = this.event.metadata.severity_measures.map(function(sm, index){
-                return {
-                    scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
-                    description: sm.description
-                };
+        submitEventSection(category){
+            var vm = this;
+            var body = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata : this.event.metadata
+            };
+            $.ajax({
+                type: 'PUT',
+                url: '/api/events/' + currentEventId,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req){
+                if(!category){
+                    vm.panelEditing.Notification=false;
+                }else{
+                    vm.panelEditing[category] = false;
+                    vm.panelDirty[category] = false;
+                    vm.somePanelDirty=false;
+                }
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
             });
         },
-        submitEventMetadata(){
-            var metadata = this.event.metadata;
-
-            if ($('#inputNotification').val()) {
-                if (currentEventProperties.metadata.hasOwnProperty('notification')) {
-                    if(!Array.isArray(currentEventProperties.metadata.notification)){
-                        currentEventProperties.metadata.notification = [];
-                    }
-                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+        /// consider the follow submits in a switch case
+        updateSection(category){
+            if(category == 'Notification' && this.newNotification){
+                var newNotificationObject={
+                    'notification_time': Date.now()/1000,
+                    'notification': this.newNotification,
+                    'username': (localStorage.getItem('username') ? localStorage.getItem('username') : 'localuser')
+                };
+                if (this.event.metadata.hasOwnProperty('notification') && this.event.metadata.notification.length > 0) {
+                    this.event.metadata.notification.push(newNotificationObject);
                 } else {
-                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+                    this.event.metadata.notification = [newNotificationObject];
                 }
+                this.uploadNotifications(this.submitEventSection);
+            }else{
+                this.submitEventSection(category);
             }
-
+        },
+        submitEventMetadata(){
+            this.lintNotification();
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
             this.lintAreas();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
-            this.lintSeverity();
 
-            metadata = _.extend(metadata, {
+            _.extend(this.event.metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
             });
 
-
-            var body = {
-                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-                type: this.event.type.toString(),
-                metadata: metadata
-            };
-            this.lintSubTypesSelected(body);
+            this.lintSubTypesSelected();
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
 
             if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
-                this.updateEvent(currentEventId, body);
+                this.submitEventSection('General');
             }
         },
         editEvent:function(category){
+            var vm=this;
             $('#collapse'+category).collapse('show');
-            if (category == 'general')
+            if (vm.somePanelDirty)
             {
+                alert('Please save or cancel the current section before editing this section.');
+                return;
+            }
+
+            if (category == 'general'){
                 // this is modal implemation
                 editCategory=category;
                 onEditEvent();
@@ -1821,29 +1895,45 @@ var vmObject = {
 
 
             } else {
-                this.panelEditing[category]=true;
+                vm.panelEditing[category]=true;
                 if (category=='Notification')
                 {
-                    if (this.panelDirty[category])
+                    if (vm.panelDirty[category])
                     {
-                        this.event.metadata.notification.pop();
+                        vm.event.metadata.notification.pop();
                     }
                 }
                 else{
-                    this.panelDirty[category]=true;
-                    this.somePanelDirty=true;
+                    vm.panelDirty[category]=true;
+                    vm.somePanelDirty=true;
                 }
-
                 // this is inline implementation
                 if(category == 'General'){
-                    this.loadMap();
-                    this.placeOtherFields();
+                    vm.loadMap();
+                    vm.placeOtherFields();
                 }
             }
+
         },
         stopEdit:function(category)
         {
             var vm=this;
+            switch(category){
+            case 'General':
+                this.event.metadata = currentEventProperties.metadata;
+                Vue.set(vm.event.metadata, currentEventProperties.metadata);
+            }
+
+            this.editingObj[category] = {};
+            var allTextFields = $(`#fields-${category}`).find('textarea');
+            var allInputFields = $(`#fields-${category}`).find('input');
+            for(var atf = 0; atf < allTextFields.length; atf++){
+                allTextFields[atf].value = '';
+            }
+            for(var aif =0; aif < allInputFields.length; aif++){
+                allInputFields[aif].value = '';
+            }
+
             vm.panelEditing[category]=false;
 
             if (category=='Notification')
@@ -1865,7 +1955,12 @@ var vmObject = {
                     vm.panelDirty[category]=false;
                 }
 
+            }else{
+
+                vm.panelDirty[category]=false;
             }
+
+
         },
         addOtherOrg: function() {
             this.event.metadata.ext_other_organizations.push({
@@ -1982,6 +2077,7 @@ var vmObject = {
                         success: function(data) {
                             var lastNotification=getLatestNotification(vm.event.metadata.notification);
                             lastNotification['notificationFileUrl']= imgLink;
+                            $('#dialogModal').modal('hide');
                             callback();
                         }
                     });
@@ -1998,6 +2094,19 @@ var vmObject = {
         },
         cancelEventEdits:function(){
             window.location.href = '/events/?eventId=' + currentEventId;
+        },
+        analyzeEvent: function (){
+            $('#analyticsStatusModal').modal('show');
+            vmAnalytics.$mount('#analysisResultVue');
+            vmAnalytics.isAnalyzing=true;
+            var evBody = {
+                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: this.event.type.toString(),
+                metadata : this.event.metadata,
+                created_at: this.event.created_at,
+                location: {lat: currentEventGeometry.coordinates[1],lng: currentEventGeometry.coordinates[0]}
+            };
+            vmAnalytics.analyzeEvent(evBody);
         }
 
     },
@@ -2051,3 +2160,146 @@ var vmObject = {
         }
     }
 };
+
+var analyticsMap;
+
+var vmAnalytics = new Vue({
+
+    data: {
+        isAnalyzed:false,
+        vizalyticsError: false,
+        isAnalyzing: false,
+        hasSubmissionError:false,
+        submissionErrorMsg:'',
+        response:{}
+
+    },
+    methods:{
+        resetSubmission:function(){
+            this.isAnalyzed=false;
+            this.vizalyticsError=false;
+            this.isAnalyzing =false;
+            this.hasSubmissionError = false;
+            this.submissionErrorMsg ='';
+            this.response={};
+        },
+        analyzeEvent:function(evBody)
+        {
+            var vm=this;
+            vm.isAnalyzing=true;
+            $.ajax({
+                type: 'POST',
+                url: '/api/analytics/analyze',
+                data: JSON.stringify(evBody),
+                contentType: 'application/json'
+            }).done(function( data, textStatus, req ){
+
+                vm.response=data;
+                vmEventDetails.hasBeenAnalyzed=true;
+                vmEventDetails.vizalyticsResp=data.results[0].data;
+                vm.isAnalyzing=false;
+                vm.isAnalyzed=true;
+                //vm.mapAnalysisResult();
+
+                //console.log(data);
+            }).fail(function (reqm, textStatus, err){
+                vm.isAnalyzing=false;
+                vm.vizalyticsError=true;
+                //console.log(err);
+
+            });
+
+
+        },
+        mapAnalysisResult:function(){
+            if (analyticsMap)
+                analyticsMap.remove();
+            analyticsMap = L.map('analyticsMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
+
+            // To get healthsites loaded, need to first add load event and then setView separately
+
+            //analyticsMap.fitBounds([[-13, 84],[28,148]]);
+
+            // Add some base tiles
+            var anMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
+                minZoom: 0,
+                maxZoom: 18
+            });
+
+            // Add some satellite tiles
+            var anMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+            });
+
+            // OSM HOT tiles
+            var anOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
+            });
+
+            switch (Cookies.get('MapLayer')) {
+            case 'Satellite':
+                anMapboxSatellite.addTo(analyticsMap);
+                break;
+            case 'Terrain':
+                anMapboxTerrain.addTo(analyticsMap);
+                break;
+            default:
+                anOpenStreetMap_HOT.addTo(analyticsMap);
+            }
+
+
+            var analyticsBaseMaps = {
+                'Terrain': anMapboxTerrain,
+                'Satellite' : anMapboxSatellite,
+                'Humanitarian': anOpenStreetMap_HOT
+            };
+
+            analyticsMap.on('baselayerchange', function(baselayer) {
+                Cookies.set('MapLayer',baselayer.name);
+            });
+
+            var groupedOverlays = {
+                'RSS Feeds': {},
+                'Contacts': {}
+            };
+
+
+            var groupOptions = {'groupCheckboxes': true, 'position': 'bottomleft'};
+
+            var layerControl = L.control.groupedLayers(analyticsBaseMaps,groupedOverlays, groupOptions).addTo(analyticsMap);
+
+            if (L.Browser.touch) {
+                L.DomEvent
+                    .disableClickPropagation(layerControl._container)
+                    .disableScrollPropagation(layerControl._container);
+            } else {
+                L.DomEvent.disableClickPropagation(layerControl._container);
+            }
+
+            if (this.response.results)
+            {
+                var analysisLayer=L.geoJSON(this.response.results[0].geo, {
+                }).bindPopup(function (layer) {
+
+                    return (layer.feature.properties.type || layer.feature.properties.name) ;
+                });
+
+                try {
+                    analysisLayer.addTo(analyticsMap);
+                    analyticsMap.fitBounds(analysisLayer.getBounds());
+                } catch (err) {
+                    console.log(err); // eslint-disable-line no-console
+                }
+
+            }
+
+        }//function
+
+    },
+    mounted: function(){
+        //console.log('mounted');
+        // Create map
+    }
+});

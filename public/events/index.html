@@ -283,12 +283,12 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabelAbout">About MSF-REACH</h4>
+          <h4 class="modal-title" id="myModalLabelAbout">About MSF REACH</h4>
         </div>
         <div class="modal-body" id="AboutModalBody">
             <div class="list-group">
-                <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
-                <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
+                <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&uarr;</i> First introduction to REACH for MSF Movement</div>
+                <div class="list-group-item list-group-item-action" style="display:none;" id="intro_video" >
                   <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
                 </div>
                 <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
@@ -313,14 +313,36 @@
           <h4 class="modal-title" id="myModalLabelFAQ">Frequently Asked Questions</h4>
         </div>
         <div class="modal-body" id="FAQModalBody">
-          <p><span style="font-weight:bold;">What is REACH?</span><br />
-          REACH is a platform designed to combine institutional data with crowd-sourced information (including social media, instant messaging, and relevant RSS feeds) in real-time to monitor and manage natural disasters in Southeast Asia.</p>
-          <p><span style="font-weight:bold;">Who is responsible for the platform?</span><br />
-          REACH was initiated by the MSF HK Emergency Response Support Unit (ERSU), in collaboration with the London-based software development cooperative User Group Inc. LLP and Across the Cloud Pty Ltd. ERSU manages the platform and makes it available for operational usage to colleagues throughout the Movement.</p>
-          <p><span style="font-weight:bold;">Who pays for REACH?</span><br />
-          REACH is currently in its second stage of development, which is funded by a TIC Incubator grant. The first phase of development was funded by ERSU in Hong Kong. Additional funding would be required to better scale the platform to geographies beyond Southeast Asia, and to better support the wide range of missions that MSF conducts, including further work to extend the inbuilt AI capabilities.
-          <p><span style="font-weight:bold;">Who can access REACH?</span><br />
-          In its current phase, REACH can gather, sort, display and management real-time disaster information in Southeast Asia. Members of the movement who want to use the tool to this end should contact ERSU with requests for “Editor” access. However, soon, all members of the Movement will be able to login to a “View Only” set of features. </p>
+          <p style="font-weight:bold;">What is REACH?</p>
+          <p>
+          REACH is a platform designed to combine institutional data with crowd-sourced information (including social media, instant messaging, and relevant RSS feeds) in real-time to monitor and manage emergencies. REACH has two main objectives: (1) helping MSF to streamline our data sharing activities and improve our information management in emergency situation (2) improve the response time by better and faster understanding the evolving situation on the ground (crowdsourcing by report card; screening social media and news feed; AI and ML for better analysis of past responses in the area).
+          </p>
+
+          <p><span style="font-weight:bold;">Who is responsible for the platform?</p>
+          <p>
+          REACH is an initiative of the MSF Hong Kong OSU (Operation Support Unit), in collaboration with the London-based software development cooperative, User Group Inc. LLP and Across the Cloud Pty Ltd. The ERSU (Emergency Response Support Unit) manages the platform and makes it available for operational usage to colleagues throughout the Movement.
+          </p>
+
+          <p style="font-weight:bold;">Who pays for REACH?</p>
+          <p>
+           REACH is currently in its second stage of development, which is funded by a Transformational Investment Capacity Incubator grant. The first phase of development was funded by the ERSU in Hong Kong. The second phase, including the extension would benefit from the TIC grant. Work on governance and structure will be done before moving ahead to the Phase 3 of development.
+          </p>
+
+          <p style="font-weight:bold;">Who can access REACH?</p>
+          <p>
+          In its current phase, REACH can gather, sort, display and management real-time disaster information in Southeast Asia. Members of the movement who want to use the tool to this end (edit permission) should contact Lucie Gueuning with a request for operators access. However, all members of the Movement are now able to login to a view only set of features using their MSF credentials as per Office 365.
+          </p>
+
+          <p>Users from MSF external network can send out report cards and contact cards to collect information that is then presented in REACH.</p>
+
+          <p style="font-weight:bold;">Is REACH GDPR compliant?</p>
+
+          <p>Based on advice from a consultant, we have made REACH compliant with the GDPR.</p>
+
+          <p style="font-weight:bold;">Who can enter contact details?</p>
+
+          <p>Either contacts themselves enter their personal contact details thanks to our contact cards, or MSF staff enter, as a private list, their own contact network in order to share their details with specific colleagues within the Movement. All MSF staff acknowledge having received consent from contacts to enter their information into the MSF database.</p>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -430,6 +452,10 @@
             <label>Employment status:</label>
             <span class="msf_employment"></span>
           </div>
+          <div class="form-group" style="display:none;">
+            <label>Job title:</label>
+            <span class="job_title"></span>
+          </div>
           <!-- <div class="form-group" style="display:none;">
             <label>Section:</label>
             <span class="msf_section"></span>
@@ -513,17 +539,8 @@
 <!-- Mission history modal -->
 <div class="modal fade" id="missionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelMession">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
-      </div>
-      <div class="modal-body" id="missionModalBody">
+    <div class="modal-content" id="missionModalBody">
         [modal content here]
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
     </div>
   </div>
 </div>
@@ -545,6 +562,60 @@
     </div>
   </div>
 </div>
+
+<!-- Analytics for status change modal -->
+<div class="modal fade" tabindex="-1" role="dialog"  id="analyticsStatusModal">
+  <div class="modal-dialog modal-lg ">
+    <div id="analysisResultVue" class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myNewAnalyticsModalLabel">Event Analytics</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div  class="col-sm-12 analyticsDiv">
+              <div v-if="isAnalyzing">
+                <span>Analyzing event ...</span> <div class="msf-loader"></div>
+              </div>
+              <div v-if="vizalyticsError"> <span  class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in analyzing event.</div>
+
+              <div v-if="isAnalyzed">
+                <h4>Anlysis result:</h4>
+                <span v-if="response.status.success" > <span class="glyphicon glyphicon-check" style="color:green;"></span> OK </span>
+                <span v-else> <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Unsuccessful </span>
+
+                <div class="" v-for="res in response.results">
+                  <h5> Topic: {{ res.topic }}</h5>
+                  <h5> Insights</h5>
+                  <ul>
+                    <li v-for="ins in res.insights">{{ins}}</li>
+                  </ul>
+                  <div class="alert alert-success">
+                    <strong><i class="glyphicon glyphicon-check"></i></strong> Analysis data is avilable next to relavant fields (in edit mode)
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+            <!--<div class="col-sm-3">
+              <div id="analyticsMap"></div>
+            </div>-->
+          </div>
+
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button v-if=" !isAnalyzed && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button v-if="isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Page -->
 <nav class="navbar navbar-default">
@@ -597,7 +668,7 @@
                   <div class="panel-heading" style="cursor:pointer;"  >
                     <a> General details </a>
                     <button v-if="!panelEditing.General" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('General')">Edit</button>
-                    <button type="button" v-show="panelEditing.General" class="btn btn-warning btn-xs pull-right" @click="stopEdit('General')">Cancel</button>
+                    <button type="button" v-show="panelEditing.General" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()">Cancel</button><span class="pull-right">&nbsp;</span>
                     <button type="button" v-show="panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
                   </div>
                   <div class="panel-body" >
@@ -617,15 +688,15 @@
                       </div>
                     </td>
                   </tr>
-                  <tr><td>Status</td><td  colspan="2"> {{ event.metadata.event_status || 'monitoring' }}</td></tr>
+                  <tr><td>Status</td><td  colspan="1"> {{ event.metadata.event_status || 'monitoring' }}</td><td  colspan="1"> <button type="button" @click="analyzeEvent" class="btn btn-warning"><i class="glyphicon glyphicon-refresh"></i> Analyze</button> </td></tr>
                   <tr><td>Type</td><td  colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
                   <tr><td>Event Date and Time</td><td  colspan="2"> {{ (new Date(event.metadata.event_datetime || event.created_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Description</td><td  colspan="2"> {{event.metadata.description }}</td></tr>
 
-                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2">{{ notStr }}</td></tr>
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;">{{ notStr }}</td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
-                  <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a></td></tr>
+                  <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
                   <tr><td>Event sharing</td><td>
                     <div id="eventShareButtons"></div>
@@ -636,7 +707,7 @@
 
                 </table>
 
-                <table class="table" v-show="panelEditing.General">
+                <table class="table" v-show="panelEditing.General" id="fields-General" style="table-layout:fixed;">
                   <!-- here is now all input fields -->
                   <script src="/resources/js/edit-maps.js"></script>
 
@@ -687,10 +758,10 @@
                     <td>Type</td>
                     <td>
                       <div v-for="(item, index) in eventTypes">
-                      <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value"> <label class="eventBox"> {{item.text}} </label>
+                      <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value" :id="'ev-type'+index"> <label class="eventBox" :for="'ev-type'+index"> {{item.text}} </label>
                         <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
                         <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
-                            <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" /> <label class="eventBox"> {{sub.text}} &nbsp&nbsp </label>
+                            <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+(sub.text)+index" /> <label class="eventBox" :for="'ev-sub-'+(sub.text)+index"> {{sub.text}} &nbsp&nbsp </label>
                             <br v-if="index % 4 == 1"/>
                         </span>
 
@@ -746,6 +817,35 @@
                       <input type="text" class="form-control" v-model="event.metadata.sharepoint_link" placeholder="SharePoint Link" />
                     </td>
                   </tr>
+                  <tr>
+                    <td colspan="2">
+                      <div class="panel panel-info" v-if="hasBeenAnalyzed" style="margin-top:5px;">
+                        <div class="panel-heading" >
+                          <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseSug">
+                            <a data-toggle="collapse" data-target="#collapseSug"
+                            href="#" class="collapsed in">
+                            * Analysis suggestions: maps and documents
+                            </a>
+                          </div>
+                        </div>
+                        <div id="collapseSug" class="panel-collapse collapse in">
+                          <div class="panel-body" >
+                            <h5> Documents: </h5>
+                            <ul>
+                              <li v-for="d in vizalyticsResp.documents" style="word-break:break-all;">{{d.summary }} <a :href='d.url' target="_blank">{{d.filename}}</a> </li>
+                            </ul>
+                              <div v-if="!(vizalyticsResp.documents) || vizalyticsResp.documents.length==0">No documents found.</div>
+                            <h5> Maps: </h5>
+                            <ul>
+                              <li v-for="m in vizalyticsResp.maps" style="word-break:break-all;">{{m.details ? m.details + ',' : ''}} <a :href='m.url' target="_blank">{{m.url}}</a> </li>
+                            </ul>
+                            <div v-if="!(vizalyticsResp.maps) || vizalyticsResp.maps.length==0">No maps found.</div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
 
 
 
@@ -767,20 +867,21 @@
                       </a>
                     </div>
                       <button v-if="!panelEditing.Notification" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Notification')" v-else>Done</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Notification">Cancel</button><span class="pull-right">&nbsp;</span>
+                      <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Notification')" v-show="panelEditing.Notification">Save</button>
                   </div>
                   <div id="collapseNotification" class="panel-collapse collapse in">
                     <div class="panel-body" >
 
 
-                            <table v-show="!panelEditing.Notification" v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table">
+                            <table v-show="!panelEditing.Notification" v-if="(event.metadata.notification) && (event.metadata.notification.length > 0) " class="table" >
                               <thead><tr><td>Username</td><td>Time</td><td>Notification</td></tr></thead>
                               <tbody>
                                 <tr v-for="(elem,index) in reversedNotifications" :style="((index==0) && panelDirty.Notification) ? 'font-weight:bold;' : '' ">
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (new Date(elem.notification_time*1000)).toLocaleString().replace(/:\d{2}$/,'') }}</td>
-                                  <td> {{ elem.notification }} <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a> </td>
+                                  <td style="word-break: break-word;"> {{ elem.notification }} <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a> </td>
                                 </tr>
                               </tbody>
                             </table>
@@ -805,10 +906,11 @@
                       <a data-toggle="collapse" data-target="#collapseResponse"
                       href="#" class="collapsed">
                       Response
-                    </a>
+                    </a> <span class="label label-success" v-if="hasBeenAnalyzed && vizalyticsResp.supplies">(**suggestions available in edit mode)</span>
                   </div>
                     <button v-if="!panelEditing.Response" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
-                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Response')" v-else>Done</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Response">Cancel</button><span class="pull-right">&nbsp;</span>
+                    <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Response')" v-show="panelEditing.Response">Save</button>
                   </div>
                   <div id="collapseResponse" class="panel-collapse collapse">
                     <div class="panel-body" >
@@ -936,6 +1038,43 @@
                                     </dd>
                                   </dl>
                                 </dd>
+                                <div class="panel panel-info" style="margin-top:5px;" v-if="hasBeenAnalyzed">
+                                  <div class="panel-heading" >
+                                    <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseSupp">
+                                      <a data-toggle="collapse" data-target="#collapseSupp"
+                                      href="#" class="collapsed">
+                                      * Analysis suggestions: supplies
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div id="collapseSupp" class="panel-collapse collapse in">
+                                    <div class="panel-body" >
+                                      <h5> Supplies:</h5>
+                                      <p class="help-block" v-if="vizalyticsResp.supplies.length==0">
+                                         No supplies suggested.
+                                      </p>
+                                      <table class="table table-striped">
+                                        <thead>
+                                          <tr v-for="head in vizalyticsResp.supplies.slice(0,1)">
+                                            <th v-for="h in head">{{h}}</th>
+
+                                          </tr>
+
+                                        </thead>
+                                        <tbody>
+                                          <tr v-for="row in vizalyticsResp.supplies.slice(1)">
+                                            <td v-for="col in row">{{col}}</td>
+
+                                          </tr>
+
+                                        </tbody>
+                                      </table>
+
+                                    </div>
+                                  </div>
+                                </div>
+
+
                               </div>
 
 
@@ -954,7 +1093,8 @@
                       </a>
                     </div>
                     <button type="button" v-if="!panelEditing.ExtCapacity" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtCapacity')">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('ExtCapacity')" v-else>Done</button>
+                    <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.ExtCapacity">Cancel</button><span class="pull-right">&nbsp;</span>
+                    <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('ExtCapacity')" v-show="panelEditing.ExtCapacity">Save</button>
                   </div>
                   <div id="collapseExtCapacity" class="panel-collapse collapse">
                     <div class="panel-body" >
@@ -1044,7 +1184,8 @@
                         </a>
                       </div>
                       <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Figures')" v-if="!panelEditing.Figures">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Figures')" v-else >Done</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Figures" >Cancel</button><span class="pull-right">&nbsp;</span>
+                      <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Figures')" v-show="panelEditing.Figures" >Save</button>
 
                     </div>
                     <div id="collapseFigures" class="panel-collapse collapse">
@@ -1157,9 +1298,11 @@
                         <a data-toggle="collapse" data-target="#collapseResources" href="#" class="collapsed">
                           Staff Resources
                         </a>
+                        <span class="label label-success" v-if="hasBeenAnalyzed && vizalyticsResp.contacts.length>0">(**suggestions available in edit mode)</span>
                       </div>
                       <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Resources')" v-if="!panelEditing.Resources">Edit</button>
-                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Resources')" v-else >Done</button>
+                      <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Resources" >Cancel</button><span class="pull-right">&nbsp;</span>
+                      <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Resources')" v-show="panelEditing.Resources">Save</button>
                     </div>
                   <div id="collapseResources" class="panel-collapse collapse">
                     <div class="panel-body" >
@@ -1205,6 +1348,27 @@
                               <textarea v-model.trim="event.metadata.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
                             </dd>
                           </dl>
+                        </li>
+                        <li class="list-group-item" v-if="hasBeenAnalyzed">
+                          <div class="panel panel-info" style="margin-top:5px;">
+                            <div class="panel-heading" >
+                              <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseCont">
+                                <a data-toggle="collapse" data-target="#collapseCont"
+                                href="#" class="collapsed">
+                                * Analysis suggestions: contacts
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseCont" class="panel-collapse collapse in">
+                              <div class="panel-body" >
+                                <h5> Contacts: </h5>
+                                <p class="help-block"> Below are the contacts (if any have been found) that are located in the area of disaster.</p>
+                                <ul>
+                                  <li v-for="c in vizalyticsResp.contacts">{{c.name}}, <i> <a :href="'mailto:' + c.email">{{c.email}}</i>, <a>{{c.cell}}</a> </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
                         </li>
                         <li class="list-group-item hidden">
                           <div class="row">
@@ -1333,7 +1497,8 @@
                     </a>
                   </div>
                   <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Reflection')" v-if="!panelEditing.Reflection">Edit</button>
-                  <button type="button" class="btn btn-warning btn-xs pull-right" @click="stopEdit('Reflection')" v-else >Done</button>
+                  <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Reflection" >Cancel</button><span class="pull-right">&nbsp;</span>
+                  <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Reflection')" v-show="panelEditing.Reflection" >Save</button>
                 </div>
                 <div id="collapseReflection" class="panel-collapse collapse">
                   <div class="panel-body" >
@@ -1369,37 +1534,46 @@
 
 
 
-              <div :class="{'panel':true, 'panel-default': true}">
-                <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseSecurity">
-                  <h4 class="panel-title">
-                    <a data-toggle="collapse" data-target="#collapseSecurity"
+        <div :class="{'panel':true, 'panel-default': true}">
+            <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseSecurity">
+                <a data-toggle="collapse" data-target="#collapseSecurity"
                     href="#collapseSecurity" class="collapsed">
                     Security Details
-                  </details>
                 </a>
-              </h4>
-
+                <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Security')" v-if="!panelEditing.Security">Edit</button>
+                <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.Security">Cancel</button><span class="pull-right">&nbsp;</span>
+                <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('Security')" v-show="panelEditing.Security">Save</button>
             </div>
             <div id="collapseSecurity" class="panel-collapse collapse">
-              <div class="panel-body" id="eventSecurityDetails"></div>
+              <div v-if="!panelEditing.Security" class="panel-body" id="eventSecurityDetails" >{{event.metadata.security_details}}</div>
+              <textarea v-model.trim="event.metadata.security_details" placeholder="Security details" class="form-control" v-else></textarea>
+
             </div>
           </div>
 
-          <div :class="{'panel':true, 'panel-default': true}" >
+          <div :class="{'panel':true, 'panel-default': !panelDirty.ExtraDetails, 'panel-warning': panelDirty.ExtraDetails}" >
             <div class="panel-heading" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseExtraDetails">
-              <h4 class="panel-title">
                 <a data-toggle="collapse" data-target="#collapseExtraDetails"
                 href="#collapseExtraDetails" class="collapsed">
                 Extra details
                 </a>
-              </h4>
+                <button type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('ExtraDetails')" v-if="!panelEditing.ExtraDetails">Edit</button>
+                <button type="button" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()" v-show="panelEditing.ExtraDetails">Cancel</button><span class="pull-right">&nbsp;</span>
+                <button type="button" class="btn btn-primary btn-xs pull-right" @click="updateSection('ExtraDetails')" v-show="panelEditing.ExtraDetails">Save</button>
             </div>
             <div id="collapseExtraDetails" class="panel-collapse collapse">
-              <div class="panel-body" >
-                <dl id="eventExtra" class="dl-horizontal">
-
+              <div class="panel-body" v-if="!panelEditing.ExtraDetails">
+                <dl id="eventExtra" class="dl-horizontal" v-for="item in Object.keys(extraDetailsLabel)">
+                  <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
                 </dl>
               </div>
+              <ul class="list-group" v-else>
+                <li class="list-group-item" v-for="item in Object.keys(extraDetailsLabel)">
+                <label >{{extraDetailsLabel[item]}}</label>
+                <textarea v-model="event.metadata[item]" class="form-control"></textarea>
+                </li>
+              </ul>
+
             </div>
           </div>
       </div>

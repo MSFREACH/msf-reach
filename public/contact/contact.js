@@ -7,9 +7,11 @@ var qEmail=null;
 $(function () {
     qGUID=getQueryVariable('token');
     qEmail=getQueryVariable('email');
+    $('#GDPR').toggle(localStorage.getItem('username')==null);
     $('#permission').toggle(localStorage.getItem('username')!=null);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
     $('#private').toggle(localStorage.getItem('username')!=null);
+    // $('#GDPR').toggle(localStorage.getItem('username')!=null);
 
     const STARTPAGEINDEX = 0;
     const CHECKEMAILPAGEINDEX =1;
@@ -101,10 +103,8 @@ $(function () {
                 $('#inputContactOC').val(props.OC);
                 $('#inputContactMSFEmploy').val(props.msf_employment);
                 $('#inputMSFAdditional').val(props.msf_additional);
-                // $('#inputMSFSection').val(props.msf_section);
-                // $('#inputMSFBranch').val(props.msf_branch);
-                // $('#inputMSFProject').val(props.msf_project);
-                // $('#inputMSFMission').val(props.msf_mission);
+                $('#inputContactJobTitle').val(props.job_title);
+
             } else {
                 $('#inputContactMSFAssociate').prop('checked', props.msf_associate);
                 $('#inputContactMSFPeer').prop('checked', props.msf_peer);
@@ -183,6 +183,11 @@ $(function () {
                 return;
             }
         }
+        if (cInd==STARTPAGEINDEX && !localStorage.getItem('username') && !$('#inputGDPRAcknowledge').is(':checked')) {
+            alert('Please tick the Information consent box to continue.');
+            return;
+        }
+
         if (cInd==MAPSECTIONINDEX)
         {
             if (!newContactMap.msf_latlng)

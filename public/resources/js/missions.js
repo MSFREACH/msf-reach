@@ -17,29 +17,29 @@ var loadMissions = function(err, missions) {
     if (err) {
         alert('Error loading missions: ' + err);
     } else {
-        $('#missionsContainer').html(
-            '<table class="table table-hover" id="missionsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Description</th><th>Region</th><th>Start</th><th>End</th><th>Severity</th><th>Capacity</th></tr></thead><tbody>'
-        );
+
+        $('#missionsContainer').html('<ul class="table table-hover" id="missionsTable">');
+
         $.each(missions, function(key, value) {
             $('#missionsTable').append(
-                '<tr id=\'mrow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openMissionPopup('+value.properties.id+')\'>'
-        +'<td><a href=\'#\' onclick=\'onMissionLinkClick(' +
+                '<li id=\'mrow'+value.properties.id+'\' class=\'cursorPointer\' onclick=\'openMissionPopup('+value.properties.id+')\'>'
+        +'<span><a href=\'#\' onclick=\'onMissionLinkClick(' +
           value.properties.id +
-          ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i></a></td><td>' +
+          ')\' class=\'contact-link btn btn-sm btn-primary\' title=\'Quick View\'><i class=\'glyphicon glyphicon-eye-open\'></i>Open</a></span><div class="title">' +
           value.properties.properties.name +
-          '</td><td>' +
+          '</div><div class="description">' +
           value.properties.properties.description +
-          '</td><td>' +
+          '</div><span><label>Region  </label>' +
           value.properties.properties.region +
-          '</td><td>' +
+          '</span><span><label>Start  </label>' +
           value.properties.properties.startDate +
-          '</td><td>' +
+          '</span><span><label>End  </label>' +
           value.properties.properties.finishDate +
-          '</td><td>' +
+          '</span><div><label>Severity  </label>' +
           value.properties.properties.severity +
-          '</td><td>' +
+          '</div><div><label>Capacity </label>' +
           value.properties.properties.capacity +
-          '</td></tr>'
+          '</div></li>'
             );
         });
 
