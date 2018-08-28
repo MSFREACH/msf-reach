@@ -184,7 +184,7 @@ div.pac-container {
 }
 
 .panel-header-click-area {
-  width:CALC(100% - 45px);
+  width:CALC(100% - 95px);
   display:inline-block;
   cursor:pointer;
 }
@@ -213,4 +213,10 @@ ul#missionsTable li span{
 }
 label{
 display: block;
+}
+
+.eventBox {
+  font-weight: normal;
+  display:inline-block;
+  cursor:pointer;
 }
