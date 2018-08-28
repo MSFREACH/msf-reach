@@ -115,7 +115,7 @@ dd.padding-bottom {
                 <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value" :id="'ev-type'+index"> <label class="eventBox" :for="'ev-type'+index"> {{item.text}} </label>
                   <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
                   <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
-                      <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+sub+index"/> <label class="eventBox" :for="'ev-sub-'+sub+index"> {{sub.text}} &nbsp&nbsp </label>
+                      <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+(sub.text)+index"/> <label class="eventBox" :for="'ev-sub-'+(sub.text)+index"> {{sub.text}} &nbsp&nbsp </label>
                       <br v-if="index % 4 == 1"/>
                   </span>
 
