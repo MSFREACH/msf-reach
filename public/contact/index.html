@@ -46,14 +46,17 @@
               <p>MSF is piloting a new system for information sharing across our network.</p>
               <p>Please follow the instructions to add or update your contact information in our system.</p>
               <p>THANK YOU for being part of our team! </p>
-              <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company / organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org/node/14721">our website</a>.</p>
-              <p>Please contact <a href="mailto:lucie.gueuning@hongkong.msf.org">lucie.gueuning@hongkong.msf.org</a> for any queries or to remove your contact information from our database.</p>
-              <div class="form-group" style="text-align:center;margin-bottom:20px; display:none;" id="permission">
-                <label class="checkbox-inline"><input type="checkbox" name="input permission" id="inputPermissionAcknowledge">I acknowledge I have permission from contacts I am entering to enter their information.</label>
+
+              <div class="form-group" style="margin-bottom:20px;" id="GDPR">
+                <label class="checkbox-inline"><input type="checkbox" name="input GDPR" id="inputGDPRAcknowledge">I consent that information can be shared with other MSF entities. The information will be used to contact you if there is an emergency near your location of living, to request information for MSF assessment. It will be shared to MSF entities and partners (for technical reasons of development of REACH) only. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org/node/14721">our website</a>.</label>
               </div>
-              <div class="form-group" style="text-align:center;margin-bottom:20px; display:none;" id="private">
+              <div class="form-group" style="margin-bottom:20px; display:none;" id="permission">
+                <label class="checkbox-inline"><input type="checkbox" name="input permission" id="inputPermissionAcknowledge">I acknowledge I have permission from contacts I am entering to enter their information. The information may be used to contact the person to request information for MSF assessment. It will be shared to MSF entities and partners (for technical reasons of development of REACH) only. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org/node/14721">our website</a>.</label>
+              </div>
+              <div class="form-group" style="margin-bottom:20px; display:none;" id="private">
                 <label class="checkbox-inline"><input type="checkbox" name="input permission" id="inputPrivate">I wish to keep this data private for my use in MSF.</label>
               </div>
+              <p>Please contact <a href="mailto:lucie.gueuning@hongkong.msf.org">lucie.gueuning@hongkong.msf.org</a> for any queries or to remove your contact information from our database.</p>
               <p><span style="color:red;">*</span> indicates mandatory fields.</p>
             </div>
             <div class="form-section">
@@ -144,18 +147,22 @@
                 </div>
                 <div id="divMSFFields" style="display:none;">
                   <div class="form-group">
-                    <label for="inputContactMSFEmploy" style="text-transform:uppercase;"><span style="color:red;">*</span>Current employment status</label>
+                    <label for="inputContactMSFEmploy" style="text-transform:uppercase;">Current employment status</label>
                     <select class="form-control" style="color:black;" id="inputContactMSFEmploy">
-                      <option value="" disabled selected>Please select...</option>
+                      <option value="" selected>Please select...</option>
                       <option value="Field worker (national)">Field worker (national)</option>
                       <option value="Field worker (international)">Field worker (international)</option>
                       <option value="HQ staff (OC/PS)">HQ staff (OC/PS)</option>
                     </select>
                   </div>
+                  <div class="form-group" id="divJobTitle">
+                    <label for="inputContactJobTitle" style="text-transform:uppercase;">Job title</label>
+                    <input maxlength="150" placeholder="Job title ..." class="form-control" style="color:black;" id="inputContactJobTitle" >
+                  </div>
                   <div class="form-group">
-                    <label for="inputContactOC" style="text-transform:uppercase;"><span style="color:red;">*</span>Operational Centre</label>
+                    <label for="inputContactOC" style="text-transform:uppercase;">Operational Centre</label>
                     <select class="form-control" style="color:black;" id="inputContactOC">
-                      <option value="" disabled selected>Please select...</option>
+                      <option value="" selected>Please select...</option>
                       <option value="OCA">OCA</option>
                       <option value="OCB">OCB</option>
                       <option value="OCBA">OCBA</option>
@@ -169,22 +176,7 @@
                     <label for="inputMSFSection" style="text-transform:uppercase;"> Partner sections/Branch office/Mission/Project (if any) </label>
                     <textarea class="form-control" style="color:black; height: 30vh;" id="inputMSFAdditional"> </textarea>
                   </div>
-                  <!-- <div class="form-group">
-                    <label for="inputMSFSection" style="text-transform:uppercase;">Partner sections (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFSection" >
-                  </div>
-                  <div class="form-group">
-                    <label for="inputMSFBranch" style="text-transform:uppercase;">Branch office (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFBranch" >
-                  </div>
-                  <div class="form-group">
-                    <label for="inputMSFMission" style="text-transform:uppercase;">Mission (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFMission" >
-                  </div>
-                  <div class="form-group">
-                    <label for="inputMSFProject" style="text-transform:uppercase;">Project (if any)</label>
-                    <input maxlength="150" class="form-control" style="color:black;" id="inputMSFProject" >
-                  </div> -->
+
                 </div>
                 <div class="form-group" id="divOtherType" style="display:none;">
                   <input maxlength="150" placeholder="Specify other type..." class="form-control" style="color:black;" id="inputContactTypeOther">
