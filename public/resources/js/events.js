@@ -1315,7 +1315,7 @@ var replaceUnderscore = function(value) {
 var vmObject = {
 
     data: {
-        areas: {}, 
+        areas: {},
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
@@ -1386,7 +1386,10 @@ var vmObject = {
         },
         searchTerm: '',
         extraDetailsLabel: labels,
+        oldEventStatus: '',
+        isAnalyzing:false,
         hasBeenAnalyzed: false,
+        analyzedTimeTxt:'',
         vizalyticsResp: {}
     },
     mounted:function(){
@@ -1817,9 +1820,9 @@ var vmObject = {
         submitEventSection(category){
             var vm = this;
             var body = {
-                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-                type: this.event.type.toString(),
-                metadata : this.event.metadata
+                status: (vm.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: vm.event.type.toString(),
+                metadata : vm.event.metadata
             };
             $.ajax({
                 type: 'PUT',
@@ -1833,6 +1836,10 @@ var vmObject = {
                     vm.panelEditing[category] = false;
                     vm.panelDirty[category] = false;
                     vm.somePanelDirty=false;
+                }
+                if (category=='General' && (vm.oldEventStatus!=body.metadata.event_status))
+                {
+                    vm.analyzeEvent();
                 }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
@@ -1910,6 +1917,7 @@ var vmObject = {
                 }
                 // this is inline implementation
                 if(category == 'General'){
+                    vm.oldEventStatus= vm.event.metadata.event_status || 'monitoring';
                     vm.loadMap();
                     vm.placeOtherFields();
                 }
@@ -2189,6 +2197,7 @@ var vmAnalytics = new Vue({
         {
             var vm=this;
             vm.isAnalyzing=true;
+            vmEventDetails.isAnalyzing=true;
             $.ajax({
                 type: 'POST',
                 url: '/api/analytics/analyze',
@@ -2199,12 +2208,23 @@ var vmAnalytics = new Vue({
                 vm.response=data;
                 vmEventDetails.hasBeenAnalyzed=true;
                 vmEventDetails.vizalyticsResp=data.results[0].data;
+                vmEventDetails.analyzedTimeTxt='Performed @'+(new Date()).toString();
+                vmEventDetails.isAnalyzing=false;
                 vm.isAnalyzing=false;
                 vm.isAnalyzed=true;
                 //vm.mapAnalysisResult();
+                $('.panel-collapse[id^=collapse]').collapse('hide');
+                setTimeout(function(){
+                    if (vmEventDetails.vizalyticsResp.supplies.length>0)
+                        $('#collapseResponse').collapse('show');
+                    if (vmEventDetails.vizalyticsResp.contacts.length>0)
+                        $('#collapseResources').collapse('show');
+                },500);
+
 
                 //console.log(data);
             }).fail(function (reqm, textStatus, err){
+                vmEventDetails.isAnalyzing=false;
                 vm.isAnalyzing=false;
                 vm.vizalyticsError=true;
                 //console.log(err);
