@@ -2214,12 +2214,14 @@ var vmAnalytics = new Vue({
                 vm.isAnalyzed=true;
                 //vm.mapAnalysisResult();
                 $('.panel-collapse[id^=collapse]').collapse('hide');
-                setTimeout(function(){
+                $('#collapseResponse').on('hidden.bs.collapse', function(){
                     if (vmEventDetails.vizalyticsResp.supplies.length>0)
                         $('#collapseResponse').collapse('show');
+                });
+                $('#collapseResources').on('hidden.bs.collapse', function(){
                     if (vmEventDetails.vizalyticsResp.contacts.length>0)
                         $('#collapseResources').collapse('show');
-                },500);
+                });
 
 
                 //console.log(data);
