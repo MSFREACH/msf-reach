@@ -1390,7 +1390,13 @@ var vmObject = {
         isAnalyzing:false,
         hasBeenAnalyzed: false,
         analyzedTimeTxt:'',
-        vizalyticsResp: {}
+        vizalyticsResp: {},
+        mapStatusToPanels: {
+            'monitoring':['Notification', 'ExtCapacity', 'Figures', 'Reflection'],
+            'exploration':['Notification', 'Figures', 'Resources', 'Reflection'],
+            'ongoing':['Notification', 'Response', 'Figures', 'Resources'],
+            'complete':[],
+        }
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1837,10 +1843,17 @@ var vmObject = {
                     vm.panelDirty[category] = false;
                     vm.somePanelDirty=false;
                 }
-                if (category=='General' && (vm.oldEventStatus!=body.metadata.event_status))
+                var newStatus=body.metadata.event_status;
+                if (category=='General' && (vm.oldEventStatus != newStatus))
                 {
                     //uncomment here to enable the auto-analyze on status change
                     //vm.analyzeEvent();
+                    $('.panel-collapse[id^=collapse]').collapse('hide');
+                    setTimeout(function(){
+                        $.each(vm.mapStatusToPanels[newStatus],function(index,val){
+                            vm.editEvent(val);
+                        });
+                    },500);
                 }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
@@ -2098,8 +2111,8 @@ var vmObject = {
             this.uploadNotifications(this.submitEventMetadata);
         },
         cancelEventEdits:function(){
-          if (confirm("NOTE: all unsaved data in other panels (if any) will be lost.\nAre you sure you want to cancel edits ? "))
-            window.location.href = '/events/?eventId=' + currentEventId;
+            if (confirm('NOTE: all unsaved data in other panels (if any) will be lost.\nAre you sure you want to cancel edits ? '))
+                window.location.href = '/events/?eventId=' + currentEventId;
         },
         analyzeEvent: function (){
             $('#analyticsStatusModal').modal('show');
