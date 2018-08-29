@@ -1839,7 +1839,7 @@ var vmObject = {
                 }
                 if (category=='General' && (vm.oldEventStatus!=body.metadata.event_status))
                 {
-                    //uncomment here to enable the auto-analyze on status change 
+                    //uncomment here to enable the auto-analyze on status change
                     //vm.analyzeEvent();
                 }
             }).fail(function(err) {
@@ -2214,6 +2214,8 @@ var vmAnalytics = new Vue({
                 vm.isAnalyzing=false;
                 vm.isAnalyzed=true;
                 //vm.mapAnalysisResult();
+
+                /* disbale collapse /uncollapse based on AI result
                 $('.panel-collapse[id^=collapse]').collapse('hide');
                 $('#collapseResponse').on('hidden.bs.collapse', function(){
                     if (vmEventDetails.vizalyticsResp.supplies.length>0)
@@ -2223,6 +2225,7 @@ var vmAnalytics = new Vue({
                     if (vmEventDetails.vizalyticsResp.contacts.length>0)
                         $('#collapseResources').collapse('show');
                 });
+                */
 
 
                 //console.log(data);
