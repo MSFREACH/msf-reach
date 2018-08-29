@@ -1890,11 +1890,6 @@ var vmObject = {
         editEvent:function(category){
             var vm=this;
             $('#collapse'+category).collapse('show');
-            if (vm.somePanelDirty)
-            {
-                alert('Please save or cancel the current section before editing this section.');
-                return;
-            }
 
             if (category == 'general'){
                 // this is modal implemation
@@ -2103,6 +2098,7 @@ var vmObject = {
             this.uploadNotifications(this.submitEventMetadata);
         },
         cancelEventEdits:function(){
+          if (confirm("NOTE: all unsaved data in other panels (if any) will be lost.\nAre you sure you want to cancel edits ? "))
             window.location.href = '/events/?eventId=' + currentEventId;
         },
         analyzeEvent: function (){
