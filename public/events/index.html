@@ -1122,7 +1122,8 @@
                                   <input type="radio" value="non_medical" v-model="event.metadata.ext_capacity_type_in_ground" /> Non-Medical
                                 </label>
                               </dd>
-                              <dd class="padding-bottom">
+                              <dd class="padding-bottom" v-bind:class="{ suggestEdit.ExtCapacity: highlight }">
+                                 <span class="highlight" v-show="suggestEdit.ExtCapacity">* Please review</span>
                                 <textarea v-model.trim="event.metadata.capacity" placeholder="Government capacity" class="form-control"></textarea>
                               </dd>
                               <dd class="padding-bottom">
@@ -1147,7 +1148,8 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <tr v-for="(item, index) in event.metadata.ext_other_organizations">
+                                    <tr v-for="(item, index) in event.metadata.ext_other_organizations" v-bind:class="{ suggestEdit.ExtCapacity: highlight }">
+                                        <span class="highlight" v-show="suggestEdit.ExtCapacity">* Please review</span>
                                       <td>
                                         <input type="text" class="form-control" v-model="item.name" />
                                       </td>
@@ -1250,7 +1252,8 @@
                             <li class="list-group-item">
                               <dl>
                                 <dt>Population in total for zone impacted</dt>
-                                <dd>
+                                <dd v-bind:class="{ suggestEdit.Figures: highlight }">
+                                    <span class="highlight" v-show="suggestEdit.Figures">* Please review</span>
                                   <div class="row">
                                     <div class="col-sm-4">
                                       <input type="number" class="form-control" v-model.number="event.metadata.population_total" v-on:change="calculatePercentagePeopleAffected" placeholder="Total population" />
@@ -1263,7 +1266,8 @@
                               </dl>
                               <dl>
                                 <dt>Population affected</dt>
-                                <dd>
+                                <dd v-bind:class="{ suggestEdit.Figures: highlight }">
+                                <span class="highlight" v-show="suggestEdit.Figures">* Please review</span>
                                   <div class="row">
                                     <div class="col-sm-4">
                                       <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.population_affected" v-on:change="calculatePercentagePeopleAffected" placeholder="Affected population" />
@@ -1514,7 +1518,8 @@
                       <li class="list-group-item">
                         <dl>
                           <dt>Practical Details / Recommendations</dt>
-                          <dd>
+                          <dd v-bind:class="{ suggestEdit.Reflection: highlight }">
+                          <span class="highlight" v-show="suggestEdit.Reflection">* Please review</span>
                             <textarea v-model.trim="event.metadata.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control"></textarea>
                           </dd>
                         </dl>
@@ -1522,7 +1527,8 @@
                       <li class="list-group-item">
                         <dl>
                           <dt>Reflection / Comments on intervention</dt>
-                          <dd>
+                          <dd v-bind:class="{ suggestEdit.Reflection: highlight }">
+                          <span class="highlight" v-show="suggestEdit.Reflection">* Please review</span>
                             <textarea v-model.trim="event.metadata.msf_ref_com_reflection_comments" placeholder="Description" class="form-control"></textarea>
                           </dd>
                         </dl>

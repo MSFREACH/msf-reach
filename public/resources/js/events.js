@@ -1396,6 +1396,14 @@ var vmObject = {
             'exploration':['Notification', 'Figures', 'Resources', 'Reflection'],
             'ongoing':['Notification', 'Response', 'Figures', 'Resources'],
             'complete':[],
+        },
+        suggestEdit: {
+            'Notification': false,
+            'ExtCapacity': false,
+            'Figures': false,
+            'Resources': false,
+            'Response': false,
+            'Reflection': false
         }
     },
     mounted:function(){
@@ -1851,7 +1859,7 @@ var vmObject = {
                     $('.panel-collapse[id^=collapse]').collapse('hide');
                     setTimeout(function(){
                         $.each(vm.mapStatusToPanels[newStatus],function(index,val){
-                            vm.editEvent(val);
+                            vm.editEvent(val, true);
                         });
                     },500);
                 }
@@ -1900,8 +1908,12 @@ var vmObject = {
                 this.submitEventSection('General');
             }
         },
-        editEvent:function(category){
+        editEvent:function(category, suggest){
             var vm=this;
+            if(suggest){
+                vm.suggestEdit[category] = true;
+            }
+
             $('#collapse'+category).collapse('show');
 
             if (category == 'general'){
