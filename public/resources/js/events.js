@@ -1839,7 +1839,8 @@ var vmObject = {
                 }
                 if (category=='General' && (vm.oldEventStatus!=body.metadata.event_status))
                 {
-                    vm.analyzeEvent();
+                    //uncomment here to enable the auto-analyze on status change 
+                    //vm.analyzeEvent();
                 }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
