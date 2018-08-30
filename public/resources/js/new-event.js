@@ -339,6 +339,7 @@ var vmAnalytics = new Vue({
                 vm.isEventCreated=true;
                 vm.isSubmitting=false;
                 return; //killing analytics on event creation
+/*
                 vm.isAnalyzing=true;
                 $.ajax({
                     type: 'POST',
@@ -358,6 +359,7 @@ var vmAnalytics = new Vue({
                     vm.vizalyticsError=true;
 
                 });
+                */
 
             }).fail(function (reqm, textStatus, err){
                 vm.isSubmitting=false;
