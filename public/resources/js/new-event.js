@@ -338,6 +338,7 @@ var vmAnalytics = new Vue({
                 refreshLandingPage();
                 vm.isEventCreated=true;
                 vm.isSubmitting=false;
+                return; //killing analytics on event creation
                 vm.isAnalyzing=true;
                 $.ajax({
                     type: 'POST',

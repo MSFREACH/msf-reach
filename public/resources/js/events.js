@@ -1315,7 +1315,7 @@ var replaceUnderscore = function(value) {
 var vmObject = {
 
     data: {
-        areas: {}, 
+        areas: {},
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
@@ -1386,8 +1386,25 @@ var vmObject = {
         },
         searchTerm: '',
         extraDetailsLabel: labels,
+        oldEventStatus: '',
+        isAnalyzing:false,
         hasBeenAnalyzed: false,
-        vizalyticsResp: {}
+        analyzedTimeTxt:'',
+        vizalyticsResp: {},
+        mapStatusToPanels: {
+            'monitoring':['Notification', 'ExtCapacity', 'Figures', 'Reflection'],
+            'exploration':['Notification', 'Figures', 'Resources', 'Reflection'],
+            'ongoing':['Notification', 'Response', 'Figures', 'Resources'],
+            'complete':[],
+        },
+        suggestEdit: {
+            'Notification': false,
+            'ExtCapacity': false,
+            'Figures': false,
+            'Resources': false,
+            'Response': false,
+            'Reflection': false
+        }
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1817,9 +1834,9 @@ var vmObject = {
         submitEventSection(category){
             var vm = this;
             var body = {
-                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-                type: this.event.type.toString(),
-                metadata : this.event.metadata
+                status: (vm.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: vm.event.type.toString(),
+                metadata : vm.event.metadata
             };
             $.ajax({
                 type: 'PUT',
@@ -1833,6 +1850,18 @@ var vmObject = {
                     vm.panelEditing[category] = false;
                     vm.panelDirty[category] = false;
                     vm.somePanelDirty=false;
+                }
+                var newStatus=body.metadata.event_status;
+                if (category=='General' && (vm.oldEventStatus != newStatus))
+                {
+                    //uncomment here to enable the auto-analyze on status change
+                    //vm.analyzeEvent();
+                    $('.panel-collapse[id^=collapse]').collapse('hide');
+                    setTimeout(function(){
+                        $.each(vm.mapStatusToPanels[newStatus],function(index,val){
+                            vm.editEvent(val, true);
+                        });
+                    },500);
                 }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
@@ -1879,14 +1908,13 @@ var vmObject = {
                 this.submitEventSection('General');
             }
         },
-        editEvent:function(category){
+        editEvent:function(category, suggest){
             var vm=this;
-            $('#collapse'+category).collapse('show');
-            if (vm.somePanelDirty)
-            {
-                alert('Please save or cancel the current section before editing this section.');
-                return;
+            if(suggest){
+                vm.suggestEdit[category] = true;
             }
+
+            $('#collapse'+category).collapse('show');
 
             if (category == 'general'){
                 // this is modal implemation
@@ -1910,6 +1938,7 @@ var vmObject = {
                 }
                 // this is inline implementation
                 if(category == 'General'){
+                    vm.oldEventStatus= vm.event.metadata.event_status || 'monitoring';
                     vm.loadMap();
                     vm.placeOtherFields();
                 }
@@ -2094,7 +2123,8 @@ var vmObject = {
             this.uploadNotifications(this.submitEventMetadata);
         },
         cancelEventEdits:function(){
-            window.location.href = '/events/?eventId=' + currentEventId;
+            if (confirm('NOTE: all unsaved data in other panels (if any) will be lost.\nAre you sure you want to cancel edits ? '))
+                window.location.href = '/events/?eventId=' + currentEventId;
         },
         analyzeEvent: function (){
             $('#analyticsStatusModal').modal('show');
@@ -2189,6 +2219,7 @@ var vmAnalytics = new Vue({
         {
             var vm=this;
             vm.isAnalyzing=true;
+            vmEventDetails.isAnalyzing=true;
             $.ajax({
                 type: 'POST',
                 url: '/api/analytics/analyze',
@@ -2199,12 +2230,28 @@ var vmAnalytics = new Vue({
                 vm.response=data;
                 vmEventDetails.hasBeenAnalyzed=true;
                 vmEventDetails.vizalyticsResp=data.results[0].data;
+                vmEventDetails.analyzedTimeTxt='Performed @'+(new Date()).toString();
+                vmEventDetails.isAnalyzing=false;
                 vm.isAnalyzing=false;
                 vm.isAnalyzed=true;
                 //vm.mapAnalysisResult();
 
+                /* disbale collapse /uncollapse based on AI result
+                $('.panel-collapse[id^=collapse]').collapse('hide');
+                $('#collapseResponse').on('hidden.bs.collapse', function(){
+                    if (vmEventDetails.vizalyticsResp.supplies.length>0)
+                        $('#collapseResponse').collapse('show');
+                });
+                $('#collapseResources').on('hidden.bs.collapse', function(){
+                    if (vmEventDetails.vizalyticsResp.contacts.length>0)
+                        $('#collapseResources').collapse('show');
+                });
+                */
+
+
                 //console.log(data);
             }).fail(function (reqm, textStatus, err){
+                vmEventDetails.isAnalyzing=false;
                 vm.isAnalyzing=false;
                 vm.vizalyticsError=true;
                 //console.log(err);
