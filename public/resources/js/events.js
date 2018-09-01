@@ -1831,6 +1831,14 @@ var vmObject = {
                 this.invalid.nullAreas = false;
             }
         },
+        lintSeverity(){
+            this.event.metadata.severity_measures = this.event.metadata.severity_measures.map(function(sm, index){
+                return {
+                    scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
+                    description: sm.description
+                };
+            });
+        },
         submitEventSection(category){
             var vm = this;
             var body = {
@@ -1892,9 +1900,9 @@ var vmObject = {
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
             this.lintAreas();
+            this.lintSeverity();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
-
             _.extend(this.event.metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
@@ -1903,7 +1911,6 @@ var vmObject = {
             this.lintSubTypesSelected();
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
-
             if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
                 this.submitEventSection('General');
             }
@@ -2184,6 +2191,7 @@ var vmObject = {
                                 $(this).append(el);
                             }
                         });
+
                     }, 300);
                 }
 
