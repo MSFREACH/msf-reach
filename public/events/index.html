@@ -698,12 +698,10 @@
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
-                  <tr><td>Event sharing</td><td>
-                    <div id="eventShareButtons"></div>
-                  </td><td><div id="eventCopyButton" class="st-animated"></div></td></tr>
-
-                  <tr><td>Report</td>
-                  <td><div id="reportShareButtons"></div></td><td><div style="display:inline-block;margin-right:10px;" id="reportCopyButton" class="st-animated"></div><button style="display:inline-block;" class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">New</button></td></tr>
+                  <tr>
+                    <td> Share Links to </td>
+                    <td colspan="2"><div> <span id="eventShareButtons"></span><span id="eventCopyButton" class="st-animated" style="display: inline-block"></span> </div><div><span id="reportShareButtons"></span><span id="reportCopyButton" class="st-animated"></span><a data-toggle="modal" data-target="#newReportModal" style="cursor: pointer">open in new tab</a></div></td>
+                </tr>
 
                 </table>
 
