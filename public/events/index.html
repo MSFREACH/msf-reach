@@ -1232,7 +1232,8 @@
                                           </div>
                                           <div class="col-sm-12">
                                             <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
-                                            <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                                            <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'"  v-bind:class="{ 'highlight' : suggestEdit.Figures && event.metadata.event_status == 'exploration'}">
+                                                <span class="highlight" v-show="suggestEdit.Figures && event.metadata.event_status == 'exploration'"> </span>
                                               <input type="text" v-model="item.description" class="form-control" placeholder="Please Specify" />
                                             </div>
                                           </div>
@@ -1352,7 +1353,7 @@
                         <li class="list-group-item">
                           <dl>
                             <dt>National staff</dt>
-                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&  event.metadata.event_status == 'ongoing'}">
+                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&   (event.metadata.event_status == 'exploration' || event.metadata.event_status == 'ongoing')}">
                                 <span class="highlight" v-show="suggestEdit.Resources &&  event.metadata.event_status == 'ongoing'">* Please review</span>
                               <textarea v-model.trim="event.metadata.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
                             </dd>
