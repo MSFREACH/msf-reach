@@ -42,7 +42,7 @@
     "ajv": "^6.5.3",
     "api-error-handler": "^1.0.0",
     "apicache": "^1.2.3",
-    "aws-sdk": "^2.299.0",
+    "aws-sdk": "^2.303.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "celebrate": "^8.0.1",
@@ -79,7 +79,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
-    "babel-plugin-istanbul": "^4.1.6",
+    "babel-plugin-istanbul": "^5.0.1",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "coveralls": "^3.0.2",
@@ -88,7 +88,7 @@
     "jsonwebtoken": "^8.3.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
-    "nyc": "^12.0.2",
+    "nyc": "^13.0.1",
     "unit.js": "^2.0.0"
   },
   "engines": {

@@ -122,7 +122,7 @@ var mapAllEvents = function(err, events){
     '\'>'+icon_html+'</a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
-    'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+    'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
@@ -166,7 +166,7 @@ var mapAllEvents = function(err, events){
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (new Date((feature.properties.metadata.event_datetime || feature.properties.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date((feature.properties.metadata.event_datetime || feature.properties.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') : '') + '<br>' +
       'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
       (hasLocation ? 'Area(s): ' + location + '<br>': '') +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
@@ -574,7 +574,7 @@ var mapReports = function(reports,mapForReports){
 
 
             if (!feature.properties.event_id) {
-                $('#events-for-report-'+feature.properties.id).append('<option value="">Please select...</option>');
+                $('#events-for-report-'+feature.properties.id).append('<option value="">Select...</option>');
                 $.getJSON('api/events', function(data) {
                     $.map(data.result.objects.output.geometries, function(item) {
                         var name = item.properties.metadata.name;
@@ -774,7 +774,7 @@ var mapContacts = function(contacts ){
       '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
       '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
       '<br>Organisation: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.employer) +
-      '<br>Job title: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.job_title);
+      '<br>Job title: '+(typeof(feature.properties.properties.job_title)==='undefined' ? '' : feature.properties.properties.job_title);
         }
 
         layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));

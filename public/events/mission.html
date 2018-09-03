@@ -55,7 +55,13 @@
             </dl>
             <dl>
               <dt>Status</dt>
-              <dd><span class="event-status">{{mission.event_status}}</span></dd>
+              <dd v-if="!inEditMode"><span class="event-status">{{mission.event_status}}</span></dd>
+              <dd v-else>
+                <select v-model="mission.event_status" class="form-control">
+                  <option disabled value="">Please select one</option>
+                  <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                </select>
+              </dd>
             </dl>
             <dl>
               <dt>Type of Emergency (nature)</dt>
@@ -713,7 +719,8 @@ var vmInstance = new Vue({
     hasSubmissionError:false,
     submissionSuccess:false,
     submissionErrorText: '',
-    currentMissionId: currentMissionId
+    currentMissionId: currentMissionId,
+    statuses: statuses
   },
   methods: {
     saveMissionEdits: function(){
@@ -724,10 +731,12 @@ var vmInstance = new Vue({
         return;
       }
       vm.isSubmitting=true;
-
       var body={
-        metadata: vm.mission
+        status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
+        metadata: vm.mission,
+        eventId: currentEventId
       }
+
       vm.inEditMode=false;
       vm.submissionSuccess=false;
       $.ajax({
@@ -739,7 +748,9 @@ var vmInstance = new Vue({
         vm.isSubmitting=false;
         vm.hasSubmissionError=false;
         vm.submissionSuccess=true;
-
+        if(body.status === "active") {
+            window.location.href = '?eventId=' + currentEventId;
+        }
       }).fail(function(err) {
         vm.isSubmitting=false;
         vm.hasSubmissionError=true;
@@ -750,7 +761,6 @@ var vmInstance = new Vue({
           alert("session expired");
         }
       });
-
     },
     addOtherOrg() {
       this.mission.ext_other_organizations.push({

@@ -51,9 +51,12 @@
 
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
+    <link rel="stylesheet" href="/resources/css/contacts.css"/>
 
     <!-- country selector -->
     <link rel="stylesheet" href="/resources/css/countrySelect.min.css">
+
+
     <style>
     .ui-autocomplete {
           position:absolute;
@@ -219,12 +222,12 @@
         <div id="analysisResultVue" class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myNewAnalyticsModalLabel">Event Analytics</h4>
+            <h4 class="modal-title" id="myNewAnalyticsModalLabel">Open Event Confirmation</h4>
           </div>
           <div class="modal-body">
             <div class="container-fluid">
               <div class="row">
-                <div  class="col-sm-7 analyticsDiv">
+                <div  class="col-sm-12">
                   <div>
                     <div v-if="isSubmitting" class="msf-loader"></div>
                     <div class="" v-if="hasNearBys  && showNearByEvents">
@@ -298,9 +301,9 @@
                   </div>
 
                 </div>
-                <div class="col-sm-5">
+                <!--<div class="col-sm-5">
                   <div id="analyticsMap"></div>
-                </div>
+                </div>-->
               </div>
 
             </div>
@@ -308,9 +311,9 @@
 
           </div>
           <div class="modal-footer">
-            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
-            <button v-if="!hasNearBys || isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+            <button v-if="hasNearBys && !isEventCreated && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button v-if="hasNearBys && !isEventCreated && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
+            <button v-if="!hasNearBys || isAnalyzed || isEventCreated" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
           </div>
         </div>
       </div>
@@ -418,6 +421,10 @@
                         <div class="form-group" style="display:none;">
                             <label>Employment status:</label>
                             <span class="msf_employment"></span>
+                        </div>
+                        <div class="form-group" style="display:none;">
+                            <label>Job title:</label>
+                            <span class="job_title"></span>
                         </div>
                         <div class="form-group" style="display:none;">
                             <label>Section:</label>
@@ -607,6 +614,7 @@
             </button>
               <a href="/" class="navbar-brand"><img src="/resources/images/msf-reach-logo-trans-01.png" style="height:100%;width:auto;" /></a>
           </div>
+          <partial name="{{partialId}}"></partial>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
@@ -674,25 +682,12 @@
 
                 <!--contact tab menu-->
                 <div id="contact" class="tab-pane">
-                    <ul class="nav nav-tabs" id="contact_tabs">
-                        <li><a href="#contact_list" data-toggle="tab">List Contacts</a></li>
-                        <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
-                    </ul>
-
                     <!--contact tab content-->
                     <div class="tab-content">
-
-                      <div id="contact_new" class="tab-pane">
-                        <div id="newContact">
-                          <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
-                        </div>
-                      </div>
-
                       <div id="contact_list" class="tab-pane active">
                         <div class="form-group" >
-                          Contact search category
                             <select class="form-control" style="color:black;" id="inputContactType" >
-                              <option value="" selected>(no category filtering)</option>
+                              <option value="" selected> category </option>
                               <option value="Current MSF Staff">Current MSF Staff</option>
                               <option value="msf_peer">Former Staff</option>
                               <option value="msf_associate">Association Member</option>
@@ -703,11 +698,11 @@
                               <option value="Academic">Academic</option>
                               <option value="Private Medical Practice">Private Medical Practice</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                          <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
-                        </div>
+                            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Name, Phone, Email, etc. ...">
+                            <span class="glyphicon glyphicon-search"></span>
+                            <a href="/contact" target="_blank" class="addContact">Add <span class ="glyphicon glyphicon-plus-sign"> </span> </a>
 
+                        </div>
                         <div id="contact_container" class="tab-pane tab-pane-box">
                         </div>
                       </div>
