@@ -119,11 +119,14 @@ export default ({ config, db, logger }) => {
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
-                type: Joi.string().required(),
+                type: Joi.string().allow(''),
                 metadata: Joi.object().required()
             })
         }),
         (req, res, next) => {
+            if(req.body.type === ""){
+                delete req.body.type // in the case that type is empty, don't update that field
+            }
             events(config, db, logger).updateEvent(req.params.id, req.body)
                 .then((data) => {
                     if (req.body.status === 'inactive') {

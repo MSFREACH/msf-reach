@@ -59,7 +59,7 @@ html,body {
 .report-card-widget {
   position: relative;
   width: 350px;
-  text-align: center;
+  /* text-align: center; */
   background-color: black;
   color:white;
   overflow: hidden;

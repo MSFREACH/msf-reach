@@ -51,9 +51,12 @@
 
     <!-- Nav -->
     <link rel="stylesheet" href="/resources/css/nav.css"/>
+    <link rel="stylesheet" href="/resources/css/contacts.css"/>
 
     <!-- country selector -->
     <link rel="stylesheet" href="/resources/css/countrySelect.min.css">
+
+
     <style>
     .ui-autocomplete {
           position:absolute;
@@ -120,39 +123,39 @@
 
 
                                 <div>
-                                    <input class="newEventTypeBox" id="selectType0" type="checkbox" value="armed_conflict" /><label class="eventBox">&nbsp Armed Conflict</label><br>
-                                    <input class="newEventTypeBox" id="selectType1" type="checkbox" value="disease_outbreak" /><label class="eventBox">&nbsp Disease Outbreak</label><br>
+                                    <input class="newEventTypeBox" id="selectType0" type="checkbox" value="armed_conflict" /><label class="eventBox" for="selectType0">&nbsp Armed Conflict</label><br>
+                                    <input class="newEventTypeBox" id="selectType1" type="checkbox" value="disease_outbreak" /><label class="eventBox" for="selectType1">&nbsp Disease Outbreak</label><br>
                                     <div id="divDisease" style="display:none; margin-left: 20px;">
-                                        <input class="newSubEventTypeBox" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox">&nbsp Cholera</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox">&nbsp Ebola</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType2" type="checkbox" value="Dengue" /><label class="eventBox">&nbsp Dengue</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType3" type="checkbox" value="Malaria" /><label class="eventBox">&nbsp Malaria</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType4" type="checkbox" value="Measles" /><label class="eventBox">&nbsp Measles</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType5" type="checkbox" value="Meningococcal Meningitis" /><label class="eventBox">&nbsp Meningococcal Meningitis</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType6" type="checkbox" value="Yellow Fever" /><label class="eventBox">&nbsp Yellow Fever</label><br>
-                                        <input class="newSubEventTypeBox" id="diseaseType7" type="checkbox" value="Other Disease" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                        <input class="newSubEventTypeBox" id="diseaseType0" type="checkbox" value="Cholera" /><label class="eventBox" for="diseaseType0">&nbsp Cholera</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType1" type="checkbox" value="Ebola" /><label class="eventBox" for="diseaseType1">&nbsp Ebola</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType2" type="checkbox" value="Dengue" /><label class="eventBox" for="diseaseType2">&nbsp Dengue</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType3" type="checkbox" value="Malaria" /><label class="eventBox" for="diseaseType3">&nbsp Malaria</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType4" type="checkbox" value="Measles" /><label class="eventBox" for="diseaseType4">&nbsp Measles</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType5" type="checkbox" value="Meningococcal Meningitis" /><label class="eventBox" for="diseaseType5">&nbsp Meningococcal Meningitis</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType6" type="checkbox" value="Yellow Fever" /><label class="eventBox" for="diseaseType6">&nbsp Yellow Fever</label><br>
+                                        <input class="newSubEventTypeBox" id="diseaseType7" type="checkbox" value="Other Disease" /><label class="eventBox" for="diseaseType7">&nbsp Other (Specify)</label>
                                         <div class="form-group" id="divOtherDisease"  style="display:none;">
                                             <input type="text" id="diseaseType8" class="form-control" placeholder="(Specify)" >
                                         </div>
                                     </div>
-                                    <input class="newEventTypeBox" id="selectType2" type="checkbox" value="displacement" /><label class="eventBox">&nbsp Displacement</label><br>
-                                    <input class="newEventTypeBox" id="selectType3" type="checkbox" value="malnutrition" /><label class="eventBox">&nbsp Malnutrition</label><br>
-                                    <input class="newEventTypeBox" id="selectType4" type="checkbox" value="natural_disaster" /><label class="eventBox">&nbsp Natural Disaster</label><br>
+                                    <input class="newEventTypeBox" id="selectType2" type="checkbox" value="displacement" /><label for="selectType2" class="eventBox">&nbsp Displacement</label><br>
+                                    <input class="newEventTypeBox" id="selectType3" type="checkbox" value="malnutrition" /><label for="selectType3" class="eventBox">&nbsp Malnutrition</label><br>
+                                    <input class="newEventTypeBox" id="selectType4" type="checkbox" value="natural_disaster" /><label for="selectType4" class="eventBox">&nbsp Natural Disaster</label><br>
                                     <div id="divNaturalDisaster" style="display:none; margin-left: 20px;">
-                                        <input class="newSubEventTypeBox" id="disasterType0" type="checkbox" value="drought" /><label class="eventBox">&nbsp Drought</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType1" type="checkbox" value="earthquake" /><label class="eventBox">&nbsp Earthquake</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType2" type="checkbox" value="flood" /><label class="eventBox">&nbsp Flood</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType3" type="checkbox" value="tsunami" /><label class="eventBox">&nbsp Tsunami</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType4" type="checkbox" value="typhoon" /><label class="eventBox">&nbsp Typhoon</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType5" type="checkbox" value="volcano" /><label class="eventBox">&nbsp Volcano</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType6" type="checkbox" value="landslides" /><label class="eventBox">&nbsp Landslides</label><br>
-                                        <input class="newSubEventTypeBox" id="disasterType7" type="checkbox" value="other disaster" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                        <input class="newSubEventTypeBox" id="disasterType0" type="checkbox" value="drought" /><label for="disasterType0" class="eventBox">&nbsp Drought</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType1" type="checkbox" value="earthquake" /><label for="disasterType1" class="eventBox">&nbsp Earthquake</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType2" type="checkbox" value="flood" /><label for="disasterType2" class="eventBox">&nbsp Flood</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType3" type="checkbox" value="tsunami" /><label for="disasterType3" class="eventBox">&nbsp Tsunami</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType4" type="checkbox" value="typhoon" /><label for="disasterType4" class="eventBox">&nbsp Typhoon</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType5" type="checkbox" value="volcano" /><label for="disasterType5" class="eventBox">&nbsp Volcano</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType6" type="checkbox" value="landslides" /><label for="disasterType6" class="eventBox">&nbsp Landslides</label><br>
+                                        <input class="newSubEventTypeBox" id="disasterType7" type="checkbox" value="other disaster" /><label for="disasterType7" class="eventBox">&nbsp Other (Specify)</label>
                                         <div class="form-group" id="divOtherDisaster"  style="display:none;">
                                             <input type="text" id="disasterType8" class="form-control" placeholder="(Specify)" >
                                         </div>
                                     </div>
-                                    <input class="newEventTypeBox" id="selectType5" type="checkbox" value="search_and_rescue" /><label class="eventBox">&nbsp Search & Rescue</label><br>
-                                    <input class="newEventTypeBox" id="selectType6" type="checkbox" value="other" /><label class="eventBox">&nbsp Other (Specify)</label>
+                                    <input class="newEventTypeBox" id="selectType5" type="checkbox" value="search_and_rescue" /><label for="selectType5" class="eventBox">&nbsp Search & Rescue</label><br>
+                                    <input class="newEventTypeBox" id="selectType6" type="checkbox" value="other" /><label for="selectType6" class="eventBox">&nbsp Other (Specify)</label>
                                 </div>
 
 
@@ -243,12 +246,12 @@
         <div id="analysisResultVue" class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myNewAnalyticsModalLabel">Event Analytics</h4>
+            <h4 class="modal-title" id="myNewAnalyticsModalLabel">Open Event Confirmation</h4>
           </div>
           <div class="modal-body">
             <div class="container-fluid">
               <div class="row">
-                <div  class="col-sm-7 analyticsDiv">
+                <div  class="col-sm-12">
                   <div>
                     <div v-if="isSubmitting" class="msf-loader"></div>
                     <div class="" v-if="hasNearBys  && showNearByEvents">
@@ -322,9 +325,9 @@
                   </div>
 
                 </div>
-                <div class="col-sm-5">
+                <!--<div class="col-sm-5">
                   <div id="analyticsMap"></div>
-                </div>
+                </div>-->
               </div>
 
             </div>
@@ -332,9 +335,9 @@
 
           </div>
           <div class="modal-footer">
-            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button v-if="hasNearBys && !isAnalyzed && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
-            <button v-if="!hasNearBys || isAnalyzed" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
+            <button v-if="hasNearBys && !isEventCreated && !isSubmitting && !isAnalyzing" v-on:click="resetSubmission()" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button v-if="hasNearBys && !isEventCreated && !isSubmitting && !isAnalyzing" v-on:click="submitAndAnalyze(toSubmitBody)" type="button" name="button" class="btn btn-success">Create Event</button>
+            <button v-if="!hasNearBys || isAnalyzed || isEventCreated" v-on:click="resetSubmission()" type="button" class="btn btn-msf" data-dismiss="modal">Done</button>
           </div>
         </div>
       </div>
@@ -442,6 +445,10 @@
                         <div class="form-group" style="display:none;">
                             <label>Employment status:</label>
                             <span class="msf_employment"></span>
+                        </div>
+                        <div class="form-group" style="display:none;">
+                            <label>Job title:</label>
+                            <span class="job_title"></span>
                         </div>
                         <div class="form-group" style="display:none;">
                             <label>Section:</label>
@@ -552,12 +559,12 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabelAbout">About MSF-REACH</h4>
+              <h4 class="modal-title" id="myModalLabelAbout">About MSF REACH</h4>
             </div>
             <div class="modal-body" id="AboutModalBody">
                 <div class="list-group">
-                    <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&darr;</i> First introduction to REACH for MSF Movement</div>
-                    <div class="list-group-item list-group-item-action" style="display:block;" id="intro_video" >
+                    <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('intro')"><i id="intro_icon">&uarr;</i> First introduction to REACH for MSF Movement</div>
+                    <div class="list-group-item list-group-item-action" style="display:none;" id="intro_video" >
                       <iframe width="300" height="225" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/LQRrPJdYOcs?autoplay=0"></iframe>
                     </div>
                     <div class="list-group-item list-group-item-action video-selector" onclick="displayVideo('tic')"><i id="tic_icon">&uarr;</i> REACH - TIC Incubator Ideas Application</div>
@@ -582,15 +589,36 @@
               <h4 class="modal-title" id="myModalLabelFAQ">Frequently Asked Questions</h4>
             </div>
             <div class="modal-body" id="FAQModalBody">
-              <p><span style="font-weight:bold;">What is REACH?</span><br />
-              REACH is a platform designed to combine institutional data with crowd-sourced information (including social media, instant messaging, and relevant RSS feeds) in real-time to monitor and manage natural disasters in Southeast Asia.</p>
-              <p><span style="font-weight:bold;">Who is responsible for the platform?</span><br />
-              REACH was initiated by the MSF HK Emergency Response Support Unit (ERSU), in collaboration with the London-based software development cooperative User Group Inc. LLP and Across the Cloud Pty Ltd. ERSU manages the platform and makes it available for operational usage to colleagues throughout the Movement.</p>
-              <p><span style="font-weight:bold;">Who pays for REACH?</span><br />
-              REACH is currently in its second stage of development, which is funded by a TIC Incubator grant. The first phase of development was funded by ERSU in Hong Kong. Additional funding would be required to better scale the platform to geographies beyond Southeast Asia, and to better support the wide range of missions that MSF conducts, including further work to extend the inbuilt AI capabilities.
-              <p><span style="font-weight:bold;">Who can access REACH?</span><br />
-              In its current phase, REACH can gather, sort, display and management real-time disaster information in Southeast Asia. Members of the movement who want to use the tool to this end should contact ERSU with requests for “Editor” access. However, soon, all members of the Movement will be able to login to a “View Only” set of features. </p>
-            </div>
+              <p style="font-weight:bold;">What is REACH?</p>
+              <p>
+              REACH is a platform designed to combine institutional data with crowd-sourced information (including social media, instant messaging, and relevant RSS feeds) in real-time to monitor and manage emergencies. REACH has two main objectives: (1) helping MSF to streamline our data sharing activities and improve our information management in emergency situation (2) improve the response time by better and faster understanding the evolving situation on the ground (crowdsourcing by report card; screening social media and news feed; AI and ML for better analysis of past responses in the area).
+              </p>
+
+              <p><span style="font-weight:bold;">Who is responsible for the platform?</p>
+              <p>
+              REACH is an initiative of the MSF Hong Kong OSU (Operation Support Unit), in collaboration with the London-based software development cooperative, User Group Inc. LLP and Across the Cloud Pty Ltd. The ERSU (Emergency Response Support Unit) manages the platform and makes it available for operational usage to colleagues throughout the Movement.
+              </p>
+
+              <p style="font-weight:bold;">Who pays for REACH?</p>
+              <p>
+               REACH is currently in its second stage of development, which is funded by a Transformational Investment Capacity Incubator grant. The first phase of development was funded by the ERSU in Hong Kong. The second phase, including the extension would benefit from the TIC grant. Work on governance and structure will be done before moving ahead to the Phase 3 of development.
+              </p>
+
+              <p style="font-weight:bold;">Who can access REACH?</p>
+              <p>
+              In its current phase, REACH can gather, sort, display and management real-time disaster information in Southeast Asia. Members of the movement who want to use the tool to this end (edit permission) should contact Lucie Gueuning with a request for operators access. However, all members of the Movement are now able to login to a view only set of features using their MSF credentials as per Office 365.
+              </p>
+
+              <p>Users from MSF external network can send out report cards and contact cards to collect information that is then presented in REACH.</p>
+
+              <p style="font-weight:bold;">Is REACH GDPR compliant?</p>
+
+              <p>Based on advice from a consultant, we have made REACH compliant with the GDPR.</p>
+
+              <p style="font-weight:bold;">Who can enter contact details?</p>
+
+              <p>Either contacts themselves enter their personal contact details thanks to our contact cards, or MSF staff enter, as a private list, their own contact network in order to share their details with specific colleagues within the Movement. All MSF staff acknowledge having received consent from contacts to enter their information into the MSF database.</p>
+          </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
@@ -610,6 +638,7 @@
             </button>
               <a href="/" class="navbar-brand"><img src="/resources/images/msf-reach-logo-trans-01.png" style="height:100%;width:auto;" /></a>
           </div>
+          <partial name="{{partialId}}"></partial>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
@@ -700,25 +729,12 @@
 
                 <!--contact tab menu-->
                 <div id="contact" class="tab-pane">
-                    <ul class="nav nav-tabs" id="contact_tabs">
-                        <li><a href="#contact_list" data-toggle="tab">List Contacts</a></li>
-                        <li><a href="#contact_new" data-toggle="tab">Add a Contact</a></li>
-                    </ul>
-
                     <!--contact tab content-->
                     <div class="tab-content">
-
-                      <div id="contact_new" class="tab-pane">
-                        <div id="newContact">
-                          <a  href="/contact" target="_blank" class="list-group-item list-group-item-action">Add a new contact</a>
-                        </div>
-                      </div>
-
                       <div id="contact_list" class="tab-pane active">
                         <div class="form-group" >
-                          Contact search category
                             <select class="form-control" style="color:black;" id="inputContactType" >
-                              <option value="" selected>(no category filtering)</option>
+                              <option value="" selected> category </option>
                               <option value="Current MSF Staff">Current MSF Staff</option>
                               <option value="msf_peer">Former Staff</option>
                               <option value="msf_associate">Association Member</option>
@@ -729,11 +745,11 @@
                               <option value="Academic">Academic</option>
                               <option value="Private Medical Practice">Private Medical Practice</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                          <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Search by typing Name, Phone, Email, etc. ...">
-                        </div>
+                            <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Name, Phone, Email, etc. ...">
+                            <span class="glyphicon glyphicon-search"></span>
+                            <a href="/contact" target="_blank" class="addContact">Add <span class ="glyphicon glyphicon-plus-sign"> </span> </a>
 
+                        </div>
                         <div id="contact_container" class="tab-pane tab-pane-box">
                         </div>
                       </div>
