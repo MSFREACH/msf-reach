@@ -17,6 +17,7 @@ var loadMissions = function(err, missions) {
     if (err) {
         alert('Error loading missions: ' + err);
     } else {
+
         $('#missionsContainer').html('<ul class="table table-hover" id="missionsTable">');
 
         $.each(missions, function(key, value) {
