@@ -81,7 +81,7 @@ export default ({ config, db, logger }) => {
                                 next(err);
                             });
                     }else{
-                        handleGeoResponse(data, req, res, next)
+                        handleGeoResponse(data, req, res, next);
                     }
                 })
                 .catch((err) => {
