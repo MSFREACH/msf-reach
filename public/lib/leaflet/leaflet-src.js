@@ -2530,6 +2530,23 @@ function create$1(tagName, className, container) {
 	return el;
 }
 
+function create$TextInput(tagName, className, container, id, placeholder){
+	var el = document.createElement(tagName);
+		el.className = className || '';
+        el.id = id;
+		if(tagName == 'input'){
+			el.type = "text"
+			el.placeholder = placeholder
+		}else{
+			el.type = "button"
+		}
+
+		if (container) {
+			container.appendChild(el);
+		}
+		return el;
+}
+
 // @function remove(el: HTMLElement)
 // Removes `el` from its parent element
 function remove(el) {
@@ -4889,6 +4906,24 @@ var Layers = Control.extend({
 		disableScrollPropagation(container);
 
 		var form = this._form = create$1('form', className + '-list');
+		var mapSearch = create$1('form', className + '-search-address');
+
+		// create$TextInput(tagName, className, container, id, placeholder)
+		create$TextInput('input', 'form-control', mapSearch, 'mapAddress', 'Search address/location...')
+		var coorLabel = create$1('label', '', mapSearch)
+		coorLabel.text = 'OR locate by coordinates:'
+		create$TextInput('input', 'form-control', mapSearch, 'mapAddressLat', 'Latitude')
+		create$TextInput('input', 'form-control', mapSearch, 'mapAddressLng', 'Longitude')
+		create$TextInput('button', 'btn btn-info btn-sm', mapSearch, 'mapAddressLocate')
+
+		// <div class="mapSearch">
+        //     <input type="text" class="form-control" placeholder="Search address/location..." id="mapAddress">
+        //     <label for="mapAddressLat">OR locate by coordinates:</label>
+        //     <input type="text" class="form-control" value="" id="mapAddressLat" placeholder="Latitude">
+        //     <input type="text" class="form-control" value="" id="mapAddressLng" placeholder="Longitude">
+        //     <button type="button" class="btn btn-info btn-sm" id="mapAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+        // </div>
+
 
 		if (collapsed) {
 			this._map.on('click', this.collapse, this);
@@ -4926,7 +4961,7 @@ var Layers = Control.extend({
 		this._baseLayersList = create$1('div', className + '-base', form);
 		this._separator = create$1('div', className + '-separator', form);
 		this._overlaysList = create$1('div', className + '-overlays', form);
-
+		form.appendChild(mapSearch);
 		container.appendChild(form);
 	},
 
@@ -9406,7 +9441,7 @@ var Popup = DivOverlay.extend({
 
 		this._tipContainer = create$1('div', prefix + '-tip-container', container);
 		this._tip = create$1('div', prefix + '-tip', this._tipContainer);
-		
+
 		if (this.options.closeButton) {
 			var closeButton = this._closeButton = create$1('a', prefix + '-close-button', container);
 			closeButton.href = '#close';
