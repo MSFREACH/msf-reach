@@ -42,7 +42,7 @@ $(function () {
     // Next button goes forward iff current block validates
     $('.form-navigation .next').on('click',function() {
         var cInd=curIndex();
-        if(cInd == 0 && !$('#inputGDPRAcknowledge').is(':checked')) {
+        if(cInd == 0 &&  (localStorage.getItem('username') && !$('#inputGDPRAcknowledge').is(':checked'))) {
             alert('Please tick the Information consent box to continue.');
             return;
         }
