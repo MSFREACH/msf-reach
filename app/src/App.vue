@@ -1,5 +1,5 @@
 <template>
-    <div id = "app">
+    <div id="app">
         <r-header> </r-header>
         <router-view></router-view>
         <r-footer></r-footer>
@@ -7,17 +7,21 @@
 </template>
 
 <script>
-    import RHeader from '@/components/RHeader';
-    import RFooter from '@/components/RFooter';
+import RHeader from '@/components/RHeader';
+import RFooter from '@/components/RFooter';
 
-    export default {
-        name: 'App',
-        components:{
-            RHeader, RFooter
-        }
-    };
+export default {
+    name: 'App',
+    components:{
+        RHeader, RFooter
+    },
+    message: 'Hello Vue!'
+};
+
 </script>
 
 <style>
-
+    html{
+        color: red;
+    }
 </style>

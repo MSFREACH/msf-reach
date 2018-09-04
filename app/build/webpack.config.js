@@ -11,7 +11,6 @@ module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
     app: ['babel-polyfill', './app/src/main.js']
-
   },
   output: {
     path: config.build.assetsRoot,
