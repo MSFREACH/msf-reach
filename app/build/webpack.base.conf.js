@@ -2,13 +2,15 @@ var path = require('path')
 var utils = require('./utils')
 var config = require('./config')
 var vueLoaderConfig = require('./vue-loader.config')
+var MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
+// mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 module.exports = {
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    mode:'none',
   entry: {
     app: ['babel-polyfill', './app/src/main.js']
   },
@@ -44,6 +46,13 @@ module.exports = {
         options: vueLoaderConfig
       },
       {
+          test: /\.css$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader'
+          ]
+        },
+      {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test')]
@@ -73,5 +82,13 @@ module.exports = {
         }
       }
     ]
-  }
+    },
+    plugins:[
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+          // both options are optional
+          filename: "[name].css",
+          chunkFilename: "[id].css"
+        })
+    ]
 }

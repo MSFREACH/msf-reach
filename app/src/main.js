@@ -2,7 +2,7 @@ import Vue from 'vue';
 import App from './App';
 import router from '@/router';
 import store from '@/store';
-// import { CHECK_AUTH } from '@/store/actions.type';
+import { CHECK_AUTH } from '@/store/actions.type';
 
 import ApiService from '@/common/api.service';
 
@@ -14,7 +14,7 @@ ApiService.init();
 router.beforeEach(
     (to, from, next) => {
         return Promise
-            .all()
+            .all([store.dispatch(CHECK_AUTH)])
             .then(next);
     }
 );

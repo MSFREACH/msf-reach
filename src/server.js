@@ -21,7 +21,7 @@ import nocache from 'nocache';
 
 // WEBPACK compiler for VUE conponents
 import webpack from 'webpack'
-import webpackConfig from '../app/build/webpack.config'
+import webpackConfig from '../app/build/webpack.dev.conf'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 
@@ -44,7 +44,13 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     app.use(webpackDevMiddleware(compiler, {quiet: true, publicPath: webpackConfig.output.publicPath}))
     app.use(webpackHotMiddleware(compiler, {log: console.log, path: '/__webpack_hmr', heartbeat: 2000}))
 
-
+    // force page reload when html-webpack-plugin template changes
+    compiler.plugin('compilation', function (compilation) {
+      compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
+        webpackHotMiddleware.publish({ action: 'reload' })
+        cb()
+      })
+    })
 
     if (config.SESSION_SECRET) {
         app.use(expressSession({ secret: config.SESSION_SECRET, resave: true, saveUninitialized: false })); //Hopefully this fixes #236 //TODO Need to save sessions to db instead to avoid memory leaks in prod
@@ -211,9 +217,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
             // Mount the API. authentication specified within routes
             app.use('/api', routes({ config, db, logger }));
-            app.use('/', [ensureAuthenticatedLanding, express.static(config.STATIC_PATH)]);
+            app.use('/landing', [ensureAuthenticatedLanding, express.static(config.STATIC_PATH)]);
 
-            app.use('/vuevue', express.static('app')); // handle authentication & routing in frontend
+            // app.use('/vuevue', express.static('app')); // handle authentication & routing in frontend
 
 
 
