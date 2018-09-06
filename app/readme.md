@@ -1,5 +1,7 @@
-To run
+# To run
+
 dev > `node app/build/dev-server.js` on port 8080
+
 build > node build/build.js
 
 also 'npm run start' on port 8001
