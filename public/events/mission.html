@@ -55,8 +55,11 @@
             </dl>
             <dl>
               <dt>Status</dt>
-              <dd v-if="!inEditMode"><span class="event-status">{{mission.event_status}}</span></dd>
-              <dd v-else>
+              <!-- on landing page  -->
+              <dd v-show="!currentEventId"><span class="event-status">{{mission.event_status}}</span></dd>
+              <!-- on event page  -->
+              <dd v-show="currentEventId"><span v-show="!inEditMode" class="event-status">{{mission.event_status}}</span></dd>
+              <dd v-show="inEditMode && currentEventId">
                 <select v-model="mission.event_status" class="form-control">
                   <option disabled value="">Please select one</option>
                   <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
@@ -731,12 +734,12 @@ var vmInstance = new Vue({
         return;
       }
       vm.isSubmitting=true;
+
       var body={
         status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
         metadata: vm.mission,
-        eventId: currentEventId
+        eventId: currentEventId ? currentEventId : null
       }
-
       vm.inEditMode=false;
       vm.submissionSuccess=false;
       $.ajax({
@@ -748,8 +751,10 @@ var vmInstance = new Vue({
         vm.isSubmitting=false;
         vm.hasSubmissionError=false;
         vm.submissionSuccess=true;
-        if(body.status === "active") {
+        if(body.status === "active" && currentEventId) {
             window.location.href = '?eventId=' + currentEventId;
+        }else{
+            window.location.href ='/'
         }
       }).fail(function(err) {
         vm.isSubmitting=false;
@@ -825,7 +830,6 @@ var vmInstance = new Vue({
     }
   },
   mounted: function() {
-
     this.$nextTick(function() {
       var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
       var eventDefaultLatLng = [missionCoordinates[1], missionCoordinates[0]];
