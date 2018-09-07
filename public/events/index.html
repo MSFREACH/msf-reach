@@ -581,7 +581,7 @@
               <div v-if="vizalyticsError"> <span  class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Error in analyzing event.</div>
 
               <div v-if="isAnalyzed">
-                <h4>Anlysis result:</h4>
+                <h4>Anlysis result based on past events:</h4>
                 <span v-if="response.status.success" > <span class="glyphicon glyphicon-check" style="color:green;"></span> OK </span>
                 <span v-else> <span class="glyphicon glyphicon-remove-circle" style="color:red;"></span> Unsuccessful </span>
 
@@ -698,12 +698,10 @@
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ (new Date(event.updated_at)).toLocaleString().replace(/:\d{2}$/,'') }}</td></tr>
-                  <tr><td>Event sharing</td><td>
-                    <div id="eventShareButtons"></div>
-                  </td><td><div id="eventCopyButton" class="st-animated"></div></td></tr>
-
-                  <tr><td>Report</td>
-                  <td><div id="reportShareButtons"></div></td><td><div style="display:inline-block;margin-right:10px;" id="reportCopyButton" class="st-animated"></div><button style="display:inline-block;" class="btn btn-primary" data-toggle="modal" data-target="#newReportModal">New</button></td></tr>
+                  <tr>
+                    <td> Share Links to </td>
+                    <td colspan="2"><div> <span id="eventShareButtons"></span><span id="eventCopyButton" class="st-animated" style="display: inline-block"></span> </div><div><span id="reportShareButtons"></span><span id="reportCopyButton" class="st-animated"></span><a data-toggle="modal" data-target="#newReportModal" style="cursor: pointer">open in new tab</a></div></td>
+                </tr>
 
                 </table>
 
@@ -1122,8 +1120,8 @@
                                   <input type="radio" value="non_medical" v-model="event.metadata.ext_capacity_type_in_ground" /> Non-Medical
                                 </label>
                               </dd>
-                              <dd class="padding-bottom" v-bind:class="{'highlight': suggestEdit.ExtCapacity  }">
-                                 <span class="highlight" v-show="suggestEdit.ExtCapacity">* Please review</span>
+                              <dd class="padding-bottom" v-bind:class="{'highlight': suggestEdit.ExtCapacity &&  event.metadata.event_status == 'monitoring' }">
+                                 <span class="highlight" v-show="suggestEdit.ExtCapacity &&  event.metadata.event_status == 'monitoring'">* Please review</span>
                                 <textarea v-model.trim="event.metadata.capacity" placeholder="Government capacity" class="form-control"></textarea>
                               </dd>
                               <dd class="padding-bottom">
@@ -1148,8 +1146,8 @@
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <tr v-for="(item, index) in event.metadata.ext_other_organizations" v-bind:class="{ 'highlight': suggestEdit.ExtCapacity  }">
-                                        <span class="highlight" v-show="suggestEdit.ExtCapacity">* Please review</span>
+                                    <tr v-for="(item, index) in event.metadata.ext_other_organizations" v-bind:class="{ 'highlight': suggestEdit.ExtCapacity &&  event.metadata.event_status == 'monitoring' }">
+                                        <span class="highlight" v-show="suggestEdit.ExtCapacity &&  event.metadata.event_status == 'monitoring'">* Please review</span>
                                       <td>
                                         <input type="text" class="form-control" v-model="item.name" />
                                       </td>
@@ -1220,7 +1218,9 @@
                                         <div class="well">No MSF Figure yet.</div>
                                       </div>
                                       <div class="clearfix">&nbsp;</div>
-                                      <div v-for="(item, index) in event.metadata.keyMSFFigures">
+                                      <span class="highlight" v-show="suggestEdit.Figures &&  (event.metadata.event_status == 'exploration' || event.metadata.event_status == 'ongoing')">* Please review</span>
+
+                                      <div v-for="(item, index) in event.metadata.keyMSFFigures"  v-bind:class="{ 'highlight' : suggestEdit.Figures &&   (event.metadata.event_status =='exploration' || event.metadata.event_status =='ongoing') }">
                                         <div class="row">
                                           <div class="col-sm-2">
                                             <button class="btn btn-xs btn-danger" @click="removeMSFfigure(item, index)">X</button>
@@ -1230,7 +1230,8 @@
                                           </div>
                                           <div class="col-sm-12">
                                             <label>{{ item.category | relaceUnderscore }}: {{ item.value | formatedNumber }}</label>
-                                            <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'">
+                                            <div v-if="item.category === 'others' || item.category === 'measles_or_others_(be_specify)_vaccinations'"  v-bind:class="{ 'highlight' : suggestEdit.Figures && event.metadata.event_status == 'exploration'}">
+                                                <span class="highlight" v-show="suggestEdit.Figures && event.metadata.event_status == 'exploration'"> </span>
                                               <input type="text" v-model="item.description" class="form-control" placeholder="Please Specify" />
                                             </div>
                                           </div>
@@ -1252,8 +1253,8 @@
                             <li class="list-group-item">
                               <dl>
                                 <dt>Population in total for zone impacted</dt>
-                                <dd v-bind:class="{ 'highlight' : suggestEdit.Figures  }">
-                                    <span class="highlight" v-show="suggestEdit.Figures">* Please review</span>
+                                <dd v-bind:class="{ 'highlight' : suggestEdit.Figures &&  event.metadata.event_status == 'monitoring' }">
+                                    <span class="highlight" v-show="suggestEdit.Figures &&  event.metadata.event_status == 'monitoring'">* Please review</span>
                                   <div class="row">
                                     <div class="col-sm-4">
                                       <input type="number" class="form-control" v-model.number="event.metadata.population_total" v-on:change="calculatePercentagePeopleAffected" placeholder="Total population" />
@@ -1266,8 +1267,8 @@
                               </dl>
                               <dl>
                                 <dt>Population affected</dt>
-                                <dd v-bind:class="{ 'highlight' : suggestEdit.Figures }">
-                                <span class="highlight" v-show="suggestEdit.Figures">* Please review</span>
+                                <dd v-bind:class="{ 'highlight' : suggestEdit.Figures &&  event.metadata.event_status == 'monitoring'}">
+                                <span class="highlight" v-show="suggestEdit.Figures &&  event.metadata.event_status == 'monitoring'">* Please review</span>
                                   <div class="row">
                                     <div class="col-sm-4">
                                       <input type="number" class="form-control col-sm-3" v-model.number="event.metadata.population_affected" v-on:change="calculatePercentagePeopleAffected" placeholder="Affected population" />
@@ -1332,7 +1333,8 @@
                         <li class="list-group-item">
                           <dl>
                             <dt>Staff list — human resources</dt>
-                            <dd>
+                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&  event.metadata.event_status == 'ongoing'}">
+                                <span class="highlight" v-show="suggestEdit.Resources &&  event.metadata.event_status == 'ongoing'">* Please review</span>
                               <textarea v-model.trim="event.metadata.msf_resource_staff_list" placeholder="Contact(s)" class="form-control"></textarea>
                             </dd>
                           </dl>
@@ -1340,7 +1342,8 @@
                         <li class="list-group-item">
                           <dl>
                             <dt>Expatriate</dt>
-                            <dd>
+                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&  (event.metadata.event_status == 'exploration' || event.metadata.event_status == 'ongoing')}">
+                                <span class="highlight" v-show="suggestEdit.Resources &&  event.metadata.event_status == 'exploration'">* Please review</span>
                               <textarea v-model.trim="event.metadata.msf_resource_staff_expatriate" placeholder="Contact(s)" class="form-control"></textarea>
                             </dd>
                           </dl>
@@ -1348,7 +1351,8 @@
                         <li class="list-group-item">
                           <dl>
                             <dt>National staff</dt>
-                            <dd>
+                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&   (event.metadata.event_status == 'exploration' || event.metadata.event_status == 'ongoing')}">
+                                <span class="highlight" v-show="suggestEdit.Resources &&  event.metadata.event_status == 'ongoing'">* Please review</span>
                               <textarea v-model.trim="event.metadata.msf_resource_staff_national" placeholder="Contact(s)" class="form-control"></textarea>
                             </dd>
                           </dl>
@@ -1422,7 +1426,8 @@
                         <li class="list-group-item">
                           <dl>
                             <dt>Visa requirement</dt>
-                            <dd>
+                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&  event.metadata.event_status == 'exploration'}">
+                                <span class="highlight" v-show="suggestEdit.Resources &&  event.metadata.event_status == 'exploration'">* Please review</span>
                               <label>Nationality</label>
                               <div style="display:block;" v-for="(nat,ind) in event.metadata.msf_resource_visa_requirement.nationality">
                                  <country-select :options="countryParams" :value="nat" @input="countryChanged($event,ind)"></country-select>
@@ -1449,7 +1454,8 @@
                         <li class="list-group-item">
                           <dl>
                             <dt>Budget</dt>
-                            <dd>
+                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&  event.metadata.event_status == 'exploration'}">
+                                <span class="highlight" v-show="suggestEdit.Resources &&  event.metadata.event_status == 'exploration'">* Please review</span>
                               <table class="table">
                                 <thead>
                                   <tr>
@@ -1483,7 +1489,8 @@
                         <li class="list-group-item">
                           <dl>
                             <dt>Institutional Donors</dt>
-                            <dd>
+                            <dd v-bind:class="{ 'highlight': suggestEdit.Resources &&  event.metadata.event_status == 'exploration'}">
+                                <span class="highlight" v-show="suggestEdit.Resources &&  event.metadata.event_status == 'exploration'">* Please review</span>
                               <textarea v-model.trim="event.metadata.msf_resource_institutional_donors" placeholder="Donors" class="form-control"></textarea>
                             </dd>
                           </dl>
@@ -1518,7 +1525,7 @@
                       <li class="list-group-item">
                         <dl>
                           <dt>Practical Details / Recommendations</dt>
-                          <dd v-bind:class="{ 'highlight' : suggestEdit.Reflection }">
+                          <dd v-bind:class="{ 'highlight' : suggestEdit.Reflection && (event.metadata.event_status =='exploration' || event.metadata.event_status =='monitoring') }">
                           <span class="highlight" v-show="suggestEdit.Reflection">* Please review</span>
                             <textarea v-model.trim="event.metadata.msf_ref_com_practical_details_recomm" placeholder="Description" class="form-control"></textarea>
                           </dd>
@@ -1527,7 +1534,7 @@
                       <li class="list-group-item">
                         <dl>
                           <dt>Reflection / Comments on intervention</dt>
-                          <dd v-bind:class="{ 'highlight' : suggestEdit.Reflection  }">
+                          <dd v-bind:class="{ 'highlight' : suggestEdit.Reflection && (event.metadata.event_status =='exploration' || event.metadata.event_status =='monitoring') }">
                           <span class="highlight" v-show="suggestEdit.Reflection">* Please review</span>
                             <textarea v-model.trim="event.metadata.msf_ref_com_reflection_comments" placeholder="Description" class="form-control"></textarea>
                           </dd>
