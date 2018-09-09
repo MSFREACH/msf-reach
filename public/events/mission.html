@@ -93,10 +93,10 @@
                   <input type="text" class="form-control" v-model="mission.incharge_name" placeholder="Name" />
                 </dd>
                 <dd class="padding-bottom">
-                  <date-picker v-model="mission.mission_contact_person.arrival_time" placeholder="Arrival time"  ></date-picker>
+                  <date-picker v-model="mission.mission_contact_person.arrival_time" placeholder="Arrival time" :config="dateTimeConfig" ></date-picker>
                 </dd>
                 <dd class="padding-bottom">
-                  <date-picker v-model="mission.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+                  <date-picker v-model="mission.mission_contact_person.departure_time" placeholder="Departure time" :config="dateTimeConfig"></date-picker>
                 </dd>
               </section>
 
@@ -724,7 +724,10 @@ var vmInstance = new Vue({
     submissionSuccess:false,
     submissionErrorText: '',
     currentMissionId: currentMissionId,
-    statuses: statuses
+    statuses: statuses,
+    dateTimeConfig: {
+      format: 'DD/MM/YYYY, HH:mm'
+    }
   },
   methods: {
     saveMissionEdits: function(){
@@ -831,6 +834,8 @@ var vmInstance = new Vue({
     }
   },
   mounted: function() {
+    this.mission.mission_contact_person.arrival_time=new moment(this.mission.mission_contact_person.arrival_time);
+    this.mission.mission_contact_person.departure_time=new moment(this.mission.mission_contact_person.departure_time);
 
     this.$nextTick(function() {
       var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
