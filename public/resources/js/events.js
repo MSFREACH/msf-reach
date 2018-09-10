@@ -1114,6 +1114,7 @@ var onEditEvent = function() {
 
 var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
+    $('#archiveModal').modal('show');
 };
 
 mainMap.on('overlayadd', function (layersControlEvent) {
@@ -1847,7 +1848,7 @@ var vmObject = {
         submitEventSection(category){
             var vm = this;
             var body = {
-                status: (vm.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                status: vm.event.status,
                 type: vm.event.type.toString(),
                 metadata : vm.event.metadata
             };
