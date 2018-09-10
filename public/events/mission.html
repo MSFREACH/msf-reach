@@ -51,7 +51,10 @@
             </dl>
             <dl>
               <dt>Closure Date of event</dt>
-              <dd><span class="event-finishDate">{{mission.event_datetime_closed | formatDateOnly }}</span></dd>
+              <dd v-if="!inEditMode"><span class="event-finishDate">{{mission.event_datetime_closed | formatDateOnly }}</span></dd>
+              <dd v-else>
+                <date-picker v-model="mission.event_datetime_closed" :config="{format: 'YYYY-MM-DD'}" placeholder="Closure date"></date-picker>
+              </dd>
             </dl>
             <dl>
               <dt>Status</dt>
@@ -677,19 +680,22 @@ Vue.component('country-select', {
 });
 
 Vue.filter('formatDateOnly', function(value,storedFormat) {
-
   if (value) {
-    return moment(value).format("YYYY-MM-DD");
+    var d=moment(value);
+    return (d.isValid() ? d.format(DATE_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
+  }
+  else{
+    return '';
   }
 });
 
 Vue.filter('formatFullDate', function(value,storedFormat) {
   if (value) {
     //return (new Date(value)).toLocaleString().replace(/:\d{2}$/,'');
-   var dateTimeDisplayFormat='YYYY-MM-DD  HH:mm';
-    return (storedFormat ? moment(value,storedFormat).format(dateTimeDisplayFormat) : moment(value).format(dateTimeDisplayFormat) );
+   var d= (storedFormat ? moment(value,storedFormat) : moment(value) );
+   return (d.isValid() ? d.format(DATETIME_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
   } else {
-    return "N/A";
+    return "";
   }
 });
 
@@ -727,7 +733,7 @@ var vmInstance = new Vue({
     currentMissionId: currentMissionId,
     statuses: statuses,
     dateTimeConfig: {
-      format: 'YYYY-MM-DD  HH:mm'
+      format: DATETIME_DISPLAY_FORMAT
     }
   },
   methods: {
@@ -836,6 +842,7 @@ var vmInstance = new Vue({
   },
   mounted: function() {
    var vm=this;
+   console.log(vm.mission.event_datetime);
    if ((vm.mission.startDate)&&(!(vm.mission.event_datetime)))
    {
      vm.mission.event_datetime=new moment(vm.mission.startDate,"DD/MM/YYYY");

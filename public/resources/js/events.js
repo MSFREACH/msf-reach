@@ -927,8 +927,8 @@ var mapMissions = function(missions ){
                 popupContent += 'Latest notification: (none)<BR>';
             }
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
-            popupContent += 'Start date: ' + (feature.properties.properties.startDate || convertToLocaleDate(feature.properties.properties.event_datetime) ) + '<BR>';
-            popupContent += 'Finish date: ' + (feature.properties.properties.finishDate || convertToLocaleDate(feature.properties.properties.event_datetime_closed) )+ '<BR>';
+            popupContent += 'Start date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime)  || feature.properties.properties.startDate) + '<BR>';
+            popupContent += 'Finish date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime_closed) || feature.properties.properties.finishDate)+ '<BR>';
             popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
@@ -1280,16 +1280,21 @@ Vue.component('country-select', {
     }
 });
 
-
-Vue.filter('formatDateOnly', function(value) {
+Vue.filter('formatDateOnly', function(value,storedFormat) {
     if (value) {
-        return moment(value).format('YYYY-MM-DD');
+        var d=moment(value);
+        return (d.isValid() ? d.format(DATE_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
+    }
+    else{
+        return '';
     }
 });
 
-Vue.filter('formatFullDate', function(value) {
+Vue.filter('formatFullDate', function(value,storedFormat) {
     if (value) {
-        return moment(value).format('YYYY-MM-DD  HH:mm');
+    //return (new Date(value)).toLocaleString().replace(/:\d{2}$/,'');
+        var d= (storedFormat ? moment(value,storedFormat) : moment(value) );
+        return (d.isValid() ? d.format(DATETIME_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
     } else {
         return '';
     }
