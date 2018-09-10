@@ -107,7 +107,7 @@ export default (config, db, logger) => ({
                                 area.country=address[i].long_name;
                                 area.country_code=address[i].short_name;
 
-                                body.metadata.country=address[i].long_name; 
+                                body.metadata.country=address[i].long_name;
                             }
                         }
                         body.metadata.areas.push(area);
@@ -166,6 +166,24 @@ export default (config, db, logger) => ({
             .catch((err) => reject(err));
     }),
 
+    activateEvent: (body) => new Promise((resolve, reject) => {
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+			SET status = $1,
+              updated_at = now(),
+			metadata = metadata || $2
+			WHERE id = $3
+			RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
+
+        // Setup values
+        let values = [ body.status, body.metadata, body.eventId];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(body.eventId), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
+            .catch((err) => reject(err));
+    }),
     /**
    * Update an event location
    * @param {integer} id ID of event

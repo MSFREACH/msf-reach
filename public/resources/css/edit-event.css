@@ -93,3 +93,20 @@ span.remove:hover{
 .table-container{
   padding: 0;
 }
+
+span.highlight{
+    color: red;
+    background: #fcf8e3;
+}
+
+div.highlight{
+    background: #fcf8e3;
+}
+
+.highlight input{
+    background: #fcf8e3
+}
+
+.highlight textarea{
+    background: #fcf8e3
+}

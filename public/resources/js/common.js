@@ -221,7 +221,7 @@ const mapMSFPresence = function(presence) {
               'Country: ' + feature.properties.country + '<br />' +
               'Type: ' + feature.properties.type + '<br />' +
               'Name: ' + feature.properties.name + '<br />' +
-              'Open Date: ' + (new Date(feature.properties.open_date)).toLocaleDateString() + '<br />' +
+              'Open Date: ' + (feature.poperties.open_data ? (new Date(feature.properties.open_date)).toLocaleDateString() : '') + '<br />' +
               'Close Date: ' + (feature.properties.close_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : 'Still open') + '<br />' +
               'Alternative Name: ' + feature.properties.name_alt + '<br />' +
               'Operational Centre: ' + '<label class="btn btn-xs" style="background-color:'+OCColours[feature.properties.operational_centre]+';margin-right:5px;margin-bottom:5px;color:white;font-weight: bold">&nbsp;'+feature.properties.operational_centre+'</label><br />' +
