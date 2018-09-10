@@ -119,6 +119,9 @@ span.remove:hover{
 #mdExplained{
     cursor: pointer;
 }
+#mdExplained span{
+    font-weight: bold;
+}
 
 .explain-section h3{
     margin-top: 0;

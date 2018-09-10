@@ -2160,12 +2160,14 @@ var vmObject = {
             //will keep the sorting here for UI
             return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
+            }).map(item => {
+                return Object.assign({}, item, {notification: marked(item.notification, {sanitize: true})})
             }): [];
         },
         notStr:function(){
             let lastNotification = getLatestNotification(this.event.metadata.notification);
-            return (lastNotification) ? lastNotification.notification+
-            (lastNotification.hasOwnProperty('username') ? (', From: ' + lastNotification.username) : '') +
+            return (lastNotification) ? marked(lastNotification.notification, {sanitize: true}) +
+            (lastNotification.hasOwnProperty('username') ? ('<br/>' + lastNotification.username) : '') +
             ' @ ' + (new Date(lastNotification.notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
@@ -2178,6 +2180,9 @@ var vmObject = {
 
         compiledMarkdown: function(){
             return marked(this.newNotification, {sanitize: true})
+        },
+        markedNotification: function(chunk){
+            return marked(chunk, {sanitize: true})
         }
     },
     watch: {
