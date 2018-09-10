@@ -927,8 +927,8 @@ var mapMissions = function(missions ){
                 popupContent += 'Latest notification: (none)<BR>';
             }
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
-            popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
-            popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
+            popupContent += 'Start date: ' + (feature.properties.properties.startDate || convertToLocaleDate(feature.properties.properties.event_datetime) ) + '<BR>';
+            popupContent += 'Finish date: ' + (feature.properties.properties.finishDate || convertToLocaleDate(feature.properties.properties.event_datetime_closed) )+ '<BR>';
             popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
@@ -1289,9 +1289,9 @@ Vue.filter('formatDateOnly', function(value) {
 
 Vue.filter('formatFullDate', function(value) {
     if (value) {
-        return moment(value).format('LLL');
+        return moment(value).format('YYYY-MM-DD  HH:mm');
     } else {
-        return 'N/A';
+        return '';
     }
 });
 
