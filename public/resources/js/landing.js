@@ -122,7 +122,7 @@ var mapAllEvents = function(err, events){
     '\'>'+icon_html+'</a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
-    'Opened (local time of event): ' + (feature.properties.metadata.event_datetime || feature.properties.created_at) + '<br>' +
+    'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
@@ -162,12 +162,11 @@ var mapAllEvents = function(err, events){
         }
 
         var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
-
         $(eventDiv).append(
             '<div class="list-group-item">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (new Date((feature.properties.metadata.event_datetime || feature.properties.created_at).replace(/-/g,'/'))).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
-      'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
+      'Last updated at: ' + convertToLocaleDateTime(feature.properties.updated_at) + '<br>' +
       (hasLocation ? 'Area(s): ' + location + '<br>': '') +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
@@ -431,8 +430,8 @@ var mapMissions = function(missions ){
                 popupContent += 'Latest notification: (none)<BR>';
             }
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
-            popupContent += 'Start date: ' + (new Date(feature.properties.properties.startDate)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>';
-            popupContent += 'Finish date: ' + (new Date(feature.properties.properties.finishDate)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>';
+            popupContent += 'Start date: ' + (feature.properties.properties.startDate || convertToLocaleDate(feature.properties.properties.event_datetime) ) + '<BR>';
+            popupContent += 'Finish date: ' + (feature.properties.properties.finishDate || convertToLocaleDate(feature.properties.properties.event_datetime_closed) ) + '<BR>';
             popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
@@ -884,17 +883,7 @@ var onMissionLinkClick = function(id) {
     });
 };
 
-/**
-* function to convert ISO date string to locale string with basic handling of non-isoDate format
-* @function convertToLocaleDate
-* @param {String} isoDate - ISO date string
-*/
-var convertToLocaleDate= function (isoDate) {
-    if (isoDate)
-        return (new Date(isoDate)).toLocaleString();
-    else
-        return '';
-};
+
 
 // Create map
 var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});

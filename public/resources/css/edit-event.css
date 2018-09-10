@@ -133,3 +133,20 @@ span.remove:hover{
     max-width: 400px;
     margin: 5px;
 }
+
+span.highlight{
+    color: red;
+    background: #fcf8e3;
+}
+
+div.highlight{
+    background: #fcf8e3;
+}
+
+.highlight input{
+    background: #fcf8e3
+}
+
+.highlight textarea{
+    background: #fcf8e3
+}

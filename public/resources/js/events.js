@@ -206,23 +206,23 @@ var printEventProperties = function(err, eventProperties){
 
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
-    $('#eventShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></div>');
-    $('#reportShareButtons').html('<div class="sharethis-inline-share-buttons" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></div>');
+    $('#eventShareButtons').html('Event page  <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></span>');
+    $('#reportShareButtons').html('External Report Card <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></span>');
     $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(s) {
 
 
         setTimeout(function() {
             $('#eventCopyButton').append(
-                '<div class="st-btn st-last" data-network="sharethis" style="display: inline-block;">'+
+                '<span class="st-btn st-last" data-network="sharethis">'+
           '<button data-clipboard-text="'+window.location+'" class="btn btn-primary">'+
-          '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
-          '</div>'
+          '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height=".8em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
+          '</span>'
             );
             $('#reportCopyButton').append(
-                '<div class="st-btn st-last" data-network="sharethis" style="display: inline-block;">'+
+                '<span class="st-btn st-last" data-network="sharethis">'+
           '<button data-clipboard-text="'+vmEventDetails.eventReportLink+'" class="btn btn-primary">'+
           '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
-          '</div>'
+          '</span>'
             );
 
         },100);});
@@ -405,7 +405,7 @@ var mapAllEvents = function(err, events){
     '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<BR>' +
+    'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
     'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
     statusStr +
@@ -417,7 +417,7 @@ var mapAllEvents = function(err, events){
         $('#ongoingEventsContainer').append(
             '<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+      'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
       'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
       statusStr +
@@ -927,8 +927,8 @@ var mapMissions = function(missions ){
                 popupContent += 'Latest notification: (none)<BR>';
             }
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
-            popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
-            popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
+            popupContent += 'Start date: ' + (feature.properties.properties.startDate || convertToLocaleDate(feature.properties.properties.event_datetime) ) + '<BR>';
+            popupContent += 'Finish date: ' + (feature.properties.properties.finishDate || convertToLocaleDate(feature.properties.properties.event_datetime_closed) )+ '<BR>';
             popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
@@ -1065,7 +1065,7 @@ $('#btnArchive').click(function(e){
 
     var body = {
         'status':'inactive',
-        'metadata':{}
+        'metadata': currentEventProperties.metadata
     };
     $.ajax({
         type: 'PUT',
@@ -1289,9 +1289,9 @@ Vue.filter('formatDateOnly', function(value) {
 
 Vue.filter('formatFullDate', function(value) {
     if (value) {
-        return moment(value).format('LLL');
+        return moment(value).format('YYYY-MM-DD  HH:mm');
     } else {
-        return 'N/A';
+        return '';
     }
 });
 
@@ -1315,6 +1315,7 @@ var replaceUnderscore = function(value) {
 var vmObject = {
 
     data: {
+        areas: {},
         severityColors: severityColors,
         severityLongTexts: severityLongTexts,
         msfTypeOfProgrammes:msfTypeOfProgrammes,
@@ -1385,8 +1386,25 @@ var vmObject = {
         },
         searchTerm: '',
         extraDetailsLabel: labels,
+        oldEventStatus: '',
+        isAnalyzing:false,
         hasBeenAnalyzed: false,
-        vizalyticsResp: {}
+        analyzedTimeTxt:'',
+        vizalyticsResp: {},
+        mapStatusToPanels: {
+            'monitoring':['Notification', 'ExtCapacity', 'Figures', 'Reflection'],
+            'exploration':['Notification', 'Figures', 'Resources', 'Reflection'],
+            'ongoing':['Notification', 'Response', 'Figures', 'Resources'],
+            'complete':[],
+        },
+        suggestEdit: {
+            'Notification': false,
+            'ExtCapacity': false,
+            'Figures': false,
+            'Resources': false,
+            'Response': false,
+            'Reflection': false
+        }
     },
     mounted:function(){
         $('#eventMSFLoader').hide();
@@ -1813,12 +1831,20 @@ var vmObject = {
                 this.invalid.nullAreas = false;
             }
         },
+        lintSeverity(){
+            this.event.metadata.severity_measures = this.event.metadata.severity_measures.map(function(sm, index){
+                return {
+                    scale: $('.inputSeveritySlider').eq(index).slider('option', 'value'),
+                    description: sm.description
+                };
+            });
+        },
         submitEventSection(category){
             var vm = this;
             var body = {
-                status: (this.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
-                type: this.event.type.toString(),
-                metadata : this.event.metadata
+                status: (vm.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                type: vm.event.type.toString(),
+                metadata : vm.event.metadata
             };
             $.ajax({
                 type: 'PUT',
@@ -1832,6 +1858,18 @@ var vmObject = {
                     vm.panelEditing[category] = false;
                     vm.panelDirty[category] = false;
                     vm.somePanelDirty=false;
+                }
+                var newStatus=body.metadata.event_status;
+                if (category=='General' && (vm.oldEventStatus != newStatus))
+                {
+                    //uncomment here to enable the auto-analyze on status change
+                    //vm.analyzeEvent();
+                    $('.panel-collapse[id^=collapse]').collapse('hide');
+                    setTimeout(function(){
+                        $.each(vm.mapStatusToPanels[newStatus],function(index,val){
+                            vm.editEvent(val, true);
+                        });
+                    },500);
                 }
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
@@ -1862,9 +1900,9 @@ var vmObject = {
             this.lintTypes(); // make sure if type is unselected, subtype is removed
             this.lintOtherFields(); // make sure the other string gets attached
             this.lintAreas();
+            this.lintSeverity();
             this.event.type = this.checkedTypes.join();
             this.event.sub_type = this.checkedSubTypes.join();
-
             _.extend(this.event.metadata, {
                 sub_type: this.event.sub_type,
                 operational_center: this.event.metadata.msf_response_operational_centers.toString(),
@@ -1873,19 +1911,17 @@ var vmObject = {
             this.lintSubTypesSelected();
 
             // body.event.type = this.event.type.toString() // make sure the other string gets attached
-
             if(!this.invalid.typesSelection && !this.invalid.emptyStrings && !this.invalid.nullAreas){
                 this.submitEventSection('General');
             }
         },
-        editEvent:function(category){
+        editEvent:function(category, suggest){
             var vm=this;
-            $('#collapse'+category).collapse('show');
-            if (vm.somePanelDirty)
-            {
-                alert('Please save or cancel the current section before editing this section.');
-                return;
+            if(suggest){
+                vm.suggestEdit[category] = true;
             }
+
+            $('#collapse'+category).collapse('show');
 
             if (category == 'general'){
                 // this is modal implemation
@@ -1909,6 +1945,7 @@ var vmObject = {
                 }
                 // this is inline implementation
                 if(category == 'General'){
+                    vm.oldEventStatus= vm.event.metadata.event_status || 'monitoring';
                     vm.loadMap();
                     vm.placeOtherFields();
                 }
@@ -2093,7 +2130,8 @@ var vmObject = {
             this.uploadNotifications(this.submitEventMetadata);
         },
         cancelEventEdits:function(){
-            window.location.href = '/events/?eventId=' + currentEventId;
+            if (confirm('NOTE: all unsaved data in other panels (if any) will be lost.\nAre you sure you want to cancel edits ? '))
+                window.location.href = '/events/?eventId=' + currentEventId;
         },
         analyzeEvent: function (){
             $('#analyticsStatusModal').modal('show');
@@ -2146,6 +2184,7 @@ var vmObject = {
         areas: function(val){
             var mostRecentSlider = $('.inputSeveritySlider').eq($('.inputSeveritySlider').length);
             var filled = mostRecentSlider.has('span.ui-slider-handle').length;
+
             if(filled == 0){
 
                 if(currentEventProperties.metadata.areas.length > currentEventProperties.metadata.severity_measures.length){
@@ -2163,6 +2202,7 @@ var vmObject = {
                                 $(this).append(el);
                             }
                         });
+
                     }, 300);
                 }
 
@@ -2198,6 +2238,7 @@ var vmAnalytics = new Vue({
         {
             var vm=this;
             vm.isAnalyzing=true;
+            vmEventDetails.isAnalyzing=true;
             $.ajax({
                 type: 'POST',
                 url: '/api/analytics/analyze',
@@ -2208,12 +2249,28 @@ var vmAnalytics = new Vue({
                 vm.response=data;
                 vmEventDetails.hasBeenAnalyzed=true;
                 vmEventDetails.vizalyticsResp=data.results[0].data;
+                vmEventDetails.analyzedTimeTxt='Performed @'+(new Date()).toString();
+                vmEventDetails.isAnalyzing=false;
                 vm.isAnalyzing=false;
                 vm.isAnalyzed=true;
                 //vm.mapAnalysisResult();
 
+                /* disbale collapse /uncollapse based on AI result
+                $('.panel-collapse[id^=collapse]').collapse('hide');
+                $('#collapseResponse').on('hidden.bs.collapse', function(){
+                    if (vmEventDetails.vizalyticsResp.supplies.length>0)
+                        $('#collapseResponse').collapse('show');
+                });
+                $('#collapseResources').on('hidden.bs.collapse', function(){
+                    if (vmEventDetails.vizalyticsResp.contacts.length>0)
+                        $('#collapseResources').collapse('show');
+                });
+                */
+
+
                 //console.log(data);
             }).fail(function (reqm, textStatus, err){
+                vmEventDetails.isAnalyzing=false;
                 vm.isAnalyzing=false;
                 vm.vizalyticsError=true;
                 //console.log(err);
