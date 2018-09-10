@@ -52,3 +52,25 @@ const ApiService = {
 };
 
 export default ApiService;
+
+
+export const EventsService = {
+    query (type, params) {
+        return ApiService.query('events', params);
+    },
+    get (slug) {
+        return ApiService.get('events', slug);
+    },
+    create (params) {
+        return ApiService.post('events', params);
+    },
+    update (slug, params) {
+        return ApiService.update('events', slug, params);
+    },
+    archive(slug, params) {
+        return ApiService.update('events', slug, params); //TODO: // check API endpoints
+    },
+    destroy (slug) {
+        return ApiService.delete(`events/${slug}`);
+    }
+};
