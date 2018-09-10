@@ -204,18 +204,21 @@ var printEventProperties = function(err, eventProperties){
     var countryDetailsContainerContent = '';
     countryDetailsContainerContent+='<ul class="nav nav-tabs">';
     for (var areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
-        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'" data-toggle="tab" target="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">'+currentEventProperties.metadata.areas[areaidx].country+'</a></li>';
+        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">'+currentEventProperties.metadata.areas[areaidx].country+'</a></li>';
     }
     countryDetailsContainerContent+='</ul>';
+    countryDetailsContainerContent+='<div class="tab-content">';
     for (areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
-        countryDetailsContainerContent+='<div class="tab-pane" id="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
+        countryDetailsContainerContent+='<div class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
 
         if (currentEventProperties.metadata.areas[areaidx].country_code) {
             countryDetailsContainerContent+='<iframe src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': currentEventProperties.metadata.areas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
         } else if (findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec) {
             countryDetailsContainerContent+='<iframe src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
         }
+        countryDetailsContainerContent+='</div>';
     }
+    countryDetailsContainerContent+='</div>';
     $('#countryDetailsContainer').append(countryDetailsContainerContent);
 
     vmEventDetails=new Vue(vmObject);
