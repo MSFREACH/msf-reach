@@ -47,7 +47,10 @@
             </dl>
             <dl>
               <dt>Open Date of event</dt>
-              <dd ><span class="event-startDate">{{mission.event_datetime | formatDateOnly}}</span></dd>
+              <dd v-if="!inEditMode"><span class="event-startDate">{{mission.event_datetime | formatDateOnly}}</span></dd>
+              <dd v-else>
+                <date-picker v-model="mission.event_datetime" :config="{format: 'YYYY-MM-DD'}" placeholder="Open date"></date-picker>              
+              </dd>
             </dl>
             <dl>
               <dt>Closure Date of event</dt>
