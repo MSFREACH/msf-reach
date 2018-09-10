@@ -1065,7 +1065,7 @@ $('#btnArchive').click(function(e){
 
     var body = {
         'status':'inactive',
-        'metadata':{}
+        'metadata': currentEventProperties.metadata
     };
     $.ajax({
         type: 'PUT',
