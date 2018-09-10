@@ -768,7 +768,8 @@ var vmInstance = new Vue({
         if(body.status === "active" && currentEventId) {
             window.location.href = '?eventId=' + currentEventId;
         }else{
-            window.location.href ='/'
+            //window.location.href ='/'
+            thGetMissions(null);
         }
       }).fail(function(err) {
         vm.isSubmitting=false;
