@@ -47,16 +47,19 @@
             </dl>
             <dl>
               <dt>Open Date of event</dt>
-              <dd ><span class="event-startDate">{{mission.startDate | formatFullDate}}</span></dd>
+              <dd ><span class="event-startDate">{{mission.event_datetime | formatDateOnly}}</span></dd>
             </dl>
             <dl>
               <dt>Closure Date of event</dt>
-              <dd><span class="event-finishDate">{{mission.finishDate | formatFullDate }}</span></dd>
+              <dd><span class="event-finishDate">{{mission.event_datetime_closed | formatDateOnly }}</span></dd>
             </dl>
             <dl>
               <dt>Status</dt>
-              <dd v-if="!inEditMode"><span class="event-status">{{mission.event_status}}</span></dd>
-              <dd v-else>
+              <!-- on landing page  -->
+              <dd v-show="!currentEventId"><span class="event-status">{{mission.event_status}}</span></dd>
+              <!-- on event page  -->
+              <dd v-show="currentEventId"><span v-show="!inEditMode" class="event-status">{{mission.event_status}}</span></dd>
+              <dd v-show="inEditMode && currentEventId">
                 <select v-model="mission.event_status" class="form-control">
                   <option disabled value="">Please select one</option>
                   <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
@@ -90,10 +93,10 @@
                   <input type="text" class="form-control" v-model="mission.incharge_name" placeholder="Name" />
                 </dd>
                 <dd class="padding-bottom">
-                  <date-picker v-model="mission.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+                  <date-picker v-model="mission.mission_contact_person.arrival_time" placeholder="Arrival time" :config="dateTimeConfig" ></date-picker>
                 </dd>
                 <dd class="padding-bottom">
-                  <date-picker v-model="mission.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+                  <date-picker v-model="mission.mission_contact_person.departure_time" placeholder="Departure time" :config="dateTimeConfig"></date-picker>
                 </dd>
               </section>
 
@@ -164,14 +167,14 @@
                 </dl>
                 <dl>
                   <dt>Start Date of the MSF response</dt>
-                  <dd v-if="!inEditMode">{{ mission.start_date_msf_response | formatFullDate}}</dd>
+                  <dd v-if="!inEditMode">{{ mission.start_date_msf_response | formatDateOnly}}</dd>
                   <dd v-else>
                     <date-picker v-model="mission.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
                   </dd>
                 </dl>
                 <dl>
                   <dt>Date of event closure</dt>
-                  <dd v-if="!inEditMode">{{mission.end_date_msf_response | formatFullDate}}</dd>
+                  <dd v-if="!inEditMode">{{mission.end_date_msf_response | formatDateOnly}}</dd>
                   <dd v-else>
                     <date-picker v-model="mission.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                   </dd>
@@ -198,7 +201,7 @@
                     <dt>Medical material</dt>
                     <dd>{{mission.msf_response_medical_material.toString() | relaceUnderscore}}</dd>
                     <dd>Total: {{mission.msf_response_medical_material_total}}</dd>
-                    <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatFullDate }}</dd>
+                    <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatDateOnly }}</dd>
                   </section>
                   <section v-else>
                     <div class="row">
@@ -238,7 +241,7 @@
                     <dt>Non medical material</dt>
                     <dd>{{mission.msf_response_non_medical_material.toString() | relaceUnderscore}}</dd>
                     <dd>Total: {{mission.msf_response_non_medical_material_total}}</dd>
-                    <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatFullDate }}</dd>
+                    <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatDateOnly }}</dd>
                   </section>
                   <section v-else>
                     <div class="row">
@@ -673,16 +676,18 @@ Vue.component('country-select', {
   }
 });
 
-Vue.filter('formatDateOnly', function(value) {
+Vue.filter('formatDateOnly', function(value,storedFormat) {
+
   if (value) {
-    return moment(value).format('YYYY-MM-DD');
+    return moment(value).format("YYYY-MM-DD");
   }
 });
 
-Vue.filter('formatFullDate', function(value) {
+Vue.filter('formatFullDate', function(value,storedFormat) {
   if (value) {
     //return (new Date(value)).toLocaleString().replace(/:\d{2}$/,'');
-    return moment(value,"DD-MM-YYYY").format('LLL');
+   var dateTimeDisplayFormat='YYYY-MM-DD  HH:mm';
+    return (storedFormat ? moment(value,storedFormat).format(dateTimeDisplayFormat) : moment(value).format(dateTimeDisplayFormat) );
   } else {
     return "N/A";
   }
@@ -720,7 +725,10 @@ var vmInstance = new Vue({
     submissionSuccess:false,
     submissionErrorText: '',
     currentMissionId: currentMissionId,
-    statuses: statuses
+    statuses: statuses,
+    dateTimeConfig: {
+      format: 'YYYY-MM-DD  HH:mm'
+    }
   },
   methods: {
     saveMissionEdits: function(){
@@ -731,12 +739,12 @@ var vmInstance = new Vue({
         return;
       }
       vm.isSubmitting=true;
+
       var body={
         status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
         metadata: vm.mission,
-        eventId: currentEventId
+        eventId: currentEventId ? currentEventId : null
       }
-
       vm.inEditMode=false;
       vm.submissionSuccess=false;
       $.ajax({
@@ -748,8 +756,10 @@ var vmInstance = new Vue({
         vm.isSubmitting=false;
         vm.hasSubmissionError=false;
         vm.submissionSuccess=true;
-        if(body.status === "active") {
+        if(body.status === "active" && currentEventId) {
             window.location.href = '?eventId=' + currentEventId;
+        }else{
+            window.location.href ='/'
         }
       }).fail(function(err) {
         vm.isSubmitting=false;
@@ -825,6 +835,16 @@ var vmInstance = new Vue({
     }
   },
   mounted: function() {
+   var vm=this;
+   if ((vm.mission.startDate)&&(!(vm.mission.event_datetime)))
+   {
+     vm.mission.event_datetime=new moment(vm.mission.startDate,"DD/MM/YYYY");
+   }
+   if ((vm.mission.finishDate)&&(!(vm.mission.event_datetime_closed)))
+   {
+     vm.mission.event_datetime_closed=new moment(vm.mission.finishDate,"DD/MM/YYYY");
+   }
+
 
     this.$nextTick(function() {
       var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';

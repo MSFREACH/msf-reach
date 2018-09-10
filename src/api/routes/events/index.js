@@ -124,8 +124,8 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            if(req.body.type === ""){
-                delete req.body.type // in the case that type is empty, don't update that field
+            if(req.body.type === ''){
+                delete req.body.type; // in the case that type is empty, don't update that field
             }
             events(config, db, logger).updateEvent(req.params.id, req.body)
                 .then((data) => {

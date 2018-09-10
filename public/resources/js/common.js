@@ -25,6 +25,26 @@ $(function() {
     });
 });
 
+/**
+* function to convert ISO date string to locale string with basic handling of non-isoDate format
+* @function convertToLocaleDate
+* @param {String} isoDate - ISO date string
+*/
+var convertToLocaleDate= function (isoDate) {
+    if (isoDate)
+        return moment(isoDate).format('YYYY-MM-DD');
+    else
+        return '';
+};
+
+var convertToLocaleDateTime= function (isoDate) {
+    if (isoDate)
+        return moment(isoDate).format('YYYY-MM-DD  HH:mm');
+    else
+        return '';
+};
+
+
 var getLatestNotification=function(notificationArray){
     if (!Array.isArray(notificationArray))
         return notificationArray;

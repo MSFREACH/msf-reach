@@ -94,8 +94,12 @@ span.remove:hover{
   padding: 0;
 }
 
-.highlight{
+span.highlight{
     color: red;
+    background: #fcf8e3;
+}
+
+div.highlight{
     background: #fcf8e3;
 }
 

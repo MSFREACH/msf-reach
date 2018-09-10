@@ -65,13 +65,13 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().required(),
                 metadata: Joi.object().required(),
-                eventId: Joi.number().integer().required()
+                eventId: Joi.number().integer().allow(null)
             })
         }),
         (req, res, next) => {
             missions(config, db, logger).updateMission(req.params.id, req.body)
                 .then((data) => {
-                    if(req.body.status === 'active'){
+                    if(req.body.status === 'active' && req.body.eventId){
                         events(config, db, logger).activateEvent(req.body)
                             .then((data) => handleGeoResponse(data, req, res, next))
                             .catch((err) => {
@@ -81,7 +81,7 @@ export default ({ config, db, logger }) => {
                                 next(err);
                             });
                     }else{
-                        handleGeoResponse(data, req, res, next)
+                        handleGeoResponse(data, req, res, next);
                     }
                 })
                 .catch((err) => {
