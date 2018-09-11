@@ -752,7 +752,7 @@ var vmInstance = new Vue({
       var body={
         status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
         metadata: vm.mission,
-        eventId: currentEventId ? currentEventId : null
+        eventId:  null
       }
       vm.inEditMode=false;
       vm.submissionSuccess=false;
@@ -765,12 +765,7 @@ var vmInstance = new Vue({
         vm.isSubmitting=false;
         vm.hasSubmissionError=false;
         vm.submissionSuccess=true;
-        if(body.status === "active" && currentEventId) {
-            window.location.href = '?eventId=' + currentEventId;
-        }else{
-            //window.location.href ='/'
-            thGetMissions(null);
-        }
+        thGetMissions(null);
       }).fail(function(err) {
         vm.isSubmitting=false;
         vm.hasSubmissionError=true;
