@@ -724,7 +724,7 @@ var eventMap1,msfResponseMap1;
 var vmInstance = new Vue({
   el: "#missionDetailsVue",
   data: {
-    mission: $.extend(true, defaultEvent.metadata, missionData),
+    mission: $.extend(false, defaultEvent.metadata, missionData),
     msfTypeOfProgrammes: msfTypeOfProgrammes,
     msfOperationalCenters: msfOperationalCenters,
     keyMSFFigures: keyMSFFigures,
