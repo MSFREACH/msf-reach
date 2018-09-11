@@ -1412,9 +1412,9 @@ var vmObject = {
             'Reflection': false
         },
         dateTimeConfig: {
-          format: DATETIME_DISPLAY_FORMAT
+            format: DATETIME_DISPLAY_FORMAT
         }
-        },
+    },
     mounted:function(){
         $('#eventMSFLoader').hide();
 
