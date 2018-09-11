@@ -721,10 +721,11 @@ var replaceUnderscore = function(value) {
 
 var eventMap1,msfResponseMap1;
 
+
 var vmInstance = new Vue({
   el: "#missionDetailsVue",
   data: {
-    mission: $.extend(false, defaultEvent.metadata, missionData),
+    mission: $.extend(true,{},defaultEvent.metadata, missionData),
     msfTypeOfProgrammes: msfTypeOfProgrammes,
     msfOperationalCenters: msfOperationalCenters,
     keyMSFFigures: keyMSFFigures,
@@ -841,7 +842,7 @@ var vmInstance = new Vue({
   },
   mounted: function() {
    var vm=this;
-   console.log(vm.mission.event_datetime);
+
    if ((vm.mission.startDate)&&(!(vm.mission.event_datetime)))
    {
      vm.mission.event_datetime=new moment(vm.mission.startDate,"DD/MM/YYYY");
