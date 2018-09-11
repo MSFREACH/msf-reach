@@ -201,6 +201,26 @@ var printEventProperties = function(err, eventProperties){
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
 
+    var countryDetailsContainerContent = '';
+    countryDetailsContainerContent+='<ul class="nav nav-tabs">';
+    for (var areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
+        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">'+currentEventProperties.metadata.areas[areaidx].country+'</a></li>';
+    }
+    countryDetailsContainerContent+='</ul>';
+    countryDetailsContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+    for (areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
+        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
+
+        if (currentEventProperties.metadata.areas[areaidx].country_code) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': currentEventProperties.metadata.areas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+        } else if (findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+        }
+        countryDetailsContainerContent+='</div>';
+    }
+    countryDetailsContainerContent+='</div>';
+    $('#countryDetailsContainer').append(countryDetailsContainerContent);
+
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
 
@@ -2365,7 +2385,6 @@ var vmAnalytics = new Vue({
 
     },
     mounted: function(){
-        //console.log('mounted');
-        // Create map
+
     }
 });
