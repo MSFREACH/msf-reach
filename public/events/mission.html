@@ -49,7 +49,7 @@
               <dt>Open Date of event</dt>
               <dd v-if="!inEditMode"><span class="event-startDate">{{mission.event_datetime | formatDateOnly}}</span></dd>
               <dd v-else>
-                <date-picker v-model="mission.event_datetime" :config="{format: 'YYYY-MM-DD'}" placeholder="Open date"></date-picker>              
+                <date-picker v-model="mission.event_datetime" :config="{format: 'YYYY-MM-DD'}" placeholder="Open date"></date-picker>
               </dd>
             </dl>
             <dl>
@@ -179,7 +179,7 @@
                   </dd>
                 </dl>
                 <dl>
-                  <dt>Date of event closure</dt>
+                  <dt>End date of MSF response</dt>
                   <dd v-if="!inEditMode">{{mission.end_date_msf_response | formatDateOnly}}</dd>
                   <dd v-else>
                     <date-picker v-model="mission.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
