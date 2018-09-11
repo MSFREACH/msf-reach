@@ -2,6 +2,8 @@
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
+var DATE_DISPLAY_FORMAT='YYYY-MM-DD';
+var DATETIME_DISPLAY_FORMAT='YYYY-MM-DD  HH:mm';
 
 /**
  * Monitor status code to redirect login page if session expires.
@@ -24,6 +26,33 @@ $(function() {
         }
     });
 });
+
+/**
+* function to convert ISO date string to locale string with basic handling of non-isoDate format
+* @function convertToLocaleDate
+* @param {String} isoDate - ISO date string
+*/
+var convertToLocaleDate= function (isoDate) {
+    if (isoDate)
+    {
+        var d=moment(isoDate);
+        return (d.isValid() ? d.format(DATE_DISPLAY_FORMAT) : (isoDate +' (invalid date format)'));
+    }
+
+    else
+        return '';
+};
+
+var convertToLocaleDateTime= function (isoDate) {
+    if (isoDate)
+    {
+        var d=moment(isoDate);
+        return (d.isValid() ? d.format(DATETIME_DISPLAY_FORMAT) : (isoDate +' (invalid date format)'));
+    }
+    else
+        return '';
+};
+
 
 var getLatestNotification=function(notificationArray){
     if (!Array.isArray(notificationArray))
