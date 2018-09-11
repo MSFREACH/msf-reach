@@ -862,29 +862,6 @@ var mapContacts = function(contacts ){
 
 };
 
-/**
-* function to show mission data modal on click
-* @function onMissionLinkClick
-* @param {String} id - id number (as a String)
-*/
-var onMissionLinkClick = function(id) {
-    $.getJSON('/api/missions/' + id, function(data) {
-        currentMissionId=id;
-        missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
-        missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
-        $( '#missionModalBody' ).load( '/events/mission.html' );
-        $('#missionModal').modal('show');
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
-        }
-    });
-};
-
-
-
 // Create map
 var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});
 
