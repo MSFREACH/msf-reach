@@ -209,7 +209,7 @@ var printEventProperties = function(err, eventProperties){
     countryDetailsContainerContent+='</ul>';
     countryDetailsContainerContent+='<div class="tab-content">';
     for (areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
-        countryDetailsContainerContent+='<div class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
+        countryDetailsContainerContent+='<div class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
 
         if (currentEventProperties.metadata.areas[areaidx].country_code) {
             countryDetailsContainerContent+='<iframe src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': currentEventProperties.metadata.areas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
