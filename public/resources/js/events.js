@@ -201,6 +201,26 @@ var printEventProperties = function(err, eventProperties){
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
 
+    var countryDetailsContainerContent = '';
+    countryDetailsContainerContent+='<ul class="nav nav-tabs">';
+    for (var areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
+        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">'+currentEventProperties.metadata.areas[areaidx].country+'</a></li>';
+    }
+    countryDetailsContainerContent+='</ul>';
+    countryDetailsContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+    for (areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
+        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
+
+        if (currentEventProperties.metadata.areas[areaidx].country_code) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': currentEventProperties.metadata.areas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+        } else if (findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+        }
+        countryDetailsContainerContent+='</div>';
+    }
+    countryDetailsContainerContent+='</div>';
+    $('#countryDetailsContainer').append(countryDetailsContainerContent);
+
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
 
@@ -927,8 +947,8 @@ var mapMissions = function(missions ){
                 popupContent += 'Latest notification: (none)<BR>';
             }
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
-            popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
-            popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
+            popupContent += 'Start date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime)  || feature.properties.properties.startDate) + '<BR>';
+            popupContent += 'Finish date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime_closed) || feature.properties.properties.finishDate)+ '<BR>';
             popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
@@ -1114,6 +1134,7 @@ var onEditEvent = function() {
 
 var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
+    $('#archiveModal').modal('show');
 };
 
 mainMap.on('overlayadd', function (layersControlEvent) {
@@ -1280,18 +1301,23 @@ Vue.component('country-select', {
     }
 });
 
-
-Vue.filter('formatDateOnly', function(value) {
+Vue.filter('formatDateOnly', function(value,storedFormat) {
     if (value) {
-        return moment(value).format('YYYY-MM-DD');
+        var d=moment(value);
+        return (d.isValid() ? d.format(DATE_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
+    }
+    else{
+        return '';
     }
 });
 
-Vue.filter('formatFullDate', function(value) {
+Vue.filter('formatFullDate', function(value,storedFormat) {
     if (value) {
-        return moment(value).format('LLL');
+    //return (new Date(value)).toLocaleString().replace(/:\d{2}$/,'');
+        var d= (storedFormat ? moment(value,storedFormat) : moment(value) );
+        return (d.isValid() ? d.format(DATETIME_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
     } else {
-        return 'N/A';
+        return '';
     }
 });
 
@@ -1404,6 +1430,9 @@ var vmObject = {
             'Resources': false,
             'Response': false,
             'Reflection': false
+        },
+        dateTimeConfig: {
+            format: DATETIME_DISPLAY_FORMAT
         }
     },
     mounted:function(){
@@ -1842,7 +1871,7 @@ var vmObject = {
         submitEventSection(category){
             var vm = this;
             var body = {
-                status: (vm.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                status: vm.event.status,
                 type: vm.event.type.toString(),
                 metadata : vm.event.metadata
             };
@@ -2356,7 +2385,6 @@ var vmAnalytics = new Vue({
 
     },
     mounted: function(){
-        //console.log('mounted');
-        // Create map
+
     }
 });

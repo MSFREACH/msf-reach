@@ -47,11 +47,17 @@
             </dl>
             <dl>
               <dt>Open Date of event</dt>
-              <dd ><span class="event-startDate">{{mission.startDate | formatDateOnly}}</span></dd>
+              <dd v-if="!inEditMode"><span class="event-startDate">{{mission.event_datetime | formatDateOnly}}</span></dd>
+              <dd v-else>
+                <date-picker v-model="mission.event_datetime" :config="{format: 'YYYY-MM-DD'}" placeholder="Open date"></date-picker>
+              </dd>
             </dl>
             <dl>
               <dt>Closure Date of event</dt>
-              <dd><span class="event-finishDate">{{mission.finishDate | formatDateOnly }}</span></dd>
+              <dd v-if="!inEditMode"><span class="event-finishDate">{{mission.event_datetime_closed | formatDateOnly }}</span></dd>
+              <dd v-else>
+                <date-picker v-model="mission.event_datetime_closed" :config="{format: 'YYYY-MM-DD'}" placeholder="Closure date"></date-picker>
+              </dd>
             </dl>
             <dl>
               <dt>Status</dt>
@@ -167,14 +173,14 @@
                 </dl>
                 <dl>
                   <dt>Start Date of the MSF response</dt>
-                  <dd v-if="!inEditMode">{{ mission.start_date_msf_response | formatFullDate}}</dd>
+                  <dd v-if="!inEditMode">{{ mission.start_date_msf_response | formatDateOnly}}</dd>
                   <dd v-else>
                     <date-picker v-model="mission.start_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="Start date"></date-picker>
                   </dd>
                 </dl>
                 <dl>
-                  <dt>Date of event closure</dt>
-                  <dd v-if="!inEditMode">{{mission.end_date_msf_response | formatFullDate}}</dd>
+                  <dt>End date of MSF response</dt>
+                  <dd v-if="!inEditMode">{{mission.end_date_msf_response | formatDateOnly}}</dd>
                   <dd v-else>
                     <date-picker v-model="mission.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                   </dd>
@@ -201,7 +207,7 @@
                     <dt>Medical material</dt>
                     <dd>{{mission.msf_response_medical_material.toString() | relaceUnderscore}}</dd>
                     <dd>Total: {{mission.msf_response_medical_material_total}}</dd>
-                    <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatFullDate }}</dd>
+                    <dd>Date of arrival: {{mission.msf_response_medical_material_date_arrival | formatDateOnly }}</dd>
                   </section>
                   <section v-else>
                     <div class="row">
@@ -241,7 +247,7 @@
                     <dt>Non medical material</dt>
                     <dd>{{mission.msf_response_non_medical_material.toString() | relaceUnderscore}}</dd>
                     <dd>Total: {{mission.msf_response_non_medical_material_total}}</dd>
-                    <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatFullDate }}</dd>
+                    <dd>Date of arrival: {{mission.msf_response_non_medical_material_date_arrival | formatDateOnly }}</dd>
                   </section>
                   <section v-else>
                     <div class="row">
@@ -676,19 +682,23 @@ Vue.component('country-select', {
   }
 });
 
-Vue.filter('formatDateOnly', function(value) {
+Vue.filter('formatDateOnly', function(value,storedFormat) {
   if (value) {
-    return moment(value,"DD/MM/YYYY").format("DD/MM/YYYY");
+    var d=moment(value);
+    return (d.isValid() ? d.format(DATE_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
+  }
+  else{
+    return '';
   }
 });
 
 Vue.filter('formatFullDate', function(value,storedFormat) {
   if (value) {
     //return (new Date(value)).toLocaleString().replace(/:\d{2}$/,'');
-   var dateTimeDisplayFormat='DD/MM/YYYY, HH:mm';
-    return (storedFormat ? moment(value,storedFormat).format(dateTimeDisplayFormat) : moment(value).format(dateTimeDisplayFormat) );
+   var d= (storedFormat ? moment(value,storedFormat) : moment(value) );
+   return (d.isValid() ? d.format(DATETIME_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
   } else {
-    return "N/A";
+    return "";
   }
 });
 
@@ -711,10 +721,11 @@ var replaceUnderscore = function(value) {
 
 var eventMap1,msfResponseMap1;
 
+
 var vmInstance = new Vue({
   el: "#missionDetailsVue",
   data: {
-    mission: $.extend(true, defaultEvent.metadata, missionData),
+    mission: $.extend(true,{},defaultEvent.metadata, missionData),
     msfTypeOfProgrammes: msfTypeOfProgrammes,
     msfOperationalCenters: msfOperationalCenters,
     keyMSFFigures: keyMSFFigures,
@@ -726,7 +737,7 @@ var vmInstance = new Vue({
     currentMissionId: currentMissionId,
     statuses: statuses,
     dateTimeConfig: {
-      format: 'DD/MM/YYYY, HH:mm'
+      format: DATETIME_DISPLAY_FORMAT
     }
   },
   methods: {
@@ -742,7 +753,7 @@ var vmInstance = new Vue({
       var body={
         status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
         metadata: vm.mission,
-        eventId: currentEventId ? currentEventId : null
+        eventId:  null
       }
       vm.inEditMode=false;
       vm.submissionSuccess=false;
@@ -755,11 +766,7 @@ var vmInstance = new Vue({
         vm.isSubmitting=false;
         vm.hasSubmissionError=false;
         vm.submissionSuccess=true;
-        if(body.status === "active" && currentEventId) {
-            window.location.href = '?eventId=' + currentEventId;
-        }else{
-            window.location.href ='/'
-        }
+        thGetMissions(null);
       }).fail(function(err) {
         vm.isSubmitting=false;
         vm.hasSubmissionError=true;
@@ -834,8 +841,17 @@ var vmInstance = new Vue({
     }
   },
   mounted: function() {
-    this.mission.mission_contact_person.arrival_time=new moment(this.mission.mission_contact_person.arrival_time);
-    this.mission.mission_contact_person.departure_time=new moment(this.mission.mission_contact_person.departure_time);
+   var vm=this;
+
+   if ((vm.mission.startDate)&&(!(vm.mission.event_datetime)))
+   {
+     vm.mission.event_datetime=new moment(vm.mission.startDate,"DD/MM/YYYY");
+   }
+   if ((vm.mission.finishDate)&&(!(vm.mission.event_datetime_closed)))
+   {
+     vm.mission.event_datetime_closed=new moment(vm.mission.finishDate,"DD/MM/YYYY");
+   }
+
 
     this.$nextTick(function() {
       var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
