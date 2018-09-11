@@ -1410,8 +1410,11 @@ var vmObject = {
             'Resources': false,
             'Response': false,
             'Reflection': false
+        },
+        dateTimeConfig: {
+          format: DATETIME_DISPLAY_FORMAT
         }
-    },
+        },
     mounted:function(){
         $('#eventMSFLoader').hide();
 
