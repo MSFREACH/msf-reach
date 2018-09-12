@@ -152,7 +152,7 @@ export default (config, db, logger) => ({
       updated_at = now(),
             type = $4,
 			metadata = metadata || $2,
-      subscribers = (select array_to_json(array(select distinct (subscribers ||  jsonb_build_array($5)))))
+      subscribers = jsonb_build_array(array((select distinct jsonb_array_elements(subscribers ||  jsonb_build_array($5)) from ${config.TABLE_EVENTS} where id=$3)))
 			WHERE id = $3
 			RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
