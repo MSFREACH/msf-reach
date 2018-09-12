@@ -75,7 +75,7 @@ export default (config, db, logger) => ({
       RETURNING event_id, report_key`;
 
         // Setup values
-        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, [email]];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, email];
 
         // Execute
         logger.debug(queryOne, queryTwo, values);

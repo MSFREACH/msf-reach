@@ -102,7 +102,7 @@ export default ({ config, db, logger }) => {
             })
         }),
         (req, res, next) => {
-            events(config, db, logger).createEvent(req.body, req.user._json.preferred_username)
+            events(config, db, logger).createEvent(req.body, req.user ? req.user._json.preferred_username : null)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */
@@ -127,7 +127,7 @@ export default ({ config, db, logger }) => {
             if(req.body.type === ''){
                 delete req.body.type; // in the case that type is empty, don't update that field
             }
-            events(config, db, logger).updateEvent(req.params.id, req.body, req.user._json.preferred_username)
+            events(config, db, logger).updateEvent(req.params.id, req.body, req.user ? req.user._json.preferred_username : null)
                 .then((data) => {
                     if (req.body.status === 'inactive') {
                         // backfill location for compatibility
