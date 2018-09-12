@@ -203,18 +203,37 @@ var printEventProperties = function(err, eventProperties){
 
     var countryDetailsContainerContent = '';
     countryDetailsContainerContent+='<ul class="nav nav-tabs">';
-    for (var areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
-        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">'+currentEventProperties.metadata.areas[areaidx].country+'</a></li>';
+
+    let countries = [];
+
+    let countriesFilter = function(item) {
+        console.log(item);
+        console.log(countries);
+        if (countries.indexOf(item.country) < 0) {
+            console.log(true);
+            countries.push(item.country);
+            return true;
+        } else {
+            console.log(false);
+            return false;
+        }
     }
+
+    let newAreas = currentEventProperties.metadata.areas.filter(countriesFilter);
+    console.log(newAreas);
+
+    for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+    }
+
     countryDetailsContainerContent+='</ul>';
     countryDetailsContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
-    for (areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
-        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
-
-        if (currentEventProperties.metadata.areas[areaidx].country_code) {
-            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': currentEventProperties.metadata.areas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
-        } else if (findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec) {
-            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+    for (areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
+        if (newAreas[areaidx].country_code) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': newAreas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+        } else if (findCountry({'name': newAreas[areaidx].country}).gec) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': newAreas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
         }
         countryDetailsContainerContent+='</div>';
     }
