@@ -207,20 +207,15 @@ var printEventProperties = function(err, eventProperties){
     let countries = [];
 
     let countriesFilter = function(item) {
-        console.log(item);
-        console.log(countries);
         if (countries.indexOf(item.country) < 0) {
-            console.log(true);
             countries.push(item.country);
             return true;
         } else {
-            console.log(false);
             return false;
         }
-    }
+    };
 
     let newAreas = currentEventProperties.metadata.areas.filter(countriesFilter);
-    console.log(newAreas);
 
     for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
         countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
