@@ -105,7 +105,7 @@ const ensureAuthenticatedLanding = (req, res, next) => {
 
 
 const ensureAuthenticatedWrite = (req, res, next) => {
-    console.log(req.user);
+    console.log(req.user); // eslint-disable-line no-console
     if(!config.AUTH){
         return next(); //If we are not using auth then carry on
     }
