@@ -8,6 +8,7 @@ import Promise from 'bluebird';
 import request from 'request';
 
 import { addChatbotItem } from '../../../lib/chatbot.js';
+import { emailSubscribers } from '../../../lib/emailSubscribers.js';
 
 export default (config, db, logger) => ({
 
@@ -156,7 +157,7 @@ export default (config, db, logger) => ({
 			metadata = metadata || $2,
       subscribers = jsonb_build_array(array((select distinct jsonb_array_elements(subscribers ||  jsonb_build_array($5)) from ${config.TABLE_EVENTS} where id=$3)))
 			WHERE id = $3
-			RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
+			RETURNING subscribers, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
         // Setup values
         let values = [ body.status, body.metadata, id, body.type, email ];
@@ -164,6 +165,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => emailSubscribers(data,id,logger))
             .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));

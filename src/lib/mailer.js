@@ -140,5 +140,14 @@ export default ( config, logger ) => ({
                 });
             }
         });
+    }),
+
+    emailSubscribers: (email, id, logger) => new Promise((resolve, reject) => {
+        let eventLink = config.BASE_URL+'events/?eventId='+id;
+        let unsubscribeLink = config.BASE_URL+'/unsubscribe.html#'+id;
+
+        resolve(data);
     })
+
+
 });
