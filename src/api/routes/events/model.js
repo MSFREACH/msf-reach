@@ -62,6 +62,7 @@ export default (config, db, logger) => ({
     /**
 	 * Create a new event
 	 * @param {object} body Body of request with event details
+   * @param {string} email Email address to subscribe
 	 */
     createEvent: (body, email) => new Promise((resolve, reject) => {
 
@@ -143,6 +144,7 @@ export default (config, db, logger) => ({
 	 * Update an event status
 	 * @param {integer} id ID of event
 	 * @param {object} body Body of request with event details
+   * @param {object} email email address to subscribe
 	 */
     updateEvent: (id, body, email) => new Promise((resolve, reject) => {
 
@@ -242,5 +244,31 @@ export default (config, db, logger) => ({
 
         }
 
-    })
+    }),
+
+    /**
+   * Update an event location
+   * @param {integer} id ID of event
+   * @param {string} email Email to unsubscribe
+   */
+    unsubscribeFromEvent: (id, body, email) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+      SET subscribers = subscribers - $2
+      WHERE id = $1
+      RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
+
+        // Setup values
+        let values = [ id, email ];
+
+        // Execute
+        logger.debug(query, values);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
+            .catch((err) => reject(err));
+    }),
+
+
+
 });
