@@ -1,0 +1,37 @@
+.sideTab{
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 180px;
+    height: 100vh;
+}
+
+.sideTab a{
+    display: block;
+    background-color: inherit;
+    color: black;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 8px 12px;
+}
+
+/* Change background color of buttons on hover */
+.sideTab a:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.sideTab a.active {
+    background-color: #ccc;
+}
+
+.tabcontent {
+    // display:inline-block;
+    // width: calc(100% - 208px);
+    border: 1px solid #ccc;
+    border-left: none;
+    height: 100vh;
+}

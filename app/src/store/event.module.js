@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { EventsService} from '@/common/api.service';
-import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT RESET_EVENT_STATE } from './actions.type';
-import { RESET_STATE, SET_EVENT, UPDATE_EVENT_IN_LIST } from './mutations.type';
+import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT, RESET_EVENT_STATE } from './actions.type';
+import { RESET_STATE, SET_EVENT } from './mutations.type';
 
 const initialState = {
     event: {
@@ -14,16 +14,16 @@ const initialState = {
 export const state = Object.assign({}, initialState);
 
 export const actions = {
-    [FETCH_EVENT] (state, context, eventSlug){
-        // if(state.event.metadata.id == eventSlug){
-        //     return state.event;
-        // }else{
+    [FETCH_EVENT] (context, eventSlug, prevEvent){
+        // avoid duplicate network call if event was already set from list
+        if(prevEvent != undefined){
+            return context.commit(SET_EVENT, prevEvent);
+        }
         return EventsService.get(eventSlug)
             .then(({data}) => {
                 context.commit(SET_EVENT, data);
                 return data;
             });
-        // }
     },
     [CREATE_EVENT] ({ state }){
         // TODO: geojson for location validation
@@ -53,7 +53,7 @@ export const mutations = {
     },
     [RESET_STATE] () {
         for (let f in state){
-            Vue.set(state, f, initialState[f])
+            Vue.set(state, f, initialState[f]);
         }
     }
 };
@@ -62,8 +62,8 @@ const getters ={
     event (state){
         return state.event;
     }
-}
+};
 
 export default {
     state, actions, mutations, getters
-}
+};
