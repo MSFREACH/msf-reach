@@ -191,7 +191,7 @@ export default ( config, logger ) => ({
                 logger.info('Email %s sent: %s', info.messageId, info.response);
                 resolve(data); // pass contact data back out for next promise
             }
-          });
+        });
     })
 
 
