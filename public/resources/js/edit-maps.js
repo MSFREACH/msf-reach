@@ -249,7 +249,7 @@ var mapEditMissions = function(missions ){
             }
             popupContent += 'Start date: ' + feature.properties.properties.startDate + '<BR>';
             popupContent += 'Finish date: ' + feature.properties.properties.finishDate + '<BR>';
-            popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
+            popupContent += 'Managing OC: ' + feature.properties.properties.operational_center + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
