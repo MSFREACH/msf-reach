@@ -5,7 +5,7 @@ import events from './model';
 import missions from './../missions/model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
+import { cacheResponse, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 import { celebrate as validate, Joi } from 'celebrate';
@@ -64,10 +64,10 @@ export default ({ config, db, logger }) => {
     );
 
     // unsubscribe from event update emails
-    api.post('/unsubscribe/:id',ensureAuthenticatedWrite, cacheResponse('1 minute'),
+    api.get('/unsubscribe/:id',ensureAuthenticatedWrite, cacheResponse('1 minute'),
         (req, res, next) => {
             events(config, db, logger).unsubscribeFromEvent(req.body, req.user ? req.user._json.preferred_username : '')
-                .then((data) => handleGeoResponse(data, req, res, next))
+                .then((data) => handleResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */
                     logger.error(err);
@@ -76,7 +76,7 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
-    
+
     // Create a new event record in the database
     api.post('/',ensureAuthenticatedWrite,
         validate({
