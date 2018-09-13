@@ -253,7 +253,7 @@ export default (config, db, logger) => ({
    * @param {integer} id ID of event
    * @param {string} email Email to unsubscribe
    */
-    unsubscribeFromEvent: (id, body, email) => new Promise((resolve, reject) => {
+    unsubscribeFromEvent: (id, email) => new Promise((resolve, reject) => {
 
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
