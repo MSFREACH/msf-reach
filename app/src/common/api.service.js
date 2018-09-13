@@ -1,9 +1,11 @@
+/*eslint no-debugger: off*/
+
 import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import JwtService from '@/common/jwt.service';
 import { API_URL } from '@/common/config';
-
+import { GEOFORMAT } from './common';
 const ApiService = {
     init () {
         Vue.use(VueAxios, axios);
@@ -55,7 +57,8 @@ export default ApiService;
 
 
 export const EventsService = {
-    query (type, params) {
+    query (params) {
+        params.geoformat = GEOFORMAT;
         return ApiService.query('events', params);
     },
     get (slug) {

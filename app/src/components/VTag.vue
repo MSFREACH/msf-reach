@@ -5,7 +5,7 @@
 </template>
 <script>
   export default {
-    name: 'RwvTag',
+    name: 'VTag',
     props: {
       name: {
         type: String,

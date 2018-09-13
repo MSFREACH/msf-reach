@@ -14,29 +14,31 @@
 </template>
 
 <script>
+
 export default {
-  name: 'Pagination',
-  props: {
-    pages: {
-      type: Array,
-      required: true
+    name: 'VPagination',
+    props: {
+        pages: {
+            type: Array,
+            required: true
+        },
+        currentPage: {
+            type: Number,
+            required: true
+        }
     },
-    currentPage: {
-      type: Number,
-      required: true
+    methods: {
+        changePage (goToPage) {
+            if (goToPage === this.currentPage) return;
+            this.$emit('update:currentPage', goToPage);
+        },
+        paginationClass (page) {
+            return {
+                'page-item': true,
+                active: this.currentPage === page
+            };
+        }
     }
-  },
-  methods: {
-    changePage (goToPage) {
-      if (goToPage === this.currentPage) return
-      this.$emit('update:currentPage', goToPage)
-    },
-    paginationClass (page) {
-      return {
-        'page-item': true,
-        active: this.currentPage === page
-      }
-    }
-  }
-}
+};
+
 </script>

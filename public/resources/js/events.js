@@ -402,30 +402,28 @@ var mapAllEvents = function(err, events){
         }
 
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
-    '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
-    '<strong><a href=\'/events/?eventId=' + feature.properties.id +
-    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-    'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
-    'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
-    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
-    statusStr +
-    severityStr +
-    notificationStr +
-    totalPopulationStr +
-    affectedPopulationStr;
+            '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
+            '<strong><a href=\'/events/?eventId=' + feature.properties.id +
+            '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
+            'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
+            'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+            'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+            statusStr +
+            severityStr +
+            notificationStr +
+            totalPopulationStr +
+            affectedPopulationStr;
 
-        $('#ongoingEventsContainer').append(
-            '<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
-      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
-      'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
-    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
-      statusStr +
-      notificationStr +
-      totalPopulationStr +
-      affectedPopulationStr +
-      '</div>'
-        );
+        $('#ongoingEventsContainer').append('<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
+            'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+            'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
+            'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+            'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+            statusStr +
+            notificationStr +
+            totalPopulationStr +
+            affectedPopulationStr +
+        '</div>');
 
 
         if (feature.properties && feature.properties.popupContent) {

@@ -10,3 +10,5 @@ export const EDIT_EVENT = 'editEvent';
 export const RESET_EVENT_STATE = 'resetEventState';
 export const DELETE_EVENT = 'deleteEvent';
 export const ARCHIVE_EVENT = 'archiveEvent';
+export const FAVORITE_ADD = 'addFavorite';
+export const FAVORITE_REMOVE = 'removeFavorite';

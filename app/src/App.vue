@@ -20,8 +20,7 @@ export default {
 
 </script>
 
-<style>
-    html{
-        color: red;
-    }
+<style lang="scss">
+    @import '@/assets/css/main.scss';
+
 </style>

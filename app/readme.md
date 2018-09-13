@@ -11,4 +11,4 @@ also 'npm run start' on port 8001
 
 so `/` is now living at `/landing` route
 
-all refactored ROUTES will have the prefix of [vv-] for consistency
+all refactored ROUTES will have the prefix of `mr-` msf-reach for consistency 

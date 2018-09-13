@@ -6,8 +6,19 @@ Vue.use(Router);
 export default new Router({
     routes: [{
         path: '/',
-        component: () => import('@/views/Home'),
-        children: []
+        component: () => import('@/views/Landing'),
+        children: [
+            {
+                path: '',
+                name: 'landing',
+                component: () => import('@/views/LandingEvents')
+            },
+            {
+                path: 'my-events',
+                name: 'landing-my-events',
+                component: () => import('@/views/LandingMyEvents')
+            }
+        ]
     }, {
         name: 'login',
         path: '/login',

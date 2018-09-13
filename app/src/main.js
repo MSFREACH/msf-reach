@@ -5,9 +5,10 @@ import store from '@/store';
 import { CHECK_AUTH } from '@/store/actions.type';
 
 import ApiService from '@/common/api.service';
+import DateFilter from '@/common/date.filter';
 
 Vue.config.productionTip = false;
-
+Vue.filter('date', DateFilter);
 ApiService.init();
 
 // Ensure we checked auth before each page load.
