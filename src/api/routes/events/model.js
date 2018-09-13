@@ -70,7 +70,7 @@ export default (config, db, logger) => ({
         // Setup query
         let queryOne = `INSERT INTO ${config.TABLE_EVENTS}
 			(status, type, created_at, updated_at, metadata, the_geom, subscribers)
-			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326),jsonb_build_array($7))
+			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326),'{$7}'))
 			RETURNING id, report_key, the_geom`;
         let queryTwo = `UPDATE ${config.TABLE_REPORTS}
       SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE id=$1),status='unconfirmed' where id=$2
@@ -155,7 +155,7 @@ export default (config, db, logger) => ({
       updated_at = now(),
             type = $4,
 			metadata = metadata || $2,
-      subscribers = jsonb_build_array(array((select distinct jsonb_array_elements(subscribers ||  jsonb_build_array($5)) from ${config.TABLE_EVENTS} where id=$3)))
+      subscribers = array_distinct(subscribers || '{$5}')
 			WHERE id = $3
 			RETURNING subscribers, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
