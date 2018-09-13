@@ -85,6 +85,7 @@ export default {
     STATIC_REPORT_PATH: process.env.STATIC_REPORT_PATH || 'public/report',
     STATIC_CONTACT_PATH: process.env.STATIC_CONTACT_PATH || 'public/contact',
     STATIC_RESOURCES_PATH: process.env.STATIC_RESOURCES_PATH || 'public/resources',
+    STATIC_UNSUBSCRIBE_PATH: process.env.STATIC_UNSUBSCRIBE_PATH || 'public/unsubscribe',
     STATIC_LIB_PATH: process.env.STATIC_LIB_PATH || 'public/lib',
     TABLE_GRASP_CARDS: process.env.TABLE_GRASP_CARDS || 'grasp.cards',
     TABLE_GRASP_LOG: process.env.TABLE_GRASP_LOG || 'grasp.log',
