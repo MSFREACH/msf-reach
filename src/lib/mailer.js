@@ -143,6 +143,7 @@ export default ( config, logger ) => ({
     }),
 
     emailSubscribers: (data, id) => new Promise((resolve, reject) => {
+        logger.debug(data);
 
         const smtpConfig = {
             host: 'email-smtp.us-west-2.amazonaws.com',

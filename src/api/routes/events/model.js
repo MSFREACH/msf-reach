@@ -163,7 +163,7 @@ export default (config, db, logger) => ({
         let values = [ body.status, body.metadata, id, body.type, [email] ];
 
         // Execute
-        logger.debug(query, values);
+        logger.debug(query);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => mail(config,logger).emailSubscribers(data,id))
             .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
