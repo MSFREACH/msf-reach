@@ -168,7 +168,7 @@ export default ( config, logger ) => ({
 
         let emContext={
             eventLink: config.BASE_URL+'events/?eventId='+id,
-            unsubscribeLink: config.BASE_URL+'/unsubscribe/index.html#'+id
+            unsubscribeLink: config.BASE_URL+'/unsubscribe/index.html#'+id+'+'+email
         };
 
         const mailOptions = {
