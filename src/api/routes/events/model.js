@@ -70,14 +70,14 @@ export default (config, db, logger) => ({
         // Setup query
         let queryOne = `INSERT INTO ${config.TABLE_EVENTS}
 			(status, type, created_at, updated_at, metadata, the_geom, subscribers)
-			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326),'{$7}'))
+			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326), $7)
 			RETURNING id, report_key, the_geom`;
         let queryTwo = `UPDATE ${config.TABLE_REPORTS}
       SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE id=$1),status='unconfirmed' where id=$2
       RETURNING event_id, report_key`;
 
         // Setup values
-        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, email];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, [email]];
 
         // Execute
         logger.debug(queryOne, queryTwo, values);
@@ -155,12 +155,12 @@ export default (config, db, logger) => ({
       updated_at = now(),
             type = $4,
 			metadata = metadata || $2,
-      subscribers = array_distinct(subscribers || '{$5}')
+      subscribers = array_distinct(subscribers || $5)
 			WHERE id = $3
 			RETURNING subscribers, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
         // Setup values
-        let values = [ body.status, body.metadata, id, body.type, email ];
+        let values = [ body.status, body.metadata, id, body.type, [email] ];
 
         // Execute
         logger.debug(query, values);
