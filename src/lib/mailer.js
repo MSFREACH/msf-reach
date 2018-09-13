@@ -167,18 +167,18 @@ export default ( config, logger ) => ({
         //attach the plugin to the nodemailer transporter
         transport.use('compile', hbs(options));
 
-        console.log(data.subscribers[0]); // eslint-disable-line no-console
+        console.log(data.subscribers); // eslint-disable-line no-console
 
-        for (let i = 0; i < data.subscribers[0].length; i++) {
+        for (let i = 0; i < data.subscribers.length; i++) {
 
-            if (data.subscribers[0][i] !== '') {
+            if (data.subscribers[i] !== '') {
                 let emContext={
                     eventLink: config.BASE_URL+'events/?eventId='+id,
-                    unsubscribeLink: config.BASE_URL+'/unsubscribe/index.html#'+id+'+'+data.subscribers[0][i]
+                    unsubscribeLink: config.BASE_URL+'/unsubscribe/index.html#'+id+'+'+data.subscribers[i]
                 };
                 let mailOptions = {
                     from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
-                    to: data.subscribers[0][i],
+                    to: data.subscribers[i],
                     subject: 'Event update notification',
                     template: 'event_update',
                     context: emContext
