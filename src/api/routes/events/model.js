@@ -7,8 +7,8 @@ import Promise from 'bluebird';
 
 import request from 'request';
 
-import { addChatbotItem } from '../../../lib/chatbot.js';
-import { emailSubscribers } from '../../../lib/mailer.js';
+import { addChatbotItem } from '../../../lib/chatbot';
+import mail from '../../../lib/mailer';
 
 export default (config, db, logger) => ({
 
@@ -165,7 +165,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => emailSubscribers(data,id,logger))
+            .then((data) => mail(config,logger).emailSubscribers(data,id))
             .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));
