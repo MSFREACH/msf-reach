@@ -432,7 +432,7 @@ var mapMissions = function(missions ){
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
             popupContent += 'Start date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime)  || feature.properties.properties.startDate) + '<BR>';
             popupContent += 'Finish date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime_closed) || feature.properties.properties.finishDate  ) + '<BR>';
-            popupContent += 'Managing OC: ' + feature.properties.properties.operational_center + '<BR>';
+            popupContent += 'Managing OC(s): ' + (feature.properties.properties.hasOwnProperty('msf_response_operational_centers') && feature.properties.properties.msf_response_operational_centers.length > 0) ? feature.properties.properties.msf_response_operational_centers.toString() : feature.properties.properties.managingOC + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
