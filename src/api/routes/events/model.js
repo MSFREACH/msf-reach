@@ -65,19 +65,19 @@ export default (config, db, logger) => ({
 	 * @param {object} body Body of request with event details
    * @param {string} email Email address to subscribe
 	 */
-    createEvent: (body, email) => new Promise((resolve, reject) => {
+    createEvent: (body) => new Promise((resolve, reject) => {
 
         // Setup query
         let queryOne = `INSERT INTO ${config.TABLE_EVENTS}
-			(status, type, created_at, updated_at, metadata, the_geom, subscribers)
-			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326), $7)
+			(status, type, created_at, updated_at, metadata, the_geom)
+			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326))
 			RETURNING id, report_key, the_geom`;
         let queryTwo = `UPDATE ${config.TABLE_REPORTS}
       SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE id=$1),status='unconfirmed' where id=$2
       RETURNING event_id, report_key`;
 
         // Setup values
-        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, [email]];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat];
 
         // Execute
         logger.debug(queryOne, queryTwo, values);
@@ -147,26 +147,43 @@ export default (config, db, logger) => ({
 	 * @param {object} body Body of request with event details
    * @param {object} email email address to subscribe
 	 */
-    updateEvent: (id, body, email) => new Promise((resolve, reject) => {
+    updateEvent: (id, body) => new Promise((resolve, reject) => {
 
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
 			SET status = $1,
       updated_at = now(),
             type = $4,
-			metadata = metadata || $2,
-      subscribers = array_distinct(subscribers || $5)
+			metadata = metadata || $2
 			WHERE id = $3
 			RETURNING subscribers, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
         // Setup values
-        let values = [ body.status, body.metadata, id, body.type, [email] ];
+        let values = [ body.status, body.metadata, id, body.type ];
 
         // Execute
         logger.debug(query);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => mail(config,logger).emailSubscribers(data,id))
             .then((data) => addChatbotItem(data,String(id),body,config.BASE_URL+'report/?eventId='+String(id)+'&report='+data.report_key,logger))
+            .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
+            .catch((err) => reject(err));
+    }),
+
+    subscribe: (id, email) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+      SET subscribers = array_distinct(subscribers || $1)
+      WHERE id = $1
+      RETURNING id`;
+
+        // Setup values
+        let values = [ [email], id ];
+
+        // Execute
+        logger.debug(query);
+        db.one(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));
     }),
@@ -253,7 +270,7 @@ export default (config, db, logger) => ({
    * @param {integer} id ID of event
    * @param {string} email Email to unsubscribe
    */
-    unsubscribeFromEvent: (id, email) => new Promise((resolve, reject) => {
+    unsubscribe: (id, email) => new Promise((resolve, reject) => {
 
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}

@@ -1938,6 +1938,18 @@ var vmObject = {
                 this.submitEventSection(category);
             }
         },
+        subscribe(){
+          $.ajax({
+              type: 'POST',
+              url: '/api/events/subscribe' + currentEventId
+          }).done(function(data, textStatus, req){
+              alert('subscribed');
+          }).fail(function(err) {
+              if (err.responseText.includes('expired')) {
+                  alert('session expired');
+              }
+          });
+        },
         submitEventMetadata(){
             this.lintNotification();
             this.lintTypes(); // make sure if type is unselected, subtype is removed
