@@ -1941,7 +1941,7 @@ var vmObject = {
         subscribe(){
             $.ajax({
                 type: 'POST',
-                url: '/api/events/subscribe' + currentEventId
+                url: '/api/events/subscribe/' + currentEventId
             }).done(function(data, textStatus, req){
                 alert('subscribed');
             }).fail(function(err) {
