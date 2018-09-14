@@ -174,7 +174,8 @@ export default ( config, logger ) => ({
             if (data.subscribers[i] !== '') {
                 let emContext={
                     eventLink: config.BASE_URL+'events/?eventId='+id,
-                    unsubscribeLink: config.BASE_URL+'/unsubscribe/index.html#'+id+'+'+data.subscribers[i]
+                    loginLink: config.BASE_URL+'login',
+                    unsubscribeLink: config.BASE_URL+'unsubscribe/index.html#'+id+'+'+data.subscribers[i]
                 };
                 let mailOptions = {
                     from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
