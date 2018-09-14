@@ -1,3 +1,5 @@
+/*eslint no-debugger: off*/
+
 import Vue from 'vue';
 import { EventsService} from '@/common/api.service';
 import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT, RESET_EVENT_STATE } from './actions.type';
@@ -6,6 +8,7 @@ import { RESET_STATE, SET_EVENT } from './mutations.type';
 const initialState = {
     event: {
         metadata: {},
+        coordinates: [], 
         status: '',
         body: {}
     } // TODO: add associated reports & contacts later
@@ -49,7 +52,10 @@ export const actions = {
 /* eslint no-param-reassign: ["error", { "props": false }] */
 export const mutations = {
     [SET_EVENT] (state, event){
-        state.event = event;
+        state.event = event.result.objects.output.geometries[0];
+        state.event.metadata = event.result.objects.output.geometries[0].properties.metadata;
+        state.event.coordinates = event.result.objects.output.geometries[0].coordinates;
+        state.event.body =event.result.objects.output.geometries[0].properties;
     },
     [RESET_STATE] () {
         for (let f in state){
@@ -61,6 +67,9 @@ export const mutations = {
 const getters ={
     event (state){
         return state.event;
+    },
+    eventMetadata (state){
+        return state.event.metadata;
     }
 };
 

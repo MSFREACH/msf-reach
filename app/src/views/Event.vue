@@ -1,6 +1,6 @@
 <template>
     <div class ="event-page">
-        <div class="sideTab">
+        <!-- <div class="sideTab">
             <a :class="[activetab == 'general' ? 'active': '']" v-on:click="activetab='general'">General</a>
             <a :class="[activetab == 'updates' ? 'active': '']" v-on:click="activetab='updates'">Updates</a>
             <a :class="[activetab == 'response' ? 'active': '']" v-on:click="activetab='response'">Response</a>
@@ -31,17 +31,23 @@
         </div>
         <div v-if="activetab == 'reflections'" class="tabcontent">
             reflections
-        </div>
+        </div> -->
+        <router-link :to="{ name: 'event-general'}"> General </router-link>
+        <router-link :to="{ name: 'event-notifications'}"> Notificaions </router-link>
+        <router-view></router-view>
+
     </div>
 </template>
 
 <script>
+
 import { mapGetters } from 'vuex';
 import marked from 'marked';
 import store from '@/store';
 import { FETCH_EVENT } from '@/store/actions.type';
-// import REventGeneral from '@/views/Event/General.vue';
+import REventGeneral from '@/views/Event/General.vue';
 /*eslint no-unused-vars: off*/
+/*eslint no-debugger: off*/
 
 export default {
     name: 'r-event',
@@ -53,11 +59,13 @@ export default {
     },
     data(){
         return{
-            activetab: 'general'
+            activetab: 'general',
+            // metadata: { something: 'yoo'},
+            // notifications: {  something: 'yoo'}
         };
     },
     components: {
-
+        REventGeneral
     },
     beforeRouteEnter(to, from, next){
         Promise.all([
@@ -66,12 +74,23 @@ export default {
             next();
         });
     },
+    mounted(){
+    },
     computed: {
         ...mapGetters([
             'event',
             'currentUser',
             'isAuthenticated'
         ])
+    },
+    watch: {
+        // event(val, oldVal){
+        //     console.log('do stuff', val, oldVal); // eslint-disable-line
+        //     var feature = this.event.result.objects.output.geometries[0];
+        //     this.metadata = feature.properties.metadata;
+        //     this.notifications = feature.properties.metadata.notifcation;
+        //     console.log(this.metadata, this.notifications); // eslint-disable-line
+        // }
     },
     methods: {
         parsedMarkdown(chunk){

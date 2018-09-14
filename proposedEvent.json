@@ -1,0 +1,167 @@
+{
+"geolocation": {
+    "coordinates" :[115.6860351563, 22.0565578073],
+    "bounds" : {
+        "_northEast":{
+            "lat" : 23.069624397708267,
+            "lng" : 23.069624397708267
+        },
+        "_southWest":{
+            "lat" : 21.04349121680354,
+            "lng" : 114.0380859375
+        }
+    },
+},
+"properties":{
+    "created_at": "2018-09-11T12:58:17.821Z",
+    "id": "65",
+    "metadata":{
+        "name" : "",
+        "description" : "",
+        "open_datetime" : "",
+        "closed_datetime" : "",
+        "event_local_time" : "",
+        "areas" : [{
+            "region":"",
+            "country":"",
+            "country_code":""
+        }],
+        "status": [{
+            "type" : "",
+            "timestamp" :""
+        }],
+        "severity_measures" : [{
+            "scale": 2,
+            "description": ""
+        }],
+        "types":[],
+        "sub_types" : [],
+        "mission_contact_person" : {
+            "name":"",
+            "position":  "",
+            "arrival_time": null,
+            "departure_time": null
+        },
+        "security_details" : "",
+        "sharepoint_link" : "",
+        "user" : "",
+        "user_edit" : "",
+    },
+    "notifications" : [
+        {
+            "timestamp": "",
+            "notes":"",
+            "username": "",
+            "type" "info"|"medical"|"security"|"contacts"
+            /* ... relevant fields according to type  */
+        }
+    ],
+    "extCapacity":{
+        "description" : "",
+        "action_plan" : "",
+        "by_humanitarian" : "",
+        "type_in_ground" : "",
+        "who" : "",
+        "other_organizations" : {
+            "name":"",
+            "deployment" : "",
+            "arrival_date" null
+        }
+    },
+    "msfResponse": {
+        "start_date" : "",
+        "end_date" : "",
+        "description" : "",
+        "total_days" : "",
+        "location" : "",
+        "medical_material" : {
+            "description":"",
+            "arrival_date" : "",
+            "total_amount" : ""
+        },
+
+        "non_medical_material" : {
+            "description":"",
+            "arrival_date" : "",
+            "total_amount" : ""
+        } ,
+        "operational_center" : "",
+        "operational_centers" : [],
+        "types_of_programmes" : []
+    },
+    "resources":{
+        "budget" : "",
+        "category" : "",
+        "institutional_donors" : "",
+        "staff_expatriate" : "",
+        "staff_list" : "",
+        "staff_national" : "",
+        "visa_requirement" : {
+            "nationality": [{
+                "iso2": "xx",
+                "name": null,
+                "is_required": Boolean
+            }],
+            "description": null
+        }
+    },
+    "figures":{
+        "keyFigures" : [{
+            "category": "", "value":""
+        }],
+        "population": {
+            "total":{
+                "amount": 300,
+                "description":""
+            },
+            "affected":{
+                "amount":20,
+                "description":"",
+                "percentage": ""
+            }
+        }
+    },
+    "reflection":{
+        "practical_details": "",
+        "recommendations":"",
+        "comments": ""
+    }
+}
+
+/*  TO Remove
+
+        1. event.metadata.Country
+        2. event.metadata.region,
+        3. severity,
+        4. severity_scale,
+        5. event.metadata.startDate,
+        6. event.metadata.finishDate
+        7. event.metadata.type_of_emergency
+        8. event.metadata.sub_type
+
+    To change
+
+        1. {notification} to [notifications] with types selections that prompts relevant fields
+        2. event_status to [status] with timestamp & type to keep history of when status changes
+        3. incharge_name, incharge_position >> mergo into mission_contact_person:{ name, position... + division?}
+        4. keyMSFFigures >> keyFigures in [figures]
+        5. move types into metadata
+
+    To rename
+        1. event.metadata.medical_material > event.msfResponse.medical_material.description
+        2. event.metadata.nonMedicalMaterials > event.msfResponse.non_medical_material.description
+        3. event.metadata.other_orgs > event.extCapacity.other_organizations.name
+        4. event.metadata.event_datetime >> event.metadata.open_datetime
+        5. event.metadata.event_datetime_closed >> event.metadata.closed_datetime
+
+    notsure
+        1. exploratory_details >> is this deprecated or do we need a new section for this
+        2. security_details, if notifcation now has types: medical, security, contacts, do we still need this field?
+        3. sharepoint_link >> will this expanding to media importing, somekind of markdown? a list ?
+        4. user & user_edit >> where is this use? could we expand more for Profile object?
+        5. area object, should have a field where location is the original validated field that user enter regardless of zoom level..
+        ref. Fiona's request to enter Specific location to appear on ‘event’ as outbreaks can be very specific to one village/town/area
+        Cheung Chau vs New Territory
+        6.  No. of cases (morbidity) and no. of fatalities (mortality) figures can be inputted under medical figures
+
+*/

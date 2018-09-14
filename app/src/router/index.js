@@ -34,7 +34,20 @@ export default new Router({
         name: 'event',
         path: '/events/:slug',
         component: () => import('@/views/Event'),
-        props: true
+        props: true,
+        children: [
+            {
+                path: '',
+                name: 'event-general',
+                component: () => import('@/views/Event/General'),
+                props: true
+            },{
+                path: 'notifications',
+                name: 'event-notifications',
+                component: () => import('@/views/Event/Notifications'),
+                props: true
+            }
+        ]
     }, {
         name: 'event-edit',
         path: '/editor/:slug?',
