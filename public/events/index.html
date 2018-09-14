@@ -668,7 +668,6 @@
                   <div class="panel-heading" style="cursor:pointer;"  >
                     <a> General details </a>
                     <button v-if="!panelEditing.General" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('General')">Edit</button>
-                    <button type="button" v-show="panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="subscribe()">Subscribe</button>
                     <button type="button" v-show="panelEditing.General" class="btn btn-warning btn-xs pull-right" @click="cancelEventEdits()">Cancel</button><span class="pull-right">&nbsp;</span>
                     <button type="button" v-show="panelEditing.General" class="btn btn-primary btn-xs pull-right" @click="submitEventMetadata()"> Save </button>
                   </div>
@@ -700,6 +699,7 @@
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;">{{ notStr }}</td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
+                  <tr><td>Subscribers:  </td><td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal;" class="label label-default">{{em}}</span>&nbsp;</span> </td> <td><button type="button"  class="btn btn-info" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe</button></td> </tr>
                   <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ event.updated_at  | formatFullDate }}</td></tr>

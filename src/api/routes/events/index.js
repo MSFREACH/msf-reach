@@ -77,7 +77,7 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    // unsubscribe from event update emails
+    // subscribe to event update emails
     api.post('/subscribe/:id', ensureAuthenticatedWrite, cacheResponse('1 minute'),
         (req, res, next) => {
             events(config, db, logger).subscribe(req.params.id, req.user._json.preferred_username)
@@ -126,11 +126,13 @@ export default ({ config, db, logger }) => {
                 location: Joi.object().required().keys({
                     lat: Joi.number().min(-90).max(90).required(),
                     lng: Joi.number().min(-180).max(180).required()
-                })
+                }),
+                subscribe: Joi.boolean()
             })
         }),
         (req, res, next) => {
-            events(config, db, logger).createEvent(req.body)
+            let userEmail=((req.body.subscribe && req.user ) ? req.user._json.preferred_username : null);
+            events(config, db, logger).createEvent(req.body,userEmail)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */

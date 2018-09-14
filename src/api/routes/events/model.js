@@ -25,7 +25,7 @@ export default (config, db, logger) => ({
         const geom = !!location.lng &&
         !!location.lat && 'POINT(' + location.lng +' '+location.lat +')' || null;
         // Setup query
-        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom, subscribers
 			FROM ${config.TABLE_EVENTS}
             WHERE ($1 is null or status = $1) AND
                 ($2 is null or metadata->>'country' = $2) AND
@@ -45,7 +45,7 @@ export default (config, db, logger) => ({
     byId: (id) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom, subscribers
       FROM ${config.TABLE_EVENTS}
       WHERE id = $1
       ORDER BY created_at DESC`;
@@ -65,7 +65,7 @@ export default (config, db, logger) => ({
 	 * @param {object} body Body of request with event details
    * @param {string} email Email address to subscribe
 	 */
-    createEvent: (body) => new Promise((resolve, reject) => {
+    createEvent: (body,subscribtionEmail) => new Promise((resolve, reject) => {
 
         // Setup query
         let queryOne = `INSERT INTO ${config.TABLE_EVENTS}
@@ -77,7 +77,7 @@ export default (config, db, logger) => ({
       RETURNING event_id, report_key`;
 
         // Setup values
-        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, ['']];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, [subscribtionEmail || ''] ];
 
         // Execute
         logger.debug(queryOne, queryTwo, values);
@@ -176,7 +176,7 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_EVENTS}
       SET subscribers = array_distinct(subscribers || $1)
       WHERE id = $2
-      RETURNING id`;
+      RETURNING id, subscribers`;
 
         // Setup values
         let values = [ [email], id ];
@@ -184,7 +184,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query);
         db.one(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id) })) // eslint-disable-line no-unused-vars
+            .then((data) => resolve({ id: String(data.id) , subscribers: data.subscribers })) // eslint-disable-line no-unused-vars
             .catch((err) => reject(err));
     }),
 

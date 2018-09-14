@@ -1943,12 +1943,15 @@ var vmObject = {
             }
         },
         subscribe(){
+            var vm=this;
             $.ajax({
                 type: 'POST',
                 url: '/api/events/subscribe/' + currentEventId
             }).done(function(data, textStatus, req){
-                alert('subscribed');
+                vm.event.subscribers=data.result.subscribers;
+                alert('Succesfully subscribed.');
             }).fail(function(err) {
+                alert('An error occured when subscribing to this event.');
                 if (err.responseText.includes('expired')) {
                     alert('session expired');
                 }
