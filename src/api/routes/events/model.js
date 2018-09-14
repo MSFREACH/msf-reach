@@ -175,7 +175,7 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
       SET subscribers = array_distinct(subscribers || $1)
-      WHERE id = $1
+      WHERE id = $2
       RETURNING id`;
 
         // Setup values
