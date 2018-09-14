@@ -69,15 +69,15 @@ export default (config, db, logger) => ({
 
         // Setup query
         let queryOne = `INSERT INTO ${config.TABLE_EVENTS}
-			(status, type, created_at, updated_at, metadata, the_geom)
-			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326))
+			(status, type, created_at, updated_at, metadata, the_geom, subscribers)
+			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326), $7)
 			RETURNING id, report_key, the_geom`;
         let queryTwo = `UPDATE ${config.TABLE_REPORTS}
       SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE id=$1),status='unconfirmed' where id=$2
       RETURNING event_id, report_key`;
 
         // Setup values
-        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, ['']];
 
         // Execute
         logger.debug(queryOne, queryTwo, values);
