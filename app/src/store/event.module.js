@@ -1,5 +1,5 @@
 /*eslint no-debugger: off*/
-
+import _ from 'lodash';
 import Vue from 'vue';
 import { EventsService} from '@/common/api.service';
 import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT, RESET_EVENT_STATE } from './actions.type';
@@ -11,7 +11,8 @@ const initialState = {
         coordinates: [],
         notifications: [],
         status: '',
-        body: {}
+        body: {},
+        type: ''
     } // TODO: add associated reports & contacts later
 };
 
@@ -58,6 +59,7 @@ export const mutations = {
         state.event.coordinates = event.result.objects.output.geometries[0].coordinates;
         state.event.body =event.result.objects.output.geometries[0].properties;
         state.event.notifications = event.result.objects.output.geometries[0].properties.metadata.notification;
+        state.event.type = event.result.objects.output.geometries[0].properties.type;
     },
     [RESET_STATE] () {
         for (let f in state){
@@ -78,6 +80,23 @@ const getters ={
     },
     eventNotifications (state){
         return state.event.notifications;
+    },
+    eventTypes(state){
+        if(state.event.type){
+            var types = state.event.type.replace(/other:/g, '').split(',');
+            var cTypes = _.compact(types);
+            _.remove(cTypes, function(t){
+                return t.indexOf('disease_outbreak') > -1 || t.indexOf('natural_disaster') > -1 ;
+            });
+            
+            var subTypes = state.event.metadata.sub_type.replace(/other_disease_outbreak:/g, '').replace(/other_natural_disaster:/g, '').split(',');
+            var cSubTypes = _.compact(subTypes);
+
+            return cTypes.concat(cSubTypes);
+        }
+    },
+    eventCreatedAt(state){
+        return state.event.created_at ? state.event.created_at : state.event.metadata.event_datetime;
     }
 };
 

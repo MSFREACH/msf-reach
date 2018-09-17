@@ -12,5 +12,8 @@ export default {
         } else {
             return 'N/A';
         }
+    },
+    relativeTime(value){
+        return moment(value).fromNow();
     }
 };

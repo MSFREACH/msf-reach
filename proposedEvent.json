@@ -163,5 +163,7 @@
         ref. Fiona's request to enter Specific location to appear on ‘event’ as outbreaks can be very specific to one village/town/area
         Cheung Chau vs New Territory
         6.  No. of cases (morbidity) and no. of fatalities (mortality) figures can be inputted under medical figures
+        7. Creation time is duplicate in event.metadata.event_datetime || event.created_at, should condense and render as relative time (4 years ago), use event.local_time as absolute time
+            >>> Happened 2 months ago on July 23, 2018 7:15 PM local time
 
 */

@@ -1,11 +1,10 @@
 <template>
     <div class="eventSubContent">
-        General details
-        {{eventMetadata.name}}
+        General details:
+        <h1>{{eventMetadata.name}}</h1>
         <label>Areas</label>
         <ul>
             <li v-for="(area, index) in eventMetadata.areas">
-                {{area}}
                 <span v-if="area.region.length > 0"> {{area.region}} {{area.country_code}}</span>
                 <span v-else>{{area.country}}</span>
                 <span v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length"> </span>
@@ -15,7 +14,21 @@
                 </span>
             </li>
         </ul>
-        <span :class="eventMetadata.status + 'event-status'"> {{eventMetadata.status || 'monitoring'}}  </span>
+        <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
+        <div>
+            <span v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</span>
+            <!-- TODO: add pairing icon + clickable taglink -->
+        </div>
+        <div> Happened {{ eventCreatedAt | relativeTime }}
+             <span>on {{eventMetadata.event_local_time | fullDate }} local time.</span>
+        </div>
+        <p>{{eventMetadata.description }}</p>
+        <div>Person In charge {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
+        <div>
+            <a :href='eventMetadata.sharepoint_link' target="_blank">
+                Sharepoint Link
+            </a>
+        </div>
         <!-- {{eventMetadata}} -->
 
     </div>
@@ -46,7 +59,9 @@ export default {
 
     computed: {
         ...mapGetters([
-            'eventMetadata'
+            'eventMetadata',
+            'eventTypes',
+            'eventCreatedAt'
         ])
     },
     watch: {
