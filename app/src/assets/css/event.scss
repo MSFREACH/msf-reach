@@ -1,0 +1,23 @@
+.event-status{
+    font-size: 12px;
+    border-radius: 4px;
+    padding: 8px 10px; 
+    .monitoring{
+        color: #68D845; // green;
+        border: 1px solid #68D845;
+    }
+    .exploration{
+        color: #FB618D; // red;
+        border: 1px solid #FB618D;
+    }
+    .ongoing{
+        color: #FCD475; // yellow;
+        border: 1px solid #FCD475;
+
+    }
+    .complete{
+        color:  #F2F2F2; // grey
+        background: #C6C6C6;
+        border: 1px solid #F2F2F2;
+    }
+}

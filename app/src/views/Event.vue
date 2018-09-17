@@ -33,7 +33,7 @@
             reflections
         </div> -->
         <router-link :to="{ name: 'event-general'}"> General </router-link>
-        <router-link :to="{ name: 'event-notifications'}"> Notificaions </router-link>
+        <router-link :to="{ name: 'event-notifications'}"> Notifications </router-link>
         <router-view></router-view>
 
     </div>

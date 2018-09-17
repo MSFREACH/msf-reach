@@ -8,7 +8,8 @@ import ApiService from '@/common/api.service';
 import DateFilter from '@/common/date.filter';
 
 Vue.config.productionTip = false;
-Vue.filter('date', DateFilter);
+Vue.filter('date', DateFilter.dateOnly);
+Vue.filter('fullDate', DateFilter.fullDate);
 ApiService.init();
 
 // Ensure we checked auth before each page load.

@@ -1,5 +1,16 @@
 import moment from 'moment';
 
-export default (date) => {
-    return moment(date).format('YYYY-MM-DD');
+export default {
+    dateOnly(value){
+        if(value){
+            return moment(value).format('YYYY-MM-DD');
+        }
+    },
+    fullDate (value){
+        if (value) {
+            return moment(value).format('LLL');
+        } else {
+            return 'N/A';
+        }
+    }
 };

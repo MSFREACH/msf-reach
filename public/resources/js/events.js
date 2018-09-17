@@ -186,7 +186,7 @@ var printEventProperties = function(err, eventProperties){
     }
 
     if(!currentEventProperties.metadata.severity_measures){
-        var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.description};
+        var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.security_details};
         currentEventProperties.metadata.severity_measures = [mockSeverity];
     }
 
@@ -1725,9 +1725,13 @@ var vmObject = {
                     if(!Array.isArray(currentEventProperties.metadata.notification)){
                         currentEventProperties.metadata.notification = [];
                     }
-                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()});
+                    currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000,
+                    'notification': $('#inputNotification').val(),
+                    'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')});
                 } else {
-                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000, 'notification': $('#inputNotification').val()}];
+                    currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000,
+                    'notification': $('#inputNotification').val(),
+                    'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')}];
                 }
             }
         },

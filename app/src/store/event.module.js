@@ -8,7 +8,8 @@ import { RESET_STATE, SET_EVENT } from './mutations.type';
 const initialState = {
     event: {
         metadata: {},
-        coordinates: [], 
+        coordinates: [],
+        notifications: [],
         status: '',
         body: {}
     } // TODO: add associated reports & contacts later
@@ -56,6 +57,7 @@ export const mutations = {
         state.event.metadata = event.result.objects.output.geometries[0].properties.metadata;
         state.event.coordinates = event.result.objects.output.geometries[0].coordinates;
         state.event.body =event.result.objects.output.geometries[0].properties;
+        state.event.notifications = event.result.objects.output.geometries[0].properties.metadata.notification;
     },
     [RESET_STATE] () {
         for (let f in state){
@@ -70,6 +72,12 @@ const getters ={
     },
     eventMetadata (state){
         return state.event.metadata;
+    },
+    eventCoordinates (state){
+        return state.event.coordinates;
+    },
+    eventNotifications (state){
+        return state.event.notifications;
     }
 };
 
