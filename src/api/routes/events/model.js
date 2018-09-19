@@ -65,19 +65,16 @@ export default (config, db, logger) => ({
     createEvent: (body) => new Promise((resolve, reject) => {
 
         // Setup query
-        let queryOne = `INSERT INTO ${config.TABLE_EVENTS}
+        let query = `INSERT INTO ${config.TABLE_EVENTS}
 			(status, type, created_at, updated_at, metadata, the_geom)
 			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326))
 			RETURNING id, report_key, the_geom`;
-        let queryTwo = `UPDATE ${config.TABLE_REPORTS}
-      SET event_id=$1,report_key=(SELECT report_key from ${config.TABLE_EVENTS} WHERE id=$1),status='unconfirmed' where id=$2
-      RETURNING event_id, report_key`;
 
         // Setup values
         let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat];
 
         // Execute
-        logger.debug(queryOne, queryTwo, values);
+        logger.debug(query, values);
 
         if (config.GOOGLE_API_KEY) {
             request('https://maps.googleapis.com/maps/api/geocode/json?latlng='+String(body.location.lat)+','+String(body.location.lng)+'&key='+config.GOOGLE_API_KEY, function (error, response, response_body) {
@@ -112,18 +109,16 @@ export default (config, db, logger) => ({
                         body.metadata.areas.push(area);
                     }
                 }
-                db.task(async t => { //eslint-disable-line no-unused-vars
-                    let data = await db.oneOrNone(queryOne, values);
-                }).then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+                db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+                    .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                     .catch((err) => reject(err));
 
             });
 
         } else {
 
-            db.task(async t => { //eslint-disable-line no-unused-vars
-                let data = await db.oneOrNone(queryOne, values);
-            }).then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+            db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+                .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                 .catch((err) => reject(err));
         }
     }),
