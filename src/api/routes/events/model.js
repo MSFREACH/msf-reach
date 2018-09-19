@@ -123,12 +123,7 @@ export default (config, db, logger) => ({
 
             db.task(async t => { //eslint-disable-line no-unused-vars
                 let data = await db.oneOrNone(queryOne, values);
-                if (body.hasOwnProperty('report_id')) {
-                    await db.one(queryTwo, [data.id, body.report_id]);
-                }
-                return data;
-            }).then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
-                .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
+            }).then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                 .catch((err) => reject(err));
         }
     }),
