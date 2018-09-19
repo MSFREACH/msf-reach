@@ -207,7 +207,7 @@ export default (config, db, logger) => ({
                 // Setup values
                 let values = [ body.location.lng, body.location.lat, {'country':country}, id ];
 
-                db.one(query, values).timeout(config.PGTIMEOUT).then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
+                db.one(query, values).timeout(config.PGTIMEOUT)
                     .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                     .catch((err) => reject(err));
 
@@ -218,7 +218,7 @@ export default (config, db, logger) => ({
             // Setup values
             let values = [ body.location.lng, body.location.lat, {'country':'unknown'}, id ];
 
-            db.one(query, values).timeout(config.PGTIMEOUT).then((data) => addChatbotItem(data,String(data.id),body,config.BASE_URL+'report/?eventId='+data.id+'&report='+data.report_key,logger))
+            db.one(query, values).timeout(config.PGTIMEOUT)
                 .then((data) => resolve({ id: data.id, status: data.status, type:body.type, created: body.created, reportkey:data.report_key, metadata:body.metadata, uuid: data.uuid, the_geom:data.the_geom }))
                 .catch((err) => reject(err));
 
