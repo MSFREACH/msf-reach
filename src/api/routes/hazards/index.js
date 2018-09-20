@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 // Import any required utility functions
-import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
+import { ensureAuthenticated } from '../../../lib/util';
 
 import { PDC } from '../../../lib/pdc-georss.js';
 import { USGS } from '../../../lib/usgs-georss.js';
@@ -15,7 +15,7 @@ export default ({ logger }) => {
     let api = Router();
 
     // Get a list of all reports
-    api.get('/pdc', ensureAuthenticated, cacheResponse('10 minutes'),
+    api.get('/pdc', ensureAuthenticated,
         (req, res, next) => PDC()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -29,7 +29,7 @@ export default ({ logger }) => {
     );
 
     // The following get methods get hazards from different data sources
-    api.get('/usgs', ensureAuthenticated, cacheResponse('10 minutes'),
+    api.get('/usgs', ensureAuthenticated,
         (req, res, next) => USGS()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -42,7 +42,7 @@ export default ({ logger }) => {
             })
     );
 
-    api.get('/tsr', ensureAuthenticated, cacheResponse('10 minutes'),
+    api.get('/tsr', ensureAuthenticated,
         (req, res, next) => TSR()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -55,7 +55,7 @@ export default ({ logger }) => {
             })
     );
 
-    api.get('/gdacs', ensureAuthenticated, cacheResponse('10 minutes'),
+    api.get('/gdacs', ensureAuthenticated,
         (req, res, next) => GDACS()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -68,7 +68,7 @@ export default ({ logger }) => {
             })
     );
 
-    api.get('/ptwc', ensureAuthenticated, cacheResponse('10 minutes'),
+    api.get('/ptwc', ensureAuthenticated,
         (req, res, next) => PTWC()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
@@ -82,7 +82,7 @@ export default ({ logger }) => {
     );
 
     // Get a list of all reports
-    api.get('/lra', ensureAuthenticated, cacheResponse('10 minutes'),
+    api.get('/lra', ensureAuthenticated,
         (req, res, next) => LRA()
             .then((events) => {
                 res.status(200).json({statusCode: 200, time:new Date().toISOString(), result:events});
