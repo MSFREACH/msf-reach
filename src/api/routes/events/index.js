@@ -66,7 +66,7 @@ export default ({ config, db, logger }) => {
     // unsubscribe from event update emails
     api.post('/unsubscribe/:id',ensureAuthenticatedWrite,  cacheResponse('1 minute'),
         (req, res, next) => {
-          let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
+            let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
             events(config, db, logger).unsubscribe(req.params.id, email)
                 .then((data) => handleResponse(data, req, res, next))
                 .catch((err) => {
@@ -81,7 +81,7 @@ export default ({ config, db, logger }) => {
     // subscribe to event update emails
     api.post('/subscribe/:id', ensureAuthenticatedWrite, cacheResponse('1 minute'),
         (req, res, next) => {
-           let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
+            let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
             events(config, db, logger).subscribe(req.params.id, email)
                 .then((data) => handleResponse(data, req, res, next))
                 .catch((err) => {
