@@ -276,7 +276,7 @@ export default (config, db, logger) => ({
         let query = `UPDATE ${config.TABLE_EVENTS}
       SET subscribers = array_remove(subscribers,$2)
       WHERE id = $1
-      RETURNING id`;
+      RETURNING id,subscribers`;
 
         // Setup values
         let values = [ id, email ];

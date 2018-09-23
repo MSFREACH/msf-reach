@@ -64,9 +64,10 @@ export default ({ config, db, logger }) => {
     );
 
     // unsubscribe from event update emails
-    api.post('/unsubscribe/:id', cacheResponse('1 minute'),
+    api.post('/unsubscribe/:id',ensureAuthenticatedWrite,  cacheResponse('1 minute'),
         (req, res, next) => {
-            events(config, db, logger).unsubscribe(req.params.id, req.body.email)
+          let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
+            events(config, db, logger).unsubscribe(req.params.id, email)
                 .then((data) => handleResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */
@@ -80,7 +81,8 @@ export default ({ config, db, logger }) => {
     // subscribe to event update emails
     api.post('/subscribe/:id', ensureAuthenticatedWrite, cacheResponse('1 minute'),
         (req, res, next) => {
-            events(config, db, logger).subscribe(req.params.id, req.user._json.preferred_username)
+           let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
+            events(config, db, logger).subscribe(req.params.id, email)
                 .then((data) => handleResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */
