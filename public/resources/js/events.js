@@ -1942,6 +1942,21 @@ var vmObject = {
                 this.submitEventSection(category);
             }
         },
+        unsubscribe(){
+            var vm=this;
+            $.ajax({
+                type: 'POST',
+                url: '/api/events/unsubscribe/' + currentEventId
+            }).done(function(data, textStatus, req){
+                vm.event.subscribers=data.result.subscribers;
+                alert('Succesfully unsubscribed.');
+            }).fail(function(err) {
+                alert('An error occured when unsubscribing from this event.');
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        },
         subscribe(){
             var vm=this;
             $.ajax({
