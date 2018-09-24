@@ -4,7 +4,7 @@ let [id, email] = window.location.hash.substring(1).split('+');
 
 $.ajax({
     type: 'POST',
-    url: '/api/events/unsubscribe/' + id,
+    url: '/api/events/unsubscribeEmailLink/' + id,
     data: JSON.stringify({ 'email': email}),
     contentType: 'application/json'
 }).done(function() {

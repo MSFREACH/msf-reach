@@ -93,6 +93,20 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    // unsubscribe from event update emails
+    api.post('/unsubscribeEmailLink/:id', cacheResponse('1 minute'),
+        (req, res, next) => {
+            events(config, db, logger).unsubscribe(req.params.id, req.body.email)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
     // Create a new event record in the database
     api.post('/',ensureAuthenticatedWrite,
         validate({
