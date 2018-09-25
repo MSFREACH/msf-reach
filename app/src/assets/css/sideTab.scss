@@ -16,6 +16,7 @@
     cursor: pointer;
     transition: 0.3s;
     padding: 8px 12px;
+    text-decoration: none;
 }
 
 /* Change background color of buttons on hover */
@@ -24,7 +25,7 @@
 }
 
 /* Create an active/current "tab button" class */
-.sideTab a.active {
+.sideTab a.router-link-exact-active{
     background-color: #ccc;
 }
 

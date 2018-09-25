@@ -62,35 +62,40 @@
         "by_humanitarian" : "",
         "type_in_ground" : "",
         "who" : "",
-        "other_organizations" : {
+        "other_organizations" : [{
             "name":"",
             "deployment" : "",
             "arrival_date" null
-        }
+        }]
     },
     "msfResponse": {
         "start_date" : "",
         "end_date" : "",
         "description" : "",
         "total_days" : "",
-        "location" : "",
+        "location" : {
+            "coordinates": [],
+            "type": "Point"
+        },
         "medical_material" : {
-            "description":"",
+            "items":[],
             "arrival_date" : "",
             "total_amount" : ""
         },
 
         "non_medical_material" : {
-            "description":"",
+            "items":[],
             "arrival_date" : "",
             "total_amount" : ""
         } ,
         "operational_center" : "",
-        "operational_centers" : [],
         "types_of_programmes" : []
     },
     "resources":{
-        "budget" : "",
+        "budget" : [{
+            "amount": 0,
+            "from_who": null
+        }],
         "category" : "",
         "institutional_donors" : "",
         "staff_expatriate" : "",
@@ -122,8 +127,7 @@
         }
     },
     "reflection":{
-        "practical_details": "",
-        "recommendations":"",
+        "recommendations": "",
         "comments": ""
     }
 }

@@ -1,10 +1,9 @@
 <template>
     <div class="eventSubContent">
         Notifications
-
-        {{reversedNotifications.length}}
-        <div v-if="eventNotifications && eventNotifications.length > 0">
-            <ul >
+        <div v-if="eventNotifications">
+            <span> {{reversedNotifications.length}} </span>
+            <ul v-show="eventNotifications.length > 0">
                 <li v-for="(elem, index) in reversedNotifications">
                     <span v-if="elem.hasOwnProperty('username')">{{elem.username}}</span>
                     <span v-else>(username wasn't recorded)</span>
@@ -15,13 +14,13 @@
                 </li>
             </ul>
         </div>
+        <div v-else>No updates yet </div>
     </div>
 </template>
 
 <script>
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
-
 import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
 

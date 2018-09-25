@@ -13,7 +13,7 @@ Vue.filter('date', DateFilter.dateOnly);
 Vue.filter('fullDate', DateFilter.fullDate);
 Vue.filter('relativeTime', DateFilter.relativeTime);
 Vue.filter('capitalize', TextFilter.capitalize);
-Vue.filter('noUnderscore', TextFilter.cleanCharacter);
+Vue.filter('noUnderscore', TextFilter.noUnderscore);
 
 ApiService.init();
 

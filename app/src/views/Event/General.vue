@@ -1,6 +1,5 @@
 <template>
     <div class="eventSubContent">
-        General details:
         <h1>{{eventMetadata.name}}</h1>
         <label>Areas</label>
         <ul>
@@ -54,9 +53,6 @@ export default {
     components:{
         //TODO: MAP goes here
     },
-    mounted:{
-    },
-
     computed: {
         ...mapGetters([
             'eventMetadata',

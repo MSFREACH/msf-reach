@@ -46,6 +46,31 @@ export default new Router({
                 name: 'event-notifications',
                 component: () => import('@/views/Event/Notifications'),
                 props: true
+            },{
+                path: 'response',
+                name: 'event-response',
+                component: () => import('@/views/Event/Response'),
+                props: true
+            },{
+                path: 'extCapacity',
+                name: 'event-extCapacity',
+                component: () => import('@/views/Event/ExtCapacity'),
+                props: true
+            },{
+                path: 'medFigures',
+                name: 'event-medFigures',
+                component: () => import('@/views/Event/MedFigures'),
+                props: true
+            },{
+                path: 'resources',
+                name: 'event-resources',
+                component: () => import('@/views/Event/StaffResources'),
+                props: true
+            },{
+                path: 'reflection',
+                name: 'event-reflection',
+                component: () => import('@/views/Event/Reflection'),
+                props: true
             }
         ]
     }, {
