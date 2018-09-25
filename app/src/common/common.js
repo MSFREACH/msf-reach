@@ -1,4 +1,6 @@
 export const GEOFORMAT = 'geojson'; // Change to topojson for prod
+export const DATE_DISPLAY_FORMAT='YYYY-MM-DD';
+export const DATETIME_DISPLAY_FORMAT='YYYY-MM-DD  HH:mm';
 
 export const SEVERITY = {
     colors: ['green','orange','red'],
@@ -33,6 +35,13 @@ export const EVENT_TYPES = [
         ]
     },
     { value: 'search_and_rescue', text: 'Search and Rescue' },
+];
+
+export const EVENT_STATUSES = [
+    { value: 'monitoring', text: 'Monitoring' },
+    { value: 'exploration', text: 'Exploration' },
+    { value: 'ongoing', text: 'Ongoing Intervention (MSF activity)' },
+    { value: 'complete', text: 'Complete' }
 ];
 
 export const MSF_OPERATIONAL_CENTERS = ['OCA', 'OCBA', 'OCG', 'OCB', 'OCP'];

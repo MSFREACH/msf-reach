@@ -6,6 +6,11 @@ export default {
             return moment(value).format('YYYY-MM-DD');
         }
     },
+    dateTime(value){
+        if(value){
+            return moment(value).format('YYYY-MM-DD HH:mm');
+        }
+    },
     fullDate (value){
         if (value) {
             return moment(value).format('LLL');

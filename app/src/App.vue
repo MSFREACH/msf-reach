@@ -9,11 +9,15 @@
 <script>
 import RHeader from '@/components/RHeader';
 import RFooter from '@/components/RFooter';
+import datePicker from 'vue-bootstrap-datetimepicker';
+
+
+// Vue.component('date-picker', VueBootstrapDatetimePicker.default);
 
 export default {
     name: 'App',
     components:{
-        RHeader, RFooter
+        RHeader, RFooter, datePicker
     },
     message: 'Hello Vue!'
 };

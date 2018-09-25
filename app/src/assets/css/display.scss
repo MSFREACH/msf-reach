@@ -1,0 +1,16 @@
+ul{
+    list-style: none;
+}
+
+.eventSubContent{
+    float: left;
+    padding: 10px;
+    width: calc(100% - 205px);
+    .actions{
+        float: right;
+        cursor: pointer;
+        button{
+
+        }
+    }
+}

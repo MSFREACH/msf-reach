@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './App';
 import router from '@/router';
 import store from '@/store';
+
 import { CHECK_AUTH } from '@/store/actions.type';
 
 import ApiService from '@/common/api.service';
@@ -10,6 +11,8 @@ import TextFilter from '@/common/text.filter';
 
 Vue.config.productionTip = false;
 Vue.filter('date', DateFilter.dateOnly);
+Vue.filter('dateTime', DateFilter.dateTime);
+
 Vue.filter('fullDate', DateFilter.fullDate);
 Vue.filter('relativeTime', DateFilter.relativeTime);
 Vue.filter('capitalize', TextFilter.capitalize);

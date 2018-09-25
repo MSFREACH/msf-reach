@@ -92,12 +92,12 @@
         "types_of_programmes" : []
     },
     "resources":{
-        "budget" : [{
+        "budget" : "",
+        "category" : "",
+        "institutional_donors" : [{
             "amount": 0,
             "from_who": null
         }],
-        "category" : "",
-        "institutional_donors" : "",
         "staff_expatriate" : "",
         "staff_list" : "",
         "staff_national" : "",
@@ -169,5 +169,5 @@
         6.  No. of cases (morbidity) and no. of fatalities (mortality) figures can be inputted under medical figures
         7. Creation time is duplicate in event.metadata.event_datetime || event.created_at, should condense and render as relative time (4 years ago), use event.local_time as absolute time
             >>> Happened 2 months ago on July 23, 2018 7:15 PM local time
-
+        8. msf_resource_institutional_donors is mixed up with msf_resource_budget in common.js please double check
 */

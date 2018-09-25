@@ -27,6 +27,8 @@
                     </ul>
                     <span>Total: {{eventMsfResponse.medical_material.total_amount}} </span>
                     <span class="date">Arrival date: {{eventMsfResponse.medical_material.arrival_date}} </span>
+            </div>
+            <div>
                 <label> Non Medical Material: </label>
                     <ul>
                         <li v-for="item in eventMsfResponse.non_medical_material.items">
@@ -70,3 +72,8 @@ export default {
 };
 
 </script>
+
+<style lang="scss">
+    @import '@/assets/css/display.scss';
+    @import '@/assets/css/edit.scss';
+</style>

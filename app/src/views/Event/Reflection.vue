@@ -1,6 +1,15 @@
 <template>
     <div class="eventSubContent">
         Reflection
+        <div v-if="eventReflection">
+            <label>Practical Details / Recommendations:</label>
+            <div>{{eventReflection.recommendations}}</div>
+            <label>Reflection / Comments on intervention:</label>
+            <div>{{eventReflection.comments}}</div>
+        </div>
+        <div v-else>
+            
+        </div>
     </div>
 </template>
 
@@ -30,3 +39,7 @@ export default {
 };
 
 </script>
+<style lang="scss">
+    @import '@/assets/css/display.scss';
+    @import '@/assets/css/edit.scss';
+</style>

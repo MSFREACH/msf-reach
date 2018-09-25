@@ -6,8 +6,8 @@
             <ul v-show="eventNotifications.length > 0">
                 <li v-for="(elem, index) in reversedNotifications">
                     <span v-if="elem.hasOwnProperty('username')">{{elem.username}}</span>
-                    <span v-else>(username wasn't recorded)</span>
-                    <span> {{ (elem.notification_time*1000) | fullDate }} </span>
+                    <span v-else>(username N/A)</span>
+                    <span> {{ (elem.notification_time*1000) | relativeTime }} </span>
                     <p> {{ elem.notification }}
                         <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a>
                     </p>
@@ -53,3 +53,7 @@ export default {
 };
 
 </script>
+<style lang="scss">
+    @import '@/assets/css/display.scss';
+    @import '@/assets/css/edit.scss';
+</style>

@@ -98,7 +98,7 @@ const getters ={
                 return t.indexOf('disease_outbreak') > -1 || t.indexOf('natural_disaster') > -1 ;
             });
 
-            var subTypes = state.event.metadata.sub_type.replace(/other_disease_outbreak:/g, '').replace(/other_natural_disaster:/g, '').split(',');
+            var subTypes = state.event.metadata.sub_type ? state.event.metadata.sub_type.replace(/other_disease_outbreak:/g, '').replace(/other_natural_disaster:/g, '').split(',') : '';
             var cSubTypes = _.compact(subTypes);
 
             return cTypes.concat(cSubTypes);
@@ -185,7 +185,7 @@ const getters ={
         }
     },
     eventCreatedAt(state){
-        return state.event.created_at ? state.event.created_at : state.event.metadata.event_datetime;
+        return state.event.metadata.event_datetime? state.event.metadata.event_datetime : state.event.created_at;
     }
 };
 
