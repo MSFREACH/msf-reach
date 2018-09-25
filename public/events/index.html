@@ -791,7 +791,7 @@
                   <tr>
                     <td>Date and hours (local time) of the disater </td>
                     <td class="datepicker-container">
-                      <date-picker v-model="event.metadata.event_local_time"></date-picker>
+                      <date-picker v-model="event.metadata.event_local_time" :config="dateTimeConfig"></date-picker>
                     </td>
                   </tr>
                   <tr>
@@ -807,10 +807,10 @@
                   </tr>
                   <tr>
                     <td class="datepicker-container">
-                      <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+                      <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time" :config="dateTimeConfig"></date-picker>
                     </td>
                     <td class="datepicker-container">
-                      <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+                      <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time" :config="dateTimeConfig"></date-picker>
                     </td>
                   </tr>
                   <tr>
@@ -1599,6 +1599,8 @@
       <button class="btn btn-default"  @click="cancelEventEdits()" v-if="somePanelDirty">Cancel Edits</button>
       -->
       <!-- Button trigger modal -->
+       <button type="button" class="btn btn-danger" onclick="onArchiveEvent()">Close Event</button>
+
     </div>
     <div id="tweets" class="tab-pane fade">
       <div class="row">
@@ -1788,9 +1790,8 @@
     </div>
     <div id="countryDetails" class="tab-pane fade">
       <div class="row">
-        <div class="col-md-6" >
-          <h4>Country details</h4>
-          <div id="countryDetailsContainer" style="height:70vh;">(work on this tab in progress)</div>
+        <div class="col-md-12" >
+          <div id="countryDetailsContainer" style="height:70vh;"></div>
         </div>
       </div>
     </div>
@@ -1879,6 +1880,9 @@
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
 <script src="/resources/js/healthsites.js"></script>
+
+<script src="/resources/js/countries.js"></script>
+<script src="/resources/js/country-codes.js"></script>
 
 <!-- events common variables -->
 <script src="/events/common.js"></script>
@@ -1971,12 +1975,7 @@ $('#countryDetailsTab').on('click', function(e){
 });
 
 var contactInfo = {};
-var convertToLocaleDate= function (isoDate) {
-  if (isoDate)
-  return (new Date(isoDate)).toLocaleString();
-  else
-  return '';
-}
+
 
 
 
