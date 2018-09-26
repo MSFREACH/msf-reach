@@ -1,5 +1,5 @@
 <template>
-    <div class="eventSubContent" v-if="eventMetadata">
+    <v-container fluid class="eventSubContent" v-if="eventMetadata">
         <div class="actions">
             <button v-if="!editing" @click="edit()">Edit</button>
             <div v-else>
@@ -7,20 +7,20 @@
                 <button @click="save()"> Save </button>
             </div>
         </div>
-        <div v-if="!editing">
+         <v-layout row wrap v-if="!editing">
             <h1>{{eventMetadata.name}}</h1>
             <label>Areas</label>
-            <ul>
-                <li v-for="(area, index) in eventMetadata.areas">
-                    <span v-if="area.region.length > 0"> {{area.region}} {{area.country_code}}</span>
-                    <span v-else>{{area.country}}</span>
-                    <span v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length"> </span>
-                    <span class="sub-tag" v-if="eventMetadata.severity_measures[index]">
-                      <span :style="'color:'+severityColors[eventMetadata.severity_measures[index].scale-1]">{{severityLongTexts[eventMetadata.severity_measures[index].scale-1]}} severity</span>
-                      <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
-                    </span>
-                </li>
-            </ul>
+            <v-layout align-center row fill-height>
+                <v-flex v-for="(area, index) in eventMetadata.areas" xs6>
+                    <v-card-text v-if="area.region.length > 0"> {{area.region}} {{area.country_code}} </v-card-text>
+                    <v-card-text v-else>{{area.country}}</v-card-text>
+                    <v-card-text v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length"> </v-card-text>
+                    <v-card class="sub-tag" v-if="eventMetadata.severity_measures[index]">
+                      <v-card-text :style="'color:'+severityColors[eventMetadata.severity_measures[index].scale-1]">{{severityLongTexts[eventMetadata.severity_measures[index].scale-1]}} severity</v-card-text>
+                      <v-card-text class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-layout>
             <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
             <div>
                 <span v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</span>
@@ -36,7 +36,7 @@
                     Sharepoint Link
                 </a>
             </div>
-        </div>
+        </v-layout>
         <div v-else>
 
             <label> Name </label>
@@ -125,12 +125,18 @@
 
         </div>
 
-    </div>
+    </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import { DATETIME_DISPLAY_FORMAT, SEVERITY, EVENT_TYPES, EVENT_STATUSES } from '@/common/common';
+
+// import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap';
+import datePicker from 'vue-bootstrap-datetimepicker';
+import 'pc-bootstrap4-datetimepicker';
+// import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 
 // import { EDIT_EVENT } from '@/store/actions.type';
 
@@ -171,6 +177,7 @@ export default {
     },
     components:{
         //TODO: MAP goes here
+        datePicker
     },
     computed: {
         ...mapGetters([

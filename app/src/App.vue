@@ -1,23 +1,21 @@
 <template>
-    <div id="app">
+    <v-app id="app">
         <r-header> </r-header>
         <router-view></router-view>
-        <r-footer></r-footer>
-    </div>
+        <!-- <r-footer></r-footer> -->
+    </v-app>
 </template>
 
 <script>
 import RHeader from '@/components/RHeader';
 import RFooter from '@/components/RFooter';
-import datePicker from 'vue-bootstrap-datetimepicker';
 
-
-// Vue.component('date-picker', VueBootstrapDatetimePicker.default);
+/*eslint no-debugger: off*/
 
 export default {
     name: 'App',
     components:{
-        RHeader, RFooter, datePicker
+        RHeader, RFooter
     },
     message: 'Hello Vue!'
 };
