@@ -1,5 +1,8 @@
 <template>
-    <v-toolbar>
+    <v-toolbar app fixed :clipped-left="$vuetify.breakpoint.mdAndUp">
+        <v-avatar size="40px" class="mr-3">
+            <img src="../assets/images/logo.png" alt="">
+        </v-avatar>
         <v-text-field hide-details append-icon="search" single-line></v-text-field>
         <v-toolbar-items class="hidden-sm-and-down">
             <v-btn flat>Events</v-btn>
@@ -11,8 +14,8 @@
             <v-btn flat slot="activator">
                 <v-icon>notifications</v-icon>
             </v-btn>
-            <v-flex xs12 sm6>
-                <v-list three-line>
+            <v-container xs12 sm6 md4 lg3>
+                <v-list three-line xs4>
                     <template v-for="(item, index) in notifications">
                         <v-subheader v-if="item.header" :key="index" >
                             {{ item.header }}
@@ -29,8 +32,9 @@
                         </v-list-tile>
                     </template>
                 </v-list>
-            </v-flex>
+            </v-container>
         </v-menu>
+
         <v-menu right offset-y>
             <v-btn flat slot="activator">
                 <v-toolbar-title>MSF REACH</v-toolbar-title>

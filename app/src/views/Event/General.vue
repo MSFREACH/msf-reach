@@ -11,7 +11,7 @@
             <h1>{{eventMetadata.name}}</h1>
             <label>Areas</label>
             <v-layout align-center row fill-height>
-                <v-flex v-for="(area, index) in eventMetadata.areas" xs6>
+                <v-flex v-for="(area, index) in eventMetadata.areas" :key="index" xs6>
                     <v-card-text v-if="area.region.length > 0"> {{area.region}} {{area.country_code}} </v-card-text>
                     <v-card-text v-else>{{area.country}}</v-card-text>
                     <v-card-text v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length"> </v-card-text>

@@ -1,47 +1,21 @@
 <template>
     <v-container class ="event-page">
-        <!-- <div class="sideTab">
-            <router-link :to="{ name: 'event-general'}"> General </router-link>
-            <router-link :to="{ name: 'event-notifications'}"> Notifications </router-link>
-            <router-link :to="{ name: 'event-response'}"> Response </router-link>
-            <router-link :to="{ name: 'event-extCapacity'}"> External Capacity </router-link>
-            <router-link :to="{ name: 'event-medFigures'}"> Medical Figures </router-link>
-            <router-link :to="{ name: 'event-resources'}"> Staff Resources </router-link>
-            <router-link :to="{ name: 'event-reflection'}"> Reflections </router-link>
-        </div> -->
-
-        <v-navigation-drawer :mini-variant.sync="mini" v-model="drawer" hide-overlay stateless >
-            <v-toolbar flat class="transparent">
-                <v-list class="pa-0">
-                    <v-list-tile avatar>
-                        <v-list-tile-action>
-                            <v-icon>menu</v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-action>
-                            <v-btn icon @click.stop="mini = !mini">
-                                <v-icon>chevron_left</v-icon>
-                            </v-btn>
-                        </v-list-tile-action>
-                    </v-list-tile>
-                </v-list>
-            </v-toolbar>
-
+        <v-navigation-drawer fixed style="width: 200px;" :clipped="$vuetify.breakpoint.mdAndUp" app>
             <v-list class="pt-0" dense>
                 <v-divider></v-divider>
-                <v-list-tile v-for="item in items" :key="item.component">
-                    <router-link :to="{name: item.component}">
-                        <v-list-tile-action>
-                            <v-icon>{{item.icon}}</v-icon>
-                        </v-list-tile-action>
+                <v-list-tile v-for="item in items" :key="item.component" :to="{name: item.component}">
+                    <v-list-tile-action class="justify-start">
+                        <v-icon>{{item.icon}}</v-icon>
+                    </v-list-tile-action>
 
-                        <v-list-tile-content>
-                            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-                        </v-list-tile-content>
-                    </router-link>
+                    <v-list-tile-content>
+                        <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                    </v-list-tile-content>
                 </v-list-tile>
+                <new-event></new-event>
             </v-list>
         </v-navigation-drawer>
-        <v-content>
+        <v-content app>
             <router-view></router-view>
         </v-content>
     </v-container>
@@ -53,6 +27,7 @@ import { mapGetters } from 'vuex';
 import marked from 'marked';
 import store from '@/store';
 import { FETCH_EVENT } from '@/store/actions.type';
+import NewEvent from '@/views/New/NewEvent.vue';
 import REventGeneral from '@/views/Event/General.vue';
 import REventNotification from '@/views/Event/General.vue';
 import REventResponse from '@/views/Event/Response.vue';
@@ -76,13 +51,13 @@ export default {
         return {
             drawer: true,
             items: [
-                { icon: 'dashboard', name: 'General', component: 'event-general'},
-                { icon: 'event_note', name: 'Notifications', component: 'event-notifications'},
-                { icon: 'track_changes', name: 'Response', component: 'event-response'},
-                { icon: 'settings_input', name: 'External Capacity', component: 'event-extCapacity'},
-                { icon: 'fingerprint', name: 'Medical Figures', component: 'event-medFigures'},
-                { icon: 'people', name: 'Staff Resources', component: 'event-resources'},
-                { icon: 'all_inclusive', name: 'Reflections', component: 'event-reflection'}
+                { icon: 'dashboard', name: 'General', component: 'event-general', route: '/'},
+                { icon: 'event_note', name: 'Notifications', component: 'event-notifications', route: '/notifications'},
+                { icon: 'track_changes', name: 'Response', component: 'event-response', route: '/response'},
+                { icon: 'all_out', name: 'External Capacity', component: 'event-extCapacity', route: '/extCapacity'},
+                { icon: 'fingerprint', name: 'Medical Figures', component: 'event-medFigures', route: '/medFigures'},
+                { icon: 'people', name: 'Staff Resources', component: 'event-resources', route: '/resources'},
+                { icon: 'all_inclusive', name: 'Reflections', component: 'event-reflection', route: '/reflection'}
 
             ],
             mini: true,
@@ -90,7 +65,7 @@ export default {
         };
     },
     components: {
-        REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventMedFigures, REventStaffResources
+        NewEvent, REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventMedFigures, REventStaffResources
     },
     beforeRouteEnter(to, from, next){
         Promise.all([
