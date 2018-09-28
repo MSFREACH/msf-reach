@@ -1,27 +1,24 @@
 <template>
-    <div class="event-meta">
-        <div class="info">
+    <v-list-tile-content row>
             <!-- <router-link :to="{name: 'event', params: {'status' : event.metadata.status} }"></router-link> -->
-            <span class="date"> {{event.updated_at | date }} </span>
-        </div>
+        <span class="date"> Updated on {{event.updated_at | date }} </span>
         <template v-if="actions">
             <r-event-actions :event="event" :canModify="isCurrentUser()"></r-event-actions>
         </template>
         <template v-else>
             <!-- TODO: match user.favorite.events.indexOf(event.id) to style button -->
-            <button class="btn btn-sm pull-xs-right"
-                v-if="!actions"
-                v-on:click="toggleFavorite"
-                :class="{
-                    'btn-primary': hasFavored,
-                    'btn-outline-primary': !hasFavored
-                }">
-                <i class="ion-heart"></i>
-                <span class="counter"> {{event.favoritesCount}}</span>
-                <!-- NOTE: might be useful to keep a list of counts to see who's interested -->
-            </button>
+            <!-- NOTE: might be useful to keep a list of counts to see who's interested -->
+            <v-list-tile-action>
+                <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text>
+                <v-icon v-if="hasFavored.indexOf(index) < 0" color="grey lighten-1">
+                    star_border
+                </v-icon>
+                <v-icon v-else color="yellow darken-2">
+                    star
+                </v-icon>
+            </v-list-tile-action>
         </template>
-    </div>
+    </v-list-tile-content>
 </template>
 
 

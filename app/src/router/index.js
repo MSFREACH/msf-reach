@@ -31,6 +31,11 @@ export default new Router({
             }
         ]
     }, {
+        name: 'events',
+        path: '/events',
+        component: () => import('@/components/EventList'), // TODO: need to merge eventsMeta & action here.
+        props: true
+    }, {
         name: 'event',
         path: '/events/:slug',
         component: () => import('@/views/Event'),

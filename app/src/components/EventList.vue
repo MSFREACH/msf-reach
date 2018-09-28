@@ -1,16 +1,18 @@
 <template>
-    <div>
-        <div v-if="isLoading" class="event-preview">
+    <v-layout row app xs12 sm6>
+        <v-card v-if="isLoading" class="event-preview">
               Loading events...
-        </div>
-        <div v-else>
+        </v-card>
+        <v-layout three-line v-else>
             <div v-if="events.length == 0" class="event-preview">
                 No events are here... yet.
             </div>
-            <r-event-preview v-for="(event, index) in events" :event="event" :key="event.id + '-event'"></r-event-preview>
+            <v-list three-line>
+                <r-event-preview v-for="(event, index) in events" :event="event" :key="event.id + '-event'"></r-event-preview>
+            </v-list>
             <v-pagination :pages="pages" :currentPage.sync="currentPage"></v-pagination>
-        </div>
-    </div>
+        </v-layout>
+    </v-layout>
 </template>
 <script>
 /*eslint no-debugger: off*/

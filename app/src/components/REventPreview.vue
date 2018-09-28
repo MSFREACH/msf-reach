@@ -1,13 +1,12 @@
 <template>
-    <div class="event-preview">
+    <v-list-tile :key="event.id" avatar ripple :to="{name: 'event', params: {'slug': event.id}}">
         <r-event-meta :event="event" isPreview="true"></r-event-meta>
-        <router-link class="preview-link"
-            :to="{name: 'event', params: {'slug': event.id}}">
-            <h1> {{event.metadata.name}} </h1>
-            <span> {{event.status}} </span>
-            <p> {{event.metadata.description}}</p>
-        </router-link>
-    </div>
+        <v-list-tile-content>
+            <v-list-tile-title> {{event.metadata.name}} </v-list-tile-title>
+            <v-chip small outline color="primary"> {{event.metadata.event_status}} </v-chip>
+            <v-list-tile-sub-title> {{event.metadata.description}} </v-list-tile-sub-title>
+        </v-list-tile-content>
+    </v-list-tile>
 </template>
 
 <script>

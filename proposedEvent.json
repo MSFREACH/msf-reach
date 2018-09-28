@@ -1,6 +1,8 @@
 {
 "geolocation": {
     "coordinates" :[115.6860351563, 22.0565578073],
+    // supports Polygons, but check for bounds
+
     "bounds" : {
         "_northEast":{
             "lat" : 23.069624397708267,

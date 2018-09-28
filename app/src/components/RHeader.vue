@@ -6,6 +6,7 @@
         <v-text-field hide-details append-icon="search" single-line></v-text-field>
         <v-toolbar-items class="hidden-sm-and-down">
             <v-btn flat>Events</v-btn>
+            <router-link :to="{ name: 'events' }">Events</router-link>
             <v-btn flat>Reports</v-btn>
             <v-btn flat>Contacts</v-btn>
         </v-toolbar-items>
