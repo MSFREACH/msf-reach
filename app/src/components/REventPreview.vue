@@ -1,3 +1,5 @@
+<!-- deprecated: already merged into EventList.vue -->
+
 <template>
     <v-list-tile :key="event.id" avatar ripple :to="{name: 'event', params: {'slug': event.id}}">
         <r-event-meta :event="event" isPreview="true"></r-event-meta>

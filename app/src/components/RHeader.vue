@@ -5,10 +5,9 @@
         </v-avatar>
         <v-text-field hide-details append-icon="search" single-line></v-text-field>
         <v-toolbar-items class="hidden-sm-and-down">
-            <v-btn flat>Events</v-btn>
-            <router-link :to="{ name: 'events' }">Events</router-link>
-            <v-btn flat>Reports</v-btn>
-            <v-btn flat>Contacts</v-btn>
+            <v-btn flat><router-link :to="{ name: 'events' }">Events</router-link></v-btn>
+            <v-btn flat><router-link :to="{ name: 'reports' }">Reports</router-link></v-btn>
+            <v-btn flat><router-link :to="{ name: 'Contacts' }">Contacts</router-link></v-btn>
         </v-toolbar-items>
         <v-spacer></v-spacer>
         <v-menu offset-y>
@@ -97,3 +96,8 @@
         })
     };
 </script>
+
+<style lang="scss">
+    @import '@/assets/css/header.scss';
+
+</style>
