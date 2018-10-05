@@ -7,7 +7,7 @@ import { FETCH_START, FETCH_EVENTS_END, UPDATE_EVENT_IN_LIST } from './mutations
 
 const state = {
     events: [],
-    isLoading: true,
+    isLoadingEvent: true,
     eventsCount: 0
 };
 
@@ -18,8 +18,8 @@ const getters = {
     events(state){
         return state.events;
     },
-    isLoading(state){
-        return state.isLoading;
+    isLoadingEvent(state){
+        return state.isLoadingEvent;
     }
 };
 
@@ -39,7 +39,7 @@ const actions = {
 /* eslint no-param-reassign: ["error", { "props": false }] */
 const mutations = {
     [FETCH_START] (state) {
-        state.isLoading = true;
+        state.isLoadingEvent = true;
     },
     [FETCH_EVENTS_END] (state, payload){
         // TODO: // // Add popups see: [mapAllEvents] parse GeoJSON here
@@ -48,7 +48,7 @@ const mutations = {
             return item.properties;
         });
         state.eventsCount = payload.objects.output.geometries.length;
-        state.isLoading = false;
+        state.isLoadingEvent = false;
     },
     [UPDATE_EVENT_IN_LIST] (state, data){
         state.events = state.events.map((event) => {

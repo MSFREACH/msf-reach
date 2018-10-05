@@ -83,5 +83,15 @@ export default new Router({
         path: '/editor/:slug?',
         component: () => import('@/views/EventEdit'),
         props: true
-    }]
+    },{
+        name: 'contacts',
+        path: '/contacts',
+        component: () => import('@/components/ContactList'), // TODO: need to merge eventsMeta & action here.
+        props: true
+    },{
+        name: 'reports',
+        path: '/reports',
+        component: () => import('@/components/ReportList'), // TODO: need to merge eventsMeta & action here.
+        props: true
+    },]
 });

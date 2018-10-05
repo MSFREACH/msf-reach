@@ -1,6 +1,6 @@
 <template>
     <v-layout row app xs12 sm6 app>
-        <v-card v-if="isLoading" class="event-preview">
+        <v-card v-if="isLoadingEvent" class="event-preview">
               Loading events...
         </v-card>
         <v-container v-else>
@@ -94,7 +94,7 @@ export default {
         },
         ...mapGetters([
             'eventsCount',
-            'isLoading',
+            'isLoadingEvent',
             'events'
         ])
     },
