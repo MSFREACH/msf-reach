@@ -22,7 +22,7 @@
                 </v-toolbar>
                 <v-flex slot="item" slot-scope="props" xs12>
                     <v-list three-line>
-                        <v-list-tile :key="props.item.id" avatar ripple :to="{name: 'event', params: {'slug': props.item.id}}">
+                        <v-list-tile :key="props.item.id" avatar ripple :to="{name: 'event-general', params: {'slug': props.item.id}}">
                             <!-- <r-event-meta :event="event" isPreview="true"></r-event-meta> -->
                             <v-list-tile-content>
                                 <v-list-tile-title> {{props.item.metadata.name}} </v-list-tile-title>

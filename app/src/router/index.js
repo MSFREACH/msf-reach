@@ -86,12 +86,12 @@ export default new Router({
     },{
         name: 'contacts',
         path: '/contacts',
-        component: () => import('@/components/ContactList'), // TODO: need to merge eventsMeta & action here.
+        component: () => import('@/components/ContactList'),
         props: true
     },{
         name: 'reports',
         path: '/reports',
-        component: () => import('@/components/ReportList'), // TODO: need to merge eventsMeta & action here.
+        component: () => import('@/components/ReportList'),
         props: true
     },]
 });

@@ -7,7 +7,7 @@
         <v-toolbar-items class="hidden-sm-and-down">
             <v-btn flat><router-link :to="{ name: 'events' }">Events</router-link></v-btn>
             <v-btn flat><router-link :to="{ name: 'reports' }">Reports</router-link></v-btn>
-            <v-btn flat><router-link :to="{ name: 'Contacts' }">Contacts</router-link></v-btn>
+            <v-btn flat><router-link :to="{ name: 'contacts' }">Contacts</router-link></v-btn>
         </v-toolbar-items>
         <v-spacer></v-spacer>
         <v-menu offset-y>

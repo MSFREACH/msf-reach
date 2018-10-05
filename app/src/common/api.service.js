@@ -102,3 +102,28 @@ export const ReportsService = {
         return ApiService.delete(`reports/${slug}`);
     }
 };
+
+
+export const ContactsService = {
+    query () {
+        const params = {
+            geoformat : GEOFORMAT
+        };
+        return ApiService.query('contacts', params);
+    },
+    get (slug) {
+        return ApiService.get('contacts', slug);
+    },
+    create (params) {
+        return ApiService.post('contacts', params);
+    },
+    update (slug, params) {
+        return ApiService.update('contacts', slug, params);
+    },
+    archive(slug, params) {
+        return ApiService.update('contacts', slug, params); //TODO: // check API endpoints
+    },
+    destroy (slug) {
+        return ApiService.delete(`contacts/${slug}`);
+    }
+};
