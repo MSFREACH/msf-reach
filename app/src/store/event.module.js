@@ -12,7 +12,8 @@ const initialState = {
         notifications: [],
         status: '',
         body: {},
-        type: ''
+        type: '',
+        types: []
     } // TODO: add associated reports & contacts later
 };
 
@@ -66,9 +67,9 @@ export const mutations = {
         state.event.medFigures = event.result.objects.output.geometries[0].properties.medFigures;
         state.event.reflection = event.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
-
-
         state.event.type = event.result.objects.output.geometries[0].properties.type;
+        state.event.types = event.result.objects.output.geometries[0].properties.type.split(',');
+
     },
     [RESET_STATE] () {
         for (let f in state){

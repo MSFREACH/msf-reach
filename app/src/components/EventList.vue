@@ -4,16 +4,14 @@
               Loading events...
         </v-card>
         <v-container v-else>
-            <v-data-iterator :items="events"
+            <v-data-iterator :items="displayEvents"
             content-tag="v-layout"
             :rows-per-page-items="rowsPerPageItems"
             :pagination.sync="pagination"
             no-data-text="No events found"
             :search="search"
-            :custom-filter="customFilter"
             row wrap>
                 <!-- <r-event-preview v-for="(event, index) in events" :event="event" :key="event.id + '-event'"></r-event-preview> -->
-
                 <v-toolbar slot="header" mb2 flat>
                     <v-toolbar-title> This is a header </v-toolbar-title>
                     <v-spacer></v-spacer>
@@ -49,17 +47,12 @@
 /*eslint no-unused-vars: off*/
 
 import { mapGetters } from 'vuex';
-import REventPreview from '@/components/REventPreview';
-import VPagination from '@/components/VPagination';
 
 import { FETCH_EVENTS } from '@/store/actions.type';
 import { EVENT_TYPES } from '@/common/common';
 
 export default {
-    name: 'REventList',
-    components: {
-        REventPreview, VPagination
-    },
+    name: 'EventList',
     props: {
         status: {
             status: String,
@@ -99,12 +92,6 @@ export default {
             }
             return { status, filters };
         },
-        ellipsis(text){
-            return _.truncate(text, {
-                'length' : 100,
-                'separator' : ' '
-            });
-        },
         ...mapGetters([
             'eventsCount',
             'isLoading',
@@ -119,6 +106,13 @@ export default {
                     'length' : 250,
                     'separator' : ' '
                 });
+            });
+            this.displayEvents = _.map(this.events, _.clone);
+        },
+        filteredTypes(newValue){
+            this.displayEvents = this.events.filter(item => {
+                var types = item.type.split(',');
+                return _.isEmpty(newValue) || _.intersection(newValue, types).length > 0;
             });
         }
     },
