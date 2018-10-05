@@ -11,7 +11,6 @@
                         <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <new-event></new-event>
             </v-list>
         </v-navigation-drawer>
         <v-content app>
@@ -26,7 +25,6 @@ import { mapGetters } from 'vuex';
 import marked from 'marked';
 import store from '@/store';
 import { FETCH_EVENT } from '@/store/actions.type';
-import NewEvent from '@/views/New/NewEvent.vue';
 import REventGeneral from '@/views/Event/General.vue';
 import REventNotification from '@/views/Event/General.vue';
 import REventResponse from '@/views/Event/Response.vue';
@@ -64,7 +62,7 @@ export default {
         };
     },
     components: {
-        NewEvent, REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventMedFigures, REventStaffResources
+        REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventMedFigures, REventStaffResources
     },
     beforeRouteEnter(to, from, next){
         Promise.all([

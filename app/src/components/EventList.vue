@@ -13,12 +13,12 @@
             row wrap>
                 <!-- <r-event-preview v-for="(event, index) in events" :event="event" :key="event.id + '-event'"></r-event-preview> -->
                 <v-toolbar slot="header" mb2 flat>
-                    <v-toolbar-title> This is a header </v-toolbar-title>
-                    <v-spacer></v-spacer>
                     <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+                    <v-spacer></v-spacer>
                     <v-flex xs12 sm6>
-                        <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Chips" multiple></v-select>
+                        <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="filter by type" multiple></v-select>
                     </v-flex>
+                    <new-event></new-event>
                 </v-toolbar>
                 <v-flex slot="item" slot-scope="props" xs12>
                     <v-list three-line>
@@ -50,6 +50,7 @@ import { mapGetters } from 'vuex';
 
 import { FETCH_EVENTS } from '@/store/actions.type';
 import { EVENT_TYPES } from '@/common/common';
+import NewEvent from '@/views/New/NewEvent.vue';
 
 export default {
     name: 'EventList',
@@ -79,6 +80,9 @@ export default {
             filteredTypes: [],
             displayEvents: []
         };
+    },
+    components: {
+        NewEvent
     },
     computed: {
         listConfig(){
