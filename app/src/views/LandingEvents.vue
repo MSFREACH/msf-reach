@@ -1,15 +1,15 @@
 <template>
     <div class="landing-events">
-        <REventList status="active" />
+        <EventList status="active" />
     </div>
 </template>
 <script>
-import REventList from '@/components/EventList';
+import EventList from '@/components/EventList';
 
 export default {
     name: 'r-landing-events',
     components: {
-        REventList
+        EventList
     }
 };
 </script>

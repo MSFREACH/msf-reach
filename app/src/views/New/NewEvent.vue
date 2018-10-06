@@ -22,7 +22,7 @@
                                     <v-checkbox :label="item.text"></v-checkbox>
                                 </v-flex>
                                 <v-layout v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1">
-                                    <v-flex xs3 v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
+                                    <v-flex xs3 v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes" :key="index">
                                         <v-checkbox v-model="checkedSubTypes" :value="sub.value" :id="'ev-sub-'+(sub.text)+index" :label="sub.text" />
                                     </v-flex>
                                 </v-layout>
