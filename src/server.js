@@ -20,10 +20,10 @@ import { ensureAuthenticated, ensureAuthenticatedLanding } from './lib/util';
 import nocache from 'nocache';
 
 // WEBPACK compiler for VUE conponents
-import webpack from 'webpack'
-import webpackConfig from '../app/build/webpack.dev.conf'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import webpackHotMiddleware from 'webpack-hot-middleware'
+import webpack from 'webpack';
+import webpackConfig from '../app/build/webpack.dev.conf';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
 
 
 /** Function to initialize the api server config, db, logger
@@ -40,17 +40,17 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     app.server = http.createServer(app);
 
     // Create webpack compiler
-    var compiler = webpack(webpackConfig)
-    app.use(webpackDevMiddleware(compiler, {quiet: true, publicPath: webpackConfig.output.publicPath}))
-    app.use(webpackHotMiddleware(compiler, {log: console.log, path: '/__webpack_hmr', heartbeat: 2000}))
+    var compiler = webpack(webpackConfig);
+    app.use(webpackDevMiddleware(compiler, {quiet: true, publicPath: webpackConfig.output.publicPath}));
+    app.use(webpackHotMiddleware(compiler, {log: console.log, path: '/__webpack_hmr', heartbeat: 2000})); // eslint-disable-line no-console
 
     // force page reload when html-webpack-plugin template changes
     compiler.plugin('compilation', function (compilation) {
-      compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-        webpackHotMiddleware.publish({ action: 'reload' })
-        cb()
-      })
-    })
+        compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
+            webpackHotMiddleware.publish({ action: 'reload' });
+            cb();
+        });
+    });
 
     if (config.SESSION_SECRET) {
         app.use(expressSession({ secret: config.SESSION_SECRET, resave: true, saveUninitialized: false })); //Hopefully this fixes #236 //TODO Need to save sessions to db instead to avoid memory leaks in prod

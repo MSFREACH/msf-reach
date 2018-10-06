@@ -1755,12 +1755,12 @@ var vmObject = {
                         currentEventProperties.metadata.notification = [];
                     }
                     currentEventProperties.metadata.notification.push({'notification_time': Date.now()/1000,
-                    'notification': $('#inputNotification').val(),
-                    'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')});
+                        'notification': $('#inputNotification').val(),
+                        'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')});
                 } else {
                     currentEventProperties.metadata.notification = [{'notification_time': Date.now()/1000,
-                    'notification': $('#inputNotification').val(),
-                    'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')}];
+                        'notification': $('#inputNotification').val(),
+                        'username': (localStorage.getItem('username')?localStorage.getItem('username') : 'localuser')}];
                 }
             }
         },
