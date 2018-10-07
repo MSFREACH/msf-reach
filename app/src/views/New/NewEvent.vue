@@ -1,6 +1,6 @@
 <template>
     <v-layout row justify-center>
-        <v-dialog v-model="dialog" persistent max-width="500px">
+        <v-dialog v-model="dialog" persistent max-width="1200px">
             <v-btn slot="activator" color="primary">
                 <v-icon> add </v-icon> new event
             </v-btn>

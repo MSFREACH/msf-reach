@@ -43,9 +43,9 @@ const mutations = {
     },
     [FETCH_CONTACTS_END] (state, payload){
         // TODO: // // Add popups see: [mapAllContacts] parse GeoJSON here
-        console.log(payload); //eslint-disable-line no-console
+        console.log('Fetched contacts ------ ',  payload); //eslint-disable-line no-console
         state.contacts = _.map(payload.objects.output.geometries, function(item){
-            return item.properties;
+            return item;
         });
         state.contactsCount = payload.objects.output.geometries.length;
         state.isLoadingContact = false;

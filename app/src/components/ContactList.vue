@@ -16,18 +16,23 @@
                     <v-spacer></v-spacer>
                     <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
                 </v-toolbar>
-                <v-flex slot="item" slot-scope="props" xs12>
-                    <v-list three-line>
-                        <v-list-tile :key="props.item.id" avatar ripple ">
-                            <v-list-tile-content>
-                                <v-list-tile-title> {{ props.item.properties.name }} </v-list-tile-title>
-                                <v-chip v-if="props.item.status" small outline color="primary"> {{ props.item.properties.type }} </v-chip>
-                                <v-chip v-else small outline> type </v-chip>
-                                <v-list-tile-sub-title> {{ props.item.properties }} </v-list-tile-sub-title>
-                            </v-list-tile-content>
-                        </v-list-tile>
-                        <v-divider></v-divider>
+                <v-flex slot="item" slot-scope="props" xs12 mb3>
+                    <v-list-tile @click="expanded[props.item.properties.id] = !expanded[props.item.properties.id]">
+                        <v-list-tile-title> {{ props.item.properties.properties.name }} </v-list-tile-title>
+                    </v-list-tile>
+                    <v-list three-line :key="props.item.properties.id" v-show="expanded[props.item.properties.id]">
+                        <v-expansion-panel>
+                            <v-expansion-panel-content v-model="expanded[props.item.properties.id]">
+                                <v-card>
+                                    <v-card-title> {{ props.item.coordinates }} </v-card-title>
+                                    <v-chip v-if="props.item.properties.properties.type" small outline color="primary"> {{ props.item.properties.properties.type }} </v-chip>
+                                    <v-chip v-else small outline> type </v-chip>
+                                    <v-card-text> {{ props.item.properties }} </v-card-text>
+                                </v-card>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
                     </v-list>
+                    <v-divider></v-divider>
                 </v-flex>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ search }}" found no results.
@@ -61,18 +66,23 @@ export default {
             pagination: {
                 rowsPerPage: 4
             },
-            search: ''
+            search: '',
+            expanded: {}
         };
     },
     computed: {
         ...mapGetters([
-            'contactCount',
+            'contactsCount',
             'isLoadingContact',
             'contacts'
         ])
     },
     watch:{
-
+        contacts(newValue){
+            newValue.forEach( i => {
+                this.$set(this.expanded, i.properties.id, false);
+            });
+        }
     },
     mounted() {
         this.fetchContacts();
