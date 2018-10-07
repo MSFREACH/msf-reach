@@ -19,15 +19,62 @@
                 <v-flex slot="item" slot-scope="props" xs12 mb3>
                     <v-list-tile @click="expanded[props.item.properties.id] = !expanded[props.item.properties.id]">
                         <v-list-tile-title> {{ props.item.properties.properties.name }} </v-list-tile-title>
+                        <v-list-tile-sub-title v-show="props.item.properties.properties.type" small outline color="primary"> {{ props.item.properties.properties.type }} </v-list-tile-sub-title>
+                        <v-chip v-if="props.item.properties.properties.speciality"
+                        v-for="(item, index) in props.item.properties.properties.speciality.split(',')"
+                        :key="index" small label> {{ item }} </v-chip>
                     </v-list-tile>
-                    <v-list three-line :key="props.item.properties.id" v-show="expanded[props.item.properties.id]">
-                        <v-expansion-panel>
+                    <v-list three-line>
+                        <v-expansion-panel :key="props.item.properties.id" v-show="expanded[props.item.properties.id]">
                             <v-expansion-panel-content v-model="expanded[props.item.properties.id]">
                                 <v-card>
-                                    <v-card-title> {{ props.item.coordinates }} </v-card-title>
-                                    <v-chip v-if="props.item.properties.properties.type" small outline color="primary"> {{ props.item.properties.properties.type }} </v-chip>
-                                    <v-chip v-else small outline> type </v-chip>
+
+                                    <v-card-title>{{ props.item.coordinates }} </v-card-title>
                                     <v-card-text> {{ props.item.properties }} </v-card-text>
+                                    <v-card-actions>
+                                        <v-icon>phone</v-icon>
+                                        <span>Mobile: {{ props.item.properties.properties.cell }} </span>
+                                        <span>Work: {{ props.item.properties.properties.work }} </span>
+                                        <span>Home: {{ props.item.properties.properties.home }} </span>
+                                        <v-btn v-if="props.item.properties.properties.WhatsApp">
+                                            <span class="mdi mdi-whatsapp" v-if="checkEqual( props.item.properties.properties.cell, props.item.properties.properties.WhatsApp)"></span>
+                                            <span class="mdi mdi-whatsapp" v-else> {{props.item.properties.properties.WhatsApp }} </span>
+                                        </v-btn>
+                                        <v-btn v-if="props.item.properties.properties.Telegram">
+                                            <span class="mdi mdi-telegram" v-if="checkEqual( props.item.properties.properties.cell, props.item.properties.properties.Telegram)"> </span>
+                                            <span class="mdi mdi-telegram" v-else> else {{ props.item.properties.properties.Telegram }}  </span>
+                                        </v-btn>
+                                    </v-card-actions>
+                                    <v-card-text v-if="props.item.properties.properties.type == 'Current MSF Staff'">
+                                        {{props.item.properties.properties.OC}}
+                                        {{props.item.properties.properties.employment}}
+                                        {{props.item.properties.properties.additional}}
+                                        {{props.item.properties.properties.job_title}}
+                                    </v-card-text>
+                                    <v-card-text else>
+                                        <v-chip label v-show="props.item.properties.properties.msf_associate">MSF Associate </v-chip>
+                                        <v-chip label v-show="props.item.properties.properties.msf_peer"> MSF Peer </v-chip>
+                                        {{props.item.properties.properties.employer}}
+                                        {{props.item.properties.properties.job_title}}
+                                        {{props.item.properties.properties.division}}
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-icon>mail</v-icon>
+                                        <span> {{ props.item.properties.properties.email }} </span>
+                                        <span v-show="props.item.properties.properties.email2"> {{ props.item.properties.properties.email2 }} </span>
+                                    </v-card-actions>
+                                    <v-card-actions v-show="props.item.properties.properties.skype">
+                                        <span class="mdi mdi-skype"></span>
+                                        <span> {{ props.item.properties.properties.skype }} </span>
+                                    </v-card-actions>
+                                    <v-card-actions v-show="props.item.properties.properties.Instagram">
+                                        <span class="mdi mdi-instagram"></span>
+                                        <span> {{ props.item.properties.properties.Instagram }} </span>
+                                    </v-card-actions>
+                                    <v-card-actions v-show="props.item.properties.properties.address">
+                                        <v-icon>location_on</v-icon>
+                                        <span> {{ props.item.properties.properties.address }} </span>
+                                    </v-card-actions>
                                 </v-card>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
@@ -90,6 +137,9 @@ export default {
     methods: {
         fetchContacts(){
             this.$store.dispatch(FETCH_CONTACTS);
+        },
+        checkEqual(one, two){
+            return one.replace(/[^0-9]/ig, '') == two.replace(/[^0-9]/ig, '');
         }
     }
 

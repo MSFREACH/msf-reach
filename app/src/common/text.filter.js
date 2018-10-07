@@ -9,5 +9,8 @@ export default {
     },
     noUnderscore(value){
         return value.replace(/_/g, ' ');
+    },
+    toArray(value){
+        return value.split(',');
     }
 };
