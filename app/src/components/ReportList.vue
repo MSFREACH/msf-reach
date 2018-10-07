@@ -18,7 +18,7 @@
                 </v-toolbar>
                 <v-flex slot="item" slot-scope="props" xs12>
                     <v-list three-line>
-                        <v-list-tile :key="props.item.eventId" avatar ripple :to="{name: 'event', params: {'slug': props.item.eventId}}">
+                        <v-list-tile :key="props.item.eventId"">
                             <v-list-tile-content>
                                 <v-list-tile-title> {{props.item.status}} </v-list-tile-title>
                                 <v-chip v-if="props.item.status" small outline color="primary"> {{props.item.status}} </v-chip>
