@@ -83,3 +83,17 @@ export const COUNTRY_PARAMS = {
     'defaultCountry': 'xx',
     'preferredCountries': ['xx', 'us', 'gb', 'id', 'au', 'hk']
 };
+
+export const DEFAULT_CONTACT_TYPE = 'Current MSF Staff';
+
+export const CONTACT_TYPES =[
+    {text: 'Current MSF Staff', value: 'Current MSF Staff'},
+    {text: 'Former Staff', value: 'msf_peer'},
+    {text: 'Association Member', value: 'msf_associate'},
+    {text: 'Supplier', value: 'Supplier'},
+    {text: 'United Nations', value: 'United Nations'},
+    {text: 'Government', value: 'Government'},
+    {text: 'Other NGO', value: 'Other NGO'},
+    {text: 'Academic', value: 'Academic'},
+    {text: 'Private Medical Practice', value: 'Private Medical Practice'}
+];

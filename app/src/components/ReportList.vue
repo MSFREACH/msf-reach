@@ -1,5 +1,5 @@
 <template>
-    <v-layout row app xs12 sm6 app>
+    <v-layout row app xs12 app>
         <v-card v-if="isLoadingReport" class="event-preview">
               Loading events...
         </v-card>
@@ -16,18 +16,24 @@
                     <v-spacer></v-spacer>
                     <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
                 </v-toolbar>
-                <v-flex slot="item" slot-scope="props" xs12>
-                    <v-list three-line>
-                        <v-list-tile :key="props.item.eventId"">
-                            <v-list-tile-content>
-                                <v-list-tile-title> {{props.item.status}} </v-list-tile-title>
-                                <v-chip v-if="props.item.status" small outline color="primary"> {{props.item.status}} </v-chip>
-                                <v-chip v-else small outline> status </v-chip>
-                                <v-list-tile-sub-title> {{ props.item.content }} </v-list-tile-sub-title>
-                            </v-list-tile-content>
-                        </v-list-tile>
-                        <v-divider></v-divider>
-                    </v-list>
+                <v-flex xs12 md6 lg4 slot="item" slot-scope="props">
+                    <v-card>
+                        <v-card-title primary-title>
+                            {{props.item.created | relativeTime }}
+                            <v-chip small> {{props.item.status}} </v-chip>
+                            <v-chip small outline v-if="props.item.content.report_tag"> {{props.item.content.report_tag}} </v-chip>
+                        </v-card-title>
+                        <v-card-media v-if="props.item.content.image_link" src="props.item.content.image_link" aspect-ratio="1.75"></v-card-media>
+                        <v-card-media v-else src="https://picsum.photos/510/300?random" aspect-ratio="1.75"></v-card-media>
+                        <v-card-text> {{ props.item.content.description }} </v-card-text>
+                        <v-card-actions>
+                            <v-overflow-btn
+                              :items="events"
+                              label="ASSIGN to Event"
+                            ></v-overflow-btn>
+                            <v-btn flat> <v-icon>star</v-icon> WATCH</v-btn>
+                        </v-card-actions>
+                    </v-card>
                 </v-flex>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ search }}" found no results.
@@ -68,7 +74,8 @@ export default {
         ...mapGetters([
             'reportCount',
             'isLoadingReport',
-            'reports'
+            'reports',
+            'events'
         ])
     },
     watch:{

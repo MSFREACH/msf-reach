@@ -1,5 +1,5 @@
 <template>
-    <v-layout row app xs12 sm6 app>
+    <v-layout row app xs12 app>
         <v-card v-if="isLoadingContact" class="event-preview">
               Loading events...
         </v-card>
@@ -10,13 +10,18 @@
             :pagination.sync="pagination"
             no-data-text="No events found"
             :search="search"
+            :filter="filterType"
             row wrap>
                 <v-toolbar slot="header" mb2 flat>
                     <v-toolbar-title> This is a header </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+                    <v-spacer></v-spacer>
+                    <v-flex xs12 sm6>
+                        <v-select v-model="filterType" :items="allTypes" attach chips label="filter by type"></v-select>
+                    </v-flex>
                 </v-toolbar>
-                <v-flex slot="item" slot-scope="props" xs12 mb3>
+                <v-flex slot="item" slot-scope="props" xs12>
                     <v-list-tile @click="expanded[props.item.properties.id] = !expanded[props.item.properties.id]">
                         <v-list-tile-title> {{ props.item.properties.properties.name }} </v-list-tile-title>
                         <v-list-tile-sub-title v-show="props.item.properties.properties.type" small outline color="primary"> {{ props.item.properties.properties.type }} </v-list-tile-sub-title>
@@ -28,7 +33,6 @@
                         <v-expansion-panel :key="props.item.properties.id" v-show="expanded[props.item.properties.id]">
                             <v-expansion-panel-content v-model="expanded[props.item.properties.id]">
                                 <v-card>
-
                                     <v-card-title>{{ props.item.coordinates }} </v-card-title>
                                     <v-card-text> {{ props.item.properties }} </v-card-text>
                                     <v-card-actions>
@@ -45,7 +49,7 @@
                                             <span class="mdi mdi-telegram" v-else> else {{ props.item.properties.properties.Telegram }}  </span>
                                         </v-btn>
                                     </v-card-actions>
-                                    <v-card-text v-if="props.item.properties.properties.type == 'Current MSF Staff'">
+                                    <v-card-text v-if="props.item.properties.properties.type == defaultType">
                                         {{props.item.properties.properties.OC}}
                                         {{props.item.properties.properties.employment}}
                                         {{props.item.properties.properties.additional}}
@@ -94,7 +98,7 @@
 /*eslint no-unused-vars: off*/
 import { mapGetters } from 'vuex';
 import { FETCH_CONTACTS } from '@/store/actions.type';
-
+import { DEFAULT_CONTACT_TYPE, CONTACT_TYPES} from '@/common/common';
 export default {
     name: 'ContactList',
     props: {
@@ -114,7 +118,10 @@ export default {
                 rowsPerPage: 4
             },
             search: '',
-            expanded: {}
+            expanded: {},
+            defaultType: DEFAULT_CONTACT_TYPE,
+            allTypes: CONTACT_TYPES,
+            filterType: ''
         };
     },
     computed: {
