@@ -311,11 +311,11 @@ var printEventProperties = function(err, eventProperties){
         // $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
 
-        var extra_metadata = unpackMetadata(eventProperties.metadata);
-        $('#eventExtra').append(extra_metadata);
-        if(extra_metadata){
-            $('#collapseExtraDetails').addClass('in');
-        }
+        // var extra_metadata = unpackMetadata(eventProperties.metadata);
+        // $('#eventExtra').append(extra_metadata);
+        // if(extra_metadata){
+        //     $('#collapseExtraDetails').addClass('in');
+        // }
 
     }
     if (currentEventProperties) {

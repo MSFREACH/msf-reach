@@ -1582,8 +1582,10 @@
             </div>
             <div id="collapseExtraDetails" class="panel-collapse collapse">
               <div class="panel-body" v-if="!panelEditing.ExtraDetails">
-                <dl id="eventExtra" class="dl-horizontal" v-for="item in Object.keys(extraDetailsLabel)">
-                  <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
+                <dl id="eventExtra" class="dl-horizontal" >
+                    <span v-for="item in Object.keys(extraDetailsLabel)">
+                      <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
+                  </span>
                 </dl>
               </div>
               <ul class="list-group" v-else>
