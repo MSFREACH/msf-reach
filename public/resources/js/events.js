@@ -203,18 +203,32 @@ var printEventProperties = function(err, eventProperties){
 
     var countryDetailsContainerContent = '';
     countryDetailsContainerContent+='<ul class="nav nav-tabs">';
-    for (var areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
-        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">'+currentEventProperties.metadata.areas[areaidx].country+'</a></li>';
+
+    let countries = [];
+
+    let countriesFilter = function(item) {
+        if (countries.indexOf(item.country) < 0) {
+            countries.push(item.country);
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    let newAreas = currentEventProperties.metadata.areas.filter(countriesFilter);
+
+    for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
     }
+
     countryDetailsContainerContent+='</ul>';
     countryDetailsContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
-    for (areaidx = 0; areaidx < currentEventProperties.metadata.areas.length; areaidx++) {
-        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+currentEventProperties.metadata.areas[areaidx].country.replace(' ','_')+'">';
-
-        if (currentEventProperties.metadata.areas[areaidx].country_code) {
-            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': currentEventProperties.metadata.areas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
-        } else if (findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec) {
-            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': currentEventProperties.metadata.areas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+    for (areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
+        if (newAreas[areaidx].country_code) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': newAreas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+        } else if (findCountry({'name': newAreas[areaidx].country}) && findCountry({'name': newAreas[areaidx].country}).gec) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': newAreas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
         }
         countryDetailsContainerContent+='</div>';
     }
@@ -297,11 +311,11 @@ var printEventProperties = function(err, eventProperties){
         // $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
 
-        var extra_metadata = unpackMetadata(eventProperties.metadata);
-        $('#eventExtra').append(extra_metadata);
-        if(extra_metadata){
-            $('#collapseExtraDetails').addClass('in');
-        }
+        // var extra_metadata = unpackMetadata(eventProperties.metadata);
+        // $('#eventExtra').append(extra_metadata);
+        // if(extra_metadata){
+        //     $('#collapseExtraDetails').addClass('in');
+        // }
 
     }
     if (currentEventProperties) {
@@ -949,7 +963,7 @@ var mapMissions = function(missions ){
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
             popupContent += 'Start date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime)  || feature.properties.properties.startDate) + '<BR>';
             popupContent += 'Finish date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime_closed) || feature.properties.properties.finishDate)+ '<BR>';
-            popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
+            popupContent += 'Managing OC(s): ' + ((feature.properties.properties.hasOwnProperty('msf_response_operational_centers') && feature.properties.properties.msf_response_operational_centers.length > 0) ? feature.properties.properties.msf_response_operational_centers.toString() : feature.properties.properties.managingOC) + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
