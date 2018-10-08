@@ -1,5 +1,5 @@
 <template>
-    <v-layout row app xs12 :clipped="$vuetify.breakpoint.mdAndUp" app>
+    <v-layout row app xs12 :clipped="$vuetify.breakpoint.mdAndUp">
         <v-card v-if="isLoadingReport" class="event-preview">
               Loading events...
         </v-card>
