@@ -1725,11 +1725,14 @@ var vmObject = {
 
             setTimeout(function() {
                 givenMap.invalidateSize(true);
-                if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
+
+                if(respLatLng){ // this for the response map layer
+                    givenMap.setView(respLatLng, 13);
+                } else if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
                     var bounds = currentEventProperties.metadata.bounds
                     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
                     givenMap.fitBounds(rBounds);
-                } else {
+                }else{
                     givenMap.setView(defaultLatLng, 13);
                 }
             }, 300);
@@ -1765,9 +1768,10 @@ var vmObject = {
 
         },
         loadResponsMap(){
+            var vm = this;
             var respLatLng;
             if (!_.isEmpty(this.event.metadata.msf_response_location.coordinates)) {
-              respLatLng = [this.event.metadata.msf_response_location.coordinates[1], this.event.metadata.msf_response_location.coordinates[0]];
+              respLatLng = [this.event.metadata.msf_response_location.coordinates.lat, this.event.metadata.msf_response_location.coordinates.lng];
             }
 
             var mapObj = this.setupMap('msfResponseMap', respLatLng, true);
@@ -1776,16 +1780,18 @@ var vmObject = {
             msfResponseMap = mapObj.givenMap;
             msfResponseMapLayerControl = mapObj.givenMapLayerControl;
 
+            var msfResponseMarker = L.marker(respLatLng).addTo(msfResponseMap);
             var msflatlng = null;
             msfResponseMap.on('click', function(e) {
               if (msfResponseMarker) {
                 msfResponseMap.removeLayer(msfResponseMarker);
               }
               msflatlng = e.latlng;
-              Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lng, msflatlng.lat]);
+              Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lat, msflatlng.lng]);
               msfResponseMarker = L.marker(e.latlng).addTo(msfResponseMap);
             });
         },
+
         lintNotification(){
             if ($('#inputNotification').val()) {
                 if (currentEventProperties.metadata.hasOwnProperty('notification')) {

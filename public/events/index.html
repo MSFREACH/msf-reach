@@ -956,7 +956,9 @@
                               <dt>
                                 Location of MSF Response:
                               </dt>
-                              <dd v-if="!panelEditing.Response"> {{event.metadata.msf_response_location}}
+                              <dd v-if="!panelEditing.Response">
+                                  {{event.metadata.msf_response_location.coordinates.lat}}, {{event.metadata.msf_response_location.coordinates.lng}}
+                                  {{event.metadata.msf_response_location.area.region}}, {{event.metadata.msf_response_location.area.country}}
                                 </dd>
                               <dd v-else>
                                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventRespAddress">

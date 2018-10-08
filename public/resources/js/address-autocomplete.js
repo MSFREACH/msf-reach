@@ -22,13 +22,12 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             return;
         }
 
-        var foundLatLng=place.geometry.location.toJSON();
-
+        var foundLatLng = place.geometry.location.toJSON();
         var addrDetailLevel=place.address_components.length;
 
         if (targetMap)
         {
-            targetMap.setView([foundLatLng.lat, foundLatLng.lng],(addrDetailLevel > 3) ? 17 : 7);
+            targetMap.setView([place.geometry.location.lat(), place.geometry.location.lng()],(addrDetailLevel > 3) ? 17 : 7);
             if (!justLocate)
             {
                 if(targetMap.msf_marker)
@@ -36,43 +35,53 @@ function bindACInputToMap(targetMap,inputId,justLocate)
                 targetMap.msf_latlng = foundLatLng;
                 targetMap.msf_marker = L.marker(foundLatLng).addTo(targetMap);
             }
-            $('#'+inputId+'Lat').val(foundLatLng.lat.toFixed(7));
-            $('#'+inputId+'Lng').val(foundLatLng.lng.toFixed(7));
+            $('#'+inputId+'Lat').val(place.geometry.location.lat().toFixed(7));
+            $('#'+inputId+'Lng').val(place.geometry.location.lng().toFixed(7));
+        }
+        var area = {
+            region: '',
+            country: '',
+            country_code: ''
+        };
+        for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
+            var placeObj = place.address_components[placeIdx];
+            if (placeObj.types.indexOf('administrative_area_level_1')> -1) {
+                // currentEventProperties.metadata['region'] = ($('#eventRegion').val() !== '' ? $('#eventRegion').val() + ', ' : '') +placeObj.long_name;
+                area.region = placeObj.long_name;
+            }
+            if(placeObj.types.indexOf('country')> -1){
+                // var currentCountries = $('#eventCountries span.tags').text().replace(/ x /g, ', ');
+                // currentEventProperties.metadata['country'] = (currentCountries !== '' ? currentCountries : '') + placeObj.long_name;
+                area.country = placeObj.long_name;
+                area.country_code = placeObj.short_name;
+            }
         }
 
         if (inputId === 'editEventAddress') {
-
-            var area = {
-                region: '',
-                country: '',
-                country_code: ''
-            };
-            for (var placeIdx = 0 ; placeIdx < place.address_components.length; placeIdx++) {
-                var placeObj = place.address_components[placeIdx];
-                if (placeObj.types.indexOf('administrative_area_level_1')> -1) {
-                    // currentEventProperties.metadata['region'] = ($('#eventRegion').val() !== '' ? $('#eventRegion').val() + ', ' : '') +placeObj.long_name;
-                    area.region = placeObj.long_name;
-                }
-                if(placeObj.types.indexOf('country')> -1){
-                    // var currentCountries = $('#eventCountries span.tags').text().replace(/ x /g, ', ');
-                    // currentEventProperties.metadata['country'] = (currentCountries !== '' ? currentCountries : '') + placeObj.long_name;
-                    area.country = placeObj.long_name;
-                    area.country_code = placeObj.short_name;
-                }
-            }
-
             if(_.findIndex(currentEventProperties.metadata.areas, area) != -1){
                 alert('Area is already listed');
             }else{
                 currentEventProperties.metadata.areas.push(area);
-                updateAreas(area);
+                updateLocation(reloadArea);
             }
+        }else if( inputId === 'editEventRespAddress'){
+            currentEventProperties.metadata.msf_response_location = {
+                coordinates: foundLatLng,
+                type: 'Point',
+                area
+            }
+            updateLocation();
         }
 
     });
 
+    function reloadArea(){
+        vmObject.data.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in inline editing
+        vmObject.data.areas = vmObject.data.event.metadata.areas ;
+        vm.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in modal editing
+    }
 
-    function updateAreas(area){
+    function updateLocation(callback){
         $.ajax({
             type: 'PUT',
             url: '/api/events/' + currentEventId,
@@ -83,10 +92,7 @@ function bindACInputToMap(targetMap,inputId,justLocate)
             }),
             contentType: 'application/json'
         }).done(function( data, textStatus, req ){
-            vmObject.data.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in inline editing
-            vmObject.data.areas = vmObject.data.event.metadata.areas ;
-            
-            vm.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in modal editing
+            if(callback) callback();
         }).fail(function(err) {
             if (err.responseText.includes('expired')) {
                 alert('session expired');
