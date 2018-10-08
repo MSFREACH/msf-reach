@@ -38,10 +38,10 @@ export const EVENT_TYPES = [
 ];
 
 export const EVENT_STATUSES = [
-    { value: 'monitoring', text: 'Monitoring' },
-    { value: 'exploration', text: 'Exploration' },
-    { value: 'ongoing', text: 'Ongoing Intervention (MSF activity)' },
-    { value: 'complete', text: 'Complete' }
+    { value: 'monitoring', text: 'Monitoring', icon: 'assessment' },
+    { value: 'exploration', text: 'Exploration' , icon: 'accessibility_new'},
+    { value: 'ongoing', text: 'Interventions', icon: 'find_replace' },
+    { value: 'complete', text: 'Archived', icon: 'calendar_view_day' }
 ];
 
 export const MSF_OPERATIONAL_CENTERS = ['OCA', 'OCBA', 'OCG', 'OCB', 'OCP'];

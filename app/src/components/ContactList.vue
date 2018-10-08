@@ -1,5 +1,5 @@
 <template>
-    <v-layout row app xs12 app>
+    <v-layout row app xs12 :clipped="$vuetify.breakpoint.mdAndUp" app>
         <v-card v-if="isLoadingContact" class="event-preview">
               Loading events...
         </v-card>
@@ -13,11 +13,12 @@
             :filter="filterType"
             row wrap>
                 <v-toolbar slot="header" mb2 flat>
-                    <v-toolbar-title> This is a header </v-toolbar-title>
+                    <v-toolbar-title> Contacts </v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
-                    <v-spacer></v-spacer>
-                    <v-flex xs12 sm6>
+                    <v-flex xs6 md4 lg3>
+                        <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+                    </v-flex>
+                    <v-flex xs6 md4 lg3>
                         <v-select v-model="filterType" :items="allTypes" attach chips label="filter by type"></v-select>
                     </v-flex>
                 </v-toolbar>
@@ -154,5 +155,5 @@ export default {
 </script>
 
 <style lang="scss">
-
+@import '@/assets/css/lists.scss';
 </style>

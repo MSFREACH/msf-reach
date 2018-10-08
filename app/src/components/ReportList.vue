@@ -1,5 +1,5 @@
 <template>
-    <v-layout row app xs12 app>
+    <v-layout row app xs12 :clipped="$vuetify.breakpoint.mdAndUp" app>
         <v-card v-if="isLoadingReport" class="event-preview">
               Loading events...
         </v-card>
@@ -12,7 +12,7 @@
             :search="search"
             row wrap>
                 <v-toolbar slot="header" mb2 flat>
-                    <v-toolbar-title> This is a header </v-toolbar-title>
+                    <v-toolbar-title> Reports </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
                 </v-toolbar>
@@ -31,7 +31,7 @@
                               :items="events"
                               label="ASSIGN to Event"
                             ></v-overflow-btn>
-                            <v-btn flat> <v-icon>star</v-icon> WATCH</v-btn>
+                            <v-btn flat> <v-icon>bookmark_border</v-icon> WATCH</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-flex>

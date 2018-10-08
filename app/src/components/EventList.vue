@@ -1,5 +1,5 @@
 <template>
-    <v-layout row app xs12 sm6 app>
+    <v-layout row app xs12 sm6 :clipped="$vuetify.breakpoint.mdAndUp" app >
         <v-card v-if="isLoadingEvent" class="event-preview">
               Loading events...
         </v-card>
@@ -11,11 +11,22 @@
             no-data-text="No events found"
             :search="search"
             row wrap>
-                <!-- <r-event-preview v-for="(event, index) in events" :event="event" :key="event.id + '-event'"></r-event-preview> -->
                 <v-toolbar slot="header" mb2 flat>
-                    <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
-                    <v-spacer></v-spacer>
-                    <v-flex xs12 sm6>
+                    <!-- <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field> -->
+                    <!-- <v-spacer></v-spacer> -->
+                    <v-flex xs12 sm6 class="py-2">
+                        <v-btn-toggle v-model="selectedStatus">
+                            <v-btn v-for="(status, index) in allEventStatuses"
+                            :value="status.value"
+                            :key="index" flat
+                            :class="status.value"
+                            @click="filterByStatus(status.value)">
+                                <v-icon> {{status.icon}} </v-icon>
+                                <span> {{status.text}}</span>
+                            </v-btn>
+                        </v-btn-toggle>
+                    </v-flex>
+                    <v-flex xs6 md4 lg3>
                         <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="filter by type" multiple></v-select>
                     </v-flex>
                     <new-event></new-event>
@@ -26,8 +37,10 @@
                             <!-- <r-event-meta :event="event" isPreview="true"></r-event-meta> -->
                             <v-list-tile-content>
                                 <v-list-tile-title> {{props.item.metadata.name}} </v-list-tile-title>
-                                <v-chip v-if="props.item.metadata.event_status" small outline color="primary"> {{props.item.metadata.event_status}} </v-chip>
-                                <v-chip v-else small outline> monitoring </v-chip>
+                                <v-chip v-if="props.item.metadata.event_status"
+                                :class="props.item.metadata.event_status"
+                                small outline label> {{props.item.metadata.event_status}} </v-chip>
+                                <v-chip v-else small outline label> monitoring </v-chip>
                                 <v-list-tile-sub-title> {{ props.item.short_description }} </v-list-tile-sub-title>
                             </v-list-tile-content>
                         </v-list-tile>
@@ -49,7 +62,7 @@
 import { mapGetters } from 'vuex';
 
 import { FETCH_EVENTS } from '@/store/actions.type';
-import { EVENT_TYPES } from '@/common/common';
+import { EVENT_TYPES, EVENT_STATUSES } from '@/common/common';
 import NewEvent from '@/views/New/NewEvent.vue';
 
 export default {
@@ -78,7 +91,9 @@ export default {
             search: '',
             allEventTypes: EVENT_TYPES,
             filteredTypes: [],
-            displayEvents: []
+            displayEvents: [],
+            allEventStatuses: EVENT_STATUSES,
+            selectedStatus: ''
         };
     },
     components: {
@@ -130,6 +145,11 @@ export default {
         filterType(type){
 
         },
+        filterByStatus(status){
+            this.displayEvents = this.events.filter(item =>{
+                return item.metadata.event_status == status;
+            });
+        },
         customFilter(items, search, filter){
             // zero filtering
             if (!search && _.isEmpty(this.filteredTypes)){ return items; }
@@ -157,6 +177,6 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '@/assets/css/event-list.scss';
-
+    @import '@/assets/css/lists.scss';
+    @import '@/assets/css/event.scss';
 </style>
