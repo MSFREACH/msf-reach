@@ -1,44 +1,30 @@
 <template>
-  <div class="auth-page">
-    <div class="container page">
-      <div class="row">
-        <div class="col-md-6 offset-md-3 col-xs-12">
-          <h1 class="text-xs-center">Sign in</h1>
-          <p class="text-xs-center">
-            <router-link :to="{ name: 'register' }">
-              Need an account?
-            </router-link>
-          </p>
-          <ul v-if="errors" class="error-messages">
-            <li
-              v-for="(v, k) in errors"
-              :key="k">
-              {{k}} {{ v | error }}
-            </li>
-          </ul>
-          <form v-on:submit.prevent="onSubmit(username, password)">
-            <fieldset class="form-group">
-              <input
-                class="form-control form-control-lg"
-                type="text"
-                v-model="username"
-                placeholder="Username">
-            </fieldset>
-            <fieldset class="form-group">
-              <input
-                class="form-control form-control-lg"
-                type="password"
-                v-model="password"
-                placeholder="Password">
-            </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">
-              Sign in
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+    <v-content>
+        <v-container fluid fill-height>
+            <v-layout align-center justify-center>
+                <v-flex xs12 sm8 md4>
+                    <v-card class="elevation-12">
+                        <v-toolbar dark flat color="red">
+                            <v-toolbar-title>MSF REACH Login</v-toolbar-title>
+                        </v-toolbar>
+                        <v-card-text>
+                            <v-form :submit.prevent="onSubmit(username, password)">
+                                <v-text-field prepend-icon="person" name="login" label="Login" v-model="username" type="text"></v-text-field>
+                                <v-text-field prepend-icon="lock" name="password" label="Password" id="password" v-model="password" type="password"></v-text-field>
+                                <v-btn dark> Sign in</v-btn>
+                            </v-form>
+                        </v-card-text>
+                        <v-card-actions>
+                            <router-link :to="{ name: 'register' }">
+                              Need an account?
+                            </router-link>
+                            <v-spacer></v-spacer>
+                        </v-card-actions>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+        </v-container>
+    </v-content>
 </template>
 <script>
 import { mapState } from 'vuex';
@@ -54,6 +40,7 @@ export default {
     },
     methods: {
         onSubmit (username, password) {
+            // TODO: validation
             this.$store.dispatch(LOGIN, { username, password })
                 .then(() => {
                     var goTo = this.$route.query.from ? this.$route.query.from : { name:'events' };
