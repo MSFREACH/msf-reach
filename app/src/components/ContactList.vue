@@ -10,7 +10,7 @@
             :pagination.sync="pagination"
             no-data-text="No events found"
             :search="search"
-            :filter="filterType"
+            :filter="filterByType"
             row wrap>
                 <v-toolbar slot="header" mb2 flat>
                     <v-toolbar-title> Contacts </v-toolbar-title>
@@ -148,6 +148,10 @@ export default {
         },
         checkEqual(one, two){
             return one.replace(/[^0-9]/ig, '') == two.replace(/[^0-9]/ig, '');
+        },
+        filterByType(contact){
+            console.log('CONTACT LIST --- ', contact); 
+            return contact.properties.properties.type == this.filterType;
         }
     }
 

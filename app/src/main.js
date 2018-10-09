@@ -4,7 +4,7 @@ import router from '@/router';
 import store from '@/store';
 import Vuetify from 'vuetify';
 
-import { CHECK_AUTH } from '@/store/actions.type';
+// import { CHECK_AUTH } from '@/store/actions.type';
 import Amplify from 'aws-amplify';
 import config from '@/common/config.js';
 
@@ -13,22 +13,7 @@ Amplify.configure({
         mandatorySignIn: false,
         region: config.cognito.REGION,
         userPoolId: config.cognito.USER_POOL_ID,
-        identityPoolId: config.cognito.IDENTITY_POOL_ID,
         userPoolWebClientId: config.cognito.APP_CLIENT_ID
-    },
-    Storage: {
-        region: config.s3.REGION,
-        bucket: config.s3.BUCKET,
-        identityPoolId: config.cognito.IDENTITY_POOL_ID
-    },
-    API: {
-        endpoints: [
-            {
-                name: 'msf-reach',
-                endpoint: config.apiGateway.URL,
-                region: config.apiGateway.REGION
-            },
-        ]
     }
 });
 
@@ -53,9 +38,11 @@ ApiService.init();
 // Ensure we checked auth before each page load.
 router.beforeEach(
     (to, from, next) => {
-        return Promise
-            .all([store.dispatch(CHECK_AUTH)])
-            .then(next);
+        if(!store.getters.isAuthenticated && to.path !== '/login'){
+            next({ name: 'login', query: { from: to.path } });
+        }else{
+            next();
+        }
     }
 );
 

@@ -34,7 +34,7 @@
                 </v-list>
             </v-container>
         </v-menu>
-
+        <v-btn @click="signOut"> LOGOUT </v-btn>
         <v-menu right offset-y>
             <v-btn flat slot="activator">
                 <v-toolbar-title>MSF REACH</v-toolbar-title>
@@ -52,49 +52,57 @@
 </template>
 
 <script>
-    export default {
-        name: 'RHeader',
-        data: () => ({
-            profileActions: [
-                {title : 'About MSF Reach'},
-                {title : 'FAQ'},
-                {title : 'Sign out'},
-            ],
-            notifications: [
-                {header: 'Today'},
-                {
-                    type: 'event_note',
-                    title: 'Monsoon floods',
-                    subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum leo tortor, fringilla quis mauris sit amet, iaculis molestie lacus amet.'
-                },
-                { divider: true, inset: true },
-                {
-                    type: 'event_note',
-                    title: 'Monsoon floods',
-                    subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consequat sem at tincidunt suscipit. Praesent at leo vel purus rutrum nullam.'
-                },
-                { divider: true, inset: true },
-                {
-                    type: 'event_note',
-                    title: 'Monsoon floods',
-                    subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tempor urna nec dictum tincidunt. Donec lectus lectus, faucibus massa nunc.'
-                },
-                { divider: true, inset: true },
-                {
-                    type: 'event_note',
-                    title: 'Monsoon floods',
-                    subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ut libero sit amet laoreet. Ut et orci eros. Nam quis metus.'
-                },
-                { divider: true, inset: true },
-                {
-                    type: 'event_note',
-                    title: 'Monsoon floods',
-                    subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tincidunt ultricies nisi eget ullamcorper. Etiam fermentum accumsan augue sed.'
-                },
-                { divider: true, inset: true }
-            ]
-        })
-    };
+import { LOGOUT } from '@/store/actions.type';
+
+export default {
+    name: 'RHeader',
+    data: () => ({
+        profileActions: [
+            {title : 'About MSF Reach'},
+            {title : 'FAQ'},
+            {title : 'Sign out'},
+        ],
+        notifications: [
+            {header: 'Today'},
+            {
+                type: 'event_note',
+                title: 'Monsoon floods',
+                subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum leo tortor, fringilla quis mauris sit amet, iaculis molestie lacus amet.'
+            },
+            { divider: true, inset: true },
+            {
+                type: 'event_note',
+                title: 'Monsoon floods',
+                subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consequat sem at tincidunt suscipit. Praesent at leo vel purus rutrum nullam.'
+            },
+            { divider: true, inset: true },
+            {
+                type: 'event_note',
+                title: 'Monsoon floods',
+                subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tempor urna nec dictum tincidunt. Donec lectus lectus, faucibus massa nunc.'
+            },
+            { divider: true, inset: true },
+            {
+                type: 'event_note',
+                title: 'Monsoon floods',
+                subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ut libero sit amet laoreet. Ut et orci eros. Nam quis metus.'
+            },
+            { divider: true, inset: true },
+            {
+                type: 'event_note',
+                title: 'Monsoon floods',
+                subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tincidunt ultricies nisi eget ullamcorper. Etiam fermentum accumsan augue sed.'
+            },
+            { divider: true, inset: true }
+        ]
+    }),
+    methods: {
+        signOut(){
+            this.$store.dispatch(LOGOUT)
+                .then(() => this.$router.push({name: 'login'}));
+        }
+    }
+};
 </script>
 
 <style lang="scss">
