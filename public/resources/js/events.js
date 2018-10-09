@@ -1649,7 +1649,7 @@ var vmObject = {
                     setTimeout(bindAutocompletes,200);
                     return;
                 }
-                var editField = editResp ? 'editEventRespAddress' : 'editEventAddress'
+                var editField = editResp ? 'editEventRespAddress' : 'editEventAddress';
                 bindACInputToMap(givenMap, editField ,true);
             }
             setTimeout(bindAutocompletes,200); // set delay for response map
@@ -1729,7 +1729,7 @@ var vmObject = {
                 if(respLatLng){ // this for the response map layer
                     givenMap.setView(respLatLng, 13);
                 } else if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
-                    var bounds = currentEventProperties.metadata.bounds
+                    var bounds = currentEventProperties.metadata.bounds;
                     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
                     givenMap.fitBounds(rBounds);
                 }else{
@@ -1771,7 +1771,7 @@ var vmObject = {
             var vm = this;
             var respLatLng;
             if (!_.isEmpty(this.event.metadata.msf_response_location.coordinates)) {
-              respLatLng = [this.event.metadata.msf_response_location.coordinates.lat, this.event.metadata.msf_response_location.coordinates.lng];
+                respLatLng = [this.event.metadata.msf_response_location.coordinates.lat, this.event.metadata.msf_response_location.coordinates.lng];
             }
 
             var mapObj = this.setupMap('msfResponseMap', respLatLng, true);
@@ -1783,12 +1783,12 @@ var vmObject = {
             var msfResponseMarker = L.marker(respLatLng).addTo(msfResponseMap);
             var msflatlng = null;
             msfResponseMap.on('click', function(e) {
-              if (msfResponseMarker) {
-                msfResponseMap.removeLayer(msfResponseMarker);
-              }
-              msflatlng = e.latlng;
-              Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lat, msflatlng.lng]);
-              msfResponseMarker = L.marker(e.latlng).addTo(msfResponseMap);
+                if (msfResponseMarker) {
+                    msfResponseMap.removeLayer(msfResponseMarker);
+                }
+                msflatlng = e.latlng;
+                Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lat, msflatlng.lng]);
+                msfResponseMarker = L.marker(e.latlng).addTo(msfResponseMap);
             });
         },
 

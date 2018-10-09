@@ -69,7 +69,7 @@ function bindACInputToMap(targetMap,inputId,justLocate)
                 coordinates: foundLatLng,
                 type: 'Point',
                 area
-            }
+            };
             updateLocation();
         }
 
