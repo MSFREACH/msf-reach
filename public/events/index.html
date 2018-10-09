@@ -638,6 +638,8 @@
           <ul class="dropdown-menu">
             <li><a href="#about" data-toggle="modal" data-target="#about">About MSF REACH</a></li>
             <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
+            <li><a href="https://www.dropbox.com/s/ft2crioj1sx61ib/REACH%20user%20manual.pdf?dl=0">User Manual</a></li>
+            <li><a href="https://www.dropbox.com/sh/pwbi8hhqha63ppt/AAAjuw7wq7Jri7N0tdZ0fg_Ra?dl=0">Tutorial Videos</a></li>
             <li><a id="logout" href="/logout">Sign out</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -743,7 +745,7 @@
                       <input type="text" class="form-control input-sm" value="" id="editEventAddressLng" placeholder="Longitude">
                       <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
                     </td>
-                    <td> <div id="eventMap" class="map-container" style="width: 100%; height: 380px;"></div> </td>
+                    <td> <div id="eventMap" class="map-container"></div> </td>
                   </tr>
 
 
@@ -916,8 +918,6 @@
                   </div>
                   <div id="collapseResponse" class="panel-collapse collapse">
                     <div class="panel-body" >
-                      <div>
-                            <dl class="dl-horizontal">
                               <dt>Type of programmes:</dt>
                               <dd v-if="!panelEditing.Response" v-for="item in event.metadata.msf_response_types_of_programmes" >
                                 <span class="label label-primary" >
@@ -952,15 +952,34 @@
                               <dd v-if="panelEditing.Response">
                                 <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                               </dd>
+                             <dl>
                               <dt>
                                 Location of MSF Response:
                               </dt>
-                              <dd>
-                                <a @click="editEvent('Response')">Edit (CHANGE TO MODAL EDIT)</a>
-                              </dd>
+                              <dd v-if="!panelEditing.Response">
+                                  <span v-if="typeof(event.metadata.msf_response_location.coordinates) !== 'undefined'">
+                                    {{event.metadata.msf_response_location.coordinates.lat}}, {{event.metadata.msf_response_location.coordinates.lng}}
+                                  </span>
+                                  <span v-if="typeof(event.metadata.msf_response_location.area) !== 'undefined'">
+                                    {{event.metadata.msf_response_location.area.region}}, {{event.metadata.msf_response_location.area.country}}
+                                  </span>
+                                </dd>
+                              <dd v-else>
+                                <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventRespAddress">
+
+                                <label for="editEventRespAddressLat">OR</label>
+
+                                <input type="text" class="form-control input-sm" value="" id="editEventRespAddressLat" placeholder="Latitude">
+
+                                <input type="text" class="form-control input-sm" value="" id="editEventRespAddressLng" placeholder="Longitude">
+                                <button type="button" class="btn btn-info btn-sm" id="editEventRespAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                            </dd>
+                                <div id="msfResponseMap"></div>
+                            </dl>
+
                               <dt>Operational Centre:</dt>
                               <dd v-if="!panelEditing.Response">
-                                {{event.metadata.operational_center}}
+                                {{_.compact(event.metadata.msf_response_operational_centers).join(',')}}
                               </dd>
                               <dd v-else>
                                 <div v-for="item in msfOperationalCenters" class="operational-centers">
@@ -1079,10 +1098,6 @@
 
                               </div>
 
-
-                            </dl>
-
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1580,8 +1595,10 @@
             </div>
             <div id="collapseExtraDetails" class="panel-collapse collapse">
               <div class="panel-body" v-if="!panelEditing.ExtraDetails">
-                <dl id="eventExtra" class="dl-horizontal" v-for="item in Object.keys(extraDetailsLabel)">
-                  <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
+                <dl id="eventExtra" class="dl-horizontal" >
+                    <span v-for="item in Object.keys(extraDetailsLabel)">
+                      <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
+                  </span>
                 </dl>
               </div>
               <ul class="list-group" v-else>
