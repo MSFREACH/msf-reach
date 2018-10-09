@@ -5,6 +5,32 @@ import store from '@/store';
 import Vuetify from 'vuetify';
 
 import { CHECK_AUTH } from '@/store/actions.type';
+import Amplify from 'aws-amplify';
+import config from '@/common/config.js';
+
+Amplify.configure({
+    Auth: {
+        mandatorySignIn: false,
+        region: config.cognito.REGION,
+        userPoolId: config.cognito.USER_POOL_ID,
+        identityPoolId: config.cognito.IDENTITY_POOL_ID,
+        userPoolWebClientId: config.cognito.APP_CLIENT_ID
+    },
+    Storage: {
+        region: config.s3.REGION,
+        bucket: config.s3.BUCKET,
+        identityPoolId: config.cognito.IDENTITY_POOL_ID
+    },
+    API: {
+        endpoints: [
+            {
+                name: 'msf-reach',
+                endpoint: config.apiGateway.URL,
+                region: config.apiGateway.REGION
+            },
+        ]
+    }
+});
 
 import ApiService from '@/common/api.service';
 import DateFilter from '@/common/date.filter';

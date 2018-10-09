@@ -44,6 +44,7 @@
     "ajv": "^6.5.3",
     "api-error-handler": "^1.0.0",
     "apicache": "^1.2.3",
+    "aws-amplify": "^1.1.6",
     "aws-sdk": "^2.303.0",
     "axios": "^0.18.0",
     "babel-loader": "^7.1.5",
