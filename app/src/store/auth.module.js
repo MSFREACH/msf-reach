@@ -1,7 +1,7 @@
 import ApiService from '@/common/api.service';
 import JwtService from '@/common/jwt.service';
 import { LOGIN, PASSWORD_CHALLENGE, LOGOUT, REGISTER, CHECK_AUTH, UPDATE_USER } from './actions.type';
-import { SET_AUTH, PURGE_AUTH, SET_ERROR } from './mutations.type';
+import { SET_AUTH, PURGE_AUTH, SET_ERROR, SET_TOKEN } from './mutations.type';
 import { Auth } from 'aws-amplify';
 
 /*eslint no-console: off*/
@@ -32,7 +32,7 @@ const actions = {
         return new Promise((resolve) => {
             Auth.signIn(credentials.username, credentials.password)
                 .then(payload => {
-                    console.log(' what is this ------ ', payload);
+                    console.log(' [LOGIN] ------  ', payload);
                     context.commit(SET_AUTH, payload);
                     resolve(payload);
                 }).catch(err =>{
@@ -42,17 +42,15 @@ const actions = {
     },
     [PASSWORD_CHALLENGE] (context, newPassword){
         return new Promise((resolve) => {
-
             var userAttributes = state.user.challengeParam.userAttributes;
-            // the api doesn't accept this field back
+
             delete userAttributes.email_verified;
             delete userAttributes.phone_number_verified;
 
-            console.log('[PASSWORD_CHALLENGE] ------- ', newPassword, userAttributes, state.user);
             state.user.completeNewPasswordChallenge(newPassword, userAttributes, {
-                onSuccess: function (payload) {
-                    console.log('success '+payload);
-                    context.commit(SET_AUTH, payload);
+                onSuccess: function (session) {
+                    console.log('success '+session);
+                    context.commit(SET_TOKEN, session);
                     resolve(data);
                 },
                 onFailure: function (err) {
@@ -123,6 +121,9 @@ const mutations = {
         if(state.user.signInUserSession){
             JwtService.saveToken(state.user.signInUserSession.idToken.jwtToken);
         }
+    },
+    [SET_TOKEN] (state, session){
+        JwtService.saveToken(session.idToken.jwtToken);
     },
     [PURGE_AUTH] (state) {
         state.isAuthenticated = false;
