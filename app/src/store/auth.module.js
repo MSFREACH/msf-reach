@@ -1,6 +1,6 @@
 import ApiService from '@/common/api.service';
 import JwtService from '@/common/jwt.service';
-import { LOGIN, LOGOUT, REGISTER, CHECK_AUTH, UPDATE_USER } from './actions.type';
+import { LOGIN, PASSWORD_CHALLENGE, LOGOUT, REGISTER, CHECK_AUTH, UPDATE_USER } from './actions.type';
 import { SET_AUTH, PURGE_AUTH, SET_ERROR } from './mutations.type';
 import { Auth } from 'aws-amplify';
 
@@ -10,7 +10,7 @@ import { Auth } from 'aws-amplify';
 
 const state = {
     errors: null,
-    user: {}, // <<
+    user: {},
     username: '',
     isAuthenticated: !!JwtService.getToken()
 };
@@ -31,12 +31,35 @@ const actions = {
     [LOGIN] (context, credentials) {
         return new Promise((resolve) => {
             Auth.signIn(credentials.username, credentials.password)
-                .then(user => {
-                    context.commit(SET_AUTH, user);
-                    resolve(user);
+                .then(payload => {
+                    console.log(' what is this ------ ', payload);
+                    context.commit(SET_AUTH, payload);
+                    resolve(payload);
                 }).catch(err =>{
                     context.commit(SET_ERROR, err);
                 });
+        });
+    },
+    [PASSWORD_CHALLENGE] (context, newPassword){
+        return new Promise((resolve) => {
+
+            var userAttributes = state.user.challengeParam.userAttributes;
+            // the api doesn't accept this field back
+            delete userAttributes.email_verified;
+            delete userAttributes.phone_number_verified;
+
+            console.log('[PASSWORD_CHALLENGE] ------- ', newPassword, userAttributes, state.user);
+            state.user.completeNewPasswordChallenge(newPassword, userAttributes, {
+                onSuccess: function (payload) {
+                    console.log('success '+payload);
+                    context.commit(SET_AUTH, payload);
+                    resolve(data);
+                },
+                onFailure: function (err) {
+                    console.log('completeNewPassword failure', err);
+                    context.commit(SET_ERROR, err);
+                }
+            });
         });
     },
     [LOGOUT] (context) {
@@ -97,7 +120,9 @@ const mutations = {
         state.user = user;
         state.username = user.username;
         state.errors = {};
-        JwtService.saveToken(state.user.signInUserSession.idToken.jwtToken);
+        if(state.user.signInUserSession){
+            JwtService.saveToken(state.user.signInUserSession.idToken.jwtToken);
+        }
     },
     [PURGE_AUTH] (state) {
         state.isAuthenticated = false;

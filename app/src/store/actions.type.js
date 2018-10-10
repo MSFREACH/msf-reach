@@ -1,5 +1,7 @@
 export const CHECK_AUTH = 'checkAuth';
 export const LOGIN = 'login';
+export const PASSWORD_CHALLENGE = 'setPassword';
+export const NEW_PASSWORD_REQUIRED = 'NEW_PASSWORD_REQUIRED'; 
 export const LOGOUT = 'logout';
 export const REGISTER = 'register';
 export const UPDATE_USER = 'updateUser';
