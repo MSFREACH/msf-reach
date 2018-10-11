@@ -1,5 +1,6 @@
 import ApiService from '@/common/api.service';
 import JwtService from '@/common/jwt.service';
+import router from '@/router';
 import { LOGIN, PASSWORD_CHALLENGE, LOGOUT, REGISTER, CHECK_AUTH, UPDATE_USER } from './actions.type';
 import { SET_AUTH, PURGE_AUTH, SET_ERROR, SET_TOKEN } from './mutations.type';
 import { Auth } from 'aws-amplify';
@@ -49,7 +50,7 @@ const actions = {
 
             state.user.completeNewPasswordChallenge(newPassword, userAttributes, {
                 onSuccess: function (session) {
-                    console.log('success '+session);
+                    console.log('[completeNewPasswordChallenge] success '+session);
                     context.commit(SET_TOKEN, session);
                     resolve(data);
                 },
@@ -92,6 +93,7 @@ const actions = {
                 });
         } else {
             context.commit(PURGE_AUTH);
+            // this.$router.push({name:'login'}); 
         }
     },
     [UPDATE_USER] (context, payload) {

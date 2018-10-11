@@ -8,17 +8,17 @@
                             <v-toolbar-title>MSF REACH Login</v-toolbar-title>
                         </v-toolbar>
                         <v-card-text v-if="!needToSetPassword">
-                            <v-form :submit.prevent="onSubmit(username, password)">
+                            <v-form v-on:submit.prevent="onSubmit(username, password)">
                                 <v-text-field prepend-icon="person" name="login" label="Login" v-model="username" type="text"></v-text-field>
                                 <v-text-field prepend-icon="lock" name="password" label="Password" v-model="password" type="password"></v-text-field>
-                                <v-spacer></v-spacer><v-btn dark> Sign in</v-btn>
+                                <v-spacer></v-spacer><v-btn dark type="submit"> Sign in</v-btn>
                             </v-form>
                         </v-card-text>
                         <v-card-text v-else>
-                            <v-form :submit.prevent="setPassword(newPassword)">
+                            <v-form v-on:submit.prevent="setPassword(newPassword)">
                                 This is your first login, please set your password.
                                 <v-text-field prepend-icon="lock" name="password" label="Password" v-model="newPassword" type="password"></v-text-field>
-                                <v-spacer></v-spacer><v-btn dark>Submit</v-btn>
+                                <v-spacer></v-spacer><v-btn dark type="submit">Submit</v-btn>
                             </v-form>
                         </v-card-text>
                         <v-card-actions>

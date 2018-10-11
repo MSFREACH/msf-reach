@@ -4,7 +4,7 @@ import router from '@/router';
 import store from '@/store';
 import Vuetify from 'vuetify';
 
-// import { CHECK_AUTH } from '@/store/actions.type';
+import { CHECK_AUTH } from '@/store/actions.type';
 import Amplify from 'aws-amplify';
 import config from '@/common/config.js';
 
@@ -38,11 +38,14 @@ ApiService.init();
 // Ensure we checked auth before each page load.
 router.beforeEach(
     (to, from, next) => {
-        if(!store.getters.isAuthenticated && to.path !== '/login'){
-            next({ name: 'login', query: { from: to.path } });
-        }else{
-            next();
-        }
+        // if(!store.getters.isAuthenticated && to.path !== '/login'){
+        //     next({ name: 'login', query: { from: to.path } });
+        // }else{
+        //     next();
+        // }
+        return Promise
+            .all([store.dispatch(CHECK_AUTH)])
+            .then(next);
     }
 );
 

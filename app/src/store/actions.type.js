@@ -1,10 +1,13 @@
 export const CHECK_AUTH = 'checkAuth';
 export const LOGIN = 'login';
 export const PASSWORD_CHALLENGE = 'setPassword';
-export const NEW_PASSWORD_REQUIRED = 'NEW_PASSWORD_REQUIRED'; 
+export const NEW_PASSWORD_REQUIRED = 'NEW_PASSWORD_REQUIRED';
 export const LOGOUT = 'logout';
 export const REGISTER = 'register';
 export const UPDATE_USER = 'updateUser';
+
+export const FETCH_PROFILE = 'fetchProfile';
+export const FETCH_PROFILE_BOOKMARK = 'fetchProfileBookmark';
 
 export const FETCH_EVENT = 'fetchEvent';
 export const FETCH_EVENTS = 'fetchEvents';
