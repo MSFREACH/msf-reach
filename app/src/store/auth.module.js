@@ -33,7 +33,6 @@ const actions = {
         return new Promise((resolve) => {
             Auth.signIn(credentials.username, credentials.password)
                 .then(payload => {
-                    console.log(' [LOGIN] ------  ', payload);
                     context.commit(SET_AUTH, payload);
                     resolve(payload);
                 }).catch(err =>{
@@ -50,7 +49,7 @@ const actions = {
 
             state.user.completeNewPasswordChallenge(newPassword, userAttributes, {
                 onSuccess: function (session) {
-                    console.log('[completeNewPasswordChallenge] success '+session);
+                    console.log('[completeNewPasswordChallenge] success ', session);
                     context.commit(SET_TOKEN, session);
                     resolve(data);
                 },
@@ -62,10 +61,13 @@ const actions = {
         });
     },
     [LOGOUT] (context) {
-        Auth.signOut()
-            .then(data =>{
-                context.commit(PURGE_AUTH);
-            }).catch(err => console.log('FAILED Amplify [Sign out]', err));
+        return new Promise((resolve) => {
+            Auth.signOut()
+                .then(data =>{
+                    context.commit(PURGE_AUTH);
+                    resolve(data);
+                }).catch(err => console.log('FAILED Amplify [Sign out]', err));
+        });
     },
     [REGISTER] (context, credentials) {
         // return new Promise((resolve, reject) => {
@@ -93,7 +95,9 @@ const actions = {
                 });
         } else {
             context.commit(PURGE_AUTH);
-            // this.$router.push({name:'login'}); 
+            if(router.history.pending.path !== '/login'){ //TODO:  still buggy when you type in /events
+                router.push({name:'login'});
+            }
         }
     },
     [UPDATE_USER] (context, payload) {

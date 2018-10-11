@@ -39,7 +39,7 @@
 /* eslint no-console: off */
 /*eslint no-unused-vars :off*/
 
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { LOGIN, PASSWORD_CHALLENGE, NEW_PASSWORD_REQUIRED } from '@/store/actions.type';
 
 export default {
@@ -52,15 +52,15 @@ export default {
             needToSetPassword: false
         };
     },
+    mounted(){
+        if(this.isAuthenticated) this.$router.push('/');
+    },
     methods: {
         onSubmit (username, password) {
             // TODO: validation
-            console.log('onSubmit ----- ', username, password);
             var vm = this;
             this.$store.dispatch(LOGIN, { username, password })
                 .then((payload) => {
-                    console.log('LOGIN ------- ', payload);
-
                     if(payload.challengeName == NEW_PASSWORD_REQUIRED){
                         vm.needToSetPassword = true;
                     }else{
@@ -69,18 +69,21 @@ export default {
                 });
         },
         setPassword(newPassword){
-            console.log('setPassword ------- ', newPassword);
             this.$store.dispatch(PASSWORD_CHALLENGE, newPassword)
                 .then((data) => {
                     this.goNext();
                 });
         },
         goNext(){
-            var goTo = this.$route.query.from ? this.$route.query.from : { name:'events' };
+            var previousRoute = this.$route.query.from;
+            var goTo = previousRoute && previousRoute != '/login' ? previousRoute : { name:'events' };
             this.$router.push(goTo);
         }
     },
     computed: {
+        ...mapGetters([
+            'isAuthenticated'
+        ]),
         ...mapState({
             errors: state => state.auth.errors
         })
