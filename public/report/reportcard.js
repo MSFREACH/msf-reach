@@ -58,6 +58,10 @@ $(function () {
             alert('Please select a report location on the map to proceed.');
             return;
         }
+        if ((cInd==3)&& $('#inputReportText').val()==='') {
+            alert('Please enter report details');
+            return;
+        }
         navigateTo(cInd + 1);
     });
 
