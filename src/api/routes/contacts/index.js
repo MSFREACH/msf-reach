@@ -189,13 +189,13 @@ export default ({ config, db, logger }) => {
                 let jsonList=data.map((item) => {return item.properties;});
                 //console.log(jsonList);
                 let fields=  ['title','name','otherNames','type','job_title','OC','email','email2','cell','home','work','address','Facebook','Telegram','WhatsApp','Instagram'];
-                let fieldNames= ['title','name','alias','type','job title','OC (if MSF)', 'email', 'alternate email', 'mobile phone', 'home phone','work phone','address','Facebook','Telegram','WhatsApp','Instagram'];
+                //let fieldNames= ['title','name','alias','type','job title','OC (if MSF)', 'email', 'alternate email', 'mobile phone', 'home phone','work phone','address','Facebook','Telegram','WhatsApp','Instagram'];
                 let csv = json2csv(jsonList,{fields: fields});
-                console.log(csv);
+                //console.log(csv);
                 res.setHeader('Content-disposition', 'attachment; filename=ideas.csv');
                 res.set('Content-Type', 'text/csv');
                 res.status(200).send(csv);
-                console.log(res);
+                //console.log(res);
                 return res;
 
             }).catch((err) => {

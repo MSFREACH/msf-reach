@@ -35,7 +35,6 @@ export default (config, db, logger) => ({
       ($9 IS NULL OR properties ->> 'msf_peer' ILIKE $9) AND
       ($10 IS NULL OR properties ->> 'type' ILIKE $10)
      ORDER BY id`;
-     console.log(query);
 
         // Format search string for Postgres
         let text = (!search) ? null : '%'+search+'%'	;
@@ -60,7 +59,7 @@ export default (config, db, logger) => ({
      WHERE
       ($1 IS NULL OR (ad_oid = $1 and private = true) OR ((properties->>'sharedWith')::jsonb ? $1) OR private = false)
      ORDER BY id`;
-     let values = [oid];
+        let values = [oid];
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
