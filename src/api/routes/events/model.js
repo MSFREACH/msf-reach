@@ -7,7 +7,6 @@ import Promise from 'bluebird';
 
 import request from 'request';
 
-import { addChatbotItem } from '../../../lib/chatbot';
 import mail from '../../../lib/mailer';
 
 export default (config, db, logger) => ({
