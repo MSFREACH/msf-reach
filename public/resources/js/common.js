@@ -2,6 +2,8 @@
 
 // Constants
 var GEOFORMAT = 'geojson'; // Change to topojson for prod
+var DATE_DISPLAY_FORMAT='YYYY-MM-DD';
+var DATETIME_DISPLAY_FORMAT='YYYY-MM-DD  HH:mm';
 
 /**
  * Monitor status code to redirect login page if session expires.
@@ -32,14 +34,21 @@ $(function() {
 */
 var convertToLocaleDate= function (isoDate) {
     if (isoDate)
-        return moment(isoDate).format('YYYY-MM-DD');
+    {
+        var d=moment(isoDate);
+        return (d.isValid() ? d.format(DATE_DISPLAY_FORMAT) : (isoDate +' (invalid date format)'));
+    }
+
     else
         return '';
 };
 
 var convertToLocaleDateTime= function (isoDate) {
     if (isoDate)
-        return moment(isoDate).format('YYYY-MM-DD  HH:mm');
+    {
+        var d=moment(isoDate);
+        return (d.isValid() ? d.format(DATETIME_DISPLAY_FORMAT) : (isoDate +' (invalid date format)'));
+    }
     else
         return '';
 };
@@ -211,7 +220,7 @@ const getMSFPresence = function(callback) {
             callback(ArcgisToGeojsonUtils.arcgisToGeoJSON(data));
         }
     }).fail(function(err) {
-        alert('error: '+ err);
+        //alert('error: '+ err);
     });
 };
 
@@ -241,7 +250,7 @@ const mapMSFPresence = function(presence) {
               'Country: ' + feature.properties.country + '<br />' +
               'Type: ' + feature.properties.type + '<br />' +
               'Name: ' + feature.properties.name + '<br />' +
-              'Open Date: ' + (feature.poperties.open_data ? (new Date(feature.properties.open_date)).toLocaleDateString() : '') + '<br />' +
+              'Open Date: ' + (feature.properties.open_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : '') + '<br />' +
               'Close Date: ' + (feature.properties.close_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : 'Still open') + '<br />' +
               'Alternative Name: ' + feature.properties.name_alt + '<br />' +
               'Operational Centre: ' + '<label class="btn btn-xs" style="background-color:'+OCColours[feature.properties.operational_centre]+';margin-right:5px;margin-bottom:5px;color:white;font-weight: bold">&nbsp;'+feature.properties.operational_centre+'</label><br />' +

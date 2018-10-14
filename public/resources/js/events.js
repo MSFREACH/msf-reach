@@ -201,6 +201,40 @@ var printEventProperties = function(err, eventProperties){
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
 
+    var countryDetailsContainerContent = '';
+    countryDetailsContainerContent+='<ul class="nav nav-tabs">';
+
+    let countries = [];
+
+    let countriesFilter = function(item) {
+        if (countries.indexOf(item.country) < 0) {
+            countries.push(item.country);
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    let newAreas = currentEventProperties.metadata.areas.filter(countriesFilter);
+
+    for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+    }
+
+    countryDetailsContainerContent+='</ul>';
+    countryDetailsContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+    for (areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
+        if (newAreas[areaidx].country_code) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': newAreas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+        } else if (findCountry({'name': newAreas[areaidx].country}) && findCountry({'name': newAreas[areaidx].country}).gec) {
+            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': newAreas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+        }
+        countryDetailsContainerContent+='</div>';
+    }
+    countryDetailsContainerContent+='</div>';
+    $('#countryDetailsContainer').append(countryDetailsContainerContent);
+
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
 
@@ -277,11 +311,11 @@ var printEventProperties = function(err, eventProperties){
         // $('#eventSecurityDetails').append(eventProperties.metadata.security_details);
 
 
-        var extra_metadata = unpackMetadata(eventProperties.metadata);
-        $('#eventExtra').append(extra_metadata);
-        if(extra_metadata){
-            $('#collapseExtraDetails').addClass('in');
-        }
+        // var extra_metadata = unpackMetadata(eventProperties.metadata);
+        // $('#eventExtra').append(extra_metadata);
+        // if(extra_metadata){
+        //     $('#collapseExtraDetails').addClass('in');
+        // }
 
     }
     if (currentEventProperties) {
@@ -927,9 +961,9 @@ var mapMissions = function(missions ){
                 popupContent += 'Latest notification: (none)<BR>';
             }
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
-            popupContent += 'Start date: ' + (feature.properties.properties.startDate || convertToLocaleDate(feature.properties.properties.event_datetime) ) + '<BR>';
-            popupContent += 'Finish date: ' + (feature.properties.properties.finishDate || convertToLocaleDate(feature.properties.properties.event_datetime_closed) )+ '<BR>';
-            popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
+            popupContent += 'Start date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime)  || feature.properties.properties.startDate) + '<BR>';
+            popupContent += 'Finish date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime_closed) || feature.properties.properties.finishDate)+ '<BR>';
+            popupContent += 'Managing OC(s): ' + ((feature.properties.properties.hasOwnProperty('msf_response_operational_centers') && feature.properties.properties.msf_response_operational_centers.length > 0) ? feature.properties.properties.msf_response_operational_centers.toString() : feature.properties.properties.managingOC) + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
@@ -1114,6 +1148,7 @@ var onEditEvent = function() {
 
 var onArchiveEvent = function() {
     $( '#archiveEventModalContent' ).load( '/events/archive.html' );
+    $('#archiveModal').modal('show');
 };
 
 mainMap.on('overlayadd', function (layersControlEvent) {
@@ -1238,12 +1273,16 @@ var editCategory='general';
 Vue.component('date-picker', VueBootstrapDatetimePicker.default);
 
 var eventMap;
+var msfResponseMap;
 var eventMapLayerControl;
+var msfResponseMapLayerControl;
 
-var zoomToBounds = function(bounds) {
-    var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
-    eventMap.fitBounds(rBounds);
-};
+// var zoomToBounds = function(bounds, givenMap) {
+//     var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
+//     givenMap.fitBounds(rBounds);
+//     // eventMap.fitBounds(rBounds);
+//     // msfResponseMap.fitBounds(rBounds);
+// };
 
 
 
@@ -1280,16 +1319,21 @@ Vue.component('country-select', {
     }
 });
 
-
-Vue.filter('formatDateOnly', function(value) {
+Vue.filter('formatDateOnly', function(value,storedFormat) {
     if (value) {
-        return moment(value).format('YYYY-MM-DD');
+        var d=moment(value);
+        return (d.isValid() ? d.format(DATE_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
+    }
+    else{
+        return '';
     }
 });
 
-Vue.filter('formatFullDate', function(value) {
+Vue.filter('formatFullDate', function(value,storedFormat) {
     if (value) {
-        return moment(value).format('YYYY-MM-DD  HH:mm');
+    //return (new Date(value)).toLocaleString().replace(/:\d{2}$/,'');
+        var d= (storedFormat ? moment(value,storedFormat) : moment(value) );
+        return (d.isValid() ? d.format(DATETIME_DISPLAY_FORMAT) : (value + ' (invalid date format)'));
     } else {
         return '';
     }
@@ -1404,6 +1448,9 @@ var vmObject = {
             'Resources': false,
             'Response': false,
             'Reflection': false
+        },
+        dateTimeConfig: {
+            format: DATETIME_DISPLAY_FORMAT
         }
     },
     mounted:function(){
@@ -1592,74 +1639,59 @@ var vmObject = {
             var index = this.areas.countries.indexOf(country);
             this.areas.countries.splice(index, 1);
         },
-        //*****  Event Map section ***** //
-        loadMap(){
-            var eventDefaultLatLng = [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
-            eventMap = L.map('eventMap',{dragging: !L.Browser.mobile, tap:false});
-            eventMap.scrollWheelZoom.disable();
+        setupMap(mapID, respLatLng, editResp){
+            var defaultLatLng = respLatLng ? respLatLng : [currentEventGeometry.coordinates[1], currentEventGeometry.coordinates[0]];
+            var givenMap = L.map(mapID,{dragging: !L.Browser.mobile, tap:false});
+            givenMap.scrollWheelZoom.disable();
             //Bind Autocomplete to inputs:
             function bindAutocompletes() {
-                if ((!google)||(!google.maps))
-                {
+                if ((!google)||(!google.maps)){
                     setTimeout(bindAutocompletes,200);
                     return;
                 }
-                bindACInputToMap(eventMap,'editEventAddress',true);
+                var editField = editResp ? 'editEventRespAddress' : 'editEventAddress';
+                bindACInputToMap(givenMap, editField ,true);
             }
+            setTimeout(bindAutocompletes,200); // set delay for response map
 
-            bindAutocompletes();
-
-            var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap);
-
-            /*
-              var latlng = null;
-              eventMap.on('click', function(e) {
-                if (eventMarker) {
-                  eventMap.removeLayer(eventMarker);
-                }
-                latlng = e.latlng;
-                Vue.set(vm.currentEventGeometry, 'coordinates', [latlng.lng, latlng.lat]);
-                eventMarker = L.marker(e.latlng).addTo(eventMap);
-              });
-              */
-            /** eventMap >> */
+            var eventMarker = L.marker(defaultLatLng).addTo(givenMap);
 
             // Add some base tiles
-            var eventMapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+            var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
                 attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
                 minZoom: 0,
                 maxZoom: 18
             });
             // Add some satellite tiles
-            var eventMapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+            var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
                 attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
             });
 
             // OSM HOT tiles
-            var eventOpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            var openStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
             });
 
             switch (Cookies.get('MapLayer')) {
             case 'Satellite':
-                eventMapboxSatellite.addTo(eventMap);
+                mapboxTerrain.addTo(givenMap);
                 break;
             case 'Terrain':
-                eventMapboxTerrain.addTo(eventMap);
+                mapboxSatellite.addTo(givenMap);
                 break;
             default:
-                eventOpenStreetMap_HOT.addTo(eventMap);
+                openStreetMap_HOT.addTo(givenMap);
             }
 
 
-            var eventBaseMaps = {
-                'Terrain': eventMapboxTerrain,
-                'Satellite' : eventMapboxSatellite,
-                'Humanitarian': eventOpenStreetMap_HOT
+            var baseMaps = {
+                'Terrain': mapboxTerrain,
+                'Satellite' : mapboxSatellite,
+                'Humanitarian': openStreetMap_HOT
             };
 
-            eventMap.on('baselayerchange', function(baselayer) {
+            givenMap.on('baselayerchange', function(baselayer) {
                 Cookies.set('MapLayer',baselayer.name);
             });
 
@@ -1672,25 +1704,49 @@ var vmObject = {
 
             var overlayMaps = {};
 
-            eventMapLayerControl = L.control.groupedLayers(eventBaseMaps, groupedOverlays, groupOptions).addTo(eventMap);
+            var givenMapLayerControl = L.control.groupedLayers(baseMaps, groupedOverlays, groupOptions).addTo(givenMap);
 
             if (L.Browser.touch) {
                 L.DomEvent
-                    .disableClickPropagation(eventMapLayerControl._container)
-                    .disableScrollPropagation(eventMapLayerControl._container);
+                    .disableClickPropagation(givenMapLayerControl._container)
+                    .disableScrollPropagation(givenMapLayerControl._container);
             } else {
-                L.DomEvent.disableClickPropagation(eventMapLayerControl._container);
+                L.DomEvent.disableClickPropagation(givenMapLayerControl._container);
             }
 
-            getAllEvents(mapEditGeneralEvents);
 
-            eventMap.on('overlayadd', function (layersControlEvent) {
+            givenMap.on('overlayadd', function (layersControlEvent) {
                 Cookies.set(layersControlEvent.name,'on');
             });
 
-            eventMap.on('overlayremove', function (layersControlEvent) {
+            givenMap.on('overlayremove', function (layersControlEvent) {
                 Cookies.set(layersControlEvent.name,'off');
             });
+
+            setTimeout(function() {
+                givenMap.invalidateSize(true);
+
+                if(respLatLng){ // this for the response map layer
+                    givenMap.setView(respLatLng, 13);
+                } else if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
+                    var bounds = currentEventProperties.metadata.bounds;
+                    var rBounds = L.latLngBounds(L.latLng(bounds._southWest.lat,bounds._southWest.lng),L.latLng(bounds._northEast.lat,bounds._northEast.lng));
+                    givenMap.fitBounds(rBounds);
+                }else{
+                    givenMap.setView(defaultLatLng, 13);
+                }
+            }, 300);
+
+            return {givenMap, givenMapLayerControl};
+        },
+        //*****  Event Map section ***** //
+        loadEventMap(){
+            var mapObj = this.setupMap('eventMap');
+            eventMap = mapObj.givenMap;
+            eventMapLayerControl = mapObj.givenMapLayerControl;
+
+            getAllEvents(mapEditGeneralEvents);
+
             eventMap.doubleClickZoom.disable();
             eventMap.on('dblclick', function(dblclickEvent) {
                 latlng = dblclickEvent.latlng;
@@ -1710,17 +1766,32 @@ var vmObject = {
                 });
             });
 
-
-            setTimeout(function() {
-                eventMap.invalidateSize(true);
-                if (currentEventProperties.metadata.hasOwnProperty('bounds')) {
-                    zoomToBounds(currentEventProperties.metadata.bounds);
-                } else {
-                    eventMap.setView(eventDefaultLatLng, 13);
-                }
-            }, 300);
-
         },
+        loadResponsMap(){
+            var vm = this;
+            var respLatLng;
+            if (!_.isEmpty(this.event.metadata.msf_response_location.coordinates)) {
+                respLatLng = [this.event.metadata.msf_response_location.coordinates.lat, this.event.metadata.msf_response_location.coordinates.lng];
+            }
+
+            var mapObj = this.setupMap('msfResponseMap', respLatLng, true);
+            $('#msfResponseMap').addClass('map-container'); /// give it dimension to populate
+
+            msfResponseMap = mapObj.givenMap;
+            msfResponseMapLayerControl = mapObj.givenMapLayerControl;
+
+            var msfResponseMarker = L.marker(respLatLng).addTo(msfResponseMap);
+            var msflatlng = null;
+            msfResponseMap.on('click', function(e) {
+                if (msfResponseMarker) {
+                    msfResponseMap.removeLayer(msfResponseMarker);
+                }
+                msflatlng = e.latlng;
+                Vue.set(vm.event.metadata.msf_response_location, 'coordinates', [msflatlng.lat, msflatlng.lng]);
+                msfResponseMarker = L.marker(e.latlng).addTo(msfResponseMap);
+            });
+        },
+
         lintNotification(){
             if ($('#inputNotification').val()) {
                 if (currentEventProperties.metadata.hasOwnProperty('notification')) {
@@ -1768,7 +1839,7 @@ var vmObject = {
         },
         placeOtherFields(){
             for(key in this.otherFields){
-                if(this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
+                if(this.event.metadata.sub_type && this.event.metadata.sub_type.indexOf(`other_${key}`) != -1){
 
                     var subTypes = this.event.metadata.sub_type.split(',');
                     var index = _.findIndex(subTypes, function(el){
@@ -1842,7 +1913,7 @@ var vmObject = {
         submitEventSection(category){
             var vm = this;
             var body = {
-                status: (vm.event.metadata.event_status === 'complete' ? 'inactive' : 'active'),
+                status: vm.event.status,
                 type: vm.event.type.toString(),
                 metadata : vm.event.metadata
             };
@@ -1871,6 +1942,10 @@ var vmObject = {
                         });
                     },500);
                 }
+                if(category == 'Response'){
+                    $('#msfResponseMap').removeClass('map-container');
+                }
+
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
                     alert('session expired');
@@ -1946,8 +2021,11 @@ var vmObject = {
                 // this is inline implementation
                 if(category == 'General'){
                     vm.oldEventStatus= vm.event.metadata.event_status || 'monitoring';
-                    vm.loadMap();
+                    vm.loadEventMap();
                     vm.placeOtherFields();
+                }
+                if(category == 'Response'){
+                    vm.loadResponsMap();
                 }
             }
 
@@ -2372,7 +2450,6 @@ var vmAnalytics = new Vue({
 
     },
     mounted: function(){
-        //console.log('mounted');
-        // Create map
+
     }
 });

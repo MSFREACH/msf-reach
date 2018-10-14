@@ -430,9 +430,9 @@ var mapMissions = function(missions ){
                 popupContent += 'Latest notification: (none)<BR>';
             }
             popupContent += 'Description: ' + feature.properties.properties.description + '<br>';
-            popupContent += 'Start date: ' + (feature.properties.properties.startDate || convertToLocaleDate(feature.properties.properties.event_datetime) ) + '<BR>';
-            popupContent += 'Finish date: ' + (feature.properties.properties.finishDate || convertToLocaleDate(feature.properties.properties.event_datetime_closed) ) + '<BR>';
-            popupContent += 'Managing OC: ' + feature.properties.properties.managingOC + '<BR>';
+            popupContent += 'Start date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime)  || feature.properties.properties.startDate) + '<BR>';
+            popupContent += 'Finish date: ' + (convertToLocaleDate(feature.properties.properties.event_datetime_closed) || feature.properties.properties.finishDate  ) + '<BR>';
+            popupContent += 'Managing OC(s): ' + ((feature.properties.properties.hasOwnProperty('msf_response_operational_centers') && feature.properties.properties.msf_response_operational_centers.length > 0) ? feature.properties.properties.msf_response_operational_centers.toString() : feature.properties.properties.managingOC) + '<BR>';
             popupContent += 'Severity: ' + feature.properties.properties.severity + '<BR>';
             popupContent += 'Capacity: ' + feature.properties.properties.capacity + '<BR>';
         }
@@ -861,29 +861,6 @@ var mapContacts = function(contacts ){
     layerControl.addOverlay(nonMSFContactsLayer, '- other contacts', 'Contacts');
 
 };
-
-/**
-* function to show mission data modal on click
-* @function onMissionLinkClick
-* @param {String} id - id number (as a String)
-*/
-var onMissionLinkClick = function(id) {
-    $.getJSON('/api/missions/' + id, function(data) {
-        currentMissionId=id;
-        missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
-        missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
-        $( '#missionModalBody' ).load( '/events/mission.html' );
-        $('#missionModal').modal('show');
-    }).fail(function(err) {
-        if (err.responseText.includes('expired')) {
-            alert('session expired');
-        } else {
-            alert('error: '+ err.responseText);
-        }
-    });
-};
-
-
 
 // Create map
 var mainMap = L.map('mainMap',{dragging: !L.Browser.mobile, tap:false, doubleClickZoom:false});

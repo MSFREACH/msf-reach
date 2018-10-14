@@ -706,6 +706,8 @@
           <ul class="dropdown-menu">
             <li><a href="#about" data-toggle="modal" data-target="#about">About MSF REACH</a></li>
             <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
+            <li><a href="https://www.dropbox.com/s/ft2crioj1sx61ib/REACH%20user%20manual.pdf?dl=0">User Manual</a></li>
+            <li><a href="https://www.dropbox.com/sh/pwbi8hhqha63ppt/AAAjuw7wq7Jri7N0tdZ0fg_Ra?dl=0">Tutorial Videos</a></li>
             <li><a id="logout" href="/logout">Sign out</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -767,7 +769,7 @@
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;" v-html="notStr"></td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
-                  <tr><td>Person In charge </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
+                  <tr><td>Mission contact person </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ event.updated_at  | formatFullDate }}</td></tr>
                   <tr>
@@ -811,7 +813,7 @@
                       <input type="text" class="form-control input-sm" value="" id="editEventAddressLng" placeholder="Longitude">
                       <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
                     </td>
-                    <td> <div id="eventMap" class="map-container" style="width: 100%; height: 380px;"></div> </td>
+                    <td> <div id="eventMap" class="map-container"></div> </td>
                   </tr>
 
 
@@ -859,7 +861,7 @@
                   <tr>
                     <td>Date and hours (local time) of the disater </td>
                     <td class="datepicker-container">
-                      <date-picker v-model="event.metadata.event_local_time"></date-picker>
+                      <date-picker v-model="event.metadata.event_local_time" :config="dateTimeConfig"></date-picker>
                     </td>
                   </tr>
                   <tr>
@@ -875,10 +877,10 @@
                   </tr>
                   <tr>
                     <td class="datepicker-container">
-                      <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time"></date-picker>
+                      <date-picker v-model="event.metadata.mission_contact_person.arrival_time" placeholder="Arrival time" :config="dateTimeConfig"></date-picker>
                     </td>
                     <td class="datepicker-container">
-                      <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time"></date-picker>
+                      <date-picker v-model="event.metadata.mission_contact_person.departure_time" placeholder="Departure time" :config="dateTimeConfig"></date-picker>
                     </td>
                   </tr>
                   <tr>
@@ -980,7 +982,7 @@
                     <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseResponse">
                       <a data-toggle="collapse" data-target="#collapseResponse"
                       href="#" class="collapsed">
-                      Response
+                      MSF Response
                     </a> <span class="label label-success" v-if="hasBeenAnalyzed && vizalyticsResp.supplies">(**suggestions available in edit mode)</span>
                   </div>
                     <button v-if="!panelEditing.Response" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Response')">Edit</button>
@@ -989,8 +991,6 @@
                   </div>
                   <div id="collapseResponse" class="panel-collapse collapse">
                     <div class="panel-body" >
-                      <div>
-                            <dl class="dl-horizontal">
                               <dt>Type of programmes:</dt>
                               <dd v-if="!panelEditing.Response" v-for="item in event.metadata.msf_response_types_of_programmes" >
                                 <span class="label label-primary" >
@@ -1025,15 +1025,34 @@
                               <dd v-if="panelEditing.Response">
                                 <date-picker v-model="event.metadata.end_date_msf_response" :config="{format: 'YYYY-MM-DD'}" placeholder="End date"></date-picker>
                               </dd>
+                             <dl>
                               <dt>
                                 Location of MSF Response:
                               </dt>
-                              <dd>
-                                <a @click="editEvent('Response')">Edit (CHANGE TO MODAL EDIT)</a>
-                              </dd>
+                              <dd v-if="!panelEditing.Response">
+                                  <span v-if="typeof(event.metadata.msf_response_location.coordinates) !== 'undefined'">
+                                    {{event.metadata.msf_response_location.coordinates.lat}}, {{event.metadata.msf_response_location.coordinates.lng}}
+                                  </span>
+                                  <span v-if="typeof(event.metadata.msf_response_location.area) !== 'undefined'">
+                                    {{event.metadata.msf_response_location.area.region}}, {{event.metadata.msf_response_location.area.country}}
+                                  </span>
+                                </dd>
+                              <dd v-else>
+                                <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventRespAddress">
+
+                                <label for="editEventRespAddressLat">OR</label>
+
+                                <input type="text" class="form-control input-sm" value="" id="editEventRespAddressLat" placeholder="Latitude">
+
+                                <input type="text" class="form-control input-sm" value="" id="editEventRespAddressLng" placeholder="Longitude">
+                                <button type="button" class="btn btn-info btn-sm" id="editEventRespAddressLocate"><span class="glyphicon glyphicon-search"></span></button>
+                            </dd>
+                                <div id="msfResponseMap"></div>
+                            </dl>
+
                               <dt>Operational Centre:</dt>
                               <dd v-if="!panelEditing.Response">
-                                {{event.metadata.operational_center}}
+                                {{_.compact(event.metadata.msf_response_operational_centers).join(',')}}
                               </dd>
                               <dd v-else>
                                 <div v-for="item in msfOperationalCenters" class="operational-centers">
@@ -1152,10 +1171,6 @@
 
                               </div>
 
-
-                            </dl>
-
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1653,8 +1668,10 @@
             </div>
             <div id="collapseExtraDetails" class="panel-collapse collapse">
               <div class="panel-body" v-if="!panelEditing.ExtraDetails">
-                <dl id="eventExtra" class="dl-horizontal" v-for="item in Object.keys(extraDetailsLabel)">
-                  <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
+                <dl id="eventExtra" class="dl-horizontal" >
+                    <span v-for="item in Object.keys(extraDetailsLabel)">
+                      <dt>{{extraDetailsLabel[item]}}</dt><dd> {{event.metadata[item]}}</dd>
+                  </span>
                 </dl>
               </div>
               <ul class="list-group" v-else>
@@ -1672,6 +1689,8 @@
       <button class="btn btn-default"  @click="cancelEventEdits()" v-if="somePanelDirty">Cancel Edits</button>
       -->
       <!-- Button trigger modal -->
+       <button type="button" class="btn btn-danger" onclick="onArchiveEvent()">Close Event</button>
+
     </div>
     <div id="tweets" class="tab-pane fade">
       <div class="row">
@@ -1861,9 +1880,8 @@
     </div>
     <div id="countryDetails" class="tab-pane fade">
       <div class="row">
-        <div class="col-md-6" >
-          <h4>Country details</h4>
-          <div id="countryDetailsContainer" style="height:70vh;">(work on this tab in progress)</div>
+        <div class="col-md-12" >
+          <div id="countryDetailsContainer" style="height:70vh;"></div>
         </div>
       </div>
     </div>
@@ -1952,6 +1970,9 @@
 
 <script type="text/javascript" src="/resources/js/common.js"></script>
 <script src="/resources/js/healthsites.js"></script>
+
+<script src="/resources/js/countries.js"></script>
+<script src="/resources/js/country-codes.js"></script>
 
 <!-- events common variables -->
 <script src="/events/common.js"></script>
@@ -2044,12 +2065,7 @@ $('#countryDetailsTab').on('click', function(e){
 });
 
 var contactInfo = {};
-var convertToLocaleDate= function (isoDate) {
-  if (isoDate)
-  return (new Date(isoDate)).toLocaleString();
-  else
-  return '';
-}
+
 
 
 

@@ -50,13 +50,6 @@
               </div>
             </div>
             <div class="form-section">
-              <h4>Please select the location of your information on the map:</h4>
-              <div class="form-group">
-                <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
-              </div>
-              <div id="newReportMap"></div>
-            </div>
-            <div class="form-section">
               <p>Please help us best assess the situation by helping us sort your report.</p>
               <div class="rtype-container">
                   <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>Location / Damage</i></div>
@@ -65,6 +58,13 @@
                   <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>Incident / Caution</i></div>
               </div>
               <p>Select one category. There is an opportunity to submit another report card for another category after submission of this one.</p>
+            </div>
+            <div class="form-section">
+              <h4>Please select the location of your information on the map:</h4>
+              <div class="form-group">
+                <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
+              </div>
+              <div id="newReportMap"></div>
             </div>
             <div class="form-section">
               <h4>Please enter text in the box below to share your information.</h4>
@@ -76,9 +76,9 @@
               <h4>Would you like to upload an image ? </h4><i>(optional)</i>
               <form enctype="multipart/form-data">
                 <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
-                <div style="margin-top:10px;width:100%;height:55vh;background-color:white;color:black;">
-                  <i id="btnUpTrigger" class="icon-camera" style="font-size:108px;"></i>
-                  <img id="imgPreview" src="#" alt="your image" style="width:100%;height:55vh;display:none;"/>
+                <div style="margin-top:10px;width:100%;height:auto;color:#fff;text-align:center;">
+                  <i id="btnUpTrigger" class="icon-camera" style="font-size:108px;cursor:pointer;"></i>
+                  <img id="imgPreview" src="#" alt="your image" style="max-width:100%;height:auto;display:none;"/>
                 </div>
               </form>
 

@@ -17,7 +17,7 @@ export default (config, db, logger) => ({
     */
     all: (search,bounds,oid,msf_associate,msf_peer,type) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, properties, the_geom
+        let query = `SELECT id, properties, the_geom, private
      FROM ${config.TABLE_CONTACTS}
      WHERE ($1 IS NULL OR (
       properties ->> 'name' ILIKE $1
