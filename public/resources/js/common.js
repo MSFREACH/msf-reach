@@ -220,7 +220,7 @@ const getMSFPresence = function(callback) {
             callback(ArcgisToGeojsonUtils.arcgisToGeoJSON(data));
         }
     }).fail(function(err) {
-        alert('error: '+ err);
+        //alert('error: '+ err);
     });
 };
 
