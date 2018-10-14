@@ -2226,10 +2226,10 @@ var vmObject = {
         },
 
         updateMarkdown: _.debounce(function(e){
-            this.newNotification = e.target.value
+            this.newNotification = e.target.value;
         }, 300),
         openMarkdownSyntax: function(){
-            $('#markdownModal').modal('show')
+            $('#markdownModal').modal('show');
         }
 
     },
@@ -2239,7 +2239,7 @@ var vmObject = {
             return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
             }).map(item => {
-                return Object.assign({}, item, {notification: marked(item.notification, {sanitize: true})})
+                return Object.assign({}, item, {notification: marked(item.notification, {sanitize: true})});
             }): [];
         },
         notStr:function(){
@@ -2257,10 +2257,10 @@ var vmObject = {
         },
 
         compiledMarkdown: function(){
-            return marked(this.newNotification, {sanitize: true})
+            return marked(this.newNotification, {sanitize: true});
         },
         markedNotification: function(chunk){
-            return marked(chunk, {sanitize: true})
+            return marked(chunk, {sanitize: true});
         }
     },
     watch: {
