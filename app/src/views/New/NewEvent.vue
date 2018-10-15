@@ -18,12 +18,13 @@
                         hint="example of helper text only on focus"></v-textarea>
                         <v-layout wrap row>
                             <h3> Event Type </h3>
-                            <v-flex v-for="(item, index) in allEventTypes" v-model="checkedTypes" :key="index" :value="item.value" :id="'ev-type'+index">
+                            <v-flex v-for="(item, index) in allEventTypes" :key="index" :value="item.value" :id="'ev-type'+index">
                                 <v-checkbox color="black" :label="item.text" v-model="checkedTypes" :value="item.value" ></v-checkbox>
                                 <v-flex v-if="item.subTypes && (checkedTypes.indexOf(item.value) != -1)">
                                     <v-checkbox v-for="(sub, sIndex) in item.subTypes" :key="sIndex" color="black" class="caption" v-model="checkedSubTypes" :value="sub.value" :id="'ev-sub-'+(sub.text)+sIndex" :label="sub.text" />
                                     <v-checkbox color="black" v-model="checkedSubTypes" :value="'other:'+ item.value" :label="'other '+item.text"/>
-                                    <v-text-field v-show="checkedSubTypes.indexOf('other:'+ item.value) != -1" v-model="others[item.value]" label="Please specify"></v-text-field>
+                                    <v-text-field v-model="others[item.value]" label="Please specify"></v-text-field>
+                                    <!-- v-if="checkedSubTypes.indexOf('other:'+ item.value) != -1"  -->
                                 </v-flex>
                             </v-flex>
                             <v-text-field color="black" v-model="others.eventType" label="Other type"></v-text-field>
@@ -104,7 +105,7 @@
 /*eslint no-console: off*/
 
 import { EVENT_TYPES, EVENT_STATUSES, SEVERITY, DEFAULT_EVENT_METADATA } from '@/common/common';
-
+import { CREATE_EVENT } from '@/store/actions.type';
 export default {
     name: 'new-event',
     data: () => ({
@@ -125,7 +126,8 @@ export default {
         dateFormatted: null,
         dateSelected: false,
         timeSelected: false,
-        metadata: DEFAULT_EVENT_METADATA
+        metadata: DEFAULT_EVENT_METADATA,
+        inProgress: false
     }),
     watch: {
         eventDate (val) {
@@ -141,7 +143,17 @@ export default {
             this.lintDateTime();
             this.lintStatus();
             this.lintTypes();
+            this.inProgress = true;
             console.log('SAVED !!!! ', this.metadata);
+            this.$store.dispatch(CREATE_EVENT, this.metadata)
+                .then((payload) =>{
+                    console.log('STORE -dispatch.then--- ', payload);
+                    this.inProgress = false;
+                    this.$router.push({
+                        name: 'event-general',
+                        params: { slug: payload.metadata.id }
+                    });
+                });
         },
         lintDateTime(){
             this.metadata.event_datetime = this.eventDate + this.eventTime;
@@ -151,7 +163,7 @@ export default {
         },
         lintTypes(){
             this.metadata.types = this.checkedTypes.concat(this.others.eventType);
-            //TODO: remove other: 
+            //TODO: remove other:
             this.metadata.sub_types = this.checkedSubTypes.concat([this.others.disease_outbreak, this.others.natural_disaster]);
         },
         formatDate (date) {

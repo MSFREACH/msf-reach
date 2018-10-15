@@ -31,9 +31,9 @@ export const actions = {
                 return data;
             });
     },
-    [CREATE_EVENT] ({ state }){
+    [CREATE_EVENT] (context, metadata){
         // TODO: geojson for location validation
-        return EventsService.create(state.event);
+        return EventsService.create(metadata);
     },
     [DELETE_EVENT] (context, slug){
         return EventsService.destroy(slug);
