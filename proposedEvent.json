@@ -84,12 +84,11 @@
             "arrival_date" : "",
             "total_amount" : ""
         },
-
         "non_medical_material" : {
             "items":[],
             "arrival_date" : "",
             "total_amount" : ""
-        } ,
+        },
         "operational_center" : "",
         "types_of_programmes" : []
     },

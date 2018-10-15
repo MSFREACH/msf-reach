@@ -2,11 +2,21 @@ export const GEOFORMAT = 'geojson'; // Change to topojson for prod
 export const DATE_DISPLAY_FORMAT='YYYY-MM-DD';
 export const DATETIME_DISPLAY_FORMAT='YYYY-MM-DD  HH:mm';
 
-export const SEVERITY = {
-    colors: ['green','orange','red'],
-    labels: ['low','med','high'],
-    fullLabels: ['low','medium','high']
-};
+export const SEVERITY = [
+    {
+        color:'green',
+        value: 1,
+        label: 'low'
+    },{
+        color:'orange',
+        value: 2,
+        label: 'medium'
+    },{
+        color:'red',
+        value: 3,
+        label: 'high'
+    }
+];
 
 export const EVENT_TYPES = [
     { value: 'armed_conflict', text: 'Armed Conflict' },
@@ -97,3 +107,36 @@ export const CONTACT_TYPES =[
     {text: 'Academic', value: 'Academic'},
     {text: 'Private Medical Practice', value: 'Private Medical Practice'}
 ];
+
+
+export const DEFAULT_EVENT_METADATA = {
+    name: null,
+    description: null,
+    event_datetime: null,
+    areas:[{
+        region: null,
+        country: null,
+        country_code: null
+    }],
+    status: [{
+        type: null,
+        timestamp: null
+    }],
+    types: [],
+    sub_types: [],
+    incharge_contact: {
+        local: {
+            name: null,
+            position: null
+        },
+        operator: {
+            name: null,
+            position: null
+        }
+    },
+    sharepoint_link: null,
+    severity_measures: [{
+        scale: null,
+        description: null
+    }]
+};
