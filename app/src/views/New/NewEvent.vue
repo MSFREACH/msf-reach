@@ -24,7 +24,6 @@
                                     <v-checkbox v-for="(sub, sIndex) in item.subTypes" :key="sIndex" color="black" class="caption" v-model="checkedSubTypes" :value="sub.value" :id="'ev-sub-'+(sub.text)+sIndex" :label="sub.text" />
                                     <v-checkbox color="black" v-model="checkedSubTypes" :value="'other:'+ item.value" :label="'other '+item.text"/>
                                     <v-text-field v-model="others[item.value]" label="Please specify"></v-text-field>
-                                    <!-- v-if="checkedSubTypes.indexOf('other:'+ item.value) != -1"  -->
                                 </v-flex>
                             </v-flex>
                             <v-text-field color="black" v-model="others.eventType" label="Other type"></v-text-field>
@@ -32,14 +31,13 @@
                         <v-layout>
                             <v-flex>
                                 <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                    <v-text-field slot="activator" v-model="dateFormatted" label="Event Date" hint="MM/DD/YYYY format" persistent-hint prepend-icon="event" @blur="eventDate = parseDate(dateFormatted)" ></v-text-field>
+                                    <v-text-field slot="activator" v-model="eventDate" label="Event Date" hint="MM/DD/YYYY format" persistent-hint prepend-icon="event" type="date"></v-text-field>
                                     <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
                                 </v-menu>
-                                <p>Date in ISO format: <strong>{{ eventDate }}</strong></p>
                             </v-flex>
                             <v-flex>
                                 <v-menu ref="menu" :close-on-content-click="false" v-model="timeSelected" :nudge-right="40" :return-value.sync="eventTime" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                    <v-text-field slot="activator" time v-model="eventTime" label="Local event time" prepend-icon="access_time"></v-text-field>
+                                    <v-text-field slot="activator" time v-model="eventTime" label="Local event time" prepend-icon="access_time" type="time"></v-text-field>
                                     <v-time-picker v-if="timeSelected" v-model="eventTime" full-width color="red" event-color="black" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
                                 </v-menu>
                             </v-flex>
@@ -71,7 +69,7 @@
                                 <v-text-field v-model="metadata.incharge_contact.operator.position" label="Position"></v-text-field>
                             </v-flex>
                         </v-layout>
-                        <v-text-field label="SharePoint Link" box append-icon="link" v-model="metadata.sharepoint_link">
+                        <v-text-field label="SharePoint Link" type="url" box append-icon="link" v-model="metadata.sharepoint_link">
                         </v-text-field>
                         <v-flex xs12 sm6 class="py-2">
                             <p> Severity measure </p>
@@ -87,6 +85,7 @@
                     </v-container>
                     <small>*indicates required field</small>
                 </v-card-text>
+                <v-progress-linear v-if="inProgress" :indeterminate="true"></v-progress-linear>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
@@ -117,9 +116,9 @@ export default {
         checkedSubTypes: [],
         selectedStatus: null,
         others:{
-            eventType: '',
-            disease_outbreak:'',
-            natural_disaster: ''
+            eventType: null,
+            disease_outbreak:null,
+            natural_disaster: null
         },
         eventDate: null,
         eventTime: null,
@@ -129,48 +128,61 @@ export default {
         metadata: DEFAULT_EVENT_METADATA,
         inProgress: false
     }),
-    watch: {
-        eventDate (val) {
-            this.dateFormatted = this.formatDate(val);
-        }
-    },
     methods:{
         close(){
             this.dialog = false;
             this.metadata = DEFAULT_EVENT_METADATA;
         },
         save(){
+            this.metadata.areas = [{
+                region: 'Berlin',
+                country: 'Germany',
+                country_code: 'DE'
+            }];
+
             this.lintDateTime();
             this.lintStatus();
             this.lintTypes();
             this.inProgress = true;
-            console.log('SAVED !!!! ', this.metadata);
-            this.$store.dispatch(CREATE_EVENT, this.metadata)
+            // TODO: replace geoJSON with map input
+            var timestamp = new Date();
+            var ISOTime = timestamp.toISOString();
+            var payload = {
+                location:{
+                    lat: 52.5200,
+                    lng: 13.4050
+                },
+                created_at: ISOTime,
+                type: this.checkedTypes.join(','),
+                status: 'active',
+                metadata: this.metadata
+            };
+
+            this.$store.dispatch(CREATE_EVENT, payload)
                 .then((payload) =>{
-                    console.log('STORE -dispatch.then--- ', payload);
+                    var eventID = payload.data.result.objects.output.geometries[0].properties.id;
                     this.inProgress = false;
                     this.$router.push({
                         name: 'event-general',
-                        params: { slug: payload.metadata.id }
+                        params: { slug: eventID }
                     });
                 });
         },
         lintDateTime(){
-            this.metadata.event_datetime = this.eventDate + this.eventTime;
+            var tempDateTime = new Date(this.eventDate +' '+this.eventTime);
+            this.metadata.event_datetime = tempDateTime.toISOString();
         },
         lintStatus(){
-            this.metadata.status.push({type: this.selectedStatus, timestamp: Date.now()});
+            var timestamp = new Date();
+            var ISOTime = timestamp.toISOString();
+            this.metadata.event_status = this.selectedStatus;
+            this.metadata.status_updates = [{type: this.selectedStatus, timestamp: ISOTime}];
         },
         lintTypes(){
-            this.metadata.types = this.checkedTypes.concat(this.others.eventType);
+            this.metadata.types = this.others.eventType ? this.checkedTypes.concat(this.others.eventType) : this.checkedTypes;
             //TODO: remove other:
-            this.metadata.sub_types = this.checkedSubTypes.concat([this.others.disease_outbreak, this.others.natural_disaster]);
-        },
-        formatDate (date) {
-            if (!date) return null;
+            this.metadata.sub_types = this.checkedSubTypes.concat([this.others.disease_outbreak, this.others.natural_disaster]).filter(Boolean);
 
-            const [year, month, day] = date.split('-');
-            return `${month}/${day}/${year}`;
         },
         parseDate (date) {
             if (!date) return null;

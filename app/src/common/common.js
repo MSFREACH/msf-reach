@@ -118,7 +118,7 @@ export const DEFAULT_EVENT_METADATA = {
         country: null,
         country_code: null
     }],
-    status: [{
+    status_updates: [{
         type: null,
         timestamp: null
     }],

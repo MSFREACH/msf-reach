@@ -16,7 +16,7 @@
                     <v-card-text v-else>{{area.country}}</v-card-text>
                     <v-card-text v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length"> </v-card-text>
                     <v-card class="sub-tag" v-if="eventMetadata.severity_measures[index]">
-                      <v-card-text :style="'color:'+severityColors[eventMetadata.severity_measures[index].scale-1]">{{severityLongTexts[eventMetadata.severity_measures[index].scale-1]}} severity</v-card-text>
+                      <v-card-text :style="'color:'+allSeverity[eventMetadata.severity_measures[index].scale-1].color">{{allSeverity[eventMetadata.severity_measures[index].scale-1].label}} severity</v-card-text>
                       <v-card-text class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </v-card-text>
                     </v-card>
                 </v-flex>
@@ -27,7 +27,7 @@
                 <!-- TODO: add pairing icon + clickable taglink -->
             </div>
             <div> Happened {{ eventCreatedAt | relativeTime }}
-                 <span>on {{eventMetadata.event_local_time | fullDate }} local time.</span>
+                 <!-- <span>on {{eventMetadata.event_local_time | fullDate }} local time.</span> -->
             </div>
             <p>{{eventMetadata.description }}</p>
             <div>Person In charge {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
@@ -112,13 +112,6 @@
             <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
             <input type="text" v-model="eventMetadata.incharge_name" placeholder="Name" />
 
-            <div class="datepicker-container">
-                <date-picker v-model="eventMetadata.mission_contact_person.arrival_time" placeholder="Arrival time" :config="dateTimeConfig"></date-picker>
-            </div>
-            <div class="datepicker-container">
-                <date-picker v-model="eventMetadata.mission_contact_person.departure_time" placeholder="Departure time" :config="dateTimeConfig"></date-picker>
-            </div>
-
             ID link - SharePoint
 
             <input type="text" v-model="eventMetadata.sharepoint_link" placeholder="SharePoint Link" />
@@ -149,8 +142,7 @@ export default {
     data(){
         return {
             editing: false,
-            severityColors: SEVERITY.colors,
-            severityLongTexts: SEVERITY.fullLabels,
+            allSeverity: SEVERITY,
             allEventTypes: EVENT_TYPES,
             statuses: EVENT_STATUSES,
             checkedTypes:[],
@@ -186,6 +178,8 @@ export default {
             'eventCreatedAt'
         ])
     },
+    mounted (){
+    },
     methods: {
         edit(){
             this._beforeEditingCache = Object.assign({}, this.eventMetadata);
@@ -208,14 +202,11 @@ export default {
             }
 
             if(!newVal.severity_measures){
-                var mockSeverity = {scale: newVal.severity_scale, description: newVal.security_details};
+                var mockSeverity = {scale: newVal.severity_scale, description: newVal.severity};
                 vm.eventMetadata.severity_measures = [mockSeverity];
             }
         }
     }
-    // beforeRouteEnter(to, from, next){
-    //     // TODO: CAll map loads
-    // }
 };
 
 </script>

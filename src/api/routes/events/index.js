@@ -69,7 +69,6 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                 type: Joi.string().required(),
-                // types: Joi.array().items(Joi.string()),
                 report_id: Joi.number().min(1),
                 created_at: Joi.date().iso().required(),
                 metadata: Joi.object().required().keys({
@@ -77,18 +76,33 @@ export default ({ config, db, logger }) => {
                     name: Joi.string().allow(''),
                     description: Joi.string().allow(''),
                     sub_type: Joi.string().allow(''), // TODO: change to array later
+
+                    types: Joi.array().items(Joi.string()),
+                    sub_types: Joi.array().items(Joi.string()),
+                    status_updates: Joi.array().items(Joi.object().keys({
+                        type: Joi.string(),
+                        timestamp: Joi.date().iso()
+                    })),
                     event_datetime: Joi.string().allow(''),
                     event_status: Joi.string(),
-                    incharge_name: Joi.string().allow(''),
-                    incharge_position: Joi.string().allow(''),
-                    severity: Joi.string().allow(''),
-                    severity_scale: Joi.number().min(1).max(3),
+                    incharge_contact: Joi.object().keys({
+                        local: Joi.object().keys({
+                            name: Joi.string().allow(''),
+                            position: Joi.string().allow('')
+                        }),
+                        operator: Joi.object().keys({
+                            name: Joi.string().allow(''),
+                            position: Joi.string().allow('')
+                        })
+                    }),
+
                     sharepoint_link: Joi.string().allow(''),
                     security_details: Joi.string().allow(''),
                     bounds: Joi.object(),
                     areas: Joi.array().items(Joi.object().keys({
+                        region: Joi.string(),
                         country: Joi.string(),
-                        region: Joi.string()
+                        country_code: Joi.string()
                     })),
                     severity_measures: Joi.array().items(Joi.object().keys({
                         scale: Joi.number().min(1).max(3),

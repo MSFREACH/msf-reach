@@ -68,7 +68,6 @@ export const mutations = {
         state.event.reflection = event.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
         state.event.type = event.result.objects.output.geometries[0].properties.type;
-        state.event.types = event.result.objects.output.geometries[0].properties.type.split(',');
 
     },
     [RESET_STATE] () {
@@ -92,6 +91,10 @@ const getters ={
         return state.event.notifications;
     },
     eventTypes(state){
+        if(state.event.metadata.types){
+            return state.event.metadata.types;
+        }
+        
         if(state.event.type){
             var types = state.event.type.replace(/other:/g, '').split(',');
             var cTypes = _.compact(types);
