@@ -193,7 +193,6 @@ export default ({ config, db, logger }) => {
             }
         }),
         (req,res,next)=>{
-          console.log(req);
             contacts(config, db, logger).forCSV(req.query.lngmin, req.query.latmin, req.query.lngmax, req.query.latmax, (req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null).then((data) => {
                 let jsonList=data.map((item) => {return item.properties;});
                 //console.log(jsonList);

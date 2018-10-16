@@ -60,9 +60,7 @@ export default (config, db, logger) => ({
       (the_geom && ST_MakeEnvelope($1,$2,$3,$4, 4326)) AND
       ($5 IS NULL OR (ad_oid = $5 and private = true) OR ((properties->>'sharedWith')::jsonb ? $5) OR private = false)
      ORDER BY id`;
-     console.log(query);
         let values = [lngmin, latmin, lngmax, latmax, oid];
-        console.log(values);
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
