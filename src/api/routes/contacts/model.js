@@ -52,14 +52,17 @@ export default (config, db, logger) => ({
     * @function forCSV - returns all contact properties for csv
     * @param {string} oid - optional AD OID of user
     */
-    forCSV: (oid) => new Promise((resolve, reject) => {
+    forCSV: (lngmin, latmin, lngmax, latmax, oid) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT properties
+        let query = `SELECT properties, the_geom
      FROM ${config.TABLE_CONTACTS}
      WHERE
-      ($1 IS NULL OR (ad_oid = $1 and private = true) OR ((properties->>'sharedWith')::jsonb ? $1) OR private = false)
+      (the_geom && ST_MakeEnvelope($1,$2,$3,$4, 4326)) AND
+      ($5 IS NULL OR (ad_oid = $5 and private = true) OR ((properties->>'sharedWith')::jsonb ? $5) OR private = false)
      ORDER BY id`;
-        let values = [oid];
+     console.log(query);
+        let values = [lngmin, latmin, lngmax, latmax, oid];
+        console.log(values);
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
