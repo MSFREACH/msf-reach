@@ -35,15 +35,20 @@
                     </v-list>
                 </v-container>
             </v-menu>
-            <v-btn @click="signOut"> LOGOUT </v-btn>
             <v-menu right offset-y>
                 <v-btn flat slot="activator">
                     <v-toolbar-title> {{ currentUser.username }}</v-toolbar-title>
                     <v-icon>person</v-icon>
                 </v-btn>
                 <v-list>
-                    <v-list-tile v-for="(item, index) in profileActions" :key="index" @click="">
-                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                    <v-list-tile>
+                        About MSF Reach
+                    </v-list-tile>
+                    <v-list-tile>
+                        <info-FAQ></info-FAQ>
+                    </v-list-tile>
+                    <v-list-tile>
+                        <v-list-tile-title @click="signOut"> LOGOUT </v-list-tile-title>
                     </v-list-tile>
                 </v-list>
 
@@ -57,9 +62,9 @@
 
 import { mapGetters } from 'vuex';
 import store from '@/store';
-import { FETCH_PROFILE } from '@/store/actions.type';
+import { FETCH_PROFILE, LOGOUT } from '@/store/actions.type';
 
-import { LOGOUT } from '@/store/actions.type';
+import InfoFAQ from '@/views/Info/FAQ.vue';
 
 export default {
     name: 'RHeader',
@@ -67,7 +72,6 @@ export default {
         profileActions: [
             {title : 'About MSF Reach'},
             {title : 'FAQ'},
-            {title : 'Sign out'},
         ],
         notifications: [
             {header: 'Today'},
@@ -103,6 +107,9 @@ export default {
             { divider: true, inset: true }
         ]
     }),
+    components: {
+        InfoFAQ
+    },
     computed: {
         ...mapGetters([
             'profile',
