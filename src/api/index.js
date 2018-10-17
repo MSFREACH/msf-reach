@@ -15,6 +15,7 @@ import layers from './routes/layers';
 import reports from './routes/reports';
 import twitter from './routes/twitter';
 import hazards from './routes/hazards';
+import bookmarks from './routes/bookmarks';
 import utils from './routes/utils';
 import missions from './routes/missions';
 import contacts from './routes/contacts';
