@@ -2,7 +2,7 @@
 /*eslint no-unused-vars :off*/
 import _ from 'lodash';
 import { ReportsService } from '@/common/api.service';
-import { FETCH_REPORTS } from './actions.type';
+import { FETCH_REPORTS, CREATE_REPORT, EDIT_REPORT, DELETE_REPORT } from './actions.type';
 import { FETCH_REPORTS_START, FETCH_REPORTS_END, UPDATE_REPORT_IN_LIST } from './mutations.type';
 
 const state = {
@@ -33,6 +33,15 @@ const actions = {
             .catch((error) => {
                 throw new Error(error);
             });
+    },
+    [CREATE_REPORT] (context, param){
+        return ReportsService.create(param);
+    },
+    [EDIT_REPORT] (context, slug, param){
+        return ReportsService.update(slug, param);
+    },
+    [DELETE_REPORT] (context, slug){
+        return ReportsService.destroy(slug);
     }
 };
 

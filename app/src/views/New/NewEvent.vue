@@ -103,8 +103,10 @@
 /*eslint no-debugger: off*/
 /*eslint no-console: off*/
 
-import { EVENT_TYPES, EVENT_STATUSES, SEVERITY, DEFAULT_EVENT_METADATA } from '@/common/common';
+import { EVENT_TYPES, EVENT_STATUSES, SEVERITY } from '@/common/common';
+import { DEFAULT_EVENT_METADATA } from '@/common/form-fields';
 import { CREATE_EVENT } from '@/store/actions.type';
+
 export default {
     name: 'new-event',
     data: () => ({
