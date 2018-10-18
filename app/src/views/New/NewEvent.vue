@@ -166,7 +166,7 @@ export default {
                     this.inProgress = false;
                     this.$router.push({
                         name: 'event-general',
-                        params: { slug: eventID }
+                        params: { slug: eventID, firstTime: true }
                     });
                 });
         },

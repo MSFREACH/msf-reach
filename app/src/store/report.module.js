@@ -34,11 +34,12 @@ const actions = {
                 throw new Error(error);
             });
     },
-    [CREATE_REPORT] (context, param){
-        return ReportsService.create(param);
+    [CREATE_REPORT] (context, params){
+        return ReportsService.create(params);
     },
-    [EDIT_REPORT] (context, slug, param){
-        return ReportsService.update(slug, param);
+    [EDIT_REPORT] (context, params){
+        console.log('[EDIT_REPORT] ----- ', params); //eslint-disable-line no-console
+        return ReportsService.update(params[0], params[1]);
     },
     [DELETE_REPORT] (context, slug){
         return ReportsService.destroy(slug);

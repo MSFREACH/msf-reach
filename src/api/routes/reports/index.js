@@ -96,7 +96,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update an report record in the database
-    api.post('/:id', ensureAuthenticatedWrite,
+    api.put('/:id', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({

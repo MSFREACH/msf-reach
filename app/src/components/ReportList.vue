@@ -20,8 +20,11 @@
                 <v-flex xs12 md6 lg4 slot="item" slot-scope="props">
                     <v-card>
                         <v-card-title primary-title v-if="editingID == props.item.id">
-                            <v-switch :label="confirmation" v-model="tmpReport.confirmed"></v-switch>
-                            <v-select :items="types" v-model="tmpReport.type" item-value="text"> </v-select>
+                            <v-switch :label="tmpReport.status" v-model="confirmed"></v-switch>
+                            <v-flex>
+                                <v-select chips :items="tags" v-model="tmpReport.content.report_tag" item-value="text"> </v-select>
+                            </v-flex>
+                            <v-select :items="displayEvents" v-model="tmpReport.eventId" label="ASSIGN to Event"></v-select>
                             <v-btn @click="editReport()">save</v-btn>
                         </v-card-title>
                         <v-card-title primary-title v-else>
@@ -31,20 +34,19 @@
                             <v-spacer></v-spacer>
                             <v-icon> bookmark_border </v-icon>
                             <v-icon @click="toggleEdit(props.item)">edit</v-icon>
-                            <v-icon @click="deleteItem(props.item)">delete</v-icon>
+                            <v-icon @click="deleteReport()">delete</v-icon>
                         </v-card-title>
 
                         <v-img v-if="props.item.content.image_link" src="props.item.content.image_link" aspect-ratio="1.75"></v-img>
                         <v-img v-else src="https://picsum.photos/510/300?random" aspect-ratio="1.75"></v-img>
                         <v-card-text> {{ props.item.content.description }} </v-card-text>
-                        <v-card-actions>
+                        <!-- <v-card-actions>
                             <v-overflow-btn
                               :items="displayEvents"
-                              v-model="tmpReport.eventID"
+                              v-model="tmpReport.eventId"
                               label="ASSIGN to Event"
                             ></v-overflow-btn>
-
-                        </v-card-actions>
+                        </v-card-actions> -->
                     </v-card>
                 </v-flex>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -59,8 +61,9 @@
 /*eslint no-console: off*/
 /*eslint no-unused-vars: off*/
 import { mapGetters } from 'vuex';
-import { FETCH_EVENTS, FETCH_REPORTS } from '@/store/actions.type';
+import { FETCH_EVENTS, FETCH_REPORTS, EDIT_REPORT } from '@/store/actions.type';
 import { REPORT_TYPES, REPORT_STATUSES } from '@/common/common';
+import { DEFAULT_EDIT_REPORT_CARD_FIELDS } from '@/common/form-fields';
 import NewReportCard from '@/views/New/NewReport.vue';
 
 
@@ -85,12 +88,9 @@ export default {
             search: '',
             editingID: null,
             statuses: REPORT_STATUSES,
-            types: REPORT_TYPES,
-            tmpReport: {
-                confirmed: null,
-                eventID: null,
-                type: null
-            },
+            tags: REPORT_TYPES,
+            confirmed: null,
+            tmpReport: DEFAULT_EDIT_REPORT_CARD_FIELDS,
             displayEvents: []
         };
     },
@@ -103,19 +103,19 @@ export default {
             'isLoadingReport',
             'reports',
             'events'
-        ]),
-        confirmation(){
-            if (this.tmpReport.confirmed){
-                return 'confirmed';
-            }
-            return 'unconfirmed';
-        }
+        ])
     },
     watch:{
         events(newValue){ // eslint-disable-line no-unused-vars
-            debugger;
             this.displayEvents = this.events.map(item => ({text: item.metadata.name, value: item.id}));
             console.log( this.displayEvents);
+        },
+        confirmed(newVal){
+            if(newVal){
+                this.tmpReport.status = 'confirmed';
+            }else{
+                this.tmpReport.status = 'unconfirmed';
+            }
         }
     },
     mounted() {
@@ -123,8 +123,7 @@ export default {
         if(this.events.length == 0){
             this.$store.dispatch(FETCH_EVENTS, {});
         }else{
-            this.displayEvents = this.events.map(item => ({text: item.metadata.name, value: item.id}));
-            console.log('HEY MATE ---- ', this.displayEvents);
+            this.displayEvents = this.events.map(item => ({text: item.metadata.name, value: parseInt(item.id)}));
         }
     },
     methods: {
@@ -133,16 +132,18 @@ export default {
         },
         toggleEdit(item){
             this.editingID = item.id;
-            this.tmpReport.confirmed = item.status == 'confirmed' ? true : false;
-            this.tmpReport.type = item.content.report_tag;
+            this.confirmed = item.status == 'confirmed' ? true : false;
+            this.tmpReport.content.report_tag = item.content.report_tag;
         },
         editReport(){
-            // after UPDATE reset tmpReport
-
-            // var payload = {
-            //     eventId: report.eventID,
-            //     status:
-            // }
+            this.$store.dispatch(EDIT_REPORT, [this.editingID, this.tmpReport])
+                .then((payload) => {
+                    this.tmpReport = DEFAULT_EDIT_REPORT_CARD_FIELDS;
+                });
+        },
+        deleteReport(report){
+            this.tmpReport.status = 'ignored';
+            this.editReport();
         }
     }
 

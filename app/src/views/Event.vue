@@ -41,6 +41,7 @@ import REventReflection from '@/views/Event/Reflection.vue';
 
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
+/*eslint no-console: off*/
 
 export default {
     name: 'r-event',
@@ -48,6 +49,9 @@ export default {
         slug: {
             type: String,
             required: true
+        },
+        firstTime: {
+            type: Boolean,
         }
     },
     data(){
@@ -78,6 +82,7 @@ export default {
         });
     },
     mounted(){
+        console.log('Props ---- firstTime  ', firstTime);
     },
     computed: {
         ...mapGetters([
