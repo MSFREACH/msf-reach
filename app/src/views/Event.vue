@@ -1,20 +1,21 @@
 <template>
-    <v-container class ='event-page'>
-        <v-navigation-drawer fixed style='width: 200px;' :clipped='$vuetify.breakpoint.mdAndUp' app>
-            <v-list class='pt-0' dense>
+    <v-container class="event-page">
+        <v-navigation-drawer fixed style="width: 200px;" :clipped="$vuetify.breakpoint.mdAndUp" app>
+            <v-list class="pt-0" dense>
                 <v-divider></v-divider>
-                <v-list-tile v-for='item in items' :key='item.component' :to='{name: item.component}'>
-                    <v-list-tile-action class='justify-start'>
-                        <v-icon>{{item.icon}}</v-icon>
+                <v-list-tile v-for="item in detailTabs" :key="item.component" :to="{name: item.component}" @click="item.firstTime = false">
+                    <v-list-tile-action class="justify-start">
+                        <v-badge v-if="item.firstTime" color="cyan" left><v-icon>{{item.icon}}</v-icon></v-badge>
+                        <v-icon v-else>{{item.icon}}</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
                         <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
-                <v-layout class='tooltip'>
-                    <v-btn dark @click='copyLink()' v-on:onmouseout='outFunc()' >
+                <v-layout class="tooltip">
+                    <v-btn dark @click="copyLink()" v-on:onmouseout="outFunc()" >
                         <v-icon> link </v-icon> Sharepoint
-                        <span class='tooltiptext' id='myTooltip'>Copy to clipboard</span>
+                        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
                     </v-btn>
                 </v-layout>
             </v-list>
@@ -31,6 +32,7 @@ import { mapGetters } from 'vuex';
 import marked from 'marked';
 import store from '@/store';
 import { FETCH_EVENT } from '@/store/actions.type';
+import { EVENT_DETAIL_NAVIGATIONS } from '@/common/navigational-fields.js';
 import REventGeneral from '@/views/Event/General.vue';
 import REventNotification from '@/views/Event/General.vue';
 import REventResponse from '@/views/Event/Response.vue';
@@ -52,21 +54,14 @@ export default {
         },
         firstTime: {
             type: Boolean,
+            required: false,
+            default: false
         }
     },
     data(){
         return {
             drawer: true,
-            items: [
-                { icon: 'dashboard', name: 'General', component: 'event-general', route: '/'},
-                { icon: 'event_note', name: 'Notifications', component: 'event-notifications', route: '/notifications'},
-                { icon: 'track_changes', name: 'Response', component: 'event-response', route: '/response'},
-                { icon: 'all_out', name: 'External Capacity', component: 'event-extCapacity', route: '/extCapacity'},
-                { icon: 'fingerprint', name: 'Medical Figures', component: 'event-medFigures', route: '/medFigures'},
-                { icon: 'people', name: 'Staff Resources', component: 'event-resources', route: '/resources'},
-                { icon: 'all_inclusive', name: 'Reflections', component: 'event-reflection', route: '/reflection'}
-
-            ],
+            detailTabs: EVENT_DETAIL_NAVIGATIONS,
             mini: true,
             right: null
         };
@@ -82,7 +77,11 @@ export default {
         });
     },
     mounted(){
-        console.log('Props ---- firstTime  ', firstTime);
+        console.log('Props ---- firstTime  ', this.firstTime);
+
+        if(this.firstTime){
+            this.detailTabs.map(item => item.firstTime = true );
+        }
     },
     computed: {
         ...mapGetters([
