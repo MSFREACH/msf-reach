@@ -1,6 +1,8 @@
 <template>
     <v-dialog v-model="dialog" max-width="500px">
-        <v-btn slot="activator" color="primary" dark class="mb-2"><v-icon>plus</v-icon></v-btn>
+        <v-btn slot="activator" fab small flat>
+            <v-icon color="grey darken-1"> add </v-icon>
+        </v-btn>
         <v-card>
             <v-card-title>
                 <span class="headline"> New Report Card </span>

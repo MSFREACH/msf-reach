@@ -5,7 +5,7 @@
                 <v-divider></v-divider>
                 <v-list-tile v-for="item in detailTabs" :key="item.component" :to="{name: item.component}" @click="item.firstTime = false">
                     <v-list-tile-action class="justify-start">
-                        <v-badge v-if="item.firstTime" color="cyan" left><v-icon>{{item.icon}}</v-icon></v-badge>
+                        <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
                         <v-icon v-else>{{item.icon}}</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>

@@ -11,7 +11,7 @@
             no-data-text="No events found"
             :search="search"
             row wrap>
-                <v-toolbar slot="header" mb2 flat>
+                <v-toolbar slot="header" mt3 flat>
                     <!-- <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field> -->
                     <!-- <v-spacer></v-spacer> -->
                     <v-flex xs12 sm6 class="py-2">
@@ -26,8 +26,10 @@
                             </v-btn>
                         </v-btn-toggle>
                     </v-flex>
-                    <v-flex xs6 md4 lg3>
-                        <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="filter by type" multiple></v-select>
+
+                    <v-flex>
+                         <!-- xs6 md4 lg3 -->
+                        <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" multiple round></v-select>
                     </v-flex>
                     <new-event></new-event>
                 </v-toolbar>
@@ -179,4 +181,12 @@ export default {
 <style lang="scss">
     @import '@/assets/css/lists.scss';
     @import '@/assets/css/event.scss';
+
+    // .v-select>.v-input__control>.v-input__slot{
+    //     border: 2px solid #747474;
+    //     border-radius: 30px;
+    // }
+    // .v-select>.v-input__control>.input__slot:before{
+    //     border-style: none;
+    // }
 </style>

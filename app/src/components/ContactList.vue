@@ -12,7 +12,7 @@
             :search="search"
             :filter="filterByType"
             row wrap>
-                <v-toolbar slot="header" mb2 flat>
+                <v-toolbar slot="header" mt0 flat>
                     <v-toolbar-title> Contacts </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-flex xs6 md4 lg3>
@@ -150,7 +150,7 @@ export default {
             return one.replace(/[^0-9]/ig, '') == two.replace(/[^0-9]/ig, '');
         },
         filterByType(contact){
-            console.log('CONTACT LIST --- ', contact); 
+            console.log('CONTACT LIST --- ', contact);
             return contact.properties.properties.type == this.filterType;
         }
     }

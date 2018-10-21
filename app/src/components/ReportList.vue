@@ -9,14 +9,15 @@
             :rows-per-page-items="rowsPerPageItems"
             :pagination.sync="pagination"
             no-data-text="No reports found"
-            :search="search"
             row wrap>
-                <v-toolbar slot="header" mb2 flat>
-                    <v-toolbar-title> Reports </v-toolbar-title>
-                    <v-spacer></v-spacer>
+            <v-toolbar slot="header" mt0 flat>
+                <v-toolbar-title> Reports </v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-flex xs6 md4 lg3>
                     <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
-                    <new-report-card></new-report-card>
-                </v-toolbar>
+                </v-flex>
+                <new-report-card></new-report-card>
+            </v-toolbar>
                 <v-flex xs12 md6 lg4 slot="item" slot-scope="props">
                     <v-card>
                         <v-card-title primary-title v-if="editingID == props.item.id">
