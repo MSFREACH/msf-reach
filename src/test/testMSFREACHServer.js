@@ -371,9 +371,9 @@ describe('Cognicity Server Testing Harness', function() {
                 });
 
                 // Can update a report, returning updated event
-                it('Update an report (POST /reports)', function(done) {
+                it('Update an report (PUT /reports)', function(done) {
                     test.httpAgent(app)
-                        .post('/api/reports/' + report_id)
+                        .put('/api/reports/' + report_id)
                         .set('Cookie', 'jwt=' + token) // to chagne existing report auth is required
                         .send({
                             'status': 'confirmed',
