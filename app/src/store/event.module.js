@@ -17,9 +17,9 @@ const initialState = {
     } // TODO: add associated reports & contacts later
 };
 
-export const state = Object.assign({}, initialState);
+const state = Object.assign({}, initialState);
 
-export const actions = {
+const actions = {
     [FETCH_EVENT] (context, eventSlug, prevEvent){
         // avoid duplicate network call if event was already set from list
         if(prevEvent != undefined){
@@ -53,7 +53,7 @@ export const actions = {
 };
 
 /* eslint no-param-reassign: ["error", { "props": false }] */
-export const mutations = {
+const mutations = {
     [SET_EVENT] (state, event){
         state.event = event.result.objects.output.geometries[0];
         state.event.metadata = event.result.objects.output.geometries[0].properties.metadata;
@@ -94,7 +94,7 @@ const getters ={
         if(state.event.metadata.types){
             return state.event.metadata.types;
         }
-        
+
         if(state.event.type){
             var types = state.event.type.replace(/other:/g, '').split(',');
             var cTypes = _.compact(types);

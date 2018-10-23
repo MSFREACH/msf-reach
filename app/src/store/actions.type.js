@@ -32,3 +32,6 @@ export const CREATE_CONTACT = 'createContact';
 export const EDIT_CONTACT = 'editContact';
 export const BOOKMARK_CONTACT = 'bookmarkContact';
 export const DELETE_CONTACT = 'deleteContact';
+
+export const FETCH_UPLOAD_URL = 'fetchUploadUrl';
+export const PUT_SIGNED_REQUEST = 'putSignedRequest'; 

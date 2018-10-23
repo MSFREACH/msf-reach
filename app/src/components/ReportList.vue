@@ -109,7 +109,6 @@ export default {
     watch:{
         events(newValue){ // eslint-disable-line no-unused-vars
             this.displayEvents = this.events.map(item => ({text: item.metadata.name, value: item.id}));
-            console.log( this.displayEvents);
         },
         confirmed(newVal){
             if(newVal){

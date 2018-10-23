@@ -1,4 +1,5 @@
 /*eslint no-debugger: off*/
+/*eslint no-console: off*/
 
 import Vue from 'vue';
 import axios from 'axios';
@@ -15,8 +16,8 @@ const ApiService = {
     setHeader () {
         Vue.axios.defaults.headers.common['Authorization'] = `Bearer ${JwtService.getToken()}`;
     },
-
     query (resource, params) {
+        console.log('query ------- ', params );
         return Vue.axios
             .get(resource, params)
             .catch((error) => {
@@ -125,5 +126,14 @@ export const ContactsService = {
     },
     destroy (slug) {
         return ApiService.delete(`contacts/${slug}`);
+    }
+};
+
+export const UtilService = {
+    getUpload(fileName){
+        return ApiService.query('utils/uploadurl', {filename: fileName, key:'report'});
+    },
+    signedUpdate(params){
+        return axios.put(params.url, [params.photo]);
     }
 };

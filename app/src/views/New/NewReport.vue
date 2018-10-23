@@ -10,10 +10,10 @@
             <v-card-text>
                 <v-container grid-list-md>
                     <v-layout wrap>
-                        <v-flex xs12 sm6 md4>
+                        <v-flex xs12>
                             <v-text-field v-model="report.username" label="Username"></v-text-field>
                         </v-flex>
-                        <v-flex xs12 sm6 md4>
+                        <v-flex xs12>
                             <v-textarea v-model="report.description" autoGrow label="description"></v-textarea>
                         </v-flex>
                         <!-- UPLOAD IMAGE  -->
@@ -30,7 +30,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn flat @click.native="close">Cancel</v-btn>
-                <v-btn flat @click.native="save">Save</v-btn>
+                <v-btn flat @click.native="submit">Save</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -42,7 +42,7 @@
 /*eslint no-unused-vars: off*/
 import { mapGetters } from 'vuex';
 import { DEFAULT_REPORT_CARD_FIELDS } from '@/common/form-fields.js';
-import { CREATE_REPORT } from '@/store/actions.type';
+import { CREATE_REPORT, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 
 export default {
     name: 'new-report-card',
@@ -62,15 +62,36 @@ export default {
                 this.report = Object.assign({}, DEFAULT_REPORT_CARD_FIELDS);
             }, 300);
         },
-        save(){
+        submit(){
             var timestamp = new Date();
             var ISOTime = timestamp.toISOString();
-            this.report.created_at = ISOTime;
+            if(!this.report.eventId){
+                delete this.report.eventId;
+            }
+            this.report.created = ISOTime;
 
-            this.$store.dispatch(CREATE_REPORT, payload)
-                .then((payload) =>{
+            // TODO: replace geoJSON with map input
+            this.report.location = {
+                lat: 52.5200,
+                lng: 13.4050
+            };
 
-                    // show confimation or direct to MAP view to show nearby reports
+            if(this.imageFile){
+                this.$store.dispatch(FETCH_UPLOAD_URL, this.imageName)
+                    .then((payload) => {
+                        var url = payload.signedRequest;
+                        var imageLink = payload.url;
+                        this.uploadFile(url, imageLink);
+                    });
+            }else{
+                this.save();
+            }
+
+        },
+        uploadFile(url, imageLink){
+            this.$store.dispatch(PUT_SIGNED_REQUEST, {url, photo: this.imageFile})
+                .then(() => {
+                    this.save(imageLink);
                 });
         },
         pickFile () {
@@ -92,6 +113,17 @@ export default {
                 this.imageFile = '';
                 this.imageUrl = '';
             }
+        },
+        save(imageLink){
+            console.log('[SAVE ---- ] ', imageLink);
+            if(imageLink){
+                this.report.content.image_link = imageLink;
+            }
+            this.$store.dispatch(CREATE_REPORT, this.report)
+                .then((payload) =>{
+
+                    // show confimation or direct to MAP view to show nearby reports
+                });
         }
     }
 };
