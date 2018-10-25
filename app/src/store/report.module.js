@@ -73,6 +73,7 @@ const mutations = {
         });
     },
     [SET_ERROR] (state, error) {
+        state.isLoadingReport = false;
         state.errors = error;
     }
 };

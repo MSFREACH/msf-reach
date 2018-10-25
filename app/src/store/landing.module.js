@@ -64,6 +64,7 @@ const mutations = {
     },
     [SET_ERROR] (state, error) {
         state.errors = error;
+        state.isLoadingEvent = false;
     }
 };
 
