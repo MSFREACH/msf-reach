@@ -3,9 +3,10 @@
 import _ from 'lodash';
 import { EventsService } from '@/common/api.service';
 import { FETCH_EVENTS } from './actions.type';
-import { FETCH_START, FETCH_EVENTS_END, UPDATE_EVENT_IN_LIST } from './mutations.type';
+import { FETCH_START, FETCH_EVENTS_END, UPDATE_EVENT_IN_LIST, SET_ERROR } from './mutations.type';
 
 const state = {
+    errors: null,
     events: [],
     isLoadingEvent: true,
     eventsCount: 0
@@ -20,6 +21,9 @@ const getters = {
     },
     isLoadingEvent(state){
         return state.isLoadingEvent;
+    },
+    fetchEventsError(state){
+        return state.error;
     }
 };
 
@@ -31,7 +35,7 @@ const actions = {
                 commit(FETCH_EVENTS_END, data.result);
             })
             .catch((error) => {
-                throw new Error(error);
+                commit(SET_ERROR, error);
             });
     }
 };
@@ -57,6 +61,9 @@ const mutations = {
             event.metadata = data.metadata;
             return event;
         });
+    },
+    [SET_ERROR] (state, error) {
+        state.errors = error;
     }
 };
 

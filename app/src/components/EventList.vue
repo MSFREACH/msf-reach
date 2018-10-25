@@ -116,7 +116,8 @@ export default {
         ...mapGetters([
             'eventsCount',
             'isLoadingEvent',
-            'events'
+            'events',
+            'fetchEventsError'
         ])
     },
     watch: {

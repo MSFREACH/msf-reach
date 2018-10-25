@@ -3,9 +3,10 @@
 import _ from 'lodash';
 import { ContactsService } from '@/common/api.service';
 import { FETCH_CONTACTS } from './actions.type';
-import { FETCH_CONTACTS_START, FETCH_CONTACTS_END, UPDATE_CONTACT_IN_LIST } from './mutations.type';
+import { FETCH_CONTACTS_START, FETCH_CONTACTS_END, UPDATE_CONTACT_IN_LIST, SET_ERROR } from './mutations.type';
 
 const state = {
+    errors: null,
     contacts: [],
     isLoadingContact: true,
     contactsCount: 0
@@ -20,6 +21,9 @@ const getters = {
     },
     isLoadingContact(state){
         return state.isLoadingContact;
+    },
+    fetchContactsError(state){
+        return state.error;
     }
 };
 
@@ -31,7 +35,7 @@ const actions = {
                 commit(FETCH_CONTACTS_END, data.result);
             })
             .catch((error) => {
-                throw new Error(error);
+                commit(SET_ERROR, error);
             });
     }
 };
@@ -57,7 +61,11 @@ const mutations = {
             contact.metadata = data.metadata;
             return contact;
         });
+    },
+    [SET_ERROR] (state, error) {
+        state.errors = error;
     }
+
 };
 
 export default {

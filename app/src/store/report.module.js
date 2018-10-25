@@ -22,7 +22,7 @@ const getters = {
     isLoadingReport(state){
         return state.isLoadingReport;
     },
-    fetchReportError(state){
+    fetchReportsError(state){
         return state.error;
     }
 };
@@ -35,7 +35,7 @@ const actions = {
                 commit(FETCH_REPORTS_END, data.result);
             })
             .catch((error) => {
-                context.commit(SET_ERROR, error);
+                commit(SET_ERROR, error);
             });
     },
     [CREATE_REPORT] (context, params){

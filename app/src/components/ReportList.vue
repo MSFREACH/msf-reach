@@ -3,11 +3,11 @@
         <v-card v-if="isLoadingReport" class="event-preview">
               Loading reports...
         </v-card>
-        <v-toolbar v-else-if="fetchReportError" slot="header" mt3 flat :clipped="$vuetify.breakpoint.mdAndUp" >
+        <v-toolbar v-else-if="fetchReportsError" slot="header" mt3 flat :clipped="$vuetify.breakpoint.mdAndUp" >
             <v-toolbar-title> Reports </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-flex xs6 md4 lg3>
-                An Error has occured in fetching Reports : {{fetchReportError}}
+                An Error has occured in fetching Reports : {{fetchReportsError}}
             </v-flex>
             <new-report-card></new-report-card>
         </v-toolbar>
@@ -111,8 +111,9 @@ export default {
             'reportsCount',
             'isLoadingReport',
             'reports',
+            'fetchReportsError',
             'events',
-            'fetchReportError'
+            'fetchEventsError'
         ])
     },
     watch:{
