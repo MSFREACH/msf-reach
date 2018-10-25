@@ -3,6 +3,14 @@
         <v-card v-if="isLoadingReport" class="event-preview">
               Loading reports...
         </v-card>
+        <v-toolbar v-else-if="fetchReportError" slot="header" mt3 flat :clipped="$vuetify.breakpoint.mdAndUp" >
+            <v-toolbar-title> Reports </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-flex xs6 md4 lg3>
+                An Error has occured in fetching Reports : {{fetchReportError}}
+            </v-flex>
+            <new-report-card></new-report-card>
+        </v-toolbar>
         <v-container v-else>
             <v-data-iterator :items="reports"
             content-tag="v-layout"
@@ -10,7 +18,7 @@
             :pagination.sync="pagination"
             no-data-text="No reports found"
             row wrap>
-            <v-toolbar slot="header" mt0 flat>
+            <v-toolbar slot="header" mt3 flat :clipped="$vuetify.breakpoint.mdAndUp">
                 <v-toolbar-title> Reports </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-flex xs6 md4 lg3>
@@ -103,7 +111,8 @@ export default {
             'reportsCount',
             'isLoadingReport',
             'reports',
-            'events'
+            'events',
+            'fetchReportError'
         ])
     },
     watch:{

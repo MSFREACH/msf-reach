@@ -3,9 +3,10 @@
 import _ from 'lodash';
 import { ReportsService } from '@/common/api.service';
 import { FETCH_REPORTS, CREATE_REPORT, EDIT_REPORT, DELETE_REPORT } from './actions.type';
-import { FETCH_REPORTS_START, FETCH_REPORTS_END, UPDATE_REPORT_IN_LIST } from './mutations.type';
+import { FETCH_REPORTS_START, FETCH_REPORTS_END, UPDATE_REPORT_IN_LIST, SET_ERROR } from './mutations.type';
 
 const state = {
+    errors: null,
     reports: [],
     isLoadingReport: true,
     reportsCount: 0
@@ -20,6 +21,9 @@ const getters = {
     },
     isLoadingReport(state){
         return state.isLoadingReport;
+    },
+    fetchReportError(state){
+        return state.error;
     }
 };
 
@@ -31,7 +35,7 @@ const actions = {
                 commit(FETCH_REPORTS_END, data.result);
             })
             .catch((error) => {
-                throw new Error(error);
+                context.commit(SET_ERROR, error);
             });
     },
     [CREATE_REPORT] (context, params){
@@ -67,6 +71,9 @@ const mutations = {
             report.metadata = data.metadata;
             return report;
         });
+    },
+    [SET_ERROR] (state, error) {
+        state.errors = error;
     }
 };
 
