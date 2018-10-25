@@ -7,12 +7,24 @@ import Promise from 'bluebird';
 
 export default (config, db, logger) => ({
 
-    get: (oid) => new Promise((resolve, reject) => {
+    all: (oid) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT markdown
      FROM ${config.TABLE_BOOKMARKS}
      WHERE oid is $1`;
         let values = [ oid ];
+         console.log(query);
+         console.log(oid);
+        // Execute
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
+    }),
+    createBookmark: (oid, markdownText) => new Promise((resolve, reject) => {
+        // Setup query
+        let query = `INSERT INTO ${config.TABLE_BOOKMARKS}
+           (oid,markdown) values ($1,$2) returning oid,markdown`;
+        let values = [ oid, markdownText ];
 
         // Execute
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
@@ -20,11 +32,11 @@ export default (config, db, logger) => ({
             .catch((err) => reject(err));
     }),
 
-    post: (oid, markdownText) => new Promise((resolve, reject) => {
+    updateBookmark: (oid, markdownText) => new Promise((resolve, reject) => {
         // Setup query
         let query = `UPDATE ${config.TABLE_BOOKMARKS}
      SET markdown = $2
-     WHERE oid is $1`;
+     WHERE oid is $1 returning oid,markdown`;
         let values = [ oid, markdownText ];
 
         // Execute

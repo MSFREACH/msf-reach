@@ -12,14 +12,15 @@ export default ({ config, db, logger }) => {
     // Get all contacts
     api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
         // handle off to the database function in model.js:
-        (req, res, next) => bookmarks(config, db, logger).bookmarks((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.query.msf_associate,req.query.msf_peer,req.query.type).then((data) => handleResponse(data, req, res, next))
+        (req, res, next) => bookmarks(config, db, logger).all((req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null, req.query.msf_associate,req.query.msf_peer,req.query.type)
+            .then((data) => handleResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
                 logger.error(err);
                 /* istanbul ignore next */
                 next(err);
             })
-          );
+    );
 
     return api;
 };

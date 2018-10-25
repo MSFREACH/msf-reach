@@ -36,6 +36,7 @@ export default ({ config, db, logger }) => {
     api.use('/reports', reports({ config, db, logger }));
     api.use('/twitter', twitter({ logger }));
     api.use('/hazards', hazards({ logger }));
+    api.use('/bookmarks', bookmarks({ config, db, logger }));
     api.use('/utils', utils({ config, db, logger }) );
     api.use('/missions', missions({ config, db, logger }));
     api.use('/contacts', contacts({ config, db, logger }));
