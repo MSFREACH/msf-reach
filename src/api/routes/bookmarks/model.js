@@ -11,13 +11,16 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `SELECT markdown
      FROM ${config.TABLE_BOOKMARKS}
-     WHERE oid is $1`;
+     WHERE oid = $1`;
         let values = [ oid ];
-         console.log(query);
-         console.log(oid);
         // Execute
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve(data))
+            .then((data) => {
+              if(!data)
+                db.oneOrNone(query,['00000000-0000-0000-0000-000000000000']).timeout(config.PGTIMEOUT).then(data=> resolve(data)).catch((err) => reject(err));
+              else
+               resolve(data);
+            })
             .catch((err) => reject(err));
     }),
     createBookmark: (oid, markdownText) => new Promise((resolve, reject) => {

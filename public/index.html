@@ -100,7 +100,17 @@
             <h4 class="modal-title" id="myModalLabelBookmarks">News bookmarks</h4>
           </div>
           <div class="modal-body" id="BookmarksModalBody">
-            <div id="bookmarksList">
+            <div id="bookmarksList" >
+              <div class="row">
+                <div class="col-sm-6">
+                  <textarea  rows="8"  v-model="markdownSource" style="width:100%"></textarea>
+                </div>
+                <div class="col-sm-6" >
+                    <h5>Preview:</h5>
+                    <div v-html="compiledMarkdown"></div>
+                </div>
+              </div>
+
 
             </div>
           </div>
@@ -759,7 +769,7 @@
                           <div id="missionsContainer"></div>
                         </div>
                         <div id="event_RSS" class="tab-pane tab-pane-box">
-                          <button type="button" class="btn btn-msf" data-target="#bookmarksModal" data-toggle="modal">Open Non-geospatial News Links</button>
+                          <button type="button" class="btn btn-msf" id="btnBookmarksModal">Open Non-geospatial News Links</button>
                           <div id="rssFeeds" class="list-group" style="margin-bottom:0px;">
                           </div>
                         </div>
@@ -817,6 +827,8 @@
           </div>
           <span class="skype-button bubble" data-contact-id="docnat76"></span>
       </div>
+    <!-- markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
     <script src="/lib/lodash.min.js"></script>
     <script src="/lib/moment.min.js"></script>
