@@ -4,15 +4,15 @@
             <img src="../assets/images/msf-reach-logo-trans-01.png" alt=""></img>
         </v-flex>
         <v-layout v-show="isAuthenticated">
-            <v-text-field hide-details append-icon="search" single-line></v-text-field>
             <v-toolbar-items class="hidden-sm-and-down">
                 <v-btn flat><router-link :to="{ name: 'events' }">Events</router-link></v-btn>
                 <v-btn flat><router-link :to="{ name: 'reports' }">Reports</router-link></v-btn>
                 <v-btn flat><router-link :to="{ name: 'contacts' }">Contacts</router-link></v-btn>
             </v-toolbar-items>
             <v-spacer></v-spacer>
+            <v-text-field hide-details append-icon="search" single-line></v-text-field>
             <v-menu offset-y>
-                <v-btn flat slot="activator">
+                <v-btn fab flat small outline slot="activator">
                     <v-icon>notifications</v-icon>
                 </v-btn>
                 <v-container xs12 sm6 md4 lg3>
@@ -36,9 +36,12 @@
                 </v-container>
             </v-menu>
             <v-menu right offset-y>
-                <v-btn flat slot="activator">
-                    <v-toolbar-title> {{ currentUser.username }}</v-toolbar-title>
-                    <v-icon>person</v-icon>
+                <v-btn flat fab dark color="primary"  slot="activator">
+                    <!-- <v-toolbar-title> {{ currentUser.username }}</v-toolbar-title>
+                    <v-icon>person</v-icon> -->
+                    <v-avatar :size="56">
+                        {{ currentUser.username.charAt(0)}}
+                    </v-avatar>
                 </v-btn>
                 <v-list>
                     <v-list-tile>
@@ -51,7 +54,6 @@
                         <v-list-tile-title @click="signOut"> LOGOUT </v-list-tile-title>
                     </v-list-tile>
                 </v-list>
-
             </v-menu>
         </v-layout>
     </v-toolbar>

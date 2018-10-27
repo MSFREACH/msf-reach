@@ -1,32 +1,30 @@
 <template>
-    <v-container class="event-page">
+    <v-flex xs12 class="event-page">
         <v-card v-if="!slug">
             Please select event for review.
         </v-card>
-        <v-navigation-drawer v-else style="width: 200px;" :clipped="$vuetify.breakpoint.mdAndUp">
-            <v-list class="pt-0" dense>
-                <v-divider></v-divider>
-                <v-list-tile v-for="item in detailTabs" :key="item.component" :to="{name: item.component}" @click="item.firstTime = false">
-                    <v-list-tile-action class="justify-start">
-                        <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
-                        <v-icon v-else>{{item.icon}}</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                        <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-                    </v-list-tile-content>
-                </v-list-tile>
-                <v-layout class="tooltip">
-                    <v-btn dark @click="copyLink()" v-on:onmouseout="outFunc()" >
-                        <v-icon> link </v-icon> Sharepoint
-                        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                    </v-btn>
-                </v-layout>
-            </v-list>
-        </v-navigation-drawer>
+        <!-- fake tab look, but need to use router for all the chidren -->
+        <v-layout v-else>
+            <v-btn flat small color="grey" v-for="item in detailTabs" :key="item.component">
+                <router-link :to="{name: item.component}" @click="item.firstTime = false">
+                    <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
+                    <v-icon v-else>{{item.icon}}</v-icon>
+                    {{ item.name }}
+                </router-link>
+            </v-btn>
+        </v-layout>
+
         <v-content app>
             <router-view></router-view>
         </v-content>
-    </v-container>
+
+        <v-flex class="tooltip">
+            <v-btn dark @click="copyLink()" v-on:onmouseout="outFunc()" >
+                <v-icon> link </v-icon> Sharepoint
+                <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+            </v-btn>
+        </v-flex>
+    </v-flex>
 </template>
 
 <script>
@@ -62,7 +60,7 @@ export default {
     },
     data(){
         return {
-            drawer: true,
+            active: null,
             detailTabs: EVENT_DETAIL_NAVIGATIONS,
             mini: true,
             right: null

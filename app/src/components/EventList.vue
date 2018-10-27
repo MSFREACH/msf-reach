@@ -3,7 +3,7 @@
         <v-card v-if="isLoadingEvent" class="event-preview">
               Loading events...
         </v-card>
-        <v-flex xs4 v-else>
+        <v-flex xs3 v-else>
             <v-data-iterator
             content-tag="v-layout"
             :items="displayEvents"
@@ -12,7 +12,7 @@
             :search="search"
             no-data-text="No events found"
             wrap row>
-                <v-toolbar slot="header" class="listHeader"  floating flat xs4>
+                <v-toolbar slot="header" class="listHeader"  floating flat xs3>
                     <v-btn-toggle v-model="selectedStatus">
                         <v-btn v-for="(status, index) in allEventStatuses"
                         :value="status.value"

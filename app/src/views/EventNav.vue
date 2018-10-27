@@ -1,16 +1,13 @@
 <template>
-    <v-layout>
-        <v-tabs v-model="active" slider-color="black">
-            <v-tab v-for="n in contents" :key="n" ripple>
-                {{ n }}
-            </v-tab>
-            <v-tab-item v-for="n in contents" :key="n">
-                <router-view></router-view>
-            </v-tab-item>
-        </v-tabs>
+    <v-layout app row wrap>
+        <v-flex xs12>
+            <v-btn small flat v-for="item in secondLevel">
+                <router-link :to="{ name: item.name, params: {'slug': $route.params.slug }}"> {{ item.label }}</router-link>
+            </v-btn>
+        </v-flex>
+        <router-view></router-view>
     </v-layout>
 </template>
-
 <script>
 
 // import REvent from '@/components/Event.vue';
@@ -24,7 +21,25 @@ export default {
     data () {
         return {
             active: null,
-            contents: ['Event Details', 'News Feed', 'Related Contacts', 'Country Details', 'Related Response']
+            contents: ['Event Details', 'News Feed', 'Related Contacts', 'Country Details', 'Related Response'],
+            secondLevel : [
+                {
+                    name: 'event',
+                    label: 'Event Details'
+                }, {
+                    name: 'newsfeed',
+                    label: 'News Feed'
+                }, {
+                    name: 'event', // placeholders
+                    label: 'Related Contacts'
+                }, {
+                    name: 'event', // placeholders
+                    label: 'Country Details'
+                }, {
+                    name: 'event', // placeholders
+                    label: 'Related Response'
+                }
+            ]
         };
     },
     methods: {
