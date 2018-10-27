@@ -1,8 +1,8 @@
 <template>
-    <v-toolbar app fixed :clipped-left="$vuetify.breakpoint.mdAndUp">
-        <v-avatar size="40px" class="mr-3">
-            <img src="../assets/images/logo.png" alt="">
-        </v-avatar>
+    <v-toolbar app class="elevation-8" fixed :clipped-left="$vuetify.breakpoint.mdAndUp" >
+        <v-flex class="logo">
+            <img src="../assets/images/msf-reach-logo-trans-01.png" alt=""></img>
+        </v-flex>
         <v-layout v-show="isAuthenticated">
             <v-text-field hide-details append-icon="search" single-line></v-text-field>
             <v-toolbar-items class="hidden-sm-and-down">

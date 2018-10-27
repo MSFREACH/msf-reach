@@ -1,6 +1,9 @@
 <template>
     <v-container class="event-page">
-        <v-navigation-drawer fixed style="width: 200px;" :clipped="$vuetify.breakpoint.mdAndUp" app>
+        <v-card v-if="!slug">
+            Please select event for review.
+        </v-card>
+        <v-navigation-drawer v-else style="width: 200px;" :clipped="$vuetify.breakpoint.mdAndUp">
             <v-list class="pt-0" dense>
                 <v-divider></v-divider>
                 <v-list-tile v-for="item in detailTabs" :key="item.component" :to="{name: item.component}" @click="item.firstTime = false">
@@ -46,11 +49,10 @@ import REventReflection from '@/views/Event/Reflection.vue';
 /*eslint no-console: off*/
 
 export default {
-    name: 'r-event',
+    name: 'REvent',
     props: {
         slug: {
             type: String,
-            required: true
         },
         firstTime: {
             type: Boolean,
@@ -78,7 +80,6 @@ export default {
     },
     mounted(){
         console.log('Props ---- firstTime  ', this.firstTime);
-
         if(this.firstTime){
             this.detailTabs.map(item => item.firstTime = true );
         }

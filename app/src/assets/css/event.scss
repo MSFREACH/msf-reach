@@ -21,3 +21,16 @@
     background: #F2F2F2;
     border: 1px solid #C6C6C6;
 }
+
+.eventList{
+    top: 68px;
+    position: relative;
+}
+
+.listHeader{
+    z-index:3;
+}
+
+.listHeader .v-select__selections{
+    font-size: 10px; 
+}

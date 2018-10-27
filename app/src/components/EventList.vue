@@ -1,59 +1,55 @@
 <template>
-    <v-layout row app xs12 sm6 :clipped="$vuetify.breakpoint.mdAndUp" app>
+    <v-layout class="eventList" app>
         <v-card v-if="isLoadingEvent" class="event-preview">
               Loading events...
         </v-card>
-        <v-container v-else>
-            <v-data-iterator :items="displayEvents"
+        <v-flex xs4 v-else>
+            <v-data-iterator
             content-tag="v-layout"
+            :items="displayEvents"
             :rows-per-page-items="rowsPerPageItems"
             :pagination.sync="pagination"
-            no-data-text="No events found"
             :search="search"
-            row wrap>
-                <v-toolbar slot="header" mt3 flat>
-                    <!-- <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field> -->
-                    <!-- <v-spacer></v-spacer> -->
-                    <v-flex xs12 sm6 class="py-2">
-                        <v-btn-toggle v-model="selectedStatus">
-                            <v-btn v-for="(status, index) in allEventStatuses"
-                            :value="status.value"
-                            :key="index" flat
-                            :class="status.value"
-                            @click="filterByStatus(status.value)">
-                                <v-icon> {{status.icon}} </v-icon>
-                                <span> {{status.text}}</span>
-                            </v-btn>
-                        </v-btn-toggle>
-                    </v-flex>
-
-                    <v-flex>
-                         <!-- xs6 md4 lg3 -->
-                        <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" multiple round></v-select>
-                    </v-flex>
+            no-data-text="No events found"
+            wrap row>
+                <v-toolbar slot="header" class="listHeader"  floating flat xs4>
+                    <v-btn-toggle v-model="selectedStatus">
+                        <v-btn v-for="(status, index) in allEventStatuses"
+                        :value="status.value"
+                        :key="index" flat
+                        :class="status.value"
+                        @click="filterByStatus(status.value)">
+                            <v-icon> {{status.icon}} </v-icon>
+                        </v-btn>
+                    </v-btn-toggle>
+                    <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" multiple round></v-select>
                     <new-event></new-event>
                 </v-toolbar>
-                <v-flex slot="item" slot-scope="props" xs12>
-                    <v-list three-line>
-                        <v-list-tile :key="props.item.id" avatar ripple :to="{name: 'event-general', params: {'slug': props.item.id}}">
-                            <!-- <r-event-meta :event="event" isPreview="true"></r-event-meta> -->
-                            <v-list-tile-content>
-                                <v-list-tile-title> {{props.item.metadata.name}} </v-list-tile-title>
-                                <v-chip v-if="props.item.metadata.event_status"
-                                :class="props.item.metadata.event_status"
-                                small outline label> {{props.item.metadata.event_status}} </v-chip>
-                                <v-chip v-else small outline label> monitoring </v-chip>
-                                <v-list-tile-sub-title> {{ props.item.short_description }} </v-list-tile-sub-title>
-                            </v-list-tile-content>
-                        </v-list-tile>
-                        <v-divider></v-divider>
-                    </v-list>
-                </v-flex>
+                <v-list three-line slot="item" slot-scope="props">
+                    <v-list-tile :key="props.item.id" avatar ripple :to="{name: 'event-general', params: {'slug': props.item.id}}">
+                        <v-list-tile-content>
+                            <v-list-tile-title> {{props.item.metadata.name}} </v-list-tile-title>
+                            <v-chip v-if="props.item.metadata.event_status"
+                            :class="props.item.metadata.event_status"
+                            small outline label> {{props.item.metadata.event_status}} </v-chip>
+                            <v-chip v-else small outline label> monitoring </v-chip>
+                            <v-chip small>{{props.item.metadata.types[0]}} </v-chip>
+                            <v-list-tile-sub-title>   {{ props.item.updated_at | relativeTime }} </v-list-tile-sub-title>
+                            <!-- {{ props.item.place }} -->
+                            <!-- <v-list-tile-sub-title> {{ props.item.short_description }} </v-list-tile-sub-title> -->
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-divider></v-divider>
+                </v-list>
+                <template slot="pageText" slot-scope="props">
+                        {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
+                </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ search }}" found no results.
                 </v-alert>
             </v-data-iterator>
-        </v-container>
+        </v-flex>
+        <event-nav></event-nav>
     </v-layout>
 </template>
 <script>
@@ -66,6 +62,9 @@ import { mapGetters } from 'vuex';
 import { FETCH_EVENTS } from '@/store/actions.type';
 import { EVENT_TYPES, EVENT_STATUSES } from '@/common/common';
 import NewEvent from '@/views/New/NewEvent.vue';
+import REvent from '@/components/Event.vue';
+import EventNav from '@/views/EventNav.vue';
+
 
 export default {
     name: 'EventList',
@@ -88,7 +87,7 @@ export default {
         return {
             rowsPerPageItems: [4, 8, 12],
             pagination: {
-                rowsPerPage: 4
+                rowsPerPage: 8
             },
             search: '',
             allEventTypes: EVENT_TYPES,
@@ -99,7 +98,7 @@ export default {
         };
     },
     components: {
-        NewEvent
+        NewEvent, REvent, EventNav
     },
     computed: {
         listConfig(){
@@ -128,6 +127,16 @@ export default {
                     'length' : 250,
                     'separator' : ' '
                 });
+
+                // if(item.metadata.areas.length > 0 ){
+                //     if(item.metadata.areas[0].region){
+                //         item.place = item.metadata.areas[0].region + item.metadata.areas[0].country_code;
+                //     }else{
+                //         item.place = item.metadata.areas[0].country;
+                //     }
+                // }else{
+                //     item.place = item.metadata.country;
+                // }
             });
             this.displayEvents = _.map(this.events, _.clone);
         },
@@ -156,8 +165,6 @@ export default {
         customFilter(items, search, filter){
             // zero filtering
             if (!search && _.isEmpty(this.filteredTypes)){ return items; }
-
-            console.log('--00000--- ', this.filteredTypes, filter );
             if (!search) { // pure type filter
                 return items.filter(item => {
                     return !this.filteredTypes || _.intersection(this.filteredTypes, item.types);
@@ -190,4 +197,12 @@ export default {
     // .v-select>.v-input__control>.input__slot:before{
     //     border-style: none;
     // }
+    .v-data-iterator{
+        width: 100%;
+        overflow: auto;
+        height: calc(100vh - 68px);
+    }
+    .v-list__tile__title {
+        white-space: inherit;
+    }
 </style>
