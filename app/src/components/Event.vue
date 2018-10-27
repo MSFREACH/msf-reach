@@ -90,13 +90,16 @@ export default {
         ])
     },
     watch: {
+        slug(newVal){
+            this.fetchEvent(newVal);
+        }
     },
     methods: {
         parsedMarkdown(chunk){
             return marked(chunk);
         },
-        fetchEvent() {
-            this.$store.dispatch(FETCH_EVENT, this.event.id);
+        fetchEvent(newId) {
+            this.$store.dispatch(FETCH_EVENT, newId);
         },
         copyLink(){
             const el = document.createElement('textarea');

@@ -40,7 +40,7 @@
                     <!-- <v-toolbar-title> {{ currentUser.username }}</v-toolbar-title>
                     <v-icon>person</v-icon> -->
                     <v-avatar :size="56">
-                        {{ currentUser.username.charAt(0)}}
+                        {{ nameInitial }}
                     </v-avatar>
                 </v-btn>
                 <v-list>
@@ -117,7 +117,10 @@ export default {
             'profile',
             'currentUser',
             'isAuthenticated'
-        ])
+        ]),
+        nameInitial(){
+            return this.currentUser ? this.currentUser.username.charAt(0) : null;
+        }
     },
     methods: {
         signOut(){
