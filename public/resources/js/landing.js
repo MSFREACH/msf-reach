@@ -1117,40 +1117,40 @@ if (location.hash.includes('#contact')) {
     $('#contactDetailsModal').modal();
 }
 
-  var bookmarkVue;
+var bookmarkVue;
 $('#btnBookmarksModal').on('click',function(){
-  $('#bookmarksModal').modal('show');
-  bookmarkVue=new Vue({
-    el:'#bookmarksList',
-    data:{
-      markdownSource:''
-    },
-    computed:{
-      compiledMarkdown:function(){
-        return marked(this.markdownSource, {sanitize: true});
-      }
-    },
-    methods: {
+    $('#bookmarksModal').modal('show');
+    bookmarkVue=new Vue({
+        el:'#bookmarksList',
+        data:{
+            markdownSource:''
+        },
+        computed:{
+            compiledMarkdown:function(){
+                return marked(this.markdownSource, {sanitize: true});
+            }
+        },
+        methods: {
 
-    },
-    mounted:function(){
-      var vm=this;
-      $.ajax({
-          url : '/api/bookmarks',
-          data: {},
-          type : 'GET',
-          dataType : 'json',
-          cache : false,
-      }).then(function(data) {
-        console.log('success');
-        console.log(data);
-        vm.markdownSource=data.result.markdown;
+        },
+        mounted:function(){
+            var vm=this;
+            $.ajax({
+                url : '/api/bookmarks',
+                data: {},
+                type : 'GET',
+                dataType : 'json',
+                cache : false,
+            }).then(function(data) {
+                console.log('success');
+                console.log(data);
+                vm.markdownSource=data.result.markdown;
 
-      }).fail(function(err){
-        console.log('error');
-        console.log(err);
-      })
-    }
-  });
+            }).fail(function(err){
+                console.log('error');
+                console.log(err);
+            });
+        }
+    });
 
 });

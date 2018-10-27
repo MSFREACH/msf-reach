@@ -16,10 +16,10 @@ export default (config, db, logger) => ({
         // Execute
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => {
-              if(!data)
-                db.oneOrNone(query,['00000000-0000-0000-0000-000000000000']).timeout(config.PGTIMEOUT).then(data=> resolve(data)).catch((err) => reject(err));
-              else
-               resolve(data);
+                if(!data)
+                    db.oneOrNone(query,['00000000-0000-0000-0000-000000000000']).timeout(config.PGTIMEOUT).then(data=> resolve(data)).catch((err) => reject(err));
+                else
+                    resolve(data);
             })
             .catch((err) => reject(err));
     }),
