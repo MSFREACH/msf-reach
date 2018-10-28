@@ -14,6 +14,7 @@ export default (config, db, logger) => ({
      WHERE oid = $1`;
         let values = [ oid ];
         // Execute
+        logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => {
                 if(!data)
@@ -26,7 +27,7 @@ export default (config, db, logger) => ({
     createOrUpdateBookmark: (oid, markdownText) => new Promise((resolve, reject) => {
         // Setup query
         if (!oid)
-          oid='00000000-0000-0000-0000-000000000000';
+            oid='00000000-0000-0000-0000-000000000000';
         let query = `INSERT INTO ${config.TABLE_BOOKMARKS}
            (oid,markdown) values ($1,$2) ON CONFLICT(oid) DO UPDATE
            set markdown=excluded.markdown returning oid,markdown`;
