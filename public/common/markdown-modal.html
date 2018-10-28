@@ -1,0 +1,75 @@
+<style media="screen">
+.explain-section h3{
+    margin-top: 0;
+}
+
+.explain-section{
+    display: inline-block;
+    background-color: #f6f6f6;
+    padding: 20px;
+    border-radius: 10px;
+    vertical-align: top;
+    max-width: 400px;
+    margin: 5px;
+}
+</style>
+<div class="modal-dialog modal-lg" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Markdown Syntax</h4>
+    </div>
+    <div class="modal-body">
+        <div class="explain-section">
+            <h3> HEADERS </h3>
+            # This is an &lt;h1&gt; tag <br/>
+            ## This is an &lt;h2&gt; tag <br/>
+            ###### This is &lt;h6&gt; tag <br/>
+        </div>
+
+        <div class="explain-section">
+        <h3> EMPHASIS </h3>
+            *This text will be italic* <br/>
+            _This will also be italic_ <br/>
+            **This text will be bold** <br/>
+            __This will also be bold__ <br/>
+            *You **can** combine them* <br/>
+        </div>
+
+
+        <div class="explain-section">
+        <h3> FORMAT </h3>
+            > blockquote <br/>
+            Unordered List <br/>
+                * Item 1 <br/>
+                * Item 2 <br/>
+            Ordered List <br/>
+                1. Item 1 <br/>
+                2. Item 2 <br/>
+        </div>
+
+        <div class="explain-section">
+        <h3> MEDIA </h3>
+            <label> IMAGES </label>
+            ![Event Photo](/images/day1.png)<br/>
+            Format: ![Alt Text](url)<br/>
+
+            <label> LINKS </label>
+            [Url](http://msf-reach.org/)<br/>
+        </div>
+
+        <div class="explain-section">
+        <h2> TABLES </h2>
+        You can create tables by assembling a list of words and dividing them with hyphens - (for the first row), and then separating each column with a pipe | : <br/>
+            First Header | Second Header <br/>
+            ------------ | ------------- <br/>
+            Content cell 1 | Content cell 2 <br/>
+            Content column 1 | Content column 2 <br/>
+        </div>
+
+        <div> more info on
+            <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">WIKI </a>
+        </div>
+    </div>
+  </div>
+</div>

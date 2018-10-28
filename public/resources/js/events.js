@@ -1454,6 +1454,8 @@ var vmObject = {
         }
     },
     mounted:function(){
+        $('#markdownModal').load('/common/markdown-modal.html');
+        console.log('hee');
         $('#eventMSFLoader').hide();
 
         // Search Twitter
