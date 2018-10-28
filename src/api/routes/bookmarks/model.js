@@ -23,30 +23,20 @@ export default (config, db, logger) => ({
             })
             .catch((err) => reject(err));
     }),
-    createBookmark: (oid, markdownText) => new Promise((resolve, reject) => {
+    createOrUpdateBookmark: (oid, markdownText) => new Promise((resolve, reject) => {
         // Setup query
+        if (!oid)
+          oid='00000000-0000-0000-0000-000000000000';
         let query = `INSERT INTO ${config.TABLE_BOOKMARKS}
-           (oid,markdown) values ($1,$2) returning oid,markdown`;
+           (oid,markdown) values ($1,$2) ON CONFLICT(oid) DO UPDATE
+           set markdown=excluded.markdown returning oid,markdown`;
         let values = [ oid, markdownText ];
 
         // Execute
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))
             .catch((err) => reject(err));
-    }),
-
-    updateBookmark: (oid, markdownText) => new Promise((resolve, reject) => {
-        // Setup query
-        let query = `UPDATE ${config.TABLE_BOOKMARKS}
-     SET markdown = $2
-     WHERE oid is $1 returning oid,markdown`;
-        let values = [ oid, markdownText ];
-
-        // Execute
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve(data))
-            .catch((err) => reject(err));
-    }),
+    })
 
 
 
