@@ -15,7 +15,7 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 Cookies.set('last_load',String(Date.now()/1000));
 
 
-var clipboard = new Clipboard('.btn');
+var clipboard = new Clipboard('.st-btn');
 
 clipboard.on('success', function(e) {
     alert('link copied to your clipboard, ready to share');
@@ -238,6 +238,20 @@ var printEventProperties = function(err, eventProperties){
     vmEventDetails=new Vue(vmObject);
     $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(){
         vmEventDetails.$mount('#eventVApp');
+
+        setTimeout(function() {
+            $('#st-1').append(
+                '<span class="st-btn st-last btn-primary" data-clipboard-text="'+window.location+'"  data-network="sharethis"> '+
+              '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height=".8em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
+              '</span>'
+            );
+            $('#st-2').append(
+                '<span class="st-btn st-last btn-primary" data-network="sharethis" data-clipboard-text="'+vmEventDetails.eventReportLink+'">'+
+              '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
+              '</span>'
+            );
+
+        },1000);
     });
 
 
@@ -247,21 +261,7 @@ var printEventProperties = function(err, eventProperties){
     //  $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(s) {
 
 
-    setTimeout(function() {
-        $('#eventCopyButton').append(
-            '<span class="st-btn st-last" data-network="sharethis">'+
-          '<button data-clipboard-text="'+window.location+'" class="btn btn-primary">'+
-          '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height=".8em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
-          '</span>'
-        );
-        $('#reportCopyButton').append(
-            '<span class="st-btn st-last" data-network="sharethis">'+
-          '<button data-clipboard-text="'+vmEventDetails.eventReportLink+'" class="btn btn-primary">'+
-          '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
-          '</span>'
-        );
 
-    },100);
 
     //});
 
