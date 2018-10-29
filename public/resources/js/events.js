@@ -240,7 +240,7 @@ var printEventProperties = function(err, eventProperties){
 
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
-    $('#eventShareButtons').html('Event page  <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></span>');
+    $('#eventShareButtons').html('Event page  <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:" data-description="Click subscribe on event page after logging in to subscribe to updates."></span>');
     $('#reportShareButtons').html('External Report Card <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></span>');
     $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(s) {
 
@@ -1456,6 +1456,25 @@ var vmObject = {
     mounted:function(){
         $('#markdownModal').load('/common/markdown-modal.html');
         $('#eventMSFLoader').hide();
+
+        let subject = `${vmObject.data.name} - updates on REACH`;
+
+        let body=`
+Hi all,
+
+This is to kindly inform you that there has been updates on the [name of the event] to be shared with you. Please read them below:
+- ...
+- ...
+
+For more detailed updates, please find them here ${window.location.href}.
+
+If you have any questions, please do not hesitate to contact me at any time.
+
+Best,
+${localStorage.getItem('username')}
+`;
+        // update mail button
+        $('#manualEmailUpdate').attr('href','mailto:'+Cookies.get('email')+'?bcc='+vmObject.data.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body));
 
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
