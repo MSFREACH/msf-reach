@@ -10,6 +10,8 @@ import request from 'request';
 
 import mail from '../../../lib/mailer';
 
+import { parse as json2csv } from  'json2csv';
+
 
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
@@ -180,6 +182,38 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
+
+    api.get('/csv/download',ensureAuthenticated,
+        validate({
+            query: {
+                latmin: Joi.number().min(-90).max(90),
+                lngmin: Joi.number().min(-180).max(180),
+                latmax: Joi.number().min(-90).max(90),
+                lngmax: Joi.number().min(-180).max(180)
+            }
+        }),
+        (req,res,next)=>{
+            contacts(config, db, logger).forCSV(req.query.lngmin, req.query.latmin, req.query.lngmax, req.query.latmax, (req.hasOwnProperty('user') && req.user.hasOwnProperty('oid')) ? req.user.oid : null).then((data) => {
+                let jsonList=data.map((item) => {return item.properties;});
+                //console.log(jsonList);
+                let fields=  ['title','name','otherNames','type','job_title','OC','email','email2','cell','home','work','address','Facebook','Telegram','WhatsApp','Instagram'];
+                //let fieldNames= ['title','name','alias','type','job title','OC (if MSF)', 'email', 'alternate email', 'mobile phone', 'home phone','work phone','address','Facebook','Telegram','WhatsApp','Instagram'];
+                let csv = json2csv(jsonList,{fields: fields});
+                //console.log(csv);
+                csv = ',"Exported on '+(new Date(Date.now())).toUTCString()+', check back on MSF REACH regularly for updates."\n'+csv;
+                res.setHeader('Content-disposition', 'attachment; filename=contacts.csv');
+                res.set('Content-Type', 'text/csv');
+                res.status(200).send(csv);
+                //console.log(res);
+                return res;
+
+            }).catch((err) => {
+                /* istanbul ignore next */
+                logger.error(err);
+                /* istanbul ignore next */
+                next(err);
+            });
+        });
 
 
     // Delete a contact's record from the database

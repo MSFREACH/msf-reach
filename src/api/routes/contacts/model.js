@@ -48,6 +48,28 @@ export default (config, db, logger) => ({
     }),
 
     /**
+    * Return contacts
+    * @function forCSV - returns all contact properties for csv
+    * @param {string} oid - optional AD OID of user
+    */
+    forCSV: (lngmin, latmin, lngmax, latmax, oid) => new Promise((resolve, reject) => {
+        // Setup query
+        let query = `SELECT properties, the_geom
+     FROM ${config.TABLE_CONTACTS}
+     WHERE
+      (the_geom && ST_MakeEnvelope($1,$2,$3,$4, 4326)) AND
+      ($5 IS NULL OR (ad_oid = $5 and private = true) OR ((properties->>'sharedWith')::jsonb ? $5) OR private = false)
+     ORDER BY id`;
+        let values = [lngmin, latmin, lngmax, latmax, oid];
+
+        // Execute
+        db.any(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
+    }),
+
+
+    /**
      * get an individual contact
      * @function byId
      * @param {integer} id - id of contact
