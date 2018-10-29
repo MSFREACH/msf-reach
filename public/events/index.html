@@ -713,7 +713,7 @@
                   <tr><td>Follow this event by email:  </td>
                     <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal;" class="label label-default">{{em}}</span>&nbsp;</span> </td>
                     <td><button type="button" class="btn btn-info" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe</button>&nbsp;<button type="button"  class="btn btn-danger" @click="unsubscribe()"><i class="glyphicon glyphicon-eye-close"></i> Unsubscribe</button></td>
-                    <td><a href="mailto:admin@msf-reach.org" id="manualEmailUpdate"><button type="button" class="btn btn-info">Email all subscribers</button></a>
+                    <td><a href="mailto:admin@msf-reach.org" id="manualEmailUpdate"><button type="button" class="btn btn-info">Send an update</button></a>
                   </tr>
                   <tr><td>Mission contact person </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
