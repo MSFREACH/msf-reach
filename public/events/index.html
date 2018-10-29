@@ -87,6 +87,7 @@
 
 
   </style>
+
 </head>
 <body>
 
@@ -712,15 +713,26 @@
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Follow this event by email:  </td>
                     <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal;" class="label label-default">{{em}}</span>&nbsp;</span> </td>
-                    <td><button type="button" class="btn btn-info" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe</button>&nbsp;<button type="button"  class="btn btn-danger" @click="unsubscribe()"><i class="glyphicon glyphicon-eye-close"></i> Unsubscribe</button></td>
-                    <td><a href="mailto:admin@msf-reach.org" id="manualEmailUpdate"><button type="button" class="btn btn-info">Send an update</button></a>
+                    <td>
+                      <div style="display:inline;">
+
+                      <button type="button" class="btn btn-info" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe</button>&nbsp;<button type="button"  class="btn btn-danger" @click="unsubscribe()"><i class="glyphicon glyphicon-eye-close"></i> Unsubscribe</button>
+                    </div><div style="display:inline;"><br/><a :href="manualEmailHref" class="btn btn-info" style="margin-top:10px;">Send an update</a></div></td>
                   </tr>
                   <tr><td>Mission contact person </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ event.updated_at  | formatFullDate }}</td></tr>
                   <tr>
                     <td> Share Links to </td>
-                    <td colspan="2"><div> <span id="eventShareButtons"></span><span id="eventCopyButton" class="st-animated" style="display: inline-block"></span> </div><div><span id="reportShareButtons"></span><span id="reportCopyButton" class="st-animated"></span><a data-toggle="modal" data-target="#newReportModal" style="cursor: pointer">open in new tab</a></div></td>
+                    <td>Event page: </td> <td> <div> <span class="sharethis-inline-share-buttons" style="display: inline-block" :data-url="window.location" data-title="I am sharing a link to a MSF REACH event:" data-description="Click subscribe on event page after logging in to subscribe to updates."></span>
+                      <span id="eventCopyButton" class="st-animated" style="display: inline-block"></span> </div>
+                      </td>
+                </tr>
+                <tr>
+                  <td style="border: none;"></td>
+                  <td style="border: none;">External Report Card: </td>
+                  <td style="border: none;"><div><span class="sharethis-inline-share-buttons" style="display: inline-block" :data-url="eventReportLink" data-title="Please send a report to MSF REACH with this link:"></span>
+                    <span id="reportCopyButton" class="st-animated"></span><a data-toggle="modal" data-target="#newReportModal" style="cursor: pointer"> Open in new tab</a></div></td>
                 </tr>
 
                 </table>

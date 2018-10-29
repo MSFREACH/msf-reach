@@ -236,30 +236,34 @@ var printEventProperties = function(err, eventProperties){
     $('#countryDetailsContainer').append(countryDetailsContainerContent);
 
     vmEventDetails=new Vue(vmObject);
-    vmEventDetails.$mount('#eventVApp');
+    $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(){
+        vmEventDetails.$mount('#eventVApp');
+    });
+
 
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
-    $('#eventShareButtons').html('Event page  <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:" data-description="Click subscribe on event page after logging in to subscribe to updates."></span>');
-    $('#reportShareButtons').html('External Report Card <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></span>');
-    $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(s) {
+
+    //  $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(s) {
 
 
-        setTimeout(function() {
-            $('#eventCopyButton').append(
-                '<span class="st-btn st-last" data-network="sharethis">'+
+    setTimeout(function() {
+        $('#eventCopyButton').append(
+            '<span class="st-btn st-last" data-network="sharethis">'+
           '<button data-clipboard-text="'+window.location+'" class="btn btn-primary">'+
           '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height=".8em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
           '</span>'
-            );
-            $('#reportCopyButton').append(
-                '<span class="st-btn st-last" data-network="sharethis">'+
+        );
+        $('#reportCopyButton').append(
+            '<span class="st-btn st-last" data-network="sharethis">'+
           '<button data-clipboard-text="'+vmEventDetails.eventReportLink+'" class="btn btn-primary">'+
           '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
           '</span>'
-            );
+        );
 
-        },100);});
+    },100);
+
+    //});
 
     if (currentEventProperties.metadata.country) {
         getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
@@ -1370,6 +1374,7 @@ var vmObject = {
         msfMedicalMaterials:msfMedicalMaterials,
         msfNonMedicalMaterials:msfNonMedicalMaterials,
         newNotification:'',
+        manualEmailHref:'mailto:admin@msf-reach.org',
         panelEditing:{
             'General': false,
             'Notification': false,
@@ -1456,8 +1461,9 @@ var vmObject = {
     mounted:function(){
         $('#markdownModal').load('/common/markdown-modal.html');
         $('#eventMSFLoader').hide();
+        var vm=this;
 
-        let subject = `${vmObject.data.name} - updates on REACH`;
+        let subject = `${vm.event.metadata.name} - updates on REACH`;
 
         let body=`
 Hi all,
@@ -1474,13 +1480,13 @@ Best,
 ${localStorage.getItem('username')}
 `;
         // update mail button
-        $('#manualEmailUpdate').attr('href','mailto:'+Cookies.get('email')+'?bcc='+vmObject.data.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body));
+        vm.manualEmailHref='mailto:'+Cookies.get('email')+'?bcc='+vm.event.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
 
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
             if ($('#searchTerm').val() !== '') {
                 var search = $('#searchTerm').val();
-                vmObject.data.searchTerm = search;
+                vm.searchTerm = search;
                 getTweets(search);
             }
         });
@@ -1492,7 +1498,7 @@ ${localStorage.getItem('username')}
             $(this).parent().removeClass('close-box');
         });
 
-        vmObject.data.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
+        vm.event.metadata.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
         $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
         }).each(function() {
