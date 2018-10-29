@@ -27,6 +27,8 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+<!-- markdown -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="/lib/leaflet/leaflet.css"/>
@@ -202,6 +204,13 @@
       </div>
     </div>
   </div>
+
+
+  <!-- Markdown Explained modal -->
+  <div class="modal fade" id="markdownModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+     <!-- content will be loaded from external file -->
+  </div>
+
 
   <!-- Archive Modal -->
   <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -699,7 +708,7 @@
 
                   <tr><td>Description</td><td  colspan="2"> {{event.metadata.description }}</td></tr>
 
-                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;">{{ notStr }}</td></tr>
+                  <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;" v-html="notStr"></td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Follow this event by email:  </td>
                     <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal;" class="label label-default">{{em}}</span>&nbsp;</span> </td>
@@ -871,7 +880,9 @@
                     <div class="panel-header-click-area"  data-toggle="collapse" data-target="#collapseNotification">
                       <a data-toggle="collapse" data-target="#collapseNotification"
                       href="#" class="collapsed">
-                      Notifications
+                      <span v-if="!panelEditing.Notification"> Notifications </span>
+                      <span v-else> Enter new notification </span>
+
                       </a>
                     </div>
                       <button v-if="!panelEditing.Notification" type="button" class="btn btn-info btn-xs pull-right" @click="editEvent('Notification')">Edit</button>
@@ -889,14 +900,17 @@
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (elem.notification_time*1000) | formatFullDate }}</td>
-                                  <td style="word-break: break-word;"> {{ elem.notification }} <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a> </td>
+                                  <td v-html="elem.notification">
+                                      <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a>
+                                  </td>
                                 </tr>
                               </tbody>
                             </table>
                       <div v-show="panelEditing.Notification">
-                        <dt>Enter new notification</dt>
-                        <dd>
-                          <textarea type="text" class="form-control" v-model="newNotification"></textarea>
+                        <div id="mdExplained" data-toggle="modal" v-on:click="openMarkdownSyntax"> *Text editor adopts <span> Markdown format </span></div>
+                        <dd id="notificationEditor">
+                          <textarea type="text" v-model="newNotification" @input="updateMarkdown"></textarea>
+                          <div id="markdownPreview" v-html="compiledMarkdown"></div>
                         </dd>
                         <dt>Attach a file</dt>
                         <dd>

@@ -1454,6 +1454,7 @@ var vmObject = {
         }
     },
     mounted:function(){
+        $('#markdownModal').load('/common/markdown-modal.html');
         $('#eventMSFLoader').hide();
 
         // Search Twitter
@@ -2253,6 +2254,13 @@ var vmObject = {
                 location: {lat: currentEventGeometry.coordinates[1],lng: currentEventGeometry.coordinates[0]}
             };
             vmAnalytics.analyzeEvent(evBody);
+        },
+
+        updateMarkdown: _.debounce(function(e){
+            this.newNotification = e.target.value;
+        }, 300),
+        openMarkdownSyntax: function(){
+            $('#markdownModal').modal('show');
         }
 
     },
@@ -2261,12 +2269,14 @@ var vmObject = {
             //will keep the sorting here for UI
             return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
+            }).map(item => {
+                return Object.assign({}, item, {notification: marked(item.notification, {sanitize: true})});
             }): [];
         },
         notStr:function(){
             let lastNotification = getLatestNotification(this.event.metadata.notification);
-            return (lastNotification) ? lastNotification.notification+
-            (lastNotification.hasOwnProperty('username') ? (', From: ' + lastNotification.username) : '') +
+            return (lastNotification) ? marked(lastNotification.notification, {sanitize: true}) +
+            (lastNotification.hasOwnProperty('username') ? ('<br/>' + lastNotification.username) : '') +
             ' @ ' + (new Date(lastNotification.notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
@@ -2275,6 +2285,13 @@ var vmObject = {
         eventReportLink:function()
         {
             return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey + '#' + this.event.metadata.name;
+        },
+
+        compiledMarkdown: function(){
+            return marked(this.newNotification, {sanitize: true});
+        },
+        markedNotification: function(chunk){
+            return marked(chunk, {sanitize: true});
         }
     },
     watch: {

@@ -59,6 +59,7 @@
     "express-session": "^1.15.6",
     "joi": "^13.7.0",
     "joi-date-extensions": "^1.2.0",
+    "json2csv": "^4.2.1",
     "jwk-to-pem": "^2.0.0",
     "moment": "^2.22.2",
     "morgan": "^1.9.1",

@@ -15,6 +15,7 @@ import layers from './routes/layers';
 import reports from './routes/reports';
 import twitter from './routes/twitter';
 import hazards from './routes/hazards';
+import bookmarks from './routes/bookmarks';
 import utils from './routes/utils';
 import missions from './routes/missions';
 import contacts from './routes/contacts';
@@ -35,6 +36,7 @@ export default ({ config, db, logger }) => {
     api.use('/reports', reports({ config, db, logger }));
     api.use('/twitter', twitter({ logger }));
     api.use('/hazards', hazards({ logger }));
+    api.use('/bookmarks', bookmarks({ config, db, logger }));
     api.use('/utils', utils({ config, db, logger }) );
     api.use('/missions', missions({ config, db, logger }));
     api.use('/contacts', contacts({ config, db, logger }));
