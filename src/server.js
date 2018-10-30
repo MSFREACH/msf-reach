@@ -171,6 +171,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
                         res.cookie('email', req.user.userPrincipalName);
+                        logger.info(req.user);
                         res.cookie('oid', req.user.oid, { maxAge: 1000 * 60 * 1 });
                         res.redirect('/authreturn');
                     });
