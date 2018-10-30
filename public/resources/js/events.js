@@ -236,7 +236,7 @@ var printEventProperties = function(err, eventProperties){
     $('#countryDetailsContainer').append(countryDetailsContainerContent);
 
     vmEventDetails=new Vue(vmObject);
-    $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(){
+    $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=inline-share-buttons').done( function(){
         vmEventDetails.$mount('#eventVApp');
 
         setTimeout(function() {
