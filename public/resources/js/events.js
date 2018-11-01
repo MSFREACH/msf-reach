@@ -1468,7 +1468,7 @@ var vmObject = {
         let body=`
 Hi all,
 
-This is to kindly inform you that there has been updates on the [name of the event] to be shared with you. Please read them below:
+This is to kindly inform you that there has been updates on the ${vm.event.metadata.name} event to be shared with you. Please read them below:
 - ...
 - ...
 
