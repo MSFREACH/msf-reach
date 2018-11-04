@@ -714,10 +714,28 @@
                   <tr><td>Follow this event by email:  </td>
                     <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal;" class="label label-default">{{em}}</span>&nbsp;</span> </td>
                     <td>
-                      <div style="display:inline;">
-
-                      <button type="button" class="btn btn-info" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe</button>&nbsp;<button type="button"  class="btn btn-danger" @click="unsubscribe()"><i class="glyphicon glyphicon-eye-close"></i> Unsubscribe</button>
-                    </div><div style="display:inline;"><br/><a :href="manualEmailHref" class="btn btn-info" style="margin-top:10px;">Send an update</a></div></td>
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" class="btn btn-info btn-block" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe</button>
+                          </div>
+                          <div class="col-sm-12">
+                            <button type="button"  class="btn btn-danger btn-block" @click="unsubscribe()"><i class="glyphicon glyphicon-eye-close"></i> Unsubscribe</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <a :href="manualEmailHref" class="btn btn-info btn-block" style="margin-top:10px;">Send an update</a>
+                      </div>
+                        <div class="col-sm-12">
+                          <div class="input-group">
+                            <input type="text" class="form-control" id="inpSendInvite" placeholder="invite someone to subscribe...">
+                            <span class="input-group-btn">
+                              <button  class="btn btn-primary" type="button" @click="sendSubscInvite()">Invite</button>
+                            </span>
+                          </div><!-- /input-group -->
+                        </div>
+                      </div>
+                    </td>
                   </tr>
                   <tr><td>Mission contact person </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
@@ -725,7 +743,7 @@
                   <tr>
                     <td> Share Links to </td>
                     <td>Event page: </td> <td> <span class="sharethis-inline-share-buttons" style="display: inline-block" :data-url="window.location" data-title="I am sharing a link to a MSF REACH event:" data-description="Please click subscribe on event page after logging in to subscribe to updates."></span>
-                      <span id="eventCopyButton" class="st-animated" style="display: inline-block"></span> 
+                      <span id="eventCopyButton" class="st-animated" style="display: inline-block"></span>
                       </td>
                 </tr>
                 <tr>

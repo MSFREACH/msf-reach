@@ -1456,7 +1456,8 @@ var vmObject = {
         },
         dateTimeConfig: {
             format: DATETIME_DISPLAY_FORMAT
-        }
+        },
+        subscInvitee:''
     },
     mounted:function(){
         $('#markdownModal').load('/common/markdown-modal.html');
@@ -1605,6 +1606,37 @@ ${localStorage.getItem('username')}
         eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
 
 
+        $( '#inpSendInvite' ).autocomplete({
+            source: function( request, response ) {
+                $.ajax({
+                    url: '/api/contacts/usersearch/'+request.term,
+                    success: function( data ) {
+                      console.log(data);
+                        response($.map(JSON.parse(data.body).value, function (item) {
+                            return {
+                                label: item.displayName,
+                                value: item.displayName,
+                                id: item.id
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 3,
+            select: function( event, ui ) {
+                if (ui.item) {
+                  //console.log(ui.item);
+                  this.subscInvitee=ui.item.value;
+
+                }
+            },
+            open: function() {
+                $( this ).removeClass( 'ui-corner-all' ).addClass( 'ui-corner-top' );
+            },
+            close: function() {
+                $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
+            }
+        });
 
 
     },
@@ -2286,6 +2318,10 @@ ${localStorage.getItem('username')}
         }, 300),
         openMarkdownSyntax: function(){
             $('#markdownModal').modal('show');
+        },
+        sendSubscInvite:function()
+        {
+          //send invite here
         }
 
     },
