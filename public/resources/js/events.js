@@ -1611,7 +1611,7 @@ ${localStorage.getItem('username')}
                 $.ajax({
                     url: '/api/contacts/usersearch/'+request.term,
                     success: function( data ) {
-                      console.log(data);
+                        //console.log(data);
                         response($.map(JSON.parse(data.body).value, function (item) {
                             return {
                                 label: item.displayName,
@@ -1625,8 +1625,8 @@ ${localStorage.getItem('username')}
             minLength: 3,
             select: function( event, ui ) {
                 if (ui.item) {
-                  //console.log(ui.item);
-                  this.subscInvitee=ui.item.value;
+                    //console.log(ui.item);
+                    this.subscInvitee=ui.item.value;
 
                 }
             },
@@ -2321,7 +2321,7 @@ ${localStorage.getItem('username')}
         },
         sendSubscInvite:function()
         {
-          //send invite here
+            //send invite here
         }
 
     },
