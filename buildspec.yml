@@ -8,7 +8,11 @@ phases:
     commands:
 #      - bash -c "$(curl -fsSL https://gist.githubusercontent.com/matthewberryman/af1fa1c5edca5a2056b957acf2a6815b/raw/2ee34a7aa4e5c796f9f8f6d4ac8ecb36c5f1bb48/aws-codebuild-extras.sh)"
       - su postgres -c "/usr/lib/postgresql/11/bin/postgres -D /var/lib/postgresql/11/main -c config_file=/etc/postgresql/11/main/postgresql.conf &"
+<<<<<<< HEAD
       - git clone https://github.com/MSFREACH/msf-reach-schema && cd msf-reach-schema && bash build_62.sh && cd ..
+=======
+      - git clone https://github.com/MSFREACH/msf-reach-schema && cd msf-reach-schema && bash build.sh && cd ..
+>>>>>>> master
   build:
     commands:
       - npm run test

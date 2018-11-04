@@ -128,7 +128,17 @@
               <p>Our promise to protect your privacy: Médecins Sans Frontières Hong Kong (MSF) promise not to sell, share or swap your personal information with any other company/ organisation. The information you provide will be treated as strictly confidential and used in accordance to our Privacy Policy, found on <a href="http://msf-seasia.org">our website</a>.</p>
             </div>
             <div class="form-section">
-              <h5>1. Please select the location of your information on the map:</h5>
+              <h5>1. Please help us best assess the situation by helping us sort your report.</h5>
+              <div class="rtype-container">
+                <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>Location / Damage</i></div>
+                <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>Population / Medical</i></div>
+                <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>Details / Relevance</i></div>
+                <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>Incident / Caution</i></div>
+              </div>
+              <p>Please select one category. There is an opportunity to submit another report card for another category after submission of this one.</p>
+            </div>
+            <div class="form-section">
+              <h5>2. Please select the location of your information on the map:</h5>
               <div class="form-group">
                 <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="mapAddress">
               </div>
@@ -147,16 +157,6 @@
                 </div>
               </div>
               <div id="newReportMap"></div>
-            </div>
-            <div class="form-section">
-              <h5>2. Please help us best assess the situation by helping us sort your report.</h5>
-              <div class="rtype-container">
-                <div class="rtype-item" data-msf-value="ACCESS">ACCESS<br><i>Location / Damage</i></div>
-                <div class="rtype-item"  data-msf-value="NEEDS">NEEDS<br><i>Population / Medical</i></div>
-                <div class="rtype-item"  data-msf-value="CONTACTS">CONTACTS<br><i>Details / Relevance</i></div>
-                <div class="rtype-item" data-msf-value="SECURITY">SECURITY<br><i>Incident / Caution</i></div>
-              </div>
-              <p>Please select one category. There is an opportunity to submit another report card for another category after submission of this one.</p>
             </div>
             <div class="form-section">
               <h5>3. Please enter text in the box below to share your information.</h5>
@@ -648,7 +648,7 @@
           <ul class="dropdown-menu">
             <li><a href="#about" data-toggle="modal" data-target="#about">About MSF REACH</a></li>
             <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
-            <li><a href="https://www.dropbox.com/s/ft2crioj1sx61ib/REACH%20user%20manual.pdf?dl=0">User Manual</a></li>
+            <li><a href="/lib/pdfjs/web/viewer.html?file=MSF_REACH_User_Manual_2018-11-01.pdf">User Manual</a></li>
             <li><a href="https://www.dropbox.com/sh/pwbi8hhqha63ppt/AAAjuw7wq7Jri7N0tdZ0fg_Ra?dl=0">Tutorial Videos</a></li>
             <li><a id="logout" href="/logout">Sign out</a></li>
           </ul>
