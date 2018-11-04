@@ -110,7 +110,7 @@
                 Error saving bookmarks.
               </div>
               <div class="row" v-if="!inEditMode">
-                <div class="col-sm-12" v-html="compiledMarkdown">
+                <div class="col-sm-12" v-html="compiledMarkdown" style="word-break: break-all;" >
 
                 </div>
               </div>
@@ -120,7 +120,7 @@
                   <h5>Edit:</h5>
                   <textarea  rows="8"  v-model="markdownSource" style="width:100%"></textarea>
                 </div>
-                <div class="col-sm-6" >
+                <div class="col-sm-6" style="word-break: break-all;" >
                     <h5>Preview:</h5>
                     <div v-html="compiledMarkdown"></div>
                 </div>
