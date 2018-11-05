@@ -247,19 +247,19 @@ var printEventProperties = function(err, eventProperties){
                 contentType: 'application/json'
             }).done(function( data, textStatus, req ){
 
-              countryDetailsLinksContainerContent += '<ul>';
-              for (let oc in data.links) {
-                if (data.links.hasOwnProperty(oc)) {
-                  countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                countryDetailsLinksContainerContent += '<ul>';
+                for (let oc in data.links) {
+                    if (data.links.hasOwnProperty(oc)) {
+                        countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                    }
                 }
-              }
-              countryDetailsLinksContainerContent += '</ul>';
-              countryDetailsLinksContainerContent+='</div>';
-              countryLinksCounter++;
-              if (countryLinksCounter===numCountries) {
+                countryDetailsLinksContainerContent += '</ul>';
                 countryDetailsLinksContainerContent+='</div>';
-                $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
-              }
+                countryLinksCounter++;
+                if (countryLinksCounter===numCountries) {
+                    countryDetailsLinksContainerContent+='</div>';
+                    $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
+                }
 
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
@@ -281,19 +281,19 @@ var printEventProperties = function(err, eventProperties){
                 contentType: 'application/json'
             }).done(function( data, textStatus, req ){
 
-              countryDetailsLinksContainerContent += '<ul>';
-              for (let oc in data.links) {
-                if (data.links.hasOwnProperty(oc)) {
-                  countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                countryDetailsLinksContainerContent += '<ul>';
+                for (let oc in data.links) {
+                    if (data.links.hasOwnProperty(oc)) {
+                        countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                    }
                 }
-              }
-              countryDetailsLinksContainerContent += '</ul>';
-              countryDetailsLinksContainerContent+='</div>';
-              countryLinksCounter++;
-              if (countryLinksCounter===numCountries) {
+                countryDetailsLinksContainerContent += '</ul>';
                 countryDetailsLinksContainerContent+='</div>';
-                $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
-              }
+                countryLinksCounter++;
+                if (countryLinksCounter===numCountries) {
+                    countryDetailsLinksContainerContent+='</div>';
+                    $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
+                }
 
             }).fail(function(err) {
                 if (err.responseText.includes('expired')) {
