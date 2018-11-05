@@ -724,7 +724,8 @@
             <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF Responses</a></li>
             <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Previous MSF Responses</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
-            <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
+            <li role="presentation"><a id="countryDetailsCIATab" data-toggle="tab" href="#countryDetailsCIA">Country Details (CIA factbook)</a></li>
+            <li role="presentation"><a id="countryDetailsLinksTab" data-toggle="tab" href="#countryDetailsLinks">Country Details (links)</a></li>
           </ul>
           <div class="msf-loader" id="eventMSFLoader"></div>
           <div class="tab-content" id="eventVApp" v-cloak>
@@ -1878,10 +1879,17 @@
         </div>
       </div>
     </div>
-    <div id="countryDetails" class="tab-pane fade">
+    <div id="countryDetailsCIA" class="tab-pane fade">
       <div class="row">
         <div class="col-md-12" >
-          <div id="countryDetailsContainer" style="height:70vh;"></div>
+          <div id="countryDetailsCIAContainer" style="height:70vh;"></div>
+        </div>
+      </div>
+    </div>
+    <div id="countryDetailsLinks" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-12" >
+          <div id="countryDetailsLinksContainer" style="height:70vh;"></div>
         </div>
       </div>
     </div>
