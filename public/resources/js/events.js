@@ -1545,6 +1545,7 @@ ${localStorage.getItem('username')}
             if (currentEventProperties.metadata.hasOwnProperty('country')) {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
+            searchTerm = searchTerm.split(/\s+/).join(' OR ').replace(/[\W_]+/g,' ');
             $('#searchTerm').val(searchTerm);
             this.searchTerm = searchTerm;
 
