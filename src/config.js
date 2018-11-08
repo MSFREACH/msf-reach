@@ -93,6 +93,7 @@ export default {
     TABLE_MISSIONS: process.env.TABLE_MISSIONS || 'cognicity.missions',
     TABLE_CONTACTS: process.env.TABLE_CONTACTS || 'cognicity.contacts',
     TABLE_BOOKMARKS: process.env.TABLE_BOOKMARKS || 'cognicity.bookmarks',
+    TABLE_COUNTRY_LINKS: process.env.TABLE_COUNTRY_LINKS || 'cognicity.country_links',
     TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
     TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
     TWITTER_ACCESS_KEY: process.env.TWITTER_ACCESS_KEY,
