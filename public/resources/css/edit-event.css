@@ -125,19 +125,6 @@ span.remove:hover{
     font-weight: bold;
 }
 
-.explain-section h3{
-    margin-top: 0;
-}
-
-.explain-section{
-    display: inline-block;
-    background-color: #f6f6f6;
-    padding: 20px;
-    border-radius: 10px;
-    vertical-align: top;
-    max-width: 400px;
-    margin: 5px;
-}
 
 span.highlight{
     color: red;
