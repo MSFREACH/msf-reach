@@ -1360,6 +1360,9 @@ var replaceUnderscore = function(value) {
     return value.replace(/_/g, ' ');
 };
 
+
+Vue.component('vue-multiselect', window.VueMultiselect.default);
+
 var vmObject = {
 
     data: {
@@ -1375,6 +1378,10 @@ var vmObject = {
         msfNonMedicalMaterials:msfNonMedicalMaterials,
         newNotification:'',
         manualEmailHref:'mailto:admin@msf-reach.org',
+        msOptions: [
+        ],
+        msValue: [],
+        msLoading: false,
         panelEditing:{
             'General': false,
             'Notification': false,
@@ -1607,38 +1614,6 @@ ${localStorage.getItem('username')}
         eventReportLink = WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey;
 
 
-        $( '#inpSendInvite' ).autocomplete({
-            source: function( request, response ) {
-                $.ajax({
-                    url: '/api/contacts/usersearch/'+request.term,
-                    success: function( data ) {
-                        //console.log(data);
-                        response($.map(JSON.parse(data.body).value, function (item) {
-                            return {
-                                label: item.displayName,
-                                value: item.displayName,
-                                id: item.id
-                            };
-                        }));
-                    }
-                });
-            },
-            minLength: 3,
-            select: function( event, ui ) {
-                if (ui.item) {
-                    //console.log(ui.item);
-                    this.subscInvitee=ui.item.value;
-
-                }
-            },
-            open: function() {
-                $( this ).removeClass( 'ui-corner-all' ).addClass( 'ui-corner-top' );
-            },
-            close: function() {
-                $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
-            }
-        });
-
 
     },
     created:function(){
@@ -1658,6 +1633,21 @@ ${localStorage.getItem('username')}
     },
     methods:{
         typeStr:typeStr,
+        queryContacts:function(term){
+            var vm=this;
+            if (term.length>=3)
+            {
+                vm.msLoading=true;
+                $.ajax({
+                    url: '/api/contacts/usersearch/'+term,
+                    success: function( data ) {
+                        vm.msLoading=false;
+                        //console.log(data);
+                        vm.msOptions=JSON.parse(data.body).value;
+                    }
+                });
+            }
+        },
         openDirtyPanel:function(str, domElement){
             var panelDirty = false;
             var filteredKeys = Object.keys(currentEventProperties.metadata).filter(function(k) {

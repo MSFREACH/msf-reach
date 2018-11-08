@@ -201,6 +201,62 @@ export default ( config, logger ) => ({
             }
         }
         resolve(data); // pass contact data back out for next promise
+    }),
+    emailInviteToSubscribe: (data, id) => new Promise((resolve, reject) => {
+        logger.debug(data);
+
+        const smtpConfig = {
+            host: 'email-smtp.us-west-2.amazonaws.com',
+            port: 465,
+            secure: true,
+            requireTLS: true,
+            auth: {
+                user: config.SMTP_USER,
+                pass: config.SMTP_PASS
+            }
+        };
+
+        const transport = nodemailer.createTransport(smtpConfig);
+
+        const options={
+            viewEngine: {},
+            viewPath: 'public/email-templates/',
+            extName: '.hbs'
+        };
+
+        //attach the plugin to the nodemailer transporter
+        transport.use('compile', hbs(options));
+
+
+        let emContext={
+            eventLink: config.BASE_URL+'events/?eventId='+id,
+            loginLink: config.BASE_URL+'login',
+            unsubscribeLink: config.BASE_URL+'unsubscribe/index.html#'+id+'+'+data.subscribers[i]
+        };
+        let mailOptions = {
+            from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
+            to: data.subscribers[i],
+            subject: 'Event update notification',
+            template: 'event_update',
+            context: emContext
+        };
+
+        // send mail with defined transport object
+        logger.info('Sending sharing email notification');
+        transport.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                logger.error(error.message);
+                reject(error);
+            }
+            else
+            {
+                logger.info('Email %s sent: %s', info.messageId, info.response);
+                resolve(data); // pass contact data back out for next promise
+
+            }
+        });
+
+
     })
 
 

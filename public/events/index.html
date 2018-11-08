@@ -59,6 +59,9 @@
   <!-- jqueryui css -->
   <link rel="stylesheet" href="/resources/css/jquery-ui-1.12.1.min.css">
 
+  <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+
   <style type="text/css">
   .page-header {
     margin-top: 20px;
@@ -728,9 +731,9 @@
                       </div>
                         <div class="col-sm-12">
                           <div class="input-group">
-                            <input type="text" class="form-control" id="inpSendInvite" placeholder="invite someone to subscribe...">
+                            <vue-multiselect v-model="msValue" :options="msOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Type to find contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
                             <span class="input-group-btn">
-                              <button  class="btn btn-primary" type="button" @click="sendSubscInvite()">Invite</button>
+                              <button  class="btn btn-primary" type="button" @click="sendSubscInvite()" style="margin-left:5px;">Invite</button>
                             </span>
                           </div><!-- /input-group -->
                         </div>
@@ -1949,6 +1952,7 @@
 
 <script src="/resources/js/countries.js"></script>
 <script src="/resources/js/country-codes.js"></script>
+
 
 <!-- events common variables -->
 <script src="/events/common.js"></script>
