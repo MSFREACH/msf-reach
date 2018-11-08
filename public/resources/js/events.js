@@ -1530,6 +1530,7 @@ var vmObject = {
         }
     },
     mounted:function(){
+        $('#markdownModal').load('/common/markdown-modal.html');
         $('#eventMSFLoader').hide();
 
         // Search Twitter

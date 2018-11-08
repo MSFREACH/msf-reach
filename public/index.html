@@ -91,6 +91,59 @@
       </div>
     </div>
 
+    <!-- Markdown Explained modal -->
+    <div class="modal fade" id="markdownModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+       <!-- content will be loaded from external file -->
+    </div>
+
+    <!-- Bookmarks modal -->
+    <div class="modal fade" id="bookmarksModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelBookmarks">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="bookmarksList">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabelBookmarks">News bookmarks</h4>
+          </div>
+          <div class="modal-body" id="BookmarksModalBody">
+            <div  >
+              <div class="alert alert-danger" role="alert" v-show="hasError">
+                Error saving bookmarks.
+              </div>
+              <div class="row" v-if="!inEditMode">
+                <div class="col-sm-12" v-html="compiledMarkdown" style="word-break: break-all;" >
+
+                </div>
+              </div>
+
+              <div class="row" v-if="inEditMode">
+                <div class="col-sm-6">
+                  <h5>Edit:</h5>
+                  <textarea  rows="8"  v-model="markdownSource" style="width:100%"></textarea>
+                </div>
+                <div class="col-sm-6" style="word-break: break-all;" >
+                    <h5>Preview:</h5>
+                    <div v-html="compiledMarkdown"></div>
+                </div>
+              </div>
+              <div class="row" v-if="inEditMode">
+                <div class="col-sm-12">
+                  Click <a @click="openHelpModal" style="cursor:pointer;">here</a> for help on markdown syntax.
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="inEditMode=true;" v-show="!inEditMode">Edit</button>
+            <button type="button" class="btn btn-success" @click="saveBookmarkEdits" v-show="inEditMode">Save Edits</button>
+
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- event creation modal -->
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myNewEventModalLabel" id="newEventModal">
       <div class="modal-dialog modal-lg">
@@ -739,6 +792,7 @@
                           <div id="missionsContainer"></div>
                         </div>
                         <div id="event_RSS" class="tab-pane tab-pane-box">
+                          <button type="button" class="btn btn-msf" id="btnBookmarksModal">Open Non-geospatial News Links</button>
                           <div id="rssFeeds" class="list-group" style="margin-bottom:0px;">
                           </div>
                         </div>
@@ -796,6 +850,8 @@
           </div>
           <span class="skype-button bubble" data-contact-id="docnat76"></span>
       </div>
+    <!-- markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
     <script src="/lib/lodash.min.js"></script>
     <script src="/lib/moment.min.js"></script>

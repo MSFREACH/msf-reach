@@ -1116,3 +1116,82 @@ if (location.hash.includes('#contact')) {
     onContactLinkClick(/\d+/.exec(location.hash)[0]);
     $('#contactDetailsModal').modal();
 }
+
+$(function(){
+
+    var bookmarkVue=new Vue({
+        el:'#bookmarksList',
+        data:{
+            markdownSource:'',
+            inEditMode:false,
+            hasError:false
+        },
+        computed:{
+            compiledMarkdown:function(){
+                return marked(this.markdownSource, {sanitize: true});
+            }
+        },
+        methods: {
+            openHelpModal:function(){
+                $('#bookmarksModal').modal('hide');
+                $('#markdownModal').modal('show');
+            },
+            saveBookmarkEdits:function(){
+                var vm=this;
+                vm.hasError=false;
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/bookmarks',
+                    data: JSON.stringify({
+                        markdown: vm.markdownSource
+                    }),
+                    contentType: 'application/json'
+                }).then(function(data){
+                    //console.log(data);
+                    vm.hasError=false;
+                    vm.inEditMode=false;
+                }).fail(function(err){
+                    vm.hasError=true;
+                    //console.log(err);
+
+                });
+
+
+
+
+            },
+            loadBookmarks: function(){
+                var vm=this;
+                vm.inEditMode=false;
+                vm.hasError=false;
+                $.ajax({
+                    url : '/api/bookmarks',
+                    data: {},
+                    type : 'GET',
+                    dataType : 'json',
+                    cache : false,
+                }).then(function(data) {
+                    vm.markdownSource=data.result.markdown;
+
+                }).fail(function(err){
+                    //console.log(err);
+                });
+            }
+
+        },
+        mounted:function(){
+
+        }
+    });
+
+    $('#markdownModal').load('/common/markdown-modal.html');
+    $('#markdownModal').on('hidden.bs.modal',function(){
+        $('#bookmarksModal').modal('show');
+    });
+    $('#btnBookmarksModal').on('click',function(){
+        $('#bookmarksModal').modal('show');
+        bookmarkVue.loadBookmarks();
+
+    });
+
+});
