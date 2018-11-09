@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 
 // Import any required utility functions
-import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 
