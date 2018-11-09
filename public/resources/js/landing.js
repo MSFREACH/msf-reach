@@ -32,7 +32,7 @@ const operatorCheck = function() {
         url: '/api/utils/operatorCheck',
         statusCode: {
             403: function() {
-                alert('You do not have operator permission to create new events. To get operator permission contact Lucie Gueuning lucie.gueuning@hongkong.msf.org');
+                $('#operatorCheck').html('<span style="color:red">You do not have operator permission to create new events. To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
             }
         }
     });
@@ -1080,6 +1080,7 @@ mainMap.on('dblclick', function(dblclickEvent) {
         areaSelect = L.areaSelect({width:300, height:200});
         areaSelect.addTo(mainMap);
     } else {
+        operatorCheck();
         $('#newEventModal').modal('show');
     }
 });
