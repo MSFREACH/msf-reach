@@ -651,8 +651,8 @@
           <ul class="dropdown-menu">
             <li><a href="#about" data-toggle="modal" data-target="#about">About MSF REACH</a></li>
             <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
-            <li><a href="/lib/pdfjs/web/viewer.html?file=MSF_REACH_User_Manual_2018-11-01.pdf">User Manual</a></li>
-            <li><a href="https://www.dropbox.com/sh/pwbi8hhqha63ppt/AAAjuw7wq7Jri7N0tdZ0fg_Ra?dl=0">Tutorial Videos</a></li>
+            <li><a href="/lib/pdfjs/web/viewer.html?file=MSF_REACH_User_Manual_2018-11-06.pdf">User Manual</a></li>
+            <li><a href="https://www.youtube.com/playlist?list=PLMlyttCV0rQRU8HWkylhmJdLo0WLUwL8Y">Tutorial Videos</a></li>
             <li><a id="logout" href="/logout">Sign out</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -669,7 +669,8 @@
             <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF Responses</a></li>
             <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Previous MSF Responses</a></li>
             <li role="presentation"><a id="reportsTab" data-toggle="tab" href="#reports">Reports</a></li>
-            <li role="presentation"><a id="countryDetailsTab" data-toggle="tab" href="#countryDetails">Country Details</a></li>
+            <li role="presentation"><a id="countryDetailsCIATab" data-toggle="tab" href="#countryDetailsCIA">CIA World Factbook</a></li>
+            <li role="presentation"><a id="countryDetailsLinksTab" data-toggle="tab" href="#countryDetailsLinks">MSF Country Policy Papers</a></li>
           </ul>
           <div class="msf-loader" id="eventMSFLoader"></div>
           <div class="tab-content" id="eventVApp" v-cloak>
@@ -1857,10 +1858,17 @@
         </div>
       </div>
     </div>
-    <div id="countryDetails" class="tab-pane fade">
+    <div id="countryDetailsCIA" class="tab-pane fade">
       <div class="row">
         <div class="col-md-12" >
-          <div id="countryDetailsContainer" style="height:70vh;"></div>
+          <div id="countryDetailsCIAContainer" style="height:70vh;"></div>
+        </div>
+      </div>
+    </div>
+    <div id="countryDetailsLinks" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-12" >
+          <div id="countryDetailsLinksContainer" style="height:70vh;"></div>
         </div>
       </div>
     </div>
