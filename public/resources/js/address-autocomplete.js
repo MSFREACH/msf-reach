@@ -78,7 +78,7 @@ function bindACInputToMap(targetMap,inputId,justLocate)
     function reloadArea(){
         vmObject.data.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in inline editing
         vmObject.data.areas = vmObject.data.event.metadata.areas ;
-        vm.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in modal editing
+        vmObject.data.event.metadata.areas = currentEventProperties.metadata.areas; // updates model in modal editing
     }
 
     function updateLocation(callback){
