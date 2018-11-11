@@ -1591,10 +1591,9 @@ ${localStorage.getItem('username')}
         $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
         }).each(function() {
-            // Get the options for this slider
-            var opt = $(this).data().uiSlider.options;
-            // Get the number of possible values
-            var vals = opt.max - opt.min;
+
+            // Get the number of possible values (-1)
+            var vals = 3-1;
             // Space out values
             for (var i = 0; i <= vals; i++) {
                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
@@ -2462,8 +2461,7 @@ ${localStorage.getItem('username')}
                         $('.inputSeveritySlider').last().slider({
                             min: 1, max: 3, step: 1, value: 2
                         }).each(function() {
-                            var opt = $(this).data().uiSlider.options;
-                            var vals = opt.max - opt.min;
+                            var vals = 3-1;
                             for (var i = 0; i <= vals; i++) {
                                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
                                 $(this).append(el);
