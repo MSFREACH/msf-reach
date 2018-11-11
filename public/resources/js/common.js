@@ -861,13 +861,15 @@ var mapUSGSHazards = function(hazards){
 
 function openHazardPopup(id)
 {
-
+    console.log(id);
     switch(id.split('-',1)[0]) {
     case 'USGS':
         USGSHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id === id)
-                layer.openPopup();
-
+            {
+              mainMap.panTo(layer.getLatLng());
+              layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -878,7 +880,10 @@ function openHazardPopup(id)
     case 'PDC':
         PDCHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
-                layer.openPopup();
+            {
+              mainMap.panTo(layer.getLatLng());
+              layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -889,7 +894,10 @@ function openHazardPopup(id)
     case 'TSR':
         TSRHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
-                layer.openPopup();
+                {
+                  mainMap.panTo(layer.getLatLng());
+                  layer.openPopup();
+                }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -900,7 +908,10 @@ function openHazardPopup(id)
     case 'PTWC':
         PTWCHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
-                layer.openPopup();
+            {
+              mainMap.panTo(layer.getLatLng());
+              layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -911,7 +922,10 @@ function openHazardPopup(id)
     case 'GDACS':
         GDACSHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
-                layer.openPopup();
+            {
+              mainMap.panTo(layer.getLatLng());
+              layer.openPopup();
+            }
             var selector='[id="rssdiv'+sanitiseId(layer.feature.properties.id)+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
