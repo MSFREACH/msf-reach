@@ -1619,15 +1619,15 @@ ${localStorage.getItem('username')}
         if (currentEventProperties) {
             searchTerm = '('+
                 typeStr(currentEventProperties.type, currentEventProperties.metadata.sub_type)
-                .replace(/\s+/,') OR (')+')';
+                    .replace(/\s+/,') OR (')+')';
             searchTerm = searchTerm + ' AND (';
             if (currentEventProperties.metadata.hasOwnProperty('areas')) {
                 for (var areai = 0; areai < currentEventProperties.metadata.areas.length; areai++) {
                     if (currentEventProperties.metadata.areas[areai].region) {
                         searchTerm += '(('+currentEventProperties.metadata.areas[areai].region + 
-                            ' OR ' + currentEventProperties.metadata.areas[areai].country + ') '
+                            ' OR ' + currentEventProperties.metadata.areas[areai].country + ') ';
                     } else {
-                        searchTerm += '(' + currentEventProperties.metadata.areas[areai].country +') '
+                        searchTerm += '(' + currentEventProperties.metadata.areas[areai].country +') ';
                     }
                     if (areai < currentEventProperties.metadata.areas.length - 1) {
                         searchTerm += ' OR ';
@@ -1641,9 +1641,9 @@ ${localStorage.getItem('username')}
             searchTerm += ') ';
             let searchSinceDate ='';
             if (currentEventProperties.metadata.event_datetime) {
-                searchSinceDate = 'since:'+currentEventProperties.metadata.event_datetime.match(/\d\d\d\d\-\d\d\-\d\d/);
+                searchSinceDate = 'since:'+currentEventProperties.metadata.event_datetime.match(/\d\d\d\d-\d\d-\d\d/);
             } else {
-                searchSinceDate = 'since:'+currentEventProperties.created_at.match(/\d\d\d\d\-\d\d\-\d\d/);
+                searchSinceDate = 'since:'+currentEventProperties.created_at.match(/\d\d\d\d-\d\d-\d\d/);
             }
             searchTerm += searchSinceDate;
             $('#searchTerm').val(searchTerm);
