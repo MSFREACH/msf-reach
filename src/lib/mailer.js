@@ -169,35 +169,37 @@ export default ( config, logger ) => ({
 
         console.log(data.subscribers); // eslint-disable-line no-console
 
-        for (let i = 0; i < data.subscribers.length; i++) {
+        if (data.subscribers) {
+            for (let i = 0; i < data.subscribers.length; i++) {
 
-            if (data.subscribers[i] !== '') {
-                let emContext={
-                    eventLink: config.BASE_URL+'events/?eventId='+id,
-                    loginLink: config.BASE_URL+'login',
-                    unsubscribeLink: config.BASE_URL+'unsubscribe/index.html#'+id+'+'+data.subscribers[i]
-                };
-                let mailOptions = {
-                    from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
-                    to: data.subscribers[i],
-                    subject: 'Event update notification',
-                    template: 'event_update',
-                    context: emContext
-                };
+                if (data.subscribers[i] !== '') {
+                    let emContext={
+                        eventLink: config.BASE_URL+'events/?eventId='+id,
+                        loginLink: config.BASE_URL+'login',
+                        unsubscribeLink: config.BASE_URL+'unsubscribe/index.html#'+id+'+'+data.subscribers[i]
+                    };
+                    let mailOptions = {
+                        from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
+                        to: data.subscribers[i],
+                        subject: 'Event update notification',
+                        template: 'event_update',
+                        context: emContext
+                    };
 
-                // send mail with defined transport object
-                logger.info('Sending sharing email notification');
-                transport.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                        logger.error(error.message);
-                        reject(error);
-                    }
-                    else
-                    {
-                        logger.info('Email %s sent: %s', info.messageId, info.response);
+                    // send mail with defined transport object
+                    logger.info('Sending sharing email notification');
+                    transport.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            logger.error(error.message);
+                            reject(error);
+                        }
+                        else
+                        {
+                            logger.info('Email %s sent: %s', info.messageId, info.response);
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         }
         resolve(data); // pass contact data back out for next promise
