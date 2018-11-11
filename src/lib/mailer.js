@@ -257,8 +257,7 @@ export default ( config, logger ) => ({
             });
 
         });//for-each
-        setTimeout(()=>{resolve(data);},5000);
-
+        resolve(data);
 
     })
 
