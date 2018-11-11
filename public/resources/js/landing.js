@@ -42,11 +42,8 @@ $( '#inputSeverityScale' ).slider({
         // step is set to 1
         //
 
-        // Get the options for this slider
-        var opt = $(this).data().uiSlider.options;
-
-        // Get the number of possible values
-        var vals = opt.max - opt.min;
+        // Get the number of possible values (-1)
+        var vals = 3-1;
 
         // Space out values
         for (var i = 0; i <= vals; i++) {
