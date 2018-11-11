@@ -1570,8 +1570,9 @@ Best,
 ${localStorage.getItem('username')}
 `;
         // update mail button
-        vm.manualEmailHref='mailto:'+Cookies.get('email')+'?bcc='+vm.event.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-
+        if (vm.event.subscribers) {
+            vm.manualEmailHref='mailto:'+Cookies.get('email')+'?bcc='+vm.event.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+        }
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
             if ($('#searchTerm').val() !== '') {
@@ -1616,42 +1617,53 @@ ${localStorage.getItem('username')}
 
         var searchTerm = '';
         if (currentEventProperties) {
-            if (currentEventProperties.metadata.name) {
-                if (currentEventProperties.metadata.name.includes('_')) {
-                    elements = currentEventProperties.metadata.name.split('_');
-                    for (var i = 0; i < elements.length-1; i++) {
-                        searchTerm += elements[i] + ' ';
+            searchTerm = '('+
+                typeStr(currentEventProperties.type, currentEventProperties.metadata.sub_type)
+                .replace(/\s+/,') OR (')+')';
+            searchTerm = searchTerm + ' AND (';
+            if (currentEventProperties.metadata.hasOwnProperty('areas')) {
+                for (var areai = 0; areai < currentEventProperties.metadata.areas.length; areai++) {
+                    if (currentEventProperties.metadata.areas[areai].region) {
+                        searchTerm += '(('+currentEventProperties.metadata.areas[areai].region + 
+                            ' OR ' + currentEventProperties.metadata.areas[areai].country + ') '
+                    } else {
+                        searchTerm += '(' + currentEventProperties.metadata.areas[areai].country +') '
                     }
-                } else {
-                    searchTerm = currentEventProperties.metadata.name;
+                    if (areai < currentEventProperties.metadata.areas.length - 1) {
+                        searchTerm += ' OR ';
+                    }
                 }
             } else {
-                searchTerm = typeStr(currentEventProperties.type, currentEventProperties.metadata.sub_type);
-                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
-                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                if (currentEventProperties.metadata.hasOwnProperty('country')) {
+                    searchTerm += currentEventProperties.metadata.country;
                 }
             }
-            if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += ' ' + currentEventProperties.metadata.country;
+            searchTerm += ') ';
+            let searchSinceDate ='';
+            if (currentEventProperties.metadata.event_datetime) {
+                searchSinceDate = 'since:'+currentEventProperties.metadata.event_datetime.match(/\d\d\d\d\-\d\d\-\d\d/);
+            } else {
+                searchSinceDate = 'since:'+currentEventProperties.created_at.match(/\d\d\d\d\-\d\d\-\d\d/);
             }
-            searchTerm = searchTerm.split(/\s+/).join(' OR ').replace(/[\W_]+/g,' ');
+            searchTerm += searchSinceDate;
             $('#searchTerm').val(searchTerm);
             this.searchTerm = searchTerm;
 
-            if(currentEventProperties.type){
+            if (currentEventProperties.type) {
                 var currentTypes = currentEventProperties.type.split(',');
                 for(var t = 0; t < currentTypes.length; t++){
                     this.checkedTypes.push(currentTypes[t]);
                 }
             }
 
-            if(currentEventProperties.metadata.sub_type){
+            if (currentEventProperties.metadata.sub_type) {
                 var currentSubTypes = currentEventProperties.metadata.sub_type.split(',');
                 for(var st = 0; st < currentSubTypes.length; st++){
                     this.checkedSubTypes.push(currentSubTypes[st]);
                 }
             }
         }
+
         $('#btnSearchTwitter').trigger('click');
 
         $('#searchTerm').keyup(function(event){
