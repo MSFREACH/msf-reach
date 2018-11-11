@@ -732,7 +732,7 @@
                       </div>
                         <div class="col-sm-12">
                           <div class="input-group">
-                            <vue-multiselect v-model="msValue" :options="msOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Type to find contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
+                            <vue-multiselect v-model="selectedInvitees" :options="inviteeOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Type to search contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
                             <span class="input-group-btn">
                               <button  class="btn btn-primary" type="button" @click="sendSubscInvite()" style="margin-left:5px;">Invite</button>
                             </span>

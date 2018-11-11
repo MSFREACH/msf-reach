@@ -271,6 +271,13 @@ export default (config, db, logger) => ({
             .catch((err) => reject(err));
     }),
 
+    inviteToSubscribe: (id, data ) => new Promise((resolve,reject) => {
+        mail(config,logger).emailInviteToSubscribe(data,id)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
+
+    })
+
 
 
 });

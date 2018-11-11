@@ -226,5 +226,29 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    // invite users to subscribe
+    api.post('/invitesubscribe/:id', ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                invitees: Joi.array().required()
+            })
+        }),
+        (req, res, next) => {
+            let inviteData={
+                inviter: req.user,
+                invitees: req.body.invitees
+            };
+            events(config, db, logger).inviteToSubscribe(req.params.id,inviteData)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
     return api;
 };

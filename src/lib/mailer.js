@@ -227,34 +227,37 @@ export default ( config, logger ) => ({
         //attach the plugin to the nodemailer transporter
         transport.use('compile', hbs(options));
 
+        data.invitees.forEach((invitee) =>{
+            let emContext={
+                inviterName: data.inviter.displayName,
+                inviteeName: invitee.displayName,
+                eventLink: config.BASE_URL+'events/?eventId='+id,
+                loginLink: config.BASE_URL+'login'
+            };
+            let mailOptions = {
+                from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
+                to: invitee._json.preferred_username,
+                subject: 'Invitation to subscribe to an Event ',
+                template: 'event_invite_subscribe',
+                context: emContext
+            };
 
-        let emContext={
-            eventLink: config.BASE_URL+'events/?eventId='+id,
-            loginLink: config.BASE_URL+'login',
-            unsubscribeLink: config.BASE_URL+'unsubscribe/index.html#'+id+'+'+data.subscribers[i]
-        };
-        let mailOptions = {
-            from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
-            to: data.subscribers[i],
-            subject: 'Event update notification',
-            template: 'event_update',
-            context: emContext
-        };
+            // send mail with defined transport object
+            logger.info('Sending invie-to-subscribe-email to '+ invitee._json.preferred_username );
+            transport.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    logger.error(error.message);
+                    reject(error);
+                }
+                else
+                {
+                    logger.info(`Email ${info.messageId} sent: ${info.response}`);
 
-        // send mail with defined transport object
-        logger.info('Sending sharing email notification');
-        transport.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                logger.error(error.message);
-                reject(error);
-            }
-            else
-            {
-                logger.info('Email %s sent: %s', info.messageId, info.response);
-                resolve(data); // pass contact data back out for next promise
+                }
+            });
 
-            }
-        });
+        });//for-each
+        setTimeout(()=>{resolve(data);},5000);
 
 
     })
