@@ -179,13 +179,14 @@ var printEventProperties = function(err, eventProperties){
     currentEventProperties = eventProperties;
     var newEvent= $.extend(true,{},defaultEvent);
 
-
-    if(!currentEventProperties.metadata.areas){
+    if((!currentEventProperties.metadata.areas)||(currentEventProperties.metadata.areas.length==0))
+    {
         var mockArea = {country: currentEventProperties.metadata.country, region: ''};
         currentEventProperties.metadata.areas = [mockArea];
     }
 
-    if(!currentEventProperties.metadata.severity_measures){
+    if ((!currentEventProperties.metadata.severity_measures)||(currentEventProperties.metadata.severity_measures.length==0))
+    {
         var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.description};
         currentEventProperties.metadata.severity_measures = [mockSeverity];
     }
@@ -1588,6 +1589,7 @@ ${localStorage.getItem('username')}
         });
 
         vm.event.metadata.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
+
         $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
         }).each(function() {
@@ -2448,16 +2450,18 @@ ${localStorage.getItem('username')}
     },
     watch: {
         areas: function(val){
+            var vm=this;
             var mostRecentSlider = $('.inputSeveritySlider').eq($('.inputSeveritySlider').length);
             var filled = mostRecentSlider.has('span.ui-slider-handle').length;
 
             if(filled == 0){
 
-                if(currentEventProperties.metadata.areas.length > currentEventProperties.metadata.severity_measures.length){
+                if(vm.event.metadata.areas.length > vm.event.metadata.severity_measures.length){
                     var mockSeverity = {scale: 2, description: ''};
-                    vmObject.data.event.metadata.severity_measures.push(mockSeverity);
+                    vm.event.metadata.severity_measures.push(mockSeverity);
 
                     setTimeout(function(){
+
                         $('.inputSeveritySlider').last().slider({
                             min: 1, max: 3, step: 1, value: 2
                         }).each(function() {
