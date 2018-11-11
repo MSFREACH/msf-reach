@@ -1453,9 +1453,9 @@ var vmObject = {
         msfNonMedicalMaterials:msfNonMedicalMaterials,
         newNotification:'',
         manualEmailHref:'mailto:admin@msf-reach.org',
-        msOptions: [
+        inviteeOptions: [
         ],
-        msValue: [],
+        selectedInvitees: [],
         msLoading: false,
         panelEditing:{
             'General': false,
@@ -1718,7 +1718,7 @@ ${localStorage.getItem('username')}
                     success: function( data ) {
                         vm.msLoading=false;
                         //console.log(data);
-                        vm.msOptions=JSON.parse(data.body).value;
+                        vm.inviteeOptions=JSON.parse(data.body).value; //JSON.parse(data.body).value
                     }
                 });
             }
@@ -2387,7 +2387,27 @@ ${localStorage.getItem('username')}
         },
         sendSubscInvite:function()
         {
+            var vm=this;
             //send invite here
+            var body={
+                invitees: vm.selectedInvitees
+            };
+
+            vm.msLoading=true;
+            $.ajax({
+                type: 'POST',
+                url: '/api/events/invitesubscribe/' + vm.event.id,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                vm.msLoading=false;
+                alert('Invitation sent to the selected users.');
+                vm.selectedInvitees=[];
+
+            }).fail(function(err) {
+                vm.msLoading=false;
+                alert('An error occured when sending invitations. '+(err.responseText.includes('expired') ? 'session expired':''));
+            });
         }
 
     },
