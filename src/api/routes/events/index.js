@@ -75,6 +75,7 @@ export default ({ config, db, logger }) => {
                 metadata: Joi.object().required().keys({
                     user: Joi.string().allow(null),
                     name: Joi.string().allow(''),
+                    project_code: Joi.string().allow(''),
                     description: Joi.string().allow(''),
                     sub_type: Joi.string().allow(''), // TODO: change to array later
                     event_datetime: Joi.string().allow(''),

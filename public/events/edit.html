@@ -54,7 +54,12 @@ dd.padding-bottom {
               </div>
               <div id="collapseGeneral" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='general')}" role="tabpanel" >
               <div class="panel-body">
-
+            <dl>
+              <dt>Project Code</dt>
+              <dd>
+                <input id="projectCode" type="text" v-model="event.metadata.project_code" class="form-control" placeholder="Event name" />
+              </dd>
+            </dl>
             <dl>
               <dt>Event Name</dt>
               <dd>
