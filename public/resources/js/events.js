@@ -1555,7 +1555,7 @@ var vmObject = {
         }).each(function() {
 
             // Get the number of possible values (-1)
-            var vals = 3-1
+            var vals = 3-1;
             // Space out values
             for (var i = 0; i <= vals; i++) {
                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
