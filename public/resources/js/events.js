@@ -219,24 +219,27 @@ var printEventProperties = function(err, eventProperties){
     };
 
     let newAreas = currentEventProperties.metadata.areas.filter(countriesFilter);
-    try{
 
-        for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
-            countryDetailsCIAContainerContent+='<li role="presentation"><a id="countryDetailsCIATab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+    for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        if (newAreas[areaidx].country)
+        {  countryDetailsCIAContainerContent+='<li role="presentation"><a id="countryDetailsCIATab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
             countryDetailsLinksContainerContent+='<li role="presentation"><a id="countryDetailsLinksTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryLinks'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
         }
+    }
 
-        countryDetailsCIAContainerContent+='</ul>';
-        countryDetailsLinksContainerContent+='</ul>';
+    countryDetailsCIAContainerContent+='</ul>';
+    countryDetailsLinksContainerContent+='</ul>';
 
-        countryDetailsCIAContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
-        countryDetailsLinksContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+    countryDetailsCIAContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+    countryDetailsLinksContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
 
 
-        let numCountries = newAreas.length;
-        let countryLinksCounter = 0;
+    let numCountries = newAreas.length;
+    let countryLinksCounter = 0;
 
-        for (areaidx = 0; areaidx < newAreas.length; areaidx++) {
+    for (areaidx = 0; areaidx < newAreas.length; areaidx++) {
+        if (newAreas[areaidx].country)
+        {
             countryDetailsCIAContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
             countryDetailsLinksContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
             if (newAreas[areaidx].country_code) {
@@ -306,11 +309,8 @@ var printEventProperties = function(err, eventProperties){
 
 
             }
-        }
-    }
-    catch(e){
-        alert(e);
-    }
+        }//if
+    }//for
 
     countryDetailsCIAContainerContent+='</div>';
     $('#countryDetailsCIAContainer').append(countryDetailsCIAContainerContent);
