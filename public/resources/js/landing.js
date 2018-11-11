@@ -119,7 +119,7 @@ var mapAllEvents = function(err, events){
     '\'>'+icon_html+'</a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
-    ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code:' + feature.properties.metadata.project_code + '<br>' : '' ) + 
+    ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) + 
     'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
@@ -162,6 +162,7 @@ var mapAllEvents = function(err, events){
         var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
         $(eventDiv).append(
             '<div class="list-group-item">' +
+        ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) + 
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
       'Last updated at: ' + convertToLocaleDateTime(feature.properties.updated_at) + '<br>' +
