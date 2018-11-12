@@ -61,6 +61,12 @@ dd.padding-bottom {
               </dd>
             </dl>
             <dl>
+              <dt>Operator</dt>
+              <dd>
+                <input id="user" type="text" v-model="localStorage.getItem('username')" class="form-control" placeholder="Operator" />
+              </dd>
+            </dl>
+            <dl>
               <dt>Event Name</dt>
               <dd>
                 <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" />

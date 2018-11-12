@@ -18,7 +18,7 @@ export default (config, db, logger) => ({
      * @param {Number} location.lng longitude
      * @param {Number} location.lat latitude
 	 */
-    all: (status, country, location) => new Promise((resolve, reject) => {
+    all: (status, country, location, search, date) => new Promise((resolve, reject) => {
         // Construct geom, if exists
         const geom = !!location.lng &&
         !!location.lat && 'POINT(' + location.lng +' '+location.lat +')' || null;
@@ -26,10 +26,16 @@ export default (config, db, logger) => ({
         let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
 			FROM ${config.TABLE_EVENTS}
             WHERE ($1 is null or status = $1) AND
+                ($4 is null or 
+                    (metadata->>'name' ilike $4 or 
+                    metadata->>'description' ilike $4 or 
+                    metadata->>'type' ilike $4 or 
+                    metadata->>'sub_type' ilike $4)) AND
+                ($5 is null or created_at > $5) AND
                 ($2 is null or metadata->>'country' = $2) AND
                 ($3 is null or ST_DWITHIN(ST_TRANSFORM(the_geom,3857),ST_TRANSFORM(ST_GEOMFROMTEXT($3,4326),3857),${config.DEFAULT_EVENT_SEARCH_DISTANCE}))
-			ORDER BY updated_at DESC`;
-        let values = [ status, country, geom ];
+            ORDER BY updated_at DESC`;
+        let values = [ status, country, geom, (search ? '%'+search+'%' : null), (date ? date : null)];
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))

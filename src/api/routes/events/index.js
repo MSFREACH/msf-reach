@@ -16,6 +16,8 @@ export default ({ config, db, logger }) => {
     // Validation schema
     const schemaGetAll = Joi.object().keys(
         {
+            search: Joi.string().min(1),
+            since: Joi.string().min(10), // todo: explore Joi ISO 8601 validation
             geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
             status: Joi.any().valid(config.API_EVENT_STATUS_TYPES),
             country: Joi.string(),
@@ -25,7 +27,7 @@ export default ({ config, db, logger }) => {
     ).with('lng', 'lat');
 
     // Get a list of all events
-    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/', ensureAuthenticated,
         validate({
             query: schemaGetAll
         }),
@@ -34,7 +36,7 @@ export default ({ config, db, logger }) => {
                 lng: req.query.lng,
                 lat: req.query.lat
             };
-            events(config, db, logger).all(req.query.status, req.query.country, location)
+            events(config, db, logger).all(req.query.status, req.query.country, location, req.query.search, req.query.since)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */
