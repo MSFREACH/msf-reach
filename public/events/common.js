@@ -18,6 +18,7 @@ var defaultEvent = {
         nonMedicalMaterials: null,
 
         /* << Basic Info */
+        project_code: null,
         name: null,
         region: '',
         startDate: null,

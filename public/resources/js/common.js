@@ -944,8 +944,8 @@ function openHazardPopup(id)
 * @returns {String} err - Error message if any, else none
 * @returns {Object} events - Events as GeoJSON FeatureCollection
 */
-var getAllEvents = function(callback){
-    $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT, function ( data ){
+var getAllEvents = function(callback, term, date){
+    $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT + (term ? ('&search='+term) : '') + (date ? ('&since='+date) :'') , function ( data ){
     // Print output to page
         callback(null, data.result);
     }).fail(function(err) {
@@ -957,6 +957,42 @@ var getAllEvents = function(callback){
     });
 };
 
+
+var eventSearchDate = '';
+var eventSearchTerm = '';
+
+var eventSearch = function() {
+    var saveCookie = Cookies.get('Ongoing MSF Responses');
+    mainMap.removeLayer(eventsLayer);
+    layerControl.removeLayer(eventsLayer);
+    eventsLayer.clearLayers();
+    mainMap.removeLayer(eventsLayer);
+    $('#ongoingEventProperties').empty();
+    $('#watchingEventProperties').empty();
+    Cookies.set('Ongoing MSF Responses',saveCookie);
+    getAllEvents(mapAllEvents, eventSearchTerm, eventSearchDate);
+    $('watchingTab').tab('show');
+};
+
+$(function(){
+    // set up #inputEvDateTime as a date time picker element
+    $( '#eventSearchDate' ).datetimepicker({
+        //controlType: 'select',
+        format: 'YYYY-MM-DD'
+        //yearRange: '1900:' + new Date().getFullYear()
+    });
+
+    $('#eventSearchDate').on('dp.change', function(e) {
+        var formattedValue = e.date.format(e.date._f);
+        eventSearchDate = formattedValue.match(/\d\d\d\d-\d\d-\d\d/);
+        eventSearch();
+    });
+});
+
+$('#eventSearchTerm').on('input',function() {
+    eventSearchTerm = $('#eventSearchTerm').val();
+    eventSearch();
+});
 
 var currentContactId = 0;
 

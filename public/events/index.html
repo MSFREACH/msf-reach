@@ -689,7 +689,9 @@
                   </div>
                   <div class="panel-body" >
                 <table class="table" v-show="!panelEditing.General" style="table-layout: fixed;">
+                  <tr><td>Project code</td><td colspan="2">{{ event.metadata.project_code ? event.metadata.project_code : ""}}</td></tr>
                   <tr><td>Name</td><td  colspan="2"> {{ event.metadata.name }}</td></tr>
+                  <tr><td>Operator</td><td>{{ event.metadata.user }}</td></tr>
                   <tr><td>Area(s)</td>
 
                     <td colspan="2">
@@ -762,10 +764,17 @@
                 <table class="table" v-show="panelEditing.General" id="fields-General" style="table-layout:fixed;">
                   <!-- here is now all input fields -->
                   <script src="/resources/js/edit-maps.js"></script>
-
+                  <tr>
+                    <td>Project code</td>
+                    <td> <input id="eventProjectCode" type="text" v-model="event.metadata.project_code" class="form-control" placeholder="Project code" /></td>
+                  </tr>
                   <tr>
                     <td>Name</td>
                     <td> <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" /></td>
+                  </tr>
+                  <tr>
+                    <td>Operator</td>
+                    <td> <input id="eventProjectCode" type="text" v-model="event.metadata.user ? event.metadata.user : localStorage.getItem('username')" class="form-control" placeholder="Project code" /></td>
                   </tr>
                   <tr>
                     <td class="table-container" id="eventAreas">

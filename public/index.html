@@ -165,6 +165,10 @@
                         <div class="panel panel-default" style="margin-bottom:0px;">
                           <div class="panel-body">
                             <div class="form-group">
+                              <label for="inputEventName">Project Code</label>
+                              <input class="form-control"  id="inputProjectCode" placeholder="Project code ..." required>
+                          </div>
+                            <div class="form-group">
                               <label for="inputEventName">Event Name</label>
                               <input class="form-control"  id="inputEventName" placeholder="Event name ..." required>
                             </div>
@@ -250,7 +254,7 @@
                             <div class="form-group" >
                               <label for="inputEvStatus">Status</label>
                               <select class="form-control" id="inputEvStatus">
-                                <option value="Monitoring">Monitoring </option>
+                                <option value="Monitoring" selected>Monitoring </option>
                                 <option value="Exploration">Exploration</option>
                                 <option value="Intervention">Intervention</option>
                                 <option value="Completed Missions">Completed Missions</option>
@@ -775,14 +779,20 @@
                 <!--event tab menu-->
                 <div id="event" class="tab-pane active">
                     <ul class="nav nav-tabs" id="event_tabs">
-                        <li class="active"><a href="#event_monitoring" data-toggle="tab">Monitoring & Assessment</a></li>
-                        <li><a href="#event_ongoing" data-toggle="tab">Ongoing MSF Responses</a></li>
-                        <li><a href="#event_missions" data-toggle="tab">Previous MSF Responses</a></li>
-                        <li><a href="#event_RSS" data-toggle="tab">RSS Feeds</a></li>
+                        <li class="active"><a href="#event_monitoring" data-toggle="tab" onclick="$('#eventSearchBox').show()">Monitoring & Assessment</a></li>
+                        <li><a href="#event_ongoing" data-toggle="tab" onclick="$('#eventSearchBox').show()">Ongoing MSF Responses</a></li>
+                        <li><a href="#event_missions" data-toggle="tab" onclick="$('#eventSearchBox').hide()">Previous MSF Responses</a></li>
+                        <li><a href="#event_RSS" data-toggle="tab" onclick="$('#eventSearchBox').hide()">RSS Feeds</a></li>
                     </ul>
 
                     <!--event tab content-->
                     <div class="tab-content">
+                        <div class="form-group" class="display:none;" id="eventSearchBox" >
+                          <label for="eventSearchDate">search for events created after</label>
+                          <input type="text" id="eventSearchDate" class="form-control" placeholder="YYYY-MM-DD" >
+                          <input type="text" class="form-control" id="eventSearchTerm" name="" value="" placeholder="Term for searching event name, description, type ...">
+                        </div>
+
                         <div id="event_monitoring" class="tab-pane tab-pane-box active">
                           <div id="watchingEventProperties" class="list-group">
                           </div>
