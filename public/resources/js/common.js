@@ -959,7 +959,7 @@ var eventSearch = function() {
     Cookies.set('Ongoing MSF Responses',saveCookie);
     getAllEvents(mapAllEvents, eventSearchTerm, eventSearchDate);
     $('watchingTab').tab('show');
-}
+};
 
 $(function(){
     // set up #inputEvDateTime as a date time picker element
