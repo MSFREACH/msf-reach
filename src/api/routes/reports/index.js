@@ -13,14 +13,15 @@ export default ({ config, db, logger }) => {
     let api = Router();
 
     // Get a list of all reports
-    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/', ensureAuthenticated,
         validate({
             query: {
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
-                eventId: Joi.number().integer().min(1)
+                eventId: Joi.number().integer().min(1),
+                since: Joi.string().min(10) // todo: see if Joi has ISO 8601 checking
             }
         }),
-        (req, res, next) => reports(config, db, logger).all(req.query.hasOwnProperty('eventId') ? req.query.eventId : null)
+        (req, res, next) => reports(config, db, logger).all(req.query.hasOwnProperty('eventId') ? req.query.eventId : null, req.query.since)
             .then((data) => handleGeoResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */

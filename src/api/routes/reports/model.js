@@ -11,14 +11,16 @@ export default (config, db, logger) => ({
 	 * Return all reports
    * @param {integer} id ID of event to filter reports by
 	 */
-    all: (eventid) => new Promise((resolve, reject) => {
+    all: (eventid, since, until) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, event_id as eventId, status, created, report_key as reportkey, content, the_geom
 			FROM ${config.TABLE_REPORTS}
-			WHERE ($1 is not null and event_id = $1 and not event_id is null) or ($1 is null and event_id is null and status != 'ignored')
+            WHERE ($1 is not null and event_id = $1 and not event_id is null) or ($1 is null and event_id is null and status != 'ignored')
+            AND ($2 is null or created > $2) 
+            AND ($3 is null or created < $3)
 			ORDER BY created DESC`; // xor
 
-        let values = [ eventid ];
+        let values = [ eventid, (since ? since: null), (until ? until: null) ];
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
