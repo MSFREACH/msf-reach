@@ -71,6 +71,7 @@ import InfoFAQ from '@/views/Info/FAQ.vue';
 export default {
     name: 'RHeader',
     data: () => ({
+        nameInitial: null,
         profileActions: [
             {title : 'About MSF Reach'},
             {title : 'FAQ'},
@@ -118,8 +119,13 @@ export default {
             'currentUser',
             'isAuthenticated'
         ]),
-        nameInitial(){
-            return this.currentUser ? this.currentUser.username.charAt(0) : null;
+        // nameInitial(){
+        //     return this.currentUser ? this.currentUser.username.charAt(0) : null;
+        // }
+    },
+    watch: {
+        currentUser(newValue){
+            this.nameInitial = this.currentUser.username.charAt(0);
         }
     },
     methods: {

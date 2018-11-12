@@ -50,7 +50,8 @@ export const EVENT_TYPES = [
 export const EVENT_STATUSES = [
     { value: 'monitoring', text: 'Monitoring', icon: 'assessment' },
     { value: 'exploration', text: 'Exploration' , icon: 'accessibility_new'},
-    { value: 'ongoing', text: 'Interventions', icon: 'find_replace' },
+    { value: 'ongoing', text: 'Ongoing', icon: 'find_replace' },
+    { value: 'intervention', text: 'Intervention', icon: 'find_replace' },
     { value: 'complete', text: 'Archived', icon: 'calendar_view_day' }
 ];
 

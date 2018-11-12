@@ -1,10 +1,10 @@
 <template>
     <v-layout app row wrap>
-        <v-flex xs12>
+        <nav>
             <v-btn small flat v-for="(item, index) in secondLevel" :key="index">
                 <router-link :to="{ name: item.name, params: {'slug': $route.params.slug }}"> {{ item.label }}</router-link>
             </v-btn>
-        </v-flex>
+        </nav>
         <router-view></router-view>
     </v-layout>
 </template>

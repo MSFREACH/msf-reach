@@ -1,8 +1,8 @@
 <template>
     <v-layout row justify-center>
         <v-dialog v-model="dialog" persistent max-width="1000px">
-            <v-btn slot="activator" fab small flat>
-                <v-icon color="grey darken-1"> add </v-icon>
+            <v-btn slot="activator" fab small flat dark color="grey darken-1">
+                <v-icon> add </v-icon>
             </v-btn>
             <v-card>
                 <v-toolbar color="red" dark>

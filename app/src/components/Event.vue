@@ -1,30 +1,26 @@
 <template>
-    <v-flex xs12 class="event-page">
-        <v-card v-if="!slug">
+    <v-container class="event-page" app>
+        <span v-if="!slug">
             Please select event for review.
-        </v-card>
+        </span>
         <!-- fake tab look, but need to use router for all the chidren -->
-        <v-layout v-else>
-            <v-btn flat small color="grey" v-for="item in detailTabs" :key="item.component">
-                <router-link :to="{name: item.component}" @click="item.firstTime = false">
-                    <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
-                    <v-icon v-else>{{item.icon}}</v-icon>
-                    {{ item.name }}
-                </router-link>
-            </v-btn>
-        </v-layout>
-
-        <v-content app>
-            <router-view></router-view>
-        </v-content>
-
-        <v-flex class="tooltip">
-            <v-btn dark @click="copyLink()" v-on:onmouseout="outFunc()" >
-                <v-icon> link </v-icon> Sharepoint
-                <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-            </v-btn>
-        </v-flex>
-    </v-flex>
+        <nav v-else>
+          <span class="second-nav-links" v-for="item in detailTabs" :key="item.component">
+              <router-link :to="{name: item.component}" @click="item.firstTime = false">
+                  <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
+                  <!-- <v-icon v-else>{{item.icon}}</v-icon> -->
+                  {{ item.name }}
+              </router-link>
+          </span>
+          <v-flex class="tooltip">
+              <v-btn flat small fab @click="copyLink()" v-on:onmouseout="outFunc()" >
+                  <v-icon> link </v-icon>
+                  <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+              </v-btn>
+          </v-flex>
+        </nav>
+        <router-view></router-view>
+    </v-container>
 </template>
 
 <script>

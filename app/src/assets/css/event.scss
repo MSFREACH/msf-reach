@@ -5,21 +5,41 @@
 }
 
 .monitoring{
-    color: #68D845 !important;; // green;
-    border: 1px solid #68D845;
+    color: #95E1D3 !important; // green;
+    // border: 1px solid #95E1D3;
 }
 .exploration{
-    color: #FB618D !important;; // red;
-    border: 1px solid #FB618D;
+    color: #F38181 !important; // red;
+    // border: 1px solid #F38181;
 }
 .ongoing{
-    color: #FCD475 !important;; // yellow;
-    border: 1px solid #FCD475;
+    color: #FCE38A !important; // yellow;
+    // border: 1px solid #FCE38A;
+}
+.intervention{
+    color: #FCE38A !important; // yellow;
+    // border: 1px solid #FCE38A;
 }
 .complete{
-    color:  #C6C6C6 !important;; // grey
-    background: #F2F2F2;
-    border: 1px solid #C6C6C6;
+    color:  #909297 !important; // grey
+    // background: #F2F2F2;
+    // border: 1px solid #909297;
+}
+
+.monitoring-fill{
+    background: #95E1D3 !important; // green;
+}
+.exploration-fill{
+    background: #F38181 !important; // red;
+}
+.ongoing-fill{
+    background: #FCE38A !important; // yellow;
+}
+.intervention-fill{
+    background: #FCE38A !important; // yellow;
+}
+.complete-fill{
+    background:  #909297 !important; // grey
 }
 
 .eventList{
@@ -32,5 +52,5 @@
 }
 
 .listHeader .v-select__selections{
-    font-size: 10px; 
+    font-size: 10px;
 }

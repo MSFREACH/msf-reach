@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="eventSubContent" v-if="eventMetadata">
+    <v-container class="eventSubContent" v-if="eventMetadata">
         <div class="actions">
             <button v-if="!editing" @click="edit()">Edit</button>
             <div v-else>

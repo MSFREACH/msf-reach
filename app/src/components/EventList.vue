@@ -7,43 +7,35 @@
             <v-data-iterator
             content-tag="v-layout"
             :items="displayEvents"
-            :rows-per-page-items="rowsPerPageItems"
-            :pagination.sync="pagination"
             :search="search"
             no-data-text="No events found"
+            hide-actions
             wrap row>
-                <v-toolbar slot="header" class="listHeader"  floating flat xs3>
-                    <v-btn-toggle v-model="selectedStatus">
-                        <v-btn v-for="(status, index) in allEventStatuses"
-                        :value="status.value"
-                        :key="index" flat
-                        :class="status.value"
-                        @click="filterByStatus(status.value)">
-                            <v-icon> {{status.icon}} </v-icon>
-                        </v-btn>
-                    </v-btn-toggle>
-                    <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" multiple round></v-select>
-                    <new-event></new-event>
+                <v-toolbar class="listHeader" slot="header" flat>
+                      <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details xs10></v-text-field>
+                      <new-event xs2></new-event>
+                      <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" round xs6></v-select>
+                      <v-btn-toggle v-model="selectedStatus" xs6>
+                          <span v-for="(status, index) in allEventStatuses"
+                          :value="status.value"
+                          :key="index"
+                          :class="status.value + '-fill select-status-filter'"
+                          @click="filterByStatus(status.value)">
+                          </span>
+                      </v-btn-toggle>
                 </v-toolbar>
                 <v-list three-line slot="item" slot-scope="props">
                     <v-list-tile :key="props.item.id" avatar ripple :to="{name: 'event-general', params: {'slug': props.item.id}}">
                         <v-list-tile-content>
-                            <v-list-tile-title> {{props.item.metadata.name}} </v-list-tile-title>
-                            <v-chip v-if="props.item.metadata.event_status"
-                            :class="props.item.metadata.event_status"
-                            small outline label> {{props.item.metadata.event_status}} </v-chip>
-                            <v-chip v-else small outline label> monitoring </v-chip>
-                            <v-chip small>{{props.item.metadata.types[0]}} </v-chip>
-                            <v-list-tile-sub-title>   {{ props.item.updated_at | relativeTime }} </v-list-tile-sub-title>
-                            <!-- {{ props.item.place }} -->
-                            <!-- <v-list-tile-sub-title> {{ props.item.short_description }} </v-list-tile-sub-title> -->
+                            <v-list-tile-title :class="props.item.metadata.event_status"> {{props.item.metadata.name}} </v-list-tile-title>
+                            <span v-for="(eventType, index) in props.item.metadata.types" :key="index" class="list-types">  {{eventType}}  </span>
+                            <span class="not-render">{{ props.item.metadata.event_status }} </span>
+                            <v-list-tile-sub-title> <label> AREA </label> {{props.item.place}} </v-list-tile-sub-title>
+                            <v-list-tile-sub-title> <label> UPDATED </label> {{ props.item.updated_at | relativeTime }} </v-list-tile-sub-title>
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-divider></v-divider>
                 </v-list>
-                <template slot="pageText" slot-scope="props">
-                        {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
-                </template>
                 <v-alert slot="no-results" :value="true" color="error" icon="warning">
                     Your search for "{{ search }}" found no results.
                 </v-alert>
@@ -128,22 +120,27 @@ export default {
                     'separator' : ' '
                 });
 
-                // if(item.metadata.areas.length > 0 ){
-                //     if(item.metadata.areas[0].region){
-                //         item.place = item.metadata.areas[0].region + item.metadata.areas[0].country_code;
-                //     }else{
-                //         item.place = item.metadata.areas[0].country;
-                //     }
-                // }else{
-                //     item.place = item.metadata.country;
-                // }
+                if(!item.metadata.areas){
+                    item.place = item.metadata.country;
+                }else{
+                    if(item.metadata.areas[0].region){
+                        item.place = item.metadata.areas[0].region + item.metadata.areas[0].country_code;
+                    }else{
+                        item.place = item.metadata.areas[0].country;
+                    }
+                }
+
+                if(!item.metadata.types){
+                    item.metadata.types = item.type.split(',');
+                }
+
             });
             this.displayEvents = _.map(this.events, _.clone);
         },
         filteredTypes(newValue){
             this.displayEvents = this.events.filter(item => {
-                var types = item.type.split(',');
-                return _.isEmpty(newValue) || _.intersection(newValue, types).length > 0;
+                var types = item.metadata.types ? item.metadata.types : item.type.split(',');
+                return _.isEmpty(newValue) || _.indexOf(types, newValue) != -1;
             });
         }
     },
@@ -154,12 +151,9 @@ export default {
         fetchEvents() {
             this.$store.dispatch(FETCH_EVENTS, this.listConfig);
         },
-        filterType(type){
-
-        },
         filterByStatus(status){
             this.displayEvents = this.events.filter(item =>{
-                return item.metadata.event_status == status;
+                if(item.metadata.event_status && item.metadata.event_status.toLowerCase() == status) return item;
             });
         },
         customFilter(items, search, filter){
@@ -189,14 +183,17 @@ export default {
 <style lang="scss">
     @import '@/assets/css/lists.scss';
     @import '@/assets/css/event.scss';
-
-    // .v-select>.v-input__control>.v-input__slot{
-    //     border: 2px solid #747474;
-    //     border-radius: 30px;
-    // }
-    // .v-select>.v-input__control>.input__slot:before{
-    //     border-style: none;
-    // }
+    .v-list{
+      width: 100%;
+      background: inherit;
+    }
+    .listHeader{
+      height: 128px;
+    }
+    .listHeader .v-toolbar__content{
+      height: 128px;
+      display: block;
+    }
     .v-data-iterator{
         width: 100%;
         overflow: auto;
@@ -204,5 +201,29 @@ export default {
     }
     .v-list__tile__title {
         white-space: inherit;
+    }
+    .v-list__tile__sub-title label{
+        font-weight: 300;
+        font-size: 11px;
+    }
+    .v-list__tile__sub-title{
+        font-weight: normal;
+        color: #000;
+    }
+    .v-btn-toggle{
+      background: inherit !important;
+    }
+    .select-status-filter{
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .not-render{
+        display: none;
+    }
+    .list-types{
+        font-size: 8px;
+        display: inline-block;
     }
 </style>
