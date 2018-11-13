@@ -73,6 +73,60 @@ var eventsLayer;
 
 var disease_subtypes = ['cholera', 'ebola','dengue','malaria','measles','meningococcal_meningitis','yellow_fever','other_disease_outbreak'];
 
+var deleteEvent= function(event_id){
+    if (confirm('Are you sure you want to permanently delete this event? \nWARNING: ALL linked reports will be deleted. This action cannot be undone.'))
+    {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/events/' + event_id,
+            contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+            //console.log(data);
+            getAllEvents(mapAllEvents);
+            alert('Event successfully deleted.');
+
+
+
+        }).fail(function(err) {
+            alert('Error in deleting Event...');
+
+            if (err.responseText.includes('expired')) {
+                alert('session expired');
+            }
+        });
+
+    }
+};
+
+var deleteContact= function(contact_id){
+
+    if (confirm('Are you sure you want to permanently delete this contact? \nWARNING: This action cannot be undone.'))
+    {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/contacts/' + contact_id,
+            contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+            //console.log(data);
+            getContacts();
+            alert('Contact successfully deleted.');
+            $('#contactDetailsModal').modal('hide');
+
+
+
+        }).fail(function(err) {
+            alert('Error in deleting this contact. You may not be authorized to delete this contact.');
+
+            if (err.responseText.includes('expired')) {
+                alert('session expired');
+            }
+            $('#contactDetailsModal').modal('hide');
+        });
+
+    }
+};
+
+
 /**
 * Function to map and print a table of events
 * @function mapAllEvents
@@ -81,6 +135,8 @@ var disease_subtypes = ['cholera', 'ebola','dengue','malaria','measles','meningo
 */
 var mapAllEvents = function(err, events){
 
+    $('#watchingEventProperties').html('');
+    $('#ongoingEventProperties').html('');
     // Add popups
     function onEachFeature(feature, layer) {
         var affectedPopulationStr = '';
@@ -130,7 +186,7 @@ var mapAllEvents = function(err, events){
     '\'>'+icon_html+'</a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
-    ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) + 
+    ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
     'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
     'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
     'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
@@ -173,7 +229,8 @@ var mapAllEvents = function(err, events){
         var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
         $(eventDiv).append(
             '<div class="list-group-item">' +
-        ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) + 
+            '<button type="button" class="btn btn-danger btn-sm" style="float:right;" onclick="deleteEvent('+feature.properties.id+')"><span class="glyphicon glyphicon-remove"></span></button>'+
+        ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
       'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
       'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
       'Last updated at: ' + convertToLocaleDateTime(feature.properties.updated_at) + '<br>' +

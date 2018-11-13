@@ -281,9 +281,26 @@ export default (config, db, logger) => ({
         mail(config,logger).emailInviteToSubscribe(data,id)
             .then((data) => resolve(data))
             .catch((err) => reject(err));
+    }),
 
+    /**
+    * DELETE an event from the database
+    * @param {integer} id ID of contact
+    */
+    deleteEvent: (id) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query1 = `DELETE FROM ${config.TABLE_REPORTS} WHERE event_id = $1`;
+        let query2 = `DELETE FROM ${config.TABLE_EVENTS} WHERE id = $1 returning id`;
+
+        // Setup values
+        let values = [ id ];
+
+        // Execute
+        logger.debug(query1+' ; '+query2, values);
+        db.any(query1,values).then(()=>(db.oneOrNone(query2, values))).timeout(config.PGTIMEOUT)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
     })
-
-
 
 });
