@@ -26,6 +26,17 @@ var report_id_for_event = null; // null = not creating event from unassigned rep
 // cookie for last page load
 Cookies.set('last_load',String(Date.now()/1000));
 
+const operatorCheck = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/utils/operatorCheck',
+        statusCode: {
+            403: function() {
+                $('#operatorCheck').html('<span style="color:red">You do not have operator permission to create new events. To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+            }
+        }
+    });
+};
 
 // set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
@@ -1068,6 +1079,7 @@ mainMap.on('dblclick', function(dblclickEvent) {
         areaSelect = L.areaSelect({width:300, height:200});
         areaSelect.addTo(mainMap);
     } else {
+        operatorCheck();
         $('#newEventModal').modal('show');
     }
 });
