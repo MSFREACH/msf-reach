@@ -154,7 +154,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => mail(config,logger).emailSubscribers(data,id))
+            //.then((data) => mail(config,logger).emailSubscribers(data,id))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));
     }),
@@ -255,7 +255,7 @@ export default (config, db, logger) => ({
     }),
 
     /**
-   * Update an event location
+   * unsubscribe from an event
    * @param {integer} id ID of event
    * @param {string} email Email to unsubscribe
    */
