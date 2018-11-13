@@ -320,7 +320,7 @@ export default ({ config, db, logger }) => {
                     response.status(404).send(res);
                 }
                 else{
-                    //console.log('res: ' + res);
+                    logger.info(res);
                     response.send(res);
                 }
             });
