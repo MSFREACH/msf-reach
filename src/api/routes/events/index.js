@@ -183,5 +183,21 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    // Delete an event's record and associated reports from the database
+    api.delete('/:id', ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() }
+        }),
+        (req, res, next) => {
+            events(config, db, logger).deleteEvent(req.params.id)
+                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'event deleted', id:data.id }))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        });
+
     return api;
 };
