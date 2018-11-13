@@ -1,9 +1,13 @@
 <template>
-    <v-layout app row wrap>
-        <nav>
-            <v-btn small flat v-for="(item, index) in secondLevel" :key="index">
-                <router-link :to="{ name: item.name, params: {'slug': $route.params.slug }}"> {{ item.label }}</router-link>
-            </v-btn>
+    <v-layout app>
+        <nav class="first-nav">
+            <router-link
+                class="first-nav-links"
+                v-for="(item, index) in crossTabs"
+                :key="index"
+                :to="{ name: item.component, params: {'slug': $route.params.slug }}">
+                {{ item.name }}
+            </router-link>
         </nav>
         <router-view></router-view>
     </v-layout>
@@ -15,6 +19,7 @@
 // import RelatedContacts from '@/components/Contacts/RelatedContacts.vue';
 // import CountryDetails from '@/components/CountryDetails.vue';
 // import RelatedResponses from '@/components/RelatedResponses.vue';
+import { EVENT_TOP_NAVIGATIONS } from '@/common/navigational-fields.js';
 
 export default {
     name: 'EventNav',
@@ -22,24 +27,7 @@ export default {
         return {
             active: null,
             contents: ['Event Details', 'News Feed', 'Related Contacts', 'Country Details', 'Related Response'],
-            secondLevel : [
-                {
-                    name: 'event',
-                    label: 'Event Details'
-                }, {
-                    name: 'newsfeed',
-                    label: 'News Feed'
-                }, {
-                    name: 'event', // placeholders
-                    label: 'Related Contacts'
-                }, {
-                    name: 'event', // placeholders
-                    label: 'Country Details'
-                }, {
-                    name: 'event', // placeholders
-                    label: 'Related Response'
-                }
-            ]
+            crossTabs : EVENT_TOP_NAVIGATIONS
         };
     },
     methods: {
@@ -50,3 +38,23 @@ export default {
     },
 };
 </script>
+<style lang='scss'>
+    @import '@/assets/css/util/typography.scss';
+
+    .first-nav{
+        background: #E8E8E8;
+        height: 40px;
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+    }
+    .first-nav-links{
+        color: #707070;
+        padding: 9px 23px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .first-nav-links.router-link-active{
+        color: #FFF;
+        background: #B1B1B1;
+    }
+</style>

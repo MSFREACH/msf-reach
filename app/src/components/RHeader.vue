@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar app class="elevation-8" fixed :clipped-left="$vuetify.breakpoint.mdAndUp" >
+    <v-toolbar app class="main-nav" flat fixed :clipped-left="$vuetify.breakpoint.mdAndUp" >
         <v-flex class="logo">
             <img src="../assets/images/msf-reach-logo-trans-01.png" alt=""></img>
         </v-flex>
@@ -9,6 +9,7 @@
                 <v-btn flat><router-link :to="{ name: 'reports' }">Reports</router-link></v-btn>
                 <v-btn flat><router-link :to="{ name: 'contacts' }">Contacts</router-link></v-btn>
             </v-toolbar-items>
+            <v-spacer></v-spacer>
             <v-spacer></v-spacer>
             <v-text-field hide-details append-icon="search" single-line></v-text-field>
             <v-menu offset-y>

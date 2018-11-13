@@ -4,14 +4,17 @@
             Please select event for review.
         </span>
         <!-- fake tab look, but need to use router for all the chidren -->
-        <nav v-else>
-          <span class="second-nav-links" v-for="item in detailTabs" :key="item.component">
-              <router-link :to="{name: item.component}" @click="item.firstTime = false">
-                  <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
-                  <!-- <v-icon v-else>{{item.icon}}</v-icon> -->
-                  {{ item.name }}
-              </router-link>
-          </span>
+        <nav class="second-nav" v-else>
+          <router-link
+            class="second-nav-links"
+            v-for="item in detailTabs"
+            :key="item.component"
+            :to="{name: item.component}"
+            @click="item.firstTime = false">
+              <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
+              <!-- <v-icon v-else>{{item.icon}}</v-icon> -->
+              {{ item.name }}
+          </router-link>
           <v-flex class="tooltip">
               <v-btn flat small fab @click="copyLink()" v-on:onmouseout="outFunc()" >
                   <v-icon> link </v-icon>
@@ -124,5 +127,22 @@ export default {
     @import '@/assets/css/event.scss';
     textarea#sharepoint{
         opacity: 0;
+    }
+    .event-page{
+        position: absolute;
+        top: 40px;
+        padding: 0;
+    }
+    .second-nav{
+        margin-left: 30px;
+    }
+    .second-nav-links{
+        color: #707070;
+        padding: 10px 15px;
+        border-bottom: 1px solid #ccc;
+    }
+    .second-nav-links.router-link-exact-active{
+        font-weight: bold;
+        border-bottom: 1px solid #000;
     }
 </style>

@@ -8,7 +8,7 @@
             </div>
         </div>
          <v-layout row wrap v-if="!editing">
-            <h1>{{eventMetadata.name}}</h1>
+            <label>Name</label> <div class="primary-text">{{eventMetadata.name}}</div>
             <label>Areas</label>
             <v-layout align-center row fill-height>
                 <v-flex v-for="(area, index) in eventMetadata.areas" :key="index" xs6>

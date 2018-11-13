@@ -81,7 +81,7 @@ export default new Router({
                 ]
             }
             // , {
-            //     name: 'newsfeed', 
+            //     name: 'newsfeed',
             //     path: ':slug/newsfeed',
             //     component: () => import('@/components/NewsFeed'),
             //     props: true,
@@ -116,5 +116,10 @@ export default new Router({
         path: '/reports',
         component: () => import('@/components/ReportList'),
         props: true
-    },]
+    },{
+        name: 'placeholder',
+        path: '/placeholder',
+        component: () => import('@/components/Placeholder'),
+        props: true
+    }]
 });
