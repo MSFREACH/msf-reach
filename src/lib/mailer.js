@@ -245,7 +245,7 @@ export default ( config, logger ) => ({
             };
 
             // send mail with defined transport object
-            logger.info('Sending invie-to-subscribe-email to '+ invitee._json.preferred_username );
+            logger.info('Sending invite-to-subscribe-email to '+ invitee._json.preferred_username );
             transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     logger.error(error.message);
