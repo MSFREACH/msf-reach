@@ -87,6 +87,34 @@ var deleteEvent= function(event_id){
     }
 };
 
+var deleteContact= function(contact_id){
+
+    if (confirm('Are you sure you want to permanently delete this contact? \nWARNING: This action cannot be undone.'))
+    {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/contacts/' + contact_id,
+            contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+            //console.log(data);
+            getContacts();
+            alert('Contact successfully deleted.');
+            $('#contactDetailsModal').modal('hide');
+
+
+
+        }).fail(function(err) {
+            alert('Error in deleting this contact. You may not be authorized to delete this contact.');
+
+            if (err.responseText.includes('expired')) {
+                alert('session expired');
+            }
+            $('#contactDetailsModal').modal('hide');
+        });
+
+    }
+};
+
 
 /**
 * Function to map and print a table of events

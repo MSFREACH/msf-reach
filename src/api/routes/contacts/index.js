@@ -223,7 +223,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
             contacts(config, db, logger).deleteContact(req.params.id,req.user.oid)
-                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact deleted', id: data.id }))
+                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact deleted', id: data.id}))
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);

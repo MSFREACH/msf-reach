@@ -200,7 +200,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.one(query, values).timeout(config.PGTIMEOUT)
-            .then(() => resolve())
+            .then((data) => resolve(data))
             .catch((err) => reject(err));
     }),
 
