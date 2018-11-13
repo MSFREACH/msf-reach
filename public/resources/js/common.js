@@ -944,8 +944,8 @@ function openHazardPopup(id)
 * @returns {String} err - Error message if any, else none
 * @returns {Object} events - Events as GeoJSON FeatureCollection
 */
-var getAllEvents = function(callback, term, date){
-    $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT + (term ? ('&search='+term) : '') + (date ? ('&since='+date) :'') , function ( data ){
+var getAllEvents = function(callback, term){
+    $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT + (term ? ('&search='+term) : ''), function ( data ){
     // Print output to page
         callback(null, data.result);
     }).fail(function(err) {
@@ -958,7 +958,8 @@ var getAllEvents = function(callback, term, date){
 };
 
 
-var eventSearchDate = '';
+var eventSearchFromDate = '';
+var eventSearchToDate = '';
 var eventSearchTerm = '';
 
 var eventSearch = function() {
@@ -970,21 +971,34 @@ var eventSearch = function() {
     $('#ongoingEventProperties').empty();
     $('#watchingEventProperties').empty();
     Cookies.set('Ongoing MSF Responses',saveCookie);
-    getAllEvents(mapAllEvents, eventSearchTerm, eventSearchDate);
+    getAllEvents(mapAllEvents, eventSearchTerm);
     $('watchingTab').tab('show');
 };
 
 $(function(){
-    // set up #inputEvDateTime as a date time picker element
-    $( '#eventSearchDate' ).datetimepicker({
+    // set up as a date time picker element
+    $( '#eventSearchFromDate' ).datetimepicker({
         //controlType: 'select',
         format: 'YYYY-MM-DD'
         //yearRange: '1900:' + new Date().getFullYear()
     });
 
-    $('#eventSearchDate').on('dp.change', function(e) {
+    $('#eventSearchFromDate').on('dp.change', function(e) {
         var formattedValue = e.date.format(e.date._f);
-        eventSearchDate = formattedValue.match(/\d\d\d\d-\d\d-\d\d/);
+        eventSearchFromDate = formattedValue.match(/\d\d\d\d-\d\d-\d\d/)[0];
+        eventSearch();
+    });
+
+    // set up as a date time picker element
+    $( '#eventSearchToDate' ).datetimepicker({
+        //controlType: 'select',
+        format: 'YYYY-MM-DD'
+        //yearRange: '1900:' + new Date().getFullYear()
+    });
+
+    $('#eventSearchToDate').on('dp.change', function(e) {
+        var formattedValue = e.date.format(e.date._f);
+        eventSearchToDate = formattedValue.match(/\d\d\d\d-\d\d-\d\d/)[0];
         eventSearch();
     });
 });

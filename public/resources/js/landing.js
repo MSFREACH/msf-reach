@@ -139,116 +139,124 @@ var mapAllEvents = function(err, events){
     $('#ongoingEventProperties').html('');
     // Add popups
     function onEachFeature(feature, layer) {
-        var affectedPopulationStr = '';
-        if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
-            affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
-        }
 
-        var totalPopulationStr = '';
-        if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
-            totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
-        }
+        var dateOfEvent = new Date (feature.properties.metadata.event_datetime || feature.properties.created_at);
+        if ( !(eventSearchFromDate && eventSearchToDate) || 
+            (eventSearchFromDate && !eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent)) ||
+            (!eventSearchFromDate && eventSearchToDate && (dateOfEvent < (new Date(eventSearchToDate)))) || 
+            (eventSearchFromDate && eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent && dateOfEvent < (new Date(eventSearchToDate))))
+        ) {
+            var affectedPopulationStr = '';
+            if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
+                affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
+            }
 
-        var notificationStr = '';
-        var statusStr = '';
-        if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + getLatestNotification(feature.properties.metadata.notification).notification + '<br>';
-        } else {
-            notificationStr = 'Latest notification: (none)<br>';
-        }
-        if(typeof(feature.properties.metadata.event_status)!=='undefined') {
-            statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
-        } else {
-            statusStr = 'Status: ' + feature.properties.status + '<br>';
-        }
+            var totalPopulationStr = '';
+            if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
+                totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
+            }
 
-        var severityStr = '';
+            var notificationStr = '';
+            var statusStr = '';
+            if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
+                notificationStr = 'Latest notification: ' + getLatestNotification(feature.properties.metadata.notification).notification + '<br>';
+            } else {
+                notificationStr = 'Latest notification: (none)<br>';
+            }
+            if(typeof(feature.properties.metadata.event_status)!=='undefined') {
+                statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
+            } else {
+                statusStr = 'Status: ' + feature.properties.status + '<br>';
+            }
 
-        if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
-        }
-        if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
-        }
+            var severityStr = '';
 
-
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-        type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','');
-
-        var icon_names = type.split(',');
-        var icon_html = icon_names.map(function(item) {
-            if (item!=='' && disease_subtypes.indexOf(item)===-1) {
-                return '<img src="/resources/images/icons/event_types/'+item+'.svg" width="40">';
-            } else return '';
-        }).join('');
-
-        var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
-    '\'>'+icon_html+'</a>' +
-    '<strong><a href=\'/events/?eventId=' + feature.properties.id +
-    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
-    ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
-    'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
-    'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
-    statusStr +
-    severityStr +
-    'Description: ' + feature.properties.metadata.description + '<br>' +
-    notificationStr +
-    totalPopulationStr +
-    affectedPopulationStr;
+            if (feature.properties.metadata.hasOwnProperty('severity')) {
+                severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
+            }
+            if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
+                severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
+            }
 
 
-        // make sure there's no trailing <br> from above
-        if (popupContent.endsWith('<br>')) {
-            popupContent.substr(0,popupContent.length-4);
-        }
+            var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+            type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','');
 
-        var eventDiv = '';
-        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
-            eventDiv = '#watchingEventProperties';
-        } else {
-            eventDiv = '#ongoingEventProperties';
-        }
-        if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
-            feature.properties.metadata.name = '(no name specified)';
-        }
+            var icon_names = type.split(',');
+            var icon_html = icon_names.map(function(item) {
+                if (item!=='' && disease_subtypes.indexOf(item)===-1) {
+                    return '<img src="/resources/images/icons/event_types/'+item+'.svg" width="40">';
+                } else return '';
+            }).join('');
 
-        var location = '';
-        if(!feature.properties.metadata.areas){
-            location = feature.properties.metadata.country;
-        }else{
-            location = _.map(feature.properties.metadata.areas, function(el){
-                if(!_.isEmpty(el.region)){
-                    return el.region +' '+ el.country_code;
-                }else{
-                    return el.country;
-                }
-            }).join(', ');
-        }
-
-        var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
-        $(eventDiv).append(
-            '<div class="list-group-item">' +
-            '<button type="button" class="btn btn-danger btn-sm" style="float:right;" onclick="deleteEvent('+feature.properties.id+')"><span class="glyphicon glyphicon-remove"></span></button>'+
+            var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
+        '\'>'+icon_html+'</a>' +
+        '<strong><a href=\'/events/?eventId=' + feature.properties.id +
+        '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
         ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
-      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
-      'Last updated at: ' + convertToLocaleDateTime(feature.properties.updated_at) + '<br>' +
-      (hasLocation ? 'Area(s): ' + location + '<br>': '') +
-    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
-      statusStr +
-      notificationStr +
-      totalPopulationStr +
-      affectedPopulationStr +
-      'Description: ' + feature.properties.metadata.description + '<br>' +
-      '</div>'
-        );
+        'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
+        'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+        'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+        statusStr +
+        severityStr +
+        'Description: ' + feature.properties.metadata.description + '<br>' +
+        notificationStr +
+        totalPopulationStr +
+        affectedPopulationStr;
 
-        if (feature.properties && feature.properties.popupContent) {
-            popupContent += feature.properties.popupContent;
+
+            // make sure there's no trailing <br> from above
+            if (popupContent.endsWith('<br>')) {
+                popupContent.substr(0,popupContent.length-4);
+            }
+
+            var eventDiv = '';
+            if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
+                eventDiv = '#watchingEventProperties';
+            } else {
+                eventDiv = '#ongoingEventProperties';
+            }
+            if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
+                feature.properties.metadata.name = '(no name specified)';
+            }
+
+            var location = '';
+            if(!feature.properties.metadata.areas){
+                location = feature.properties.metadata.country;
+            }else{
+                location = _.map(feature.properties.metadata.areas, function(el){
+                    if(!_.isEmpty(el.region)){
+                        return el.region +' '+ el.country_code;
+                    }else{
+                        return el.country;
+                    }
+                }).join(', ');
+            }
+
+            var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
+            $(eventDiv).append(
+                '<div class="list-group-item">' +
+                '<button type="button" class="btn btn-danger btn-sm" style="float:right;" onclick="deleteEvent('+feature.properties.id+')"><span class="glyphicon glyphicon-remove"></span></button>'+
+            ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
+        'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+        'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
+        'Last updated at: ' + convertToLocaleDateTime(feature.properties.updated_at) + '<br>' +
+        (hasLocation ? 'Area(s): ' + location + '<br>': '') +
+        'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+        statusStr +
+        notificationStr +
+        totalPopulationStr +
+        affectedPopulationStr +
+        'Description: ' + feature.properties.metadata.description + '<br>' +
+        '</div>'
+            );
+
+            if (feature.properties && feature.properties.popupContent) {
+                popupContent += feature.properties.popupContent;
+            }
+
+            layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
         }
-
-        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     eventsLayer = L.geoJSON(events, {

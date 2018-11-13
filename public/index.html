@@ -789,8 +789,21 @@
                     <!--event tab content-->
                     <div class="tab-content">
                         <div class="form-group" class="display:none;" id="eventSearchBox" >
-                          <label for="eventSearchDate">search for events created after</label>
-                          <input type="text" id="eventSearchDate" class="form-control" placeholder="YYYY-MM-DD" >
+                          
+                          <label for="eventSearchDate">search for events created between</label>
+                          <table id="eventSearchDate">
+                            <tr>
+                              <td>
+                                <input type="text" id="eventSearchFromDate" class="form-control" placeholder="YYYY-MM-DD" >
+                              </td>
+                              <td>
+                                to
+                              </td>
+                              <td>
+                                <input type="text" id="eventSearchToDate" class="form-control" placeholder="YYYY-MM-DD" >
+                              </td> 
+                            </tr>
+                          </table>
                           <input type="text" class="form-control" id="eventSearchTerm" name="" value="" placeholder="Term for searching event name, description, type ...">
                         </div>
 
