@@ -189,17 +189,17 @@ export default (config, db, logger) => ({
     * DELETE a contact from the database
     * @param {integer} id ID of contact
     */
-    deleteContact: (id) => new Promise((resolve, reject) => {
+    deleteContact: (id,user_oid) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `DELETE FROM ${config.TABLE_CONTACTS} WHERE id = $1`;
+        let query = `DELETE FROM ${config.TABLE_CONTACTS} WHERE id = $1 and ((ad_oid = $2) or (private=false)) RETURNING id`;
 
         // Setup values
-        let values = [ id ];
+        let values = [ id,user_oid ];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+        db.one(query, values).timeout(config.PGTIMEOUT)
             .then(() => resolve())
             .catch((err) => reject(err));
     }),
