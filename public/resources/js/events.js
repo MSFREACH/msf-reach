@@ -1550,7 +1550,7 @@ var vmObject = {
             $(this).parent().removeClass('close-box');
         });
 
-        vm.event.metadata.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
+        this.event.metadata.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
 
         $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
