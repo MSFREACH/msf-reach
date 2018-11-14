@@ -1519,6 +1519,7 @@ var vmObject = {
             'complete':[],
         },
         suggestEdit: {
+            'General': false,
             'Notification': false,
             'ExtCapacity': false,
             'Figures': false,
