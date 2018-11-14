@@ -1,5 +1,5 @@
 <template>
-    <v-layout app>
+    <v-layout class="detail-section" app xs9>
         <nav class="first-nav">
             <router-link
                 class="first-nav-links"
@@ -40,21 +40,22 @@ export default {
 </script>
 <style lang='scss'>
     @import '@/assets/css/util/typography.scss';
-
+    .detail-section{
+        background: #D0D3DA;
+    }
     .first-nav{
         background: #E8E8E8;
         height: 40px;
-        width: 100%;
+        width: -webkit-fill-available;
         border-bottom: 1px solid #ccc;
     }
     .first-nav-links{
-        color: #707070;
+        color: #2B2024;
         padding: 9px 23px;
-        font-weight: bold;
         display: inline-block;
     }
     .first-nav-links.router-link-active{
         color: #FFF;
-        background: #B1B1B1;
+        background: #0374C7;
     }
 </style>

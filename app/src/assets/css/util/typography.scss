@@ -72,6 +72,13 @@ label{
 }
 
 .first-nav-links{
+    font-family: 'OpenSans', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+
+.first-nav-links.router-link-active{
     font-family: 'OpenSans-Bold', sans-serif;
     font-size: 14px;
     font-weight: bold;

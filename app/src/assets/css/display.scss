@@ -3,14 +3,52 @@ ul{
 }
 
 .eventSubContent{
-    float: left;
-    padding: 40px;
-    width: calc(100% - 205px);
+    padding: 14px;
+    display: flex;
     .actions{
-        float: right;
         cursor: pointer;
+        position: absolute;
+        right: 0;
         button{
 
         }
     }
+}
+
+.general-text-fields{
+    display: inline-block;
+    width: 60%;
+    margin: 0;
+    border-radius:5px;
+    background: #fff;
+    box-shadow: 1px 5px 10px #707070;
+    padding: 21px;
+}
+
+.map-annotation{
+    display: inline-block;
+    width: 25%;
+    height: 500px;
+    border-radius: 20px;
+    background: #2C383E;
+}
+
+.full-width{
+    width: 100%;
+    margin-bottom: 3em;
+}
+.one-third{
+    width: 32.3333%;
+}
+
+
+hr.row-divider{
+    width: 100%;
+    margin: 1em;
+    height: 1px;
+    color: #ccc;
+}
+
+.eventSubContent label{
+    display: block;
 }

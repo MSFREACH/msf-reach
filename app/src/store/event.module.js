@@ -13,7 +13,8 @@ const initialState = {
         status: '',
         body: {},
         type: '',
-        types: []
+        types: [],
+        updated_at: ''
     } // TODO: add associated reports & contacts later
 };
 
@@ -68,6 +69,7 @@ const mutations = {
         state.event.reflection = event.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
         state.event.type = event.result.objects.output.geometries[0].properties.type;
+        state.event.updated_at = event.result.objects.output.geometries[0].properties.updated_at;
 
     },
     [RESET_STATE] () {
@@ -83,6 +85,9 @@ const getters ={
     },
     eventMetadata (state){
         return state.event.metadata;
+    },
+    eventUpdatedAt (state){
+        return state.event.updated_at; 
     },
     eventCoordinates (state){
         return state.event.coordinates;

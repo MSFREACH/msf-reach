@@ -1,123 +1,168 @@
 <template>
     <v-container class="eventSubContent" v-if="eventMetadata">
         <div class="actions">
+            <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
             <button v-if="!editing" @click="edit()">Edit</button>
             <div v-else>
                 <button @click="cancelEdit()">Cancel</button>
                 <button @click="save()"> Save </button>
             </div>
         </div>
-         <v-layout row wrap v-if="!editing">
-            <label>Name</label> <div class="primary-text">{{eventMetadata.name}}</div>
-            <label>Areas</label>
-            <v-layout align-center row fill-height>
-                <v-flex v-for="(area, index) in eventMetadata.areas" :key="index" xs6>
-                    <v-card-text v-if="area.region.length > 0"> {{area.region}} {{area.country_code}} </v-card-text>
-                    <v-card-text v-else>{{area.country}}</v-card-text>
-                    <v-card-text v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length"> </v-card-text>
-                    <v-card class="sub-tag" v-if="eventMetadata.severity_measures[index]">
-                      <v-card-text :style="'color:'+allSeverity[eventMetadata.severity_measures[index].scale-1].color">{{allSeverity[eventMetadata.severity_measures[index].scale-1].label}} severity</v-card-text>
-                      <v-card-text class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </v-card-text>
-                    </v-card>
-                </v-flex>
-            </v-layout>
-            <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
-            <div>
-                <span v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</span>
-                <!-- TODO: add pairing icon + clickable taglink -->
-            </div>
-            <div> Happened {{ eventCreatedAt | relativeTime }}
-                 <!-- <span>on {{eventMetadata.event_local_time | fullDate }} local time.</span> -->
-            </div>
-            <p>{{eventMetadata.description }}</p>
-            <div>Person In charge {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
-            <div>
-                <a :href='eventMetadata.sharepoint_link' target="_blank">
-                    Sharepoint Link
-                </a>
-            </div>
-        </v-layout>
-        <div v-else>
+        <div class="general-text-fields">
+             <v-layout row wrap v-if="!editing">
+                <div class="full-width">
+                    <label>Name</label>
+                    <div class="primary-text">{{eventMetadata.name}}</div>
+                </div>
 
-            <label> Name </label>
-            <input type="text" v-model="eventMetadata.name" placeholder="Event name" />
-            <div id="eventAreas">
-                <label> Area(s) </label>
-                <div v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas">
-                    <span v-if="area.region.length > 0"> {{area.region}}, {{area.country_code}} </span>
-                    <span v-else> {{area.country}} </span>
-                    <span class="remove" @click="removeArea(area)"> x </span>
-                    <div class="severity-wrapper" v-if="eventMetadata.severity_measures[index]">
-                        <span class="label"> Severity analysis </span>
-                        <span class="inputSeveritySlider"></span>
-                        <textarea v-model.trim="eventMetadata.severity_measures[index].description" placeholder="Severity description"></textarea>
+                <!-- meta tags -->
+                <div class="one-third">
+                    <label>Status</label>
+                    <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
+                </div>
+                <div class="one-third">
+                    <label>Types</label>
+                    <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
+                    <!-- TODO: add pairing icon + clickable taglink -->
+                </div>
+                <div class="one-third">
+                    <label>Areas</label>
+                    <v-flex v-for="(area, index) in eventMetadata.areas" :key="index">
+                        <div>
+                            <span v-if="area.region.length > 0"> {{area.region}}, {{area.country_code}} </span>
+                            <span v-else>{{area.country}}</span>
+                        </div>
+
+                        <span v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length">
+
+                        </span>
+                        <div class="sub-tag" v-if="eventMetadata.severity_measures[index]">
+                            <span :style="'color:'+allSeverity[eventMetadata.severity_measures[index].scale-1].color">{{allSeverity[eventMetadata.severity_measures[index].scale-1].label}} severity</span>
+                            <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
+                        </div>
+                    </v-flex>
+                </div>
+                <hr class="row-divider"/>
+                <!-- Temporal row -->
+
+                <div class="one-third">
+                    <label>Created at</label>
+                    {{ eventCreatedAt | relativeTime }}
+                </div>
+                <div class="one-third">
+                    <label>Last Updated</label>
+                    {{ eventUpdatedAt | relativeTime }}
+                </div>
+                <div class="one-third">
+                    <label>Local Date/Time</label>
+                    {{eventMetadata.event_local_time | fullDate }}
+                </div>
+
+
+                <hr class="row-divider"/>
+                <div class="one-third">
+                    <label>Description</label>
+                    {{eventMetadata.description }}
+                </div>
+                <div class="one-third">
+                    <label>Latest Notification</label>
+                    {{eventMetadata.event_local_time | fullDate }}
+                </div>
+                <div class="one-third">
+                    <label>Mission Contact Person</label>
+                    <div> {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
+
+                </div>
+
+                <hr class="row-divider"/>
+                <div>
+                    <a :href='eventMetadata.sharepoint_link' target="_blank">
+                        Sharepoint Link
+                    </a>
+                </div>
+            </v-layout>
+            <v-layout row wrap v-else>
+                <label> Name </label>
+                <input type="text" v-model="eventMetadata.name" placeholder="Event name" />
+
+                <div id="eventAreas">
+                    <label> Area(s) </label>
+                    <div v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas">
+                        <span v-if="area.region.length > 0"> {{area.region}}, {{area.country_code}} </span>
+                        <span v-else> {{area.country}} </span>
+                        <span class="remove" @click="removeArea(area)"> x </span>
+                        <div class="severity-wrapper" v-if="eventMetadata.severity_measures[index]">
+                            <span class="label"> Severity analysis </span>
+                            <span class="inputSeveritySlider"></span>
+                            <textarea v-model.trim="eventMetadata.severity_measures[index].description" placeholder="Severity description"></textarea>
+                        </div>
+                    </div>
+                    <label> Add area for the emergency </label>
+                    <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
+                    OR
+                    <input type="text" value="" id="editEventAddressLat" placeholder="Latitude">
+                    <input type="text" value="" id="editEventAddressLng" placeholder="Longitude">
+                    <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate">
+                        <span class="glyphicon glyphicon-search"></span></button>
+                </div>
+                <!-- <div id="eventMap" class="map-container">   TODO: insert MAP component -->
+
+
+                <label> Status </label>
+
+                <select v-model="eventMetadata.event_status">
+                <option disabled value="">Please select one</option>
+                <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                </select>
+
+                <label> Type(s) </label>
+
+                <div v-for="(item, index) in allEventTypes">
+                    <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value" :id="'ev-type'+index">
+                    <label class="eventBox" :for="'ev-type'+index"> {{item.text}} </label>
+                    <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
+                        <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
+                            <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+(sub.text)+index" />
+                            <label class="eventBox" :for="'ev-sub-'+(sub.text)+index"> {{sub.text}} &nbsp&nbsp </label>
+                            <br v-if="index % 4 == 1"/>
+                        </span>
+
+                        <span>
+                            <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" />
+                            <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
+                            <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  placeholder="(Specify)" />
+                        </span>
                     </div>
                 </div>
-                <label> Add area for the emergency </label>
-                <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
-                OR
-                <input type="text" value="" id="editEventAddressLat" placeholder="Latitude">
-                <input type="text" value="" id="editEventAddressLng" placeholder="Longitude">
-                <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate">
-                    <span class="glyphicon glyphicon-search"></span></button>
-            </div>
-            <!-- <div id="eventMap" class="map-container">   TODO: insert MAP component -->
 
 
-            <label> Status </label>
-
-            <select v-model="eventMetadata.event_status">
-            <option disabled value="">Please select one</option>
-            <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
-            </select>
-
-            <label> Type(s) </label>
-
-            <div v-for="(item, index) in allEventTypes">
-                <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value" :id="'ev-type'+index">
-                <label class="eventBox" :for="'ev-type'+index"> {{item.text}} </label>
-                <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
-                    <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
-                        <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+(sub.text)+index" />
-                        <label class="eventBox" :for="'ev-sub-'+(sub.text)+index"> {{sub.text}} &nbsp&nbsp </label>
-                        <br v-if="index % 4 == 1"/>
-                    </span>
-
-                    <span>
-                        <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" />
-                        <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
-                        <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  placeholder="(Specify)" />
-                    </span>
+                <div>
+                    <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                    <input v-if="otherFields.type.isSelected" type="text" v-model="otherFields.type.description" placeholder="(Specify)" />
                 </div>
-            </div>
 
+                <label> Event datetime  </label>
+                {{ eventCreatedAt | fullDate }}
 
-            <div>
-                <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
-                <input v-if="otherFields.type.isSelected" type="text" v-model="otherFields.type.description" placeholder="(Specify)" />
-            </div>
+                <label> Description </label>
+                <textarea id="eventDescription" type="text" v-model="eventMetadata.description" placeholder="Event description"> </textarea>
 
-            <label> Event datetime  </label>
-            {{ eventCreatedAt | fullDate }}
+                <label> Local datetime of event  </label>
+                <div class="datepicker-container">
+                    <date-picker v-model="eventMetadata.event_local_time" :config="dateTimeConfig"></date-picker>
+                </div>
 
-            <label> Description </label>
-            <textarea id="eventDescription" type="text" v-model="eventMetadata.description" placeholder="Event description"> </textarea>
+                <label> Mission Contact Person  </label>
+                <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
+                <input type="text" v-model="eventMetadata.incharge_name" placeholder="Name" />
 
-            <label> Local datetime of event  </label>
-            <div class="datepicker-container">
-                <date-picker v-model="eventMetadata.event_local_time" :config="dateTimeConfig"></date-picker>
-            </div>
+                ID link - SharePoint
 
-            <label> Mission Contact Person  </label>
-            <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
-            <input type="text" v-model="eventMetadata.incharge_name" placeholder="Name" />
-
-            ID link - SharePoint
-
-            <input type="text" v-model="eventMetadata.sharepoint_link" placeholder="SharePoint Link" />
-
+                <input type="text" v-model="eventMetadata.sharepoint_link" placeholder="SharePoint Link" />
+            </v-layout>
         </div>
 
+        <div class="map-annotation"></div>
     </v-container>
 </template>
 
@@ -175,7 +220,8 @@ export default {
         ...mapGetters([
             'eventMetadata',
             'eventTypes',
-            'eventCreatedAt'
+            'eventCreatedAt',
+            'eventUpdatedAt'
         ])
     },
     mounted (){
