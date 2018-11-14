@@ -718,7 +718,7 @@
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;" v-html="notStr"></td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Follow this event by email:  </td>
-                    <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal; text-transform: capitalize;" class="label label-default">{{em.split('@')[0].split('.').join(' ')}}</span>&nbsp;</span> </td>
+                    <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal; text-transform: capitalize;" class="label label-default">{{em.split('@')[0].split('.').split('_').join(' ')}}</span>&nbsp;</span> </td>
                     <td>
                       <div class="row">
                         <div class="col-sm-12">
