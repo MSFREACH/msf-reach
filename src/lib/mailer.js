@@ -238,14 +238,14 @@ export default ( config, logger ) => ({
             };
             let mailOptions = {
                 from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
-                to: invitee._json.preferred_username,
+                to: invitee.mail, // @mehrdadgit could use userPrincipalName but best to use mail which is present and may be different and preferred
                 subject: 'Invitation to subscribe to an Event ',
                 template: 'event_invite_subscribe',
                 context: emContext
             };
 
             // send mail with defined transport object
-            logger.info('Sending invite-to-subscribe-email to '+ invitee._json.preferred_username );
+            logger.info('Sending invite-to-subscribe-email to '+ invitee.mail );
             transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     logger.error(error.message);
