@@ -690,7 +690,7 @@
                 <table class="table" v-show="!panelEditing.General" style="table-layout: fixed;">
                   <tr><td>Project code <span class="highlight" v-show="event.metadata.event_status == 'ongoing' && !event.metadata.project_code">* Please review</span></td><td colspan="2">{{ event.metadata.project_code ? event.metadata.project_code : "As there is no MSF activity yet, no project code is allocated to this event. We are still monitoring the disaster."}}</td></tr>
                   <tr><td>Name</td><td  colspan="2"> {{ event.metadata.name }}</td></tr>
-                  <tr><td>Operator</td><td>{{ event.metadata.user }}</td></tr>
+                  <tr><td>REACH Operator</td><td>{{ event.metadata.user }}</td></tr>
                   <tr><td>Area(s)</td>
 
                     <td colspan="2">
@@ -772,8 +772,8 @@
                     <td> <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" /></td>
                   </tr>
                   <tr>
-                    <td>Operator</td>
-                    <td> <input id="eventProjectCode" type="text" v-model="event.metadata.user ? event.metadata.user : localStorage.getItem('username')" class="form-control" placeholder="Project code" /></td>
+                    <td>REACH Operator</td>
+                    <td> <input id="eventOperator" type="text" v-model="event.metadata.user ? event.metadata.user : localStorage.getItem('username')" class="form-control" placeholder="Event operator" /></td>
                   </tr>
                   <tr>
                     <td class="table-container" id="eventAreas">
