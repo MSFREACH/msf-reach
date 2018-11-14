@@ -272,7 +272,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.one(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id) })) // eslint-disable-line no-unused-vars
+            .then((data) => resolve({ id: String(id), subscribers: data.subscribers })) // eslint-disable-line no-unused-vars
             .catch((err) => reject(err));
     }),
 
