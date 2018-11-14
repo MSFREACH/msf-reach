@@ -718,7 +718,7 @@
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;" v-html="notStr"></td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Follow this event by email:  </td>
-                    <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal;" class="label label-default">{{em}}</span>&nbsp;</span> </td>
+                    <td style="word-break:break-all;"> <span v-for="em in event.subscribers"><span style="white-space:normal; text-transform: capitalize;" class="label label-default">{{em.split('@')[0].split('.').join(' ')}}</span>&nbsp;</span> </td>
                     <td>
                       <div class="row">
                         <div class="col-sm-12">
@@ -731,7 +731,7 @@
                       <div class="row">
                         <div class="col-sm-12">
                           <a :href="manualEmailHref" class="btn btn-info btn-block" style="margin-top:10px;">Send an update</a>
-                      </div>
+                        </div>
                         <div class="col-sm-12">
                           <div class="input-group">
                             <vue-multiselect v-model="selectedInvitees" :options="inviteeOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Type to search contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
