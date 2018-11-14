@@ -147,7 +147,6 @@ $(function(){
                 'location': (areaSelect ? areaSelect.getBounds().getCenter().wrap() : latlng),
                 'metadata':{
                     'user': localStorage.getItem('username'),
-                    'project_code': $('#inputProjectCode').val(),
                     'name': $('#inputEventName').val(),
                     'description': $('#inputEventDescription').val(),
                     'sub_type': subTypes.join(', '),
