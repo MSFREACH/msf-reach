@@ -26,19 +26,6 @@ var report_id_for_event = null; // null = not creating event from unassigned rep
 // cookie for last page load
 Cookies.set('last_load',String(Date.now()/1000));
 
-const operatorCheck = function() {
-    $.ajax({
-        type: 'GET',
-        url: '/api/utils/operatorCheck',
-        statusCode: {
-            403: function() {
-                $('#eventCreationOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
-                $('#missionModalOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
-            }
-        }
-    });
-};
-
 // set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
     value: 2, // default: 2
@@ -237,7 +224,7 @@ var mapAllEvents = function(err, events){
             var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
             $(eventDiv).append(
                 '<div class="list-group-item">' +
-                '<button type="button" class="btn btn-danger btn-sm" style="float:right;" onclick="deleteEvent('+feature.properties.id+')"><span class="glyphicon glyphicon-remove"></span></button>'+
+                '<button type="button" class="btn btn-danger btn-sm show-if-write-permission" style="float:right;display:none;" onclick="deleteEvent('+feature.properties.id+')"><span class="glyphicon glyphicon-remove"></span></button>'+
             ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
         'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
         'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
@@ -272,6 +259,7 @@ var mapAllEvents = function(err, events){
         },
         onEachFeature: onEachFeature
     });
+    operatorCheck();
 
     if (Cookies.get('Ongoing MSF Responses')==='on') {
         eventsLayer.addTo(mainMap);
