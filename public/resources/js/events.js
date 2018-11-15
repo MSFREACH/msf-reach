@@ -1637,7 +1637,7 @@ ${localStorage.getItem('username')}
             if (currentEventProperties.metadata.hasOwnProperty('areas')) {
                 for (var areai = 0; areai < currentEventProperties.metadata.areas.length; areai++) {
                     if (currentEventProperties.metadata.areas[areai].region) {
-                        searchTerm += '(('+currentEventProperties.metadata.areas[areai].region + 
+                        searchTerm += '('+currentEventProperties.metadata.areas[areai].region + 
                             ' OR ' + currentEventProperties.metadata.areas[areai].country + ') ';
                     } else {
                         searchTerm += '(' + currentEventProperties.metadata.areas[areai].country +') ';
@@ -1652,6 +1652,8 @@ ${localStorage.getItem('username')}
                 }
             }
             searchTerm += ') ';
+            searchTerm.replace('unknown','').replace('undefined','');
+            searchTerm.replace('()','');
             let searchSinceDate ='';
             if (currentEventProperties.metadata.event_datetime) {
                 searchSinceDate = 'since:'+currentEventProperties.metadata.event_datetime.match(/\d\d\d\d-\d\d-\d\d/);
