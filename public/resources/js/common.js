@@ -996,9 +996,14 @@ $('#eventSearchTerm').on('input',function() {
 });
 
 var currentContactId = 0;
+var selectedUserToShareWith= null;
 
 // code for setting up actions on contact link click
 var onContactLinkClick = function(id) {
+
+    selectedUserToShareWith= null;
+    $('#sharewith_name').val(''); // clear entry
+    $('#btnShare').prop('disabled',true);
 
     currentContactId = id;
     getContact(id);
@@ -1122,6 +1127,33 @@ $('#sharewith_email').keyup(function(event){
     }
 });
 
+
+function shareWithUser(){
+  if (!selectedUserToShareWith)
+  {
+    alert('Please select a user first.');
+    return;
+  }
+  console.log(currentContactId);
+  $.ajax({
+      type: 'PATCH',
+      url: '/api/contacts/' + currentContactId + '/share',
+      data: JSON.stringify({'oid':selectedUserToShareWith.id}),
+      contentType: 'application/json'
+  }).done(function(data, textStatus, req) {
+      $('#sharewith_name').val(''); // clear entry
+      $('#btnShare').prop('disabled',true);
+      alert('The contact has been successfully shared with '+selectedUserToShareWith.value);
+      selectedUserToShareWith=null;
+  }).fail(function(err) {
+      if (err.responseText.includes('expired')) {
+          alert('session expired');
+      } else {
+          alert('Sharing failed, are you sure you own the record?');
+      }
+  });
+}
+
 $( '#sharewith_name' ).autocomplete({
     source: function( request, response ) {
         $.ajax({
@@ -1140,21 +1172,8 @@ $( '#sharewith_name' ).autocomplete({
     minLength: 3,
     select: function( event, ui ) {
         if (ui.item) {
-            $.ajax({
-                type: 'PATCH',
-                url: '/api/contacts/' + currentContactId + '/share',
-                data: JSON.stringify({'oid':ui.item.id}),
-                contentType: 'application/json'
-            }).done(function(data, textStatus, req) {
-                $('#sharewith_name').val(''); // clear entry
-                alert('shared');
-            }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                    alert('session expired');
-                } else {
-                    alert('failed, are you sure you own the record?');
-                }
-            });
+           selectedUserToShareWith=ui.item;
+           $('#btnShare').prop('disabled',false);
         }
     },
     open: function() {
