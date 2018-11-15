@@ -672,7 +672,7 @@
           <div class="tab-content" id="eventVApp" v-cloak>
 
             <div id="event" class="tab-pane fade in active">
-
+              <div id="eventEditingOperatorCheck"></div>
               <!-- here be GENERAL INFO  -->
               <div class="panel-group" >
                 <div :class="{'panel':true, 'panel-default': (event.metadata.event_status != 'ongoing' || event.metadata.project_code), 'panel-warning': (event.metadata.event_status == 'ongoing' && !event.metadata.project_code)}">
