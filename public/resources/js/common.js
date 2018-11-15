@@ -1038,6 +1038,7 @@ var getContact = function(id) {
         $('#privateContact').change(function() {
             if ($('#privateContact').val() === 'true') {
                 alert('cannot set public contact private');
+                $('#privateContact').val(String(contact.result.private));//change back to original value
             } else {
                 $.ajax({
                     type: 'PATCH',
@@ -1049,6 +1050,7 @@ var getContact = function(id) {
                         alert('you can only set to private contacts that you have entered');
                     }
                     alert('privacy not set due to error');
+                    $('#privateContact').val(String(contact.result.private));//change back to original value
                 });
             }
         });
