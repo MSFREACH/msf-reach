@@ -10,6 +10,7 @@
 /*eslint no-console: off*/
 /*eslint no-unused-vars: off*/
 /*eslint no-negated-condition: off*/
+/*eslint no-debugger: off*/
 
 import L from 'leaflet';
 // import 'leaflet/dist/leaflet.css';
@@ -42,11 +43,21 @@ export default {
     mounted(){
         this.initMap();
         this.initLayers();
+
+    },
+    watch:{
+        map(newVal){
+            setTimeout(function(){
+                newVal.invalidateSize(true);
+            }, 3000);
+        }
     },
     methods: {
 
         initMap(){
-            this.map = L.map('map').setView([this.coordinates[0], this.coordinates[1]], 12);
+            this.map = L.map('map', {dragging: !L.Browser.mobile, tap:false}).setView([this.coordinates[0], this.coordinates[1]], 13);
+            this.map.scrollWheelZoom.disable();
+            this.map.doubleClickZoom.disable();
 
             this.tileLayer.terrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
                 attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
@@ -64,6 +75,8 @@ export default {
             });
 
             this.tileLayer.HotOSM.addTo(this.map);  // Defaul use OpenStreetMap_hot
+
+            var eventMarker = L.marker([this.coordinates[0], this.coordinates[1]]).addTo(this.map);
 
         },
         initLayers(){
