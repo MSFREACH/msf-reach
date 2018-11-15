@@ -1654,8 +1654,8 @@ ${localStorage.getItem('username')}
                 }
             }
             searchTerm += ') ';
-            searchTerm.replace('unknown','').replace('undefined','');
-            searchTerm.replace('()','');
+            searchTerm = searchTerm.replace('unknown','').replace('undefined','');
+            searchTerm = searchTerm.replace('()','');
             if (currentEventProperties.metadata.event_datetime) {
                 searchSinceDate = 'since:'+currentEventProperties.metadata.event_datetime.match(/\d\d\d\d-\d\d-\d\d/);
             } else {
