@@ -1345,9 +1345,9 @@ function translate(data) {
         resp
     ) {
         if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
-            $('#searchTerm').val(resp.data.translations[0].translatedText);
+            $('#searchTerm').val(resp.data.translations[0].translatedText + ' ' + searchSinceDate);
             $('#btnSearchTwitter').trigger('click');
-            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val()));
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val().replace(/since:\d\d\d\d-\d\d-\d\d/,'')));
         } else {
             $('#searchTerm').val('(no translation found)');
         }
@@ -1433,6 +1433,8 @@ Vue.filter('formatedNumber', function(value) {
 Vue.filter('relaceUnderscore', function(value) {
     return replaceUnderscore(value);
 });
+
+var searchSinceDate = '';
 
 var replaceUnderscore = function(value) {
     function capitalizeFirstLetter(string) {
@@ -1654,7 +1656,6 @@ ${localStorage.getItem('username')}
             searchTerm += ') ';
             searchTerm.replace('unknown','').replace('undefined','');
             searchTerm.replace('()','');
-            let searchSinceDate ='';
             if (currentEventProperties.metadata.event_datetime) {
                 searchSinceDate = 'since:'+currentEventProperties.metadata.event_datetime.match(/\d\d\d\d-\d\d-\d\d/);
             } else {
@@ -1662,7 +1663,7 @@ ${localStorage.getItem('username')}
             }
             searchTerm += searchSinceDate;
             $('#searchTerm').val(searchTerm);
-            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent(searchTerm));
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent(searchTerm.replace(/since:\d\d\d\d-\d\d-\d\d/, '')));
 
             this.searchTerm = searchTerm;
 
@@ -1686,7 +1687,7 @@ ${localStorage.getItem('username')}
         $('#searchTerm').keyup(function(event){
             if(event.keyCode == 13){
                 $('#btnSearchTwitter').trigger('click');
-                $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k='+encodeURIComponent($('#searchTerm').val()));
+                $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val().replace(/since:\d\d\d\d-\d\d-\d\d/, '')));
             }
         });
 
@@ -1698,7 +1699,7 @@ ${localStorage.getItem('username')}
         // Bind translate function to translate button
             .on('change', function() {
                 var translateObj = {
-                    textToTranslate: $('#searchTerm').val(),
+                    textToTranslate: $('#searchTerm').val().replace(/since:\d\d\d\d-\d\d-\d\d/, ''),
                     targetLang: $(this).val()
                 };
 
