@@ -112,7 +112,8 @@ export default ( config, logger ) => ({
                         let emContext={
                             sender_name: sender.displayName,
                             recipient_name: recipient.displayName,
-                            contact_hyperlink: '<a href="'+config.BASE_URL+'#contact'+contact_data.id+'">'+contact_data.properties.name+'</a>'
+                            contact_hyperlink: config.BASE_URL+'#contact'+contact_data.id,
+                            contact_name: contact_data.properties.name
                         };
 
                         const mailOptions = {
