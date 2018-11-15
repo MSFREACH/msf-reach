@@ -5,7 +5,7 @@ import missions from './model';
 import events from './../events/model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 
@@ -59,7 +59,7 @@ export default ({ config, db, logger }) => {
             })
     );
     // Update a mission record in the database
-    api.put('/:id',ensureAuthenticated,
+    api.put('/:id',ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
@@ -94,7 +94,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Delete a mission's record from the database
-    api.delete('/:id', ensureAuthenticated,
+    api.delete('/:id', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() }
         }),

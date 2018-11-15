@@ -1574,6 +1574,17 @@ ${localStorage.getItem('username')}
         if (vm.event.subscribers) {
             vm.manualEmailHref='mailto:'+Cookies.get('email')+'?bcc='+vm.event.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
         }
+        // operator check
+        $.ajax({
+            type: 'GET',
+            url: '/api/utils/operatorCheck',
+            statusCode: {
+                403: function () {
+                    $('#eventEditingOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                }
+            }
+        });
+
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
             if ($('#searchTerm').val() !== '') {

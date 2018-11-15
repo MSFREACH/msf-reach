@@ -32,7 +32,8 @@ const operatorCheck = function() {
         url: '/api/utils/operatorCheck',
         statusCode: {
             403: function() {
-                $('#operatorCheck').html('<span style="color:red">You do not have operator permission to create new events. To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                $('#eventCreationOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                $('#missionModalOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
             }
         }
     });

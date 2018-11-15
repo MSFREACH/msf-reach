@@ -89,6 +89,7 @@ var onMissionLinkClick = function(id) {
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
         missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
         $( '#missionModalBody' ).load( '/events/mission.html' );
+        operatorCheck();
         $('#missionModal').modal('show');
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {

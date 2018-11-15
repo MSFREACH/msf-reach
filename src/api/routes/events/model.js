@@ -30,6 +30,7 @@ export default (config, db, logger) => ({
                 ($4 is null or 
                     (metadata->>'name' ilike $4 or 
                     metadata->>'description' ilike $4 or 
+                    type ilike $4 or
                     metadata->>'type' ilike $4 or 
                     metadata->>'sub_type' ilike $4)) AND
                 ($2 is null or metadata->>'country' = $2) AND
