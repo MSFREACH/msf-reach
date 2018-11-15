@@ -1,7 +1,7 @@
 <div class="modal-content" id="missionDetailsVue">
   <div class="modal-header">
     <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right;">Close</button>
-    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" >Edit</button>
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" v-show="hasWritePermission">Edit</button>
     <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" style="float:right;margin-right:5px;" @click="saveMissionEdits()" >Save Edits</button>
 
     <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
@@ -653,7 +653,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" type="button" class="btn btn-danger"  @click="confirmDeleteMission" ><span class="glyphicon glyphicon-remove"></span>Delete mission</button>
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" v-show="hasWritePermission" type="button" class="btn btn-danger"  @click="confirmDeleteMission" ><span class="glyphicon glyphicon-remove"></span>Delete mission</button>
   </div>
 </div>
 
@@ -746,7 +746,8 @@ var vmInstance = new Vue({
     dateTimeConfig: {
       format: DATETIME_DISPLAY_FORMAT
     },
-    isDeleted:false
+    isDeleted:false,
+    hasWritePermission: hasWritePermission
   },
   methods: {
     confirmDeleteMission:function(){

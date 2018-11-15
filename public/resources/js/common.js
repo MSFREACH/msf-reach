@@ -26,6 +26,26 @@ $(function() {
         }
     });
 });
+var hasWritePermission=false;
+const operatorCheck = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/utils/operatorCheck',
+        statusCode: {
+            403: function() {
+                $('#eventCreationOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                $('#missionModalOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+            }
+        }
+    }).done(function(){
+        hasWritePermission=true;
+        $('.show-if-write-permission').show();
+    }).fail(function(){
+        hasWritePermission=false;
+        $('.show-if-write-permission').hide();
+    });
+};
+
 
 /**
 * function to convert ISO date string to locale string with basic handling of non-isoDate format
