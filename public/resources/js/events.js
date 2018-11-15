@@ -1347,6 +1347,7 @@ function translate(data) {
         if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
             $('#btnSearchTwitter').trigger('click');
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val()));
         } else {
             $('#searchTerm').val('(no translation found)');
         }
@@ -1659,6 +1660,8 @@ ${localStorage.getItem('username')}
             }
             searchTerm += searchSinceDate;
             $('#searchTerm').val(searchTerm);
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent(searchTerm));
+
             this.searchTerm = searchTerm;
 
             if (currentEventProperties.type) {
@@ -1681,6 +1684,7 @@ ${localStorage.getItem('username')}
         $('#searchTerm').keyup(function(event){
             if(event.keyCode == 13){
                 $('#btnSearchTwitter').trigger('click');
+                $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k='+encodeURIComponent($('#searchTerm').val()));
             }
         });
 
