@@ -33,8 +33,8 @@ var loadMissions = function(err, missions) {
           value.properties.properties.region +
           '</span><span><label>Start  </label>' +
           (convertToLocaleDate(value.properties.properties.event_datetime) || value.properties.properties.startDate + '(old format please edit)'  )+
-          '</span><span><label>End  </label>' +
-          (convertToLocaleDate(value.properties.properties.event_datetime_closed) || value.properties.properties.finishDate + '(old format please edit)' ) +
+                '</span ><span>' + (value.properties.properties.finishDate ? '<label>Mission end date </label>' : '<label>Event close date </label>') +
+          (value.properties.properties.finishDate || convertToLocaleDate(value.properties.properties.event_datetime_closed)  + '(old format please edit)' ) +
           '</span><div><label>Severity  </label>' +
           value.properties.properties.severity +
           '</div><div><label>Capacity </label>' +
