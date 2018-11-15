@@ -119,7 +119,7 @@ export default ( config, logger ) => ({
                         const mailOptions = {
                             from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
                             to: recipient.userPrincipalName,
-                            subject: 'Contact share notification',
+                            subject: 'Contact sharing notification',
                             template: 'share',
                             context: emContext
                         };
