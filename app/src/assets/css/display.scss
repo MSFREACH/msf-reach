@@ -8,7 +8,8 @@ ul{
     .actions{
         cursor: pointer;
         position: absolute;
-        right: 0;
+        top: 0;
+        right: 21px;
         button{
 
         }
@@ -16,8 +17,9 @@ ul{
 }
 
 .general-text-fields{
+    position: relative;
     display: inline-block;
-    width: 60%;
+    width: 65%;
     margin: 0;
     border-radius:5px;
     background: #fff;
@@ -27,10 +29,11 @@ ul{
 
 .map-annotation{
     display: inline-block;
-    width: 25%;
+    width: 35%;
     height: 500px;
     border-radius: 20px;
     background: #2C383E;
+    position: relative;
 }
 
 .full-width{
@@ -51,4 +54,11 @@ hr.row-divider{
 
 .eventSubContent label{
     display: block;
+}
+
+.layers-trigger{
+    z-index: 8;
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
