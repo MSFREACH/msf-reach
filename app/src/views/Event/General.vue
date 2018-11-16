@@ -10,8 +10,16 @@
                 </div>
             </div>
              <v-layout row wrap v-if="!editing">
-                <div class="full-width">
+                <div class="one-half">
                     <label>Name</label>
+                    <div class="primary-text">{{eventMetadata.name}}</div>
+                </div>
+                <div class="quarter-width">
+                    <label>Project Code</label>
+                    <div class="primary-text">{{eventMetadata.project_code}}</div>
+                </div>
+                <div class="quarter-width">
+                    <label>Operator</label>
                     <div class="primary-text">{{eventMetadata.name}}</div>
                 </div>
 
