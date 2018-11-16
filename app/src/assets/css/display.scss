@@ -4,7 +4,7 @@ ul{
 
 .eventSubContent{
     padding: 14px;
-    // display: flex;
+    display: flex;
     .actions{
         cursor: pointer;
         position: absolute;
@@ -19,21 +19,23 @@ ul{
 .general-text-fields{
     position: relative;
     display: inline-block;
-    width: 65%;
+    width: 60%;
     margin: 0;
     border-radius:5px;
     background: #fff;
     box-shadow: 1px 5px 10px #707070;
     padding: 21px;
+    margin-right: 1em;
 }
 
 .map-annotation{
     display: inline-block;
-    width: 35%;
+    width: 30%;
     height: 500px;
     border-radius: 20px;
     background: #2C383E;
     position: relative;
+    overflow: hidden;
 }
 
 .full-width{
@@ -54,11 +56,4 @@ hr.row-divider{
 
 .eventSubContent label{
     display: block;
-}
-
-.layers-trigger{
-    z-index: 8;
-    position: absolute;
-    right: 0;
-    bottom: 0;
 }

@@ -55,21 +55,20 @@ const actions = {
 
 /* eslint no-param-reassign: ["error", { "props": false }] */
 const mutations = {
-    [SET_EVENT] (state, event){
-        state.event = event.result.objects.output.geometries[0];
-        state.event.metadata = event.result.objects.output.geometries[0].properties.metadata;
-        state.event.coordinates = event.result.objects.output.geometries[0].coordinates;
-        state.event.body =event.result.objects.output.geometries[0].properties;
-        state.event.notifications = event.result.objects.output.geometries[0].properties.metadata.notification;
+    [SET_EVENT] (state, payload){
+        state.event = payload.result.objects.output.geometries[0];
+        state.event.metadata = payload.result.objects.output.geometries[0].properties.metadata;
+        // state.event.coordinates = payload.result.objects.output.geometries[0].coordinates;
+        state.event.body =payload.result.objects.output.geometries[0].properties;
+        state.event.notifications = payload.result.objects.output.geometries[0].properties.metadata.notification;
         //------ future proof, when sub-content objs becomes available
-        state.event.msfResponse = event.result.objects.output.geometries[0].properties.msfResponse;
-        state.event.extCapacity = event.result.objects.output.geometries[0].properties.extCapacity;
-        state.event.staffResources = event.result.objects.output.geometries[0].properties.staffResources;
-        state.event.medFigures = event.result.objects.output.geometries[0].properties.medFigures;
-        state.event.reflection = event.result.objects.output.geometries[0].properties.reflection;
+        state.event.msfResponse = payload.result.objects.output.geometries[0].properties.msfResponse;
+        state.event.extCapacity = payload.result.objects.output.geometries[0].properties.extCapacity;
+        state.event.staffResources = payload.result.objects.output.geometries[0].properties.staffResources;
+        state.event.medFigures = payload.result.objects.output.geometries[0].properties.medFigures;
+        state.event.reflection = payload.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
-        state.event.type = event.result.objects.output.geometries[0].properties.type;
-        state.event.updated_at = event.result.objects.output.geometries[0].properties.updated_at;
+        state.event.updated_at = payload.result.objects.output.geometries[0].properties.updated_at;
 
     },
     [RESET_STATE] () {
@@ -87,7 +86,7 @@ const getters ={
         return state.event.metadata;
     },
     eventUpdatedAt (state){
-        return state.event.updated_at; 
+        return state.event.updated_at;
     },
     eventCoordinates (state){
         return state.event.coordinates;

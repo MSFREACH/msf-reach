@@ -178,9 +178,6 @@
 
         <div class="map-annotation">
             <map-annotation :coordinates="eventCoordinates"></map-annotation>
-            <v-btn fab color="white" small class="layers-trigger">
-                <v-icon>add</v-icon>
-            </v-btn>
         </div>
     </v-container>
 </template>

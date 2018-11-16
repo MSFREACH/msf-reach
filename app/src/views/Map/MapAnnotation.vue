@@ -1,8 +1,10 @@
 <template>
     <v-layout>
-        {{coordinates[0]}} : {{coordinates[1]}}
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
         <div id="map" class="map"></div>
-
+        <v-btn fab color="white" small class="layers-trigger">
+            <v-icon>add</v-icon>
+        </v-btn>
     </v-layout>
 </template>
 
@@ -14,6 +16,7 @@
 
 import L from 'leaflet';
 // import 'leaflet/dist/leaflet.css';
+import { TILELAYER_TERRAIN, TILELAYER_SATELLITE, TILELAYER_HOTOSM } from '@/common/map-fields';
 
 export default {
     name: 'map-annotation',
@@ -43,41 +46,33 @@ export default {
     mounted(){
         this.initMap();
         this.initLayers();
-
     },
-    watch:{
-        map(newVal){
-            setTimeout(function(){
-                newVal.invalidateSize(true);
-            }, 3000);
+    watch: {
+        coordinates(newVal){
+            console.log('newVal ---coordinates-- ', newVal);
+            this.map.setView([newVal[0], newVal[1]]);
         }
     },
     methods: {
 
         initMap(){
-            this.map = L.map('map', {dragging: !L.Browser.mobile, tap:false}).setView([this.coordinates[0], this.coordinates[1]], 13);
+            this.map = L.map('map', {dragging: !L.Browser.mobile, tap:false});
+            // TILE LAYER OPTIONS
+            this.tileLayer.terrain = L.tileLayer(TILELAYER_TERRAIN.URL, TILELAYER_TERRAIN.OPTIONS);
+            this.tileLayer.satellite = L.tileLayer(TILELAYER_SATELLITE.URL, TILELAYER_SATELLITE.OPTIONS);
+            this.tileLayer.HotOSM = L.tileLayer(TILELAYER_HOTOSM.URL, TILELAYER_HOTOSM.OPTIONS);
+            // SWITCH CASES FROM USER PREFERENCE
+            this.tileLayer.HotOSM.addTo(this.map);  // Defaul use OpenStreetMap_hot
+
             this.map.scrollWheelZoom.disable();
             this.map.doubleClickZoom.disable();
 
-            this.tileLayer.terrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
-                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-                minZoom: 0,
-                maxZoom: 18
-            });
-
-            this.tileLayer.satellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
-                attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
-            });
-
-            this.tileLayer.HotOSM = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
-            });
-
-            this.tileLayer.HotOSM.addTo(this.map);  // Defaul use OpenStreetMap_hot
+            console.log('initMap ---- ', this.coordinates[0], this.coordinates[1]);
+            this.map.setView([this.coordinates[0], this.coordinates[1]], 13);
 
             var eventMarker = L.marker([this.coordinates[0], this.coordinates[1]]).addTo(this.map);
 
+            this.map.invalidateSize();
         },
         initLayers(){
             this.layers.forEach((layer) => {
@@ -114,10 +109,15 @@ export default {
 </script>
 
 <style lang='scss'>
-    .map{
+    #map{
+        display: block;
         width: 100%;
-        height: 600px; // leaflet requires map element to have height
+        height: 500px; // **height require by leaflet
     }
-
-
+    .layers-trigger{
+        z-index: 8;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
 </style>
