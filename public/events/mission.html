@@ -1,10 +1,11 @@
 <div class="modal-content" id="missionDetailsVue">
   <div class="modal-header">
     <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right;">Close</button>
-    <button v-if="!inEditMode && !hasSubmissionError" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" >Edit</button>
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" v-show="hasWritePermission">Edit</button>
     <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" style="float:right;margin-right:5px;" @click="saveMissionEdits()" >Save Edits</button>
 
     <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
+    <div id="missionModalOperatorCheck"></div>
 
   </div>
   <div class="modal-body" style="height:80vh;overflow-y:scroll;" >
@@ -21,7 +22,10 @@
     <div class="alert alert-success" v-if="submissionSuccess">
       Mission has been successfully updated.
     </div>
-    <div v-show="!isSubmitting && !hasSubmissionError"  class="row">
+    <div class="alert alert-warning" v-if="isDeleted">
+      Mission has been successfully deleted.
+    </div>
+    <div v-show="!isSubmitting && !hasSubmissionError && !isDeleted"  class="row">
       <div class="col-sm-5">
         <div class="row">
           <div class="col-sm-12">
@@ -648,6 +652,9 @@
       </div>
     </div>
   </div>
+  <div class="modal-footer">
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" v-show="hasWritePermission" type="button" class="btn btn-danger"  @click="confirmDeleteMission" ><span class="glyphicon glyphicon-remove"></span>Delete mission</button>
+  </div>
 </div>
 
 <script type="text/javascript">
@@ -738,9 +745,40 @@ var vmInstance = new Vue({
     statuses: statuses,
     dateTimeConfig: {
       format: DATETIME_DISPLAY_FORMAT
-    }
+    },
+    isDeleted:false,
+    hasWritePermission: hasWritePermission
   },
   methods: {
+    confirmDeleteMission:function(){
+      var vm=this;
+      if (confirm('Are you sure you want to permanently delete this mission? \nWARNING: This action cannot be undone'))
+      {
+        vm.isSubmitting=true;
+        $.ajax({
+          type: "DELETE",
+          url: "/api/missions/" + vm.currentMissionId,
+          contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+          vm.isSubmitting=false;
+          vm.isDeleted=true;
+          thGetMissions(null);
+          console.log(data);
+
+
+        }).fail(function(err) {
+          vm.isSubmitting=false;
+          vm.isDeleted=false;
+          vm.hasSubmissionError=true;
+          vm.submissionErrorText='An error occured when trying to delete the mission.'
+
+          if (err.responseText.includes('expired')) {
+            alert("session expired");
+          }
+        });
+
+      }
+    },
     saveMissionEdits: function(){
       var vm=this;
       if ((vm.mission.sharepoint_link)&&(vm.mission.sharepoint_link.indexOf('https://') != 0))

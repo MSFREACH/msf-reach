@@ -54,7 +54,18 @@ dd.padding-bottom {
               </div>
               <div id="collapseGeneral" :class="{'panel-collapse':true, 'collapse':true, 'in':(editCategory=='general')}" role="tabpanel" >
               <div class="panel-body">
-
+            <dl>
+              <dt>Project Code</dt>
+              <dd>
+                <input id="projectCode" type="text" v-model="event.metadata.project_code" class="form-control" placeholder="Event name" />
+              </dd>
+            </dl>
+            <dl>
+              <dt>Operator</dt>
+              <dd>
+                <input id="user" type="text" v-model="localStorage.getItem('username')" class="form-control" placeholder="Operator" />
+              </dd>
+            </dl>
             <dl>
               <dt>Event Name</dt>
               <dd>
@@ -888,9 +899,8 @@ var vm = new Vue({
         step: 1
     })
     .each(function() {
-        var opt = $(this).data().uiSlider.options;
-        // Get the number of possible values
-        var vals = opt.max - opt.min;
+        // Get the number of possible values (-1)
+        var vals = 3-1;
         // Space out values
         for (var i = 0; i <= vals; i++) {
             var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');

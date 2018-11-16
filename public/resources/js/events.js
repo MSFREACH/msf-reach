@@ -179,14 +179,15 @@ var printEventProperties = function(err, eventProperties){
     currentEventProperties = eventProperties;
     var newEvent= $.extend(true,{},defaultEvent);
 
-
-    if(!currentEventProperties.metadata.areas){
+    if((!currentEventProperties.metadata.areas)||(currentEventProperties.metadata.areas.length==0))
+    {
         var mockArea = {country: currentEventProperties.metadata.country, region: ''};
         currentEventProperties.metadata.areas = [mockArea];
     }
 
-    if(!currentEventProperties.metadata.severity_measures){
-        var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.security_details};
+    if ((!currentEventProperties.metadata.severity_measures)||(currentEventProperties.metadata.severity_measures.length==0))
+    {
+        var mockSeverity = {scale: currentEventProperties.metadata.severity_scale, description: currentEventProperties.metadata.description};
         currentEventProperties.metadata.severity_measures = [mockSeverity];
     }
 
@@ -201,8 +202,11 @@ var printEventProperties = function(err, eventProperties){
 
     vmObject.data.event= $.extend(true, newEvent, currentEventProperties);
 
-    var countryDetailsContainerContent = '';
-    countryDetailsContainerContent+='<ul class="nav nav-tabs">';
+    // set up country details tabs
+    let countryDetailsCIAContainerContent = '';
+    let countryDetailsLinksContainerContent = '';
+    countryDetailsCIAContainerContent+='<ul class="nav nav-tabs">';
+    countryDetailsLinksContainerContent+='<ul class="nav nav-tabs">';
 
     let countries = [];
 
@@ -218,22 +222,95 @@ var printEventProperties = function(err, eventProperties){
     let newAreas = currentEventProperties.metadata.areas.filter(countriesFilter);
 
     for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
-        countryDetailsContainerContent+='<li role="presentation"><a id="countryDetailsTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+        countryDetailsCIAContainerContent+='<li role="presentation"><a id="countryDetailsCIATab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+        countryDetailsLinksContainerContent+='<li role="presentation"><a id="countryDetailsLinksTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryLinks'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
     }
 
-    countryDetailsContainerContent+='</ul>';
-    countryDetailsContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+    countryDetailsCIAContainerContent+='</ul>';
+    countryDetailsLinksContainerContent+='</ul>';
+
+    countryDetailsCIAContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+    countryDetailsLinksContainerContent+='<div class="tab-content" style="height:70vh; width:100%;">';
+
+
+    let numCountries = newAreas.length;
+    let countryLinksCounter = 0;
+
     for (areaidx = 0; areaidx < newAreas.length; areaidx++) {
-        countryDetailsContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
+        countryDetailsCIAContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
+        countryDetailsLinksContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
         if (newAreas[areaidx].country_code) {
-            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': newAreas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+            countryDetailsCIAContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': newAreas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/utils/country_links?country=' + newAreas[areaidx].country_code.toUpperCase(),
+                contentType: 'application/json'
+            }).done(function( data, textStatus, req ){
+
+                countryDetailsLinksContainerContent += '<ul>';
+                for (let oc in data.links) {
+                    if (data.links.hasOwnProperty(oc)) {
+                        countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                    }
+                }
+                countryDetailsLinksContainerContent += '</ul>';
+                countryDetailsLinksContainerContent+='</div>';
+                countryLinksCounter++;
+                if (countryLinksCounter===numCountries) {
+                    countryDetailsLinksContainerContent+='</div>';
+                    $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
+                }
+
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                } else {
+                    alert('error: '+ err.responseText);
+                }
+            });
+
+
         } else if (findCountry({'name': newAreas[areaidx].country}) && findCountry({'name': newAreas[areaidx].country}).gec) {
-            countryDetailsContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': newAreas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+            countryDetailsCIAContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': newAreas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+
+            let a2 =findCountry({'name': newAreas[areaidx].country}).a2.toUpperCase();
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/utils/country_links?country=' + a2,
+                contentType: 'application/json'
+            }).done(function( data, textStatus, req ){
+
+                countryDetailsLinksContainerContent += '<ul>';
+                for (let oc in data.links) {
+                    if (data.links.hasOwnProperty(oc)) {
+                        countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                    }
+                }
+                countryDetailsLinksContainerContent += '</ul>';
+                countryDetailsLinksContainerContent+='</div>';
+                countryLinksCounter++;
+                if (countryLinksCounter===numCountries) {
+                    countryDetailsLinksContainerContent+='</div>';
+                    $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
+                }
+
+            }).fail(function(err) {
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                } else {
+                    alert('error: '+ err.responseText);
+                }
+            });
+
+
         }
-        countryDetailsContainerContent+='</div>';
+
     }
-    countryDetailsContainerContent+='</div>';
-    $('#countryDetailsContainer').append(countryDetailsContainerContent);
+    countryDetailsCIAContainerContent+='</div>';
+    $('#countryDetailsCIAContainer').append(countryDetailsCIAContainerContent);
+
 
     vmEventDetails=new Vue(vmObject);
     vmEventDetails.$mount('#eventVApp');
@@ -1259,6 +1336,7 @@ function translate(data) {
         if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
             $('#searchTerm').val(resp.data.translations[0].translatedText);
             $('#btnSearchTwitter').trigger('click');
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val()));
         } else {
             $('#searchTerm').val('(no translation found)');
         }
@@ -1440,6 +1518,7 @@ var vmObject = {
             'complete':[],
         },
         suggestEdit: {
+            'General': false,
             'Notification': false,
             'ExtCapacity': false,
             'Figures': false,
@@ -1452,7 +1531,19 @@ var vmObject = {
         }
     },
     mounted:function(){
+        $('#markdownModal').load('/common/markdown-modal.html');
         $('#eventMSFLoader').hide();
+
+        // operator check
+        $.ajax({
+            type: 'GET',
+            url: '/api/utils/operatorCheck',
+            statusCode: {
+                403: function () {
+                    $('#eventEditingOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                }
+            }
+        });
 
         // Search Twitter
         $('#btnSearchTwitter').click(function() {
@@ -1470,14 +1561,14 @@ var vmObject = {
             $(this).parent().removeClass('close-box');
         });
 
-        vmObject.data.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
+        this.event.metadata.areas = currentEventProperties.metadata.areas;  // to watch when areas change for severity UI
+
         $( '.inputSeveritySlider' ).slider({
             min: 1, max: 3, step: 1
         }).each(function() {
-            // Get the options for this slider
-            var opt = $(this).data().uiSlider.options;
-            // Get the number of possible values
-            var vals = opt.max - opt.min;
+
+            // Get the number of possible values (-1)
+            var vals = 3-1;
             // Space out values
             for (var i = 0; i <= vals; i++) {
                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
@@ -1517,6 +1608,8 @@ var vmObject = {
                 searchTerm += ' ' + currentEventProperties.metadata.country;
             }
             $('#searchTerm').val(searchTerm);
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent(searchTerm));
+
             this.searchTerm = searchTerm;
 
             if(currentEventProperties.type){
@@ -1538,6 +1631,7 @@ var vmObject = {
         $('#searchTerm').keyup(function(event){
             if(event.keyCode == 13){
                 $('#btnSearchTwitter').trigger('click');
+                $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k='+encodeURIComponent($('#searchTerm').val()));
             }
         });
 
@@ -2225,6 +2319,13 @@ var vmObject = {
                 location: {lat: currentEventGeometry.coordinates[1],lng: currentEventGeometry.coordinates[0]}
             };
             vmAnalytics.analyzeEvent(evBody);
+        },
+
+        updateMarkdown: _.debounce(function(e){
+            this.newNotification = e.target.value;
+        }, 300),
+        openMarkdownSyntax: function(){
+            $('#markdownModal').modal('show');
         }
 
     },
@@ -2233,12 +2334,14 @@ var vmObject = {
             //will keep the sorting here for UI
             return (this.event.metadata.notification && this.event.metadata.notification.length > 0) ? this.event.metadata.notification.slice().sort((a,b) => {
                 return b.notification_time - a.notification_time;
+            }).map(item => {
+                return Object.assign({}, item, {notification: marked(item.notification, {sanitize: true})});
             }): [];
         },
         notStr:function(){
             let lastNotification = getLatestNotification(this.event.metadata.notification);
-            return (lastNotification) ? lastNotification.notification+
-            (lastNotification.hasOwnProperty('username') ? (', From: ' + lastNotification.username) : '') +
+            return (lastNotification) ? marked(lastNotification.notification, {sanitize: true}) +
+            (lastNotification.hasOwnProperty('username') ? ('<br/>' + lastNotification.username) : '') +
             ' @ ' + (new Date(lastNotification.notification_time*1000)).toLocaleTimeString().replace(/:\d{2}$/,'') : '(none)';
         },
         eventLink:function(){
@@ -2247,25 +2350,33 @@ var vmObject = {
         eventReportLink:function()
         {
             return WEB_HOST + 'report/?eventId=' + this.event.id + '&reportkey=' + this.event.reportkey + '#' + this.event.metadata.name;
+        },
+
+        compiledMarkdown: function(){
+            return marked(this.newNotification, {sanitize: true});
+        },
+        markedNotification: function(chunk){
+            return marked(chunk, {sanitize: true});
         }
     },
     watch: {
         areas: function(val){
+            var vm=this;
             var mostRecentSlider = $('.inputSeveritySlider').eq($('.inputSeveritySlider').length);
             var filled = mostRecentSlider.has('span.ui-slider-handle').length;
 
             if(filled == 0){
 
-                if(currentEventProperties.metadata.areas.length > currentEventProperties.metadata.severity_measures.length){
+                if(vm.event.metadata.areas.length > vm.event.metadata.severity_measures.length){
                     var mockSeverity = {scale: 2, description: ''};
-                    vmObject.data.event.metadata.severity_measures.push(mockSeverity);
+                    vm.event.metadata.severity_measures.push(mockSeverity);
 
                     setTimeout(function(){
+
                         $('.inputSeveritySlider').last().slider({
                             min: 1, max: 3, step: 1, value: 2
                         }).each(function() {
-                            var opt = $(this).data().uiSlider.options;
-                            var vals = opt.max - opt.min;
+                            var vals = 3-1;
                             for (var i = 0; i <= vals; i++) {
                                 var el = $('<label>'+severityLabels[i]+'</label>').css('left',(i/vals*100)+'%');
                                 $(this).append(el);

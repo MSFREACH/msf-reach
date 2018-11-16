@@ -103,4 +103,22 @@ export default (config, db, logger) => ({
             .then((data) => resolve({ id: String(id),  properties:data.properties }))
             .catch((err) => reject(err));
     }),
+    /**
+    * DELETE a mission from the database
+    * @param {integer} id ID of mission
+    */
+    deleteMission: (id) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `DELETE FROM ${config.TABLE_MISSIONS} WHERE id = $1`;
+
+        // Setup values
+        let values = [ id ];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then(() => resolve())
+            .catch((err) => reject(err));
+    })
 });

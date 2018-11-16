@@ -26,6 +26,26 @@ $(function() {
         }
     });
 });
+var hasWritePermission=false;
+const operatorCheck = function() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/utils/operatorCheck',
+        statusCode: {
+            403: function() {
+                $('#eventCreationOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                $('#missionModalOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+            }
+        }
+    }).done(function(){
+        hasWritePermission=true;
+        $('.show-if-write-permission').show();
+    }).fail(function(){
+        hasWritePermission=false;
+        $('.show-if-write-permission').hide();
+    });
+};
+
 
 /**
 * function to convert ISO date string to locale string with basic handling of non-isoDate format
@@ -931,8 +951,8 @@ function openHazardPopup(id)
 * @returns {String} err - Error message if any, else none
 * @returns {Object} events - Events as GeoJSON FeatureCollection
 */
-var getAllEvents = function(callback){
-    $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT, function ( data ){
+var getAllEvents = function(callback, term){
+    $.getJSON('/api/events/?status=active&geoformat=' + GEOFORMAT + (term ? ('&search='+term) : ''), function ( data ){
     // Print output to page
         callback(null, data.result);
     }).fail(function(err) {
@@ -945,10 +965,65 @@ var getAllEvents = function(callback){
 };
 
 
+var eventSearchFromDate = '';
+var eventSearchToDate = '';
+var eventSearchTerm = '';
+
+var eventSearch = function() {
+    var saveCookie = Cookies.get('Ongoing MSF Responses');
+    mainMap.removeLayer(eventsLayer);
+    layerControl.removeLayer(eventsLayer);
+    eventsLayer.clearLayers();
+    mainMap.removeLayer(eventsLayer);
+    $('#ongoingEventProperties').empty();
+    $('#watchingEventProperties').empty();
+    Cookies.set('Ongoing MSF Responses',saveCookie);
+    getAllEvents(mapAllEvents, eventSearchTerm);
+    $('watchingTab').tab('show');
+};
+
+$(function(){
+    // set up as a date time picker element
+    $( '#eventSearchFromDate' ).datetimepicker({
+        //controlType: 'select',
+        format: 'YYYY-MM-DD'
+        //yearRange: '1900:' + new Date().getFullYear()
+    });
+
+    $('#eventSearchFromDate').on('dp.change', function(e) {
+        var formattedValue = e.date.format(e.date._f);
+        eventSearchFromDate = formattedValue.match(/\d\d\d\d-\d\d-\d\d/)[0];
+        eventSearch();
+    });
+
+    // set up as a date time picker element
+    $( '#eventSearchToDate' ).datetimepicker({
+        //controlType: 'select',
+        format: 'YYYY-MM-DD'
+        //yearRange: '1900:' + new Date().getFullYear()
+    });
+
+    $('#eventSearchToDate').on('dp.change', function(e) {
+        var formattedValue = e.date.format(e.date._f);
+        eventSearchToDate = formattedValue.match(/\d\d\d\d-\d\d-\d\d/)[0];
+        eventSearch();
+    });
+});
+
+$('#eventSearchTerm').on('input',function() {
+    eventSearchTerm = $('#eventSearchTerm').val();
+    eventSearch();
+});
+
 var currentContactId = 0;
+var selectedUserToShareWith= null;
 
 // code for setting up actions on contact link click
 var onContactLinkClick = function(id) {
+
+    selectedUserToShareWith= null;
+    $('#sharewith_name').val(''); // clear entry
+    $('#btnShare').prop('disabled',true);
 
     currentContactId = id;
     getContact(id);
@@ -983,6 +1058,7 @@ var getContact = function(id) {
         $('#privateContact').change(function() {
             if ($('#privateContact').val() === 'true') {
                 alert('cannot set public contact private');
+                $('#privateContact').val(String(contact.result.private));//change back to original value
             } else {
                 $.ajax({
                     type: 'PATCH',
@@ -994,6 +1070,7 @@ var getContact = function(id) {
                         alert('you can only set to private contacts that you have entered');
                     }
                     alert('privacy not set due to error');
+                    $('#privateContact').val(String(contact.result.private));//change back to original value
                 });
             }
         });
@@ -1072,6 +1149,33 @@ $('#sharewith_email').keyup(function(event){
     }
 });
 
+
+function shareWithUser(){
+    if (!selectedUserToShareWith)
+    {
+        alert('Please select a user first.');
+        return;
+    }
+    //console.log(currentContactId);
+    $.ajax({
+        type: 'PATCH',
+        url: '/api/contacts/' + currentContactId + '/share',
+        data: JSON.stringify({'oid':selectedUserToShareWith.id}),
+        contentType: 'application/json'
+    }).done(function(data, textStatus, req) {
+        $('#sharewith_name').val(''); // clear entry
+        $('#btnShare').prop('disabled',true);
+        alert('The contact has been successfully shared with '+selectedUserToShareWith.value);
+        selectedUserToShareWith=null;
+    }).fail(function(err) {
+        if (err.responseText.includes('expired')) {
+            alert('session expired');
+        } else {
+            alert('Sharing failed, are you sure you own the record?');
+        }
+    });
+}
+
 $( '#sharewith_name' ).autocomplete({
     source: function( request, response ) {
         $.ajax({
@@ -1090,21 +1194,8 @@ $( '#sharewith_name' ).autocomplete({
     minLength: 3,
     select: function( event, ui ) {
         if (ui.item) {
-            $.ajax({
-                type: 'PATCH',
-                url: '/api/contacts/' + currentContactId + '/share',
-                data: JSON.stringify({'oid':ui.item.id}),
-                contentType: 'application/json'
-            }).done(function(data, textStatus, req) {
-                $('#sharewith_name').val(''); // clear entry
-                alert('shared');
-            }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                    alert('session expired');
-                } else {
-                    alert('failed, are you sure you own the record?');
-                }
-            });
+            selectedUserToShareWith=ui.item;
+            $('#btnShare').prop('disabled',false);
         }
     },
     open: function() {

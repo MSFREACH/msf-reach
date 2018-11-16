@@ -16,6 +16,7 @@ export default ({ config, db, logger }) => {
     // Validation schema
     const schemaGetAll = Joi.object().keys(
         {
+            search: Joi.string().min(1),
             geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
             status: Joi.any().valid(config.API_EVENT_STATUS_TYPES),
             country: Joi.string(),
@@ -25,7 +26,7 @@ export default ({ config, db, logger }) => {
     ).with('lng', 'lat');
 
     // Get a list of all events
-    api.get('/', ensureAuthenticated, cacheResponse('1 minute'),
+    api.get('/', ensureAuthenticated,
         validate({
             query: schemaGetAll
         }),
@@ -34,7 +35,7 @@ export default ({ config, db, logger }) => {
                 lng: req.query.lng,
                 lat: req.query.lat
             };
-            events(config, db, logger).all(req.query.status, req.query.country, location)
+            events(config, db, logger).all(req.query.status, req.query.country, location, req.query.search)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */
@@ -74,6 +75,7 @@ export default ({ config, db, logger }) => {
                 metadata: Joi.object().required().keys({
                     user: Joi.string().allow(null),
                     name: Joi.string().allow(''),
+                    project_code: Joi.string().allow(''),
                     description: Joi.string().allow(''),
                     sub_type: Joi.string().allow(''), // TODO: change to array later
 
@@ -193,6 +195,22 @@ export default ({ config, db, logger }) => {
                 });
         }
     );
+
+    // Delete an event's record and associated reports from the database
+    api.delete('/:id', ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() }
+        }),
+        (req, res, next) => {
+            events(config, db, logger).deleteEvent(req.params.id)
+                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'event deleted', id:data.id }))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        });
 
     return api;
 };

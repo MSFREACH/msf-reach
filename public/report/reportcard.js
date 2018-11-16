@@ -1,5 +1,11 @@
 var doItOnce=true;
 var navigateTo;//exporting the function
+
+function contactRedirect() { // eslint-disable-line no-unused-vars
+    alert('We are redirecting you to the contact card to enter contact details.');
+    window.location.href = window.location.href.replace(/report.*/gi,'contact/');
+}
+
 $(function () {
 
     if (window.location.hash) {
@@ -49,9 +55,6 @@ $(function () {
         if ((cInd==1)&& typeof($('.rtype-selected').attr('data-msf-value'))==='undefined') {
             alert('Please select a report type');
             return;
-        }
-        if ((cInd==1)&& $('.rtype-selected').attr('data-msf-value')==='CONTACTS') {
-            window.location.href = window.location.href.replace(/report.*/gi,'contact/');
         }
         if ((cInd==2)&&(!newReportMap.msf_latlng))
         {

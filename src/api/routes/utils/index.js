@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 
 // Import any required utility functions
-import { cacheResponse, ensureAuthenticated } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 
@@ -89,11 +89,41 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
     });
 
+    api.get('/operatorCheck', ensureAuthenticatedWrite, cacheResponse('10 minutes'),
+        (req, res, next) => { // eslint-disable-line no-unused-vars
+            res.status(200).json({statusCode: 200});
+        });
+
     // The following get methods get hazards from different data sources
     api.get('/arcgistoken', ensureAuthenticated, cacheResponse('10 minutes'),
         (req, res, next) => { // eslint-disable-line no-unused-vars
             res.status(200).json({statusCode: 200, token: config.ARCGIS_TOKEN});
         });
+
+    // get links for OCs by country
+    api.get('/country_links', cacheResponse('1 minute'), validate({
+        query: {
+            country: Joi.string().required()
+        }
+    }), (req, res, next) => {
+        let cc=req.query.country;
+        let query = `select links from ${config.TABLE_COUNTRY_LINKS}
+        where country_code=$1`;
+        let values = [cc];
+
+        // Execute
+        logger.debug(query, values);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => {
+                res.json(data);
+            })
+            .catch((err) => {
+                logger.error(err);
+                res.json({success:false, error:err});
+                next(err);
+            });
+
+    });
 
     return api;
 };
