@@ -46,16 +46,22 @@ $(function () {
             alert('Please tick the Information consent box to continue.');
             return;
         }
-        if ((cInd==1)&&(!newReportMap.msf_latlng))
+        if ((cInd==1)&& typeof($('.rtype-selected').attr('data-msf-value'))==='undefined') {
+            alert('Please select a report type');
+            return;
+        }
+        if ((cInd==1)&& $('.rtype-selected').attr('data-msf-value')==='CONTACTS') {
+            window.location.href = window.location.href.replace(/report.*/gi,'contact/');
+        }
+        if ((cInd==2)&&(!newReportMap.msf_latlng))
         {
             alert('Please select a report location on the map to proceed.');
             return;
         }
-        if ((cInd==2)&& typeof($('.rtype-selected').attr('data-msf-value'))==='undefined') {
-            alert('Please select a report type');
+        if ((cInd==3)&& $('#inputReportText').val()==='') {
+            alert('Please enter report details');
             return;
         }
-
         navigateTo(cInd + 1);
     });
 
