@@ -12,9 +12,7 @@ const initialState = {
         notifications: [],
         status: '',
         body: {},
-        type: '',
-        types: [],
-        updated_at: ''
+        types: []
     } // TODO: add associated reports & contacts later
 };
 
@@ -68,7 +66,6 @@ const mutations = {
         state.event.medFigures = payload.result.objects.output.geometries[0].properties.medFigures;
         state.event.reflection = payload.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
-        state.event.updated_at = payload.result.objects.output.geometries[0].properties.updated_at;
 
     },
     [RESET_STATE] () {
@@ -82,11 +79,11 @@ const getters ={
     event (state){
         return state.event;
     },
+    eventProperties(state){
+        return state.event.body;
+    },
     eventMetadata (state){
         return state.event.metadata;
-    },
-    eventUpdatedAt (state){
-        return state.event.updated_at;
     },
     eventCoordinates (state){
         return state.event.coordinates;

@@ -1,6 +1,6 @@
 <template>
     <v-container class="eventSubContent" v-if="eventMetadata">
-        <div class="general-text-fields">
+        <div :class="editing ? 'edit-wrapper general-text-fields':'general-text-fields'">
             <div class="actions">
                 <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                 <button v-if="!editing" @click="edit()">Edit</button>
@@ -10,28 +10,29 @@
                 </div>
             </div>
              <v-layout row wrap v-if="!editing">
-                <div class="one-half">
-                    <label>Name</label>
-                    <div class="primary-text">{{eventMetadata.name}}</div>
+                <div class="top-level primary-text">
+                    <div class="one-half">
+                        <label>Name</label>
+                        {{eventMetadata.name}}
+                    </div>
+                    <div class="quarter-width">
+                        <label>Project Code</label>
+                        {{eventProperties.project_code}}
+                    </div>
+                    <div class="quarter-width">
+                        <label>Operator</label>
+                        not available
+                    </div>
                 </div>
-                <div class="quarter-width">
-                    <label>Project Code</label>
-                    <div class="primary-text">{{eventMetadata.project_code}}</div>
-                </div>
-                <div class="quarter-width">
-                    <label>Operator</label>
-                    <div class="primary-text">{{eventMetadata.name}}</div>
-                </div>
-
                 <!-- meta tags -->
-                <div class="one-third">
-                    <label>Status</label>
-                    <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
-                </div>
                 <div class="one-third">
                     <label>Type(s)</label>
                     <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
                     <!-- TODO: add pairing icon + clickable taglink -->
+                </div>
+                <div class="one-third">
+                    <label>Status</label>
+                    <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
                 </div>
                 <div class="one-third">
                     <label>Areas</label>
@@ -59,7 +60,7 @@
                 </div>
                 <div class="one-third">
                     <label>Last Updated</label>
-                    {{ eventUpdatedAt | relativeTime }}
+                    {{ eventProperties.updated_at | relativeTime }}
                 </div>
                 <div class="one-third">
                     <label>Local Date/Time</label>
@@ -90,21 +91,25 @@
                 </div>
             </v-layout>
             <v-layout row wrap v-else>
-                <div class="full-width">
-                    <label> Name </label>
-                    <input type="text" v-model="eventMetadata.name" placeholder="Event name" />
+
+                <div class="top-level primary-text">
+                    <div class="one-half">
+                        <label>Name</label>
+                        <input type="text" v-model="eventMetadata.name" placeholder="name" />
+                    </div>
+                    <div class="quarter-width">
+                        <label>Project Code</label>
+                        <input type="text" v-model="eventProperties.project_code" placeholder="OCA-###" />
+                    </div>
+                    <div class="quarter-width">
+                        <label>Operator</label>
+                        <!-- TODO: dropdown selection form contact list -->
+                        <input type="text" v-model="eventProperties.operator" placeholder="name-position" />
+                    </div>
                 </div>
 
                 <!-- meta tags -->
-                <div>
-                    <label> Status </label>
-                    <select v-model="eventMetadata.event_status">
-                    <option disabled value="">Please select one</option>
-                    <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
-                    </select>
-                </div>
-
-                <div>
+                <div class="one-third">
                     <label> Type(s) </label>
 
                     <div v-for="(item, index) in allEventTypes">
@@ -130,9 +135,15 @@
                         <input v-if="otherFields.type.isSelected" type="text" v-model="otherFields.type.description" placeholder="(Specify)" />
                     </div>
                 </div>
+                <div class="one-third">
+                    <label> Status </label>
+                    <select v-model="eventMetadata.event_status">
+                    <option disabled value="">Please select one</option>
+                    <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
+                    </select>
+                </div>
 
-
-                <div id="eventAreas">
+                <div class="one-third" id="eventAreas">
                     <label> Area(s) </label>
                     <div v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas">
                         <span v-if="area.region.length > 0"> {{area.region}}, {{area.country_code}} </span>
@@ -144,13 +155,7 @@
                             <textarea v-model.trim="eventMetadata.severity_measures[index].description" placeholder="Severity description"></textarea>
                         </div>
                     </div>
-                    <label> Add area for the emergency </label>
-                    <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
-                    OR
-                    <input type="text" value="" id="editEventAddressLat" placeholder="Latitude">
-                    <input type="text" value="" id="editEventAddressLng" placeholder="Longitude">
-                    <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate">
-                        <span class="glyphicon glyphicon-search"></span></button>
+                    <new-map-entry></new-map-entry>
                 </div>
 
                 <!-- <div id="eventMap" class="map-container">   TODO: insert MAP component -->
@@ -194,6 +199,8 @@
 import { mapGetters } from 'vuex';
 import { DATETIME_DISPLAY_FORMAT, SEVERITY, EVENT_TYPES, EVENT_STATUSES } from '@/common/common';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
+import NewMapEntry from '@/views/Map/NewEntry.vue';
+
 // import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap';
 import datePicker from 'vue-bootstrap-datetimepicker';
@@ -238,14 +245,14 @@ export default {
     },
     components:{
         //TODO: MAP goes here
-        datePicker, MapAnnotation
+        datePicker, MapAnnotation, NewMapEntry
     },
     computed: {
         ...mapGetters([
             'eventMetadata',
             'eventTypes',
             'eventCreatedAt',
-            'eventUpdatedAt',
+            'eventProperties',
             'eventCoordinates'
         ])
     },

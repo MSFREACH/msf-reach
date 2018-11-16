@@ -1,3 +1,15 @@
 .datepicker-container{
     position: relative;
 }
+
+
+.edit-wrapper{
+    background: #0374C7;
+    color: #fff;
+    input{
+        border-bottom: 2px solid #fff;
+    }
+    input::placeholder{
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
