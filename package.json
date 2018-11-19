@@ -67,7 +67,7 @@
     "nodemailer": "^4.6.8",
     "nodemailer-express-handlebars": "^3.0.0",
     "passport": "0.4.0",
-    "passport-azure-ad": "github:AcrossTheCloud/passport-azure-ad",
+    "passport-azure-ad": "^4.0.0",
     "pg-promise": "^8.5.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
