@@ -51,8 +51,7 @@ describe('Cognicity Server Testing Harness', function() {
     });
     it('Server starts', function(done) {
         init(config, initializeDb, routes, logger).then((app) => {
-            describe('Top level API endpoint', function() {
-                /* 
+            describe('Top level API endpoint', function() {      
                 it('Gets current API version', function(done) {
                     test.httpAgent(app)
                         .get('/api')
@@ -68,7 +67,6 @@ describe('Cognicity Server Testing Harness', function() {
                             }
                         });
                 });
-                */
 
                 it('Can handle unknown routes', function(done) {
                     test.httpAgent(app)
