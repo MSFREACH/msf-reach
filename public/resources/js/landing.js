@@ -168,7 +168,7 @@ var mapAllEvents = function(err, events){
 
 
             var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-            type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','');
+            type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','').replace('natural_hazard','');
 
             var icon_names = type.split(',');
             var icon_html = icon_names.map(function(item) {
