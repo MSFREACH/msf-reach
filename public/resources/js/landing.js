@@ -172,7 +172,9 @@ var mapAllEvents = function(err, events){
 
             var icon_names = type.split(',');
             var icon_html = icon_names.map(function(item) {
-                if (item!=='' && disease_subtypes.indexOf(item)===-1) {
+                if (item.match(/other/)) {
+                    return '<img src="/resources/images/icons/event_types/other.svg" width="40">';
+                } else if (item!=='' && disease_subtypes.indexOf(item)===-1) {
                     return '<img src="/resources/images/icons/event_types/'+item+'.svg" width="40">';
                 } else return '';
             }).join('');

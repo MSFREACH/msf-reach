@@ -507,13 +507,20 @@ var mapAllEvents = function(err, events){
         }
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (icon_name.includes('disease_outbreak')) {
-            icon_name = 'epidemic';
-        }
+        type = type.toLowerCase().replace('disease_outbreak', 'epidemic').replace('disease_outbreak', '');
+
+        var icon_names = type.split(',');
+        
+        var icon_html = icon_names.map(function (item) {
+            if (item.match(/other/)) {
+                return '<img src="/resources/images/icons/event_types/other.svg" width="40">';
+            } else if (item !== '' && disease_subtypes.indexOf(item) === -1) {
+                return '<img src="/resources/images/icons/event_types/' + item + '.svg" width="40">';
+            } else return '';
+        }).join('');
 
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
-    '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
+    '\'>'+icon_html+'</a>' +
     '<strong><a href=\'/events/?eventId=' + feature.properties.id +
     '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
     'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
