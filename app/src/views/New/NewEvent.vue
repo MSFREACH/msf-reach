@@ -57,16 +57,16 @@
                         <v-layout row wrap>
                             <v-flex>
                                 <h3> Local contact </h3>
-                                <v-text-field v-model="metadata.incharge_contact.local.name" label="Name"  prepend-icon="person">
+                                <v-text-field v-model="metadata.person_incharge.name" label="Name"  prepend-icon="person">
                                 </v-text-field>
-                                <v-text-field v-model="metadata.incharge_contact.local.position" label="Position"></v-text-field>
+                                <v-text-field v-model="metadata.person_incharge.position" label="Position"></v-text-field>
                             </v-flex>
                             <v-flex>
                                 <h3> REACH operator </h3>
-                                <!-- TODO: // autocomplete from Contact list -->
-                                <v-text-field v-model="metadata.incharge_contact.operator.name" label="Name"  prepend-icon="person">
+                                <!-- TODO: // autocomplete from CURRENT USER -->
+                                <v-text-field v-model="metadata.operator.name" label="Name"  prepend-icon="person">
                                 </v-text-field>
-                                <v-text-field v-model="metadata.incharge_contact.operator.position" label="Position"></v-text-field>
+                                <v-text-field v-model="metadata.operator.position" label="Position"></v-text-field>
                             </v-flex>
                         </v-layout>
                         <v-text-field label="SharePoint Link" type="url" box append-icon="link" v-model="metadata.sharepoint_link">
@@ -178,7 +178,7 @@ export default {
             var timestamp = new Date();
             var ISOTime = timestamp.toISOString();
             this.metadata.event_status = this.selectedStatus;
-            this.metadata.status_updates = [{type: this.selectedStatus, timestamp: ISOTime}];
+            this.metadata.status_updates = [{status: this.selectedStatus, timestamp: ISOTime}];
         },
         lintTypes(){
             this.metadata.types = this.others.eventType ? this.checkedTypes.concat(this.others.eventType) : this.checkedTypes;

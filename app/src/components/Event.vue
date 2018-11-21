@@ -37,7 +37,7 @@ import REventGeneral from '@/views/Event/General.vue';
 import REventNotification from '@/views/Event/General.vue';
 import REventResponse from '@/views/Event/Response.vue';
 import REventExtCapacity from '@/views/Event/ExtCapacity.vue';
-import REventMedFigures from '@/views/Event/MedFigures.vue';
+import REventFigures from '@/views/Event/Figures.vue';
 import REventStaffResources from '@/views/Event/StaffResources.vue';
 import REventReflection from '@/views/Event/Reflection.vue';
 
@@ -66,7 +66,7 @@ export default {
         };
     },
     components: {
-        REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventMedFigures, REventStaffResources
+        REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventFigures, REventStaffResources
     },
     beforeRouteEnter(to, from, next){
         Promise.all([

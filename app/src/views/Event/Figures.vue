@@ -1,29 +1,29 @@
 <template>
     <div class="eventSubContent">
-        Medical Figures
-        <div v-if="eventMedFigures">
-            <div v-for="(item, index) in eventMedFigures.keyFigures">{{item.category | noUnderscore}},
+        Figures
+        <div v-if="eventFigures">
+            <div v-for="(item, index) in eventFigures.keyFigures">{{item.category | noUnderscore}},
                 <i>value:</i> {{item.value}}
             </div>
             <div>
                 <label>Population in total for zone impacted:</label>
-                {{eventMedFigures.population.total.amount}}
+                {{eventFigures.population.total.amount}}
             </div>
             <div>
                 <label>Description:</label>
-                {{eventMedFigures.population.total.description}}
+                {{eventFigures.population.total.description}}
             </div>
             <div>
                 <label>Population affected:</label>
-                {{eventMedFigures.population.affected.amount}}
+                {{eventFigures.population.affected.amount}}
             </div>
             <div>
                 <label>Description:</label>
-                {{eventMedFigures.population.affected.description}}
+                {{eventFigures.population.affected.description}}
             </div>
             <div>
                 <label>Percentage of people affected:</label>
-                {{eventMedFigures.population.affected.percentage}}
+                {{eventFigures.population.affected.percentage}}
             </div>
         </div>
         <div v-else>
@@ -37,7 +37,7 @@
 import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
 export default {
-    name: 'r-event-medFigures',
+    name: 'r-event-figures',
     data(){
         return {
         };
@@ -51,7 +51,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'eventMedFigures'
+            'eventFigures'
         ]),
     }
 };

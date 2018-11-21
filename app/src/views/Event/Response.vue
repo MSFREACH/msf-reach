@@ -1,7 +1,11 @@
 <template>
     <div class="eventSubContent">
         Response
-        <div v-if="eventMsfResponse">
+        <div v-if="eventResponse">
+            <div class="quarter-width">
+                <label>Project Code</label>
+                {{eventProperties.project_code}}
+            </div>
             <ul>
                 <label>Type of programmes: </label>
                 <li v-for="item in eventMsfResponse.types_of_programmes" >
@@ -66,7 +70,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'eventMsfResponse'
+            'eventResponse',
         ]),
     }
 };

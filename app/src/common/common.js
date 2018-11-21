@@ -28,7 +28,8 @@ export const EVENT_TYPES = [
             { value: 'malaria', text: 'Malaria' },
             { value: 'measles', text: 'Measles' },
             { value: 'meningococcal_meningitis', text: 'Meningococcal Meningitis' },
-            { value: 'yellow_fever', text: 'Yellow Fever' },
+            { value: 'hemorrhagic_fever', text: 'Hemorrhagic fever'},
+            { value: 'yellow_fever', text: 'Yellow Fever' }
         ]
     },
 
@@ -42,10 +43,13 @@ export const EVENT_TYPES = [
             { value: 'flood', text: 'Flood' },
             { value: 'tsunami', text: 'Tsunami' },
             { value: 'drought', text: 'Drought' },
+            { value: 'landslide', text:'Landslide'}
         ]
     },
     { value: 'search_and_rescue', text: 'Search and Rescue' },
 ];
+
+export const EVENT_NOTIFICATION_CATEGORIES = ['ACCESS', 'NEEDS', 'CONTACTS','SECURITY'];
 
 export const EVENT_STATUSES = [
     { value: 'monitoring', text: 'Monitoring', icon: 'assessment' },

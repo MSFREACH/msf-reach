@@ -19,6 +19,7 @@
     "id": "65",
     "metadata":{
         "name" : "",
+        "REACH_operator":"",
         "description" : "",
         "open_datetime" : "",
         "closed_datetime" : "",
@@ -38,39 +39,24 @@
         }],
         "types":[],
         "sub_types" : [],
-        "mission_contact_person" : {
+        "mission_contact_person" :{
             "name":"",
-            "position":  "",
-            "arrival_time": null,
-            "departure_time": null
+            "position":  ""
         },
-        "security_details" : "",
-        "sharepoint_link" : "",
-        "user" : "",
-        "user_edit" : "",
+        "sharepoint_link" : ""
     },
     "notifications" : [
         {
             "timestamp": "",
-            "notes":"",
+            "description":"",
             "username": "",
-            "type" "info"|"medical"|"security"|"contacts"
-            /* ... relevant fields according to type  */
+            "category": "ACCESS|NEEDS|CONTACTS|SECURITY",
+            "files":[]
+
         }
     ],
-    "extCapacity":{
-        "description" : "",
-        "action_plan" : "",
-        "by_humanitarian" : "",
-        "type_in_ground" : "",
-        "who" : "",
-        "other_organizations" : [{
-            "name":"",
-            "deployment" : "",
-            "arrival_date" null
-        }]
-    },
-    "msfResponse": {
+    "response": {
+        "project_code": "",
         "start_date" : "",
         "end_date" : "",
         "description" : "",
@@ -79,19 +65,29 @@
             "coordinates": [],
             "type": "Point"
         },
-        "medical_material" : {
-            "items":[],
-            "arrival_date" : "",
-            "total_amount" : ""
-        },
-        "non_medical_material" : {
-            "items":[],
-            "arrival_date" : "",
-            "total_amount" : ""
-        },
         "operational_center" : "",
-        "types_of_programmes" : []
+        "type_of_programmes" : [{
+            "timestamp":"",
+            "status": "AUTO-GENERATE",
+            "programmes" :[{
+                "name":"",
+                "deployment":"1-10",
+                "notes":""
+            }]
+    }],
+    "extCapacity":{
+        "government_capacities":{
+            "name":"",
+            "arrival_date":"",
+            "description": ""
+        },
+        "other_organizations" : [{
+            "name":"",
+            "arrival_date":"",
+            "description":""
+        }]
     },
+
     "resources":{
         "budget" : "",
         "category" : "",

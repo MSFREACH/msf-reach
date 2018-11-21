@@ -8,20 +8,18 @@ export const DEFAULT_EVENT_METADATA = {
         country_code: null
     }],
     status_updates: [{
-        type: null,
+        status: null,
         timestamp: null
     }],
     types: [],
     sub_types: [],
-    incharge_contact: {
-        local: {
-            name: null,
-            position: null
-        },
-        operator: {
-            name: null,
-            position: null
-        }
+    person_incharge: {
+        name: null,
+        position: null
+    },
+    operator: {
+        name: null,
+        position: null
     },
     sharepoint_link: null,
     severity_measures: [{

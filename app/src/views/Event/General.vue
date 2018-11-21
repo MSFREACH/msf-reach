@@ -15,13 +15,10 @@
                         <label>Name</label>
                         {{eventMetadata.name}}
                     </div>
-                    <div class="quarter-width">
-                        <label>Project Code</label>
-                        {{eventProperties.project_code}}
-                    </div>
+
                     <div class="quarter-width">
                         <label>Operator</label>
-                        not available
+                        --
                     </div>
                 </div>
                 <!-- meta tags -->

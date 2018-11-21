@@ -63,9 +63,9 @@ export default new Router({
                         component: () => import('@/views/Event/ExtCapacity'),
                         props: true
                     },{
-                        path: 'medFigures',
-                        name: 'event-medFigures',
-                        component: () => import('@/views/Event/MedFigures'),
+                        path: 'figures',
+                        name: 'event-figures',
+                        component: () => import('@/views/Event/Figures'),
                         props: true
                     },{
                         path: 'resources',

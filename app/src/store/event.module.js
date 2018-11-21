@@ -60,10 +60,10 @@ const mutations = {
         state.event.body =payload.result.objects.output.geometries[0].properties;
         state.event.notifications = payload.result.objects.output.geometries[0].properties.metadata.notification;
         //------ future proof, when sub-content objs becomes available
-        state.event.msfResponse = payload.result.objects.output.geometries[0].properties.msfResponse;
+        state.event.response = payload.result.objects.output.geometries[0].properties.response;
         state.event.extCapacity = payload.result.objects.output.geometries[0].properties.extCapacity;
         state.event.staffResources = payload.result.objects.output.geometries[0].properties.staffResources;
-        state.event.medFigures = payload.result.objects.output.geometries[0].properties.medFigures;
+        state.event.figures = payload.result.objects.output.geometries[0].properties.figures;
         state.event.reflection = payload.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
 
@@ -109,29 +109,40 @@ const getters ={
             return cTypes.concat(cSubTypes);
         }
     },
-    eventMsfResponse(state){
-        if(!state.event.msfResponse && state.event.metadata){
+    eventResponse(state){
+        if(!state.event.response && state.event.metadata){
             // then we fallback & map out the keys
             var payload = state.event.metadata;
+            var programmes = [];
+            var currentPrograms = payload.msf_response_types_of_programmes;
+            if(currentPrograms && currentPrograms.length > 0){
+                for(var i=0; i < currentPrograms.length; i++){
+                    programmes.push({
+                        'name': currentPrograms[i],
+                        'deployment': null,
+                        'notes':''
+                    });
+                }
+                var first_programmes_entry = {
+                    'timestamp': state.event.body.updated_at,
+                    'status': payload.event_status,
+                    'programmes': programmes
+                };
+            }
+
             return {
+                project_code: state.event.body.project_code,
                 start_date: payload.start_date_msf_response,
                 end_date: payload.end_date_msf_response,
                 description: payload.msf_response,
                 total_days : payload.total_days_msf_response,
                 location : payload.msf_response_location, // check if object keys are copied
-                medical_material : {
-                    items: payload.msf_response_medical_material,
-                    arrival_date : payload.msf_response_medical_material_date_arrival,
-                    total_amount : payload.msf_response_medical_material_total
-                },
-                non_medical_material : {
-                    items: payload.msf_response_non_medical_material,
-                    arrival_date : payload.msf_response_non_medical_material_date_arrival,
-                    total_amount : payload.msf_response_non_medical_material_total
-                },
                 operational_center : payload.operational_center,
-                types_of_programmes : payload.msf_response_types_of_programmes
+                type_of_programmes : [first_programmes_entry]
+
             };
+        }else{
+            return state.event.response;
         }
     },
     eventExtCapacity(state){
@@ -145,10 +156,12 @@ const getters ={
                 who : payload.ext_capacity_who,
                 other_organizations : payload.ext_other_organizations //TODO: check obj array mapped
             };
+        }else{
+            return state.event.extCapacity;
         }
     },
-    eventMedFigures(state){
-        if(!state.event.medFigures && state.event.metadata){
+    eventFigures(state){
+        if(!state.event.figures && state.event.metadata){
             var payload = state.event.metadata;
             return {
                 keyFigures : payload.keyMSFFigures, //TODO: check obj array mapped
@@ -164,6 +177,8 @@ const getters ={
                     }
                 }
             };
+        }else{
+            return state.event.figures;
         }
     },
     eventStaffResources(state){

@@ -51,6 +51,7 @@ export default {
         coordinates(newVal){
             console.log('newVal ---coordinates-- ', newVal);
             this.map.setView([newVal[0], newVal[1]]);
+            this.map.invalidateSize();
         }
     },
     methods: {
