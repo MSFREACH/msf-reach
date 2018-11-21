@@ -1,3 +1,5 @@
+const marked = require('marked');
+const removeMd = require('remove-markdown');
 
 /*eslint no-debugger: off*/
 
@@ -12,5 +14,12 @@ export default {
     },
     toArray(value){
         return value.split(',');
+    },
+    renderMarkdown(value){
+        return marked(value);
+    },
+    snippetNoMarkdown(value){
+        var plainText = removeMd(value);
+        return plainText.substring(0, 100);
     }
 };

@@ -58,8 +58,8 @@ const mutations = {
         state.event.metadata = payload.result.objects.output.geometries[0].properties.metadata;
         // state.event.coordinates = payload.result.objects.output.geometries[0].coordinates;
         state.event.body =payload.result.objects.output.geometries[0].properties;
-        state.event.notifications = payload.result.objects.output.geometries[0].properties.metadata.notification;
         //------ future proof, when sub-content objs becomes available
+        state.event.notifications = payload.result.objects.output.geometries[0].properties.notifications;
         state.event.response = payload.result.objects.output.geometries[0].properties.response;
         state.event.extCapacity = payload.result.objects.output.geometries[0].properties.extCapacity;
         state.event.staffResources = payload.result.objects.output.geometries[0].properties.staffResources;
@@ -89,7 +89,24 @@ const getters ={
         return state.event.coordinates;
     },
     eventNotifications (state){
-        return state.event.notifications;
+        if(!state.event.notifications && state.event.metadata){
+            var currentNotifications = state.event.metadata.notification;
+            if(currentNotifications){
+                return currentNotifications.map(item =>{
+                    var newSchema = {
+                        category: null,
+                        description: item.notification,
+                        timestamp: item.notification_time,
+                        username: item.username,
+                        files:[item.notificationFileUrl]
+                    };
+                    return newSchema;
+                });
+            }
+        }else{
+            return state.event.notifications;
+        }
+
     },
     eventTypes(state){
         if(state.event.metadata.types){
