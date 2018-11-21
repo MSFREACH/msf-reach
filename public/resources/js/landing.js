@@ -171,11 +171,9 @@ var mapAllEvents = function(err, events){
             type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','').replace('natural_hazard','');
 
             var icon_names = type.split(',');
-            var icon_html = icon_names.map(function(item) {
-                if (item.match(/other/)) {
-                    return '<img src="/resources/images/icons/event_types/other.svg" width="40">';
-                } else if (item!=='' && disease_subtypes.indexOf(item)===-1) {
-                    return '<img src="/resources/images/icons/event_types/'+item+'.svg" width="40">';
+            var icon_html = icon_names.map(function (item) {
+                if (!item.match(/other/) && item !== '' && disease_subtypes.indexOf(item) === -1) {
+                    return '<img src="/resources/images/icons/event_types/' + item + '.svg" width="40">';
                 } else return '';
             }).join('');
 
