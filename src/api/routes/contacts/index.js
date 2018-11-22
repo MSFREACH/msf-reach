@@ -144,7 +144,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact record in the database
-    api.patch('/:id', ensureAuthenticated,
+    api.patch('/:id', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
