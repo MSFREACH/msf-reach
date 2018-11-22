@@ -29,12 +29,13 @@
                             <v-divider light></v-divider>
                             <v-card class="file-attachment">
                                 <form enctype="multipart/form-data">
-                                  <input id="fileUpload" ref="myUpload" type="file" accept="*/*" multiple @change="onFilePicked"/>
+                                  <input id="fileUpload" style="display: none" ref="myUpload" type="file" accept="*/*" multiple @change="onFilePicked"/>
+                                  <v-icon @click='pickFile'> attach_file </v-icon>
                                   <v-btn v-if="readyToUpload" label="upload" @click="processFiles" ></v-btn>
                                 </form>
                             </v-card>
-                            <v-card class="file-attachment" v-for="(item, index) in fileUrls" :key="index">
-                                <embed :src="item"></embed>
+                            <v-card class="file-attachment" v-for="(item, index) in previewFileUrls" :key="index">
+                                <embed :src="item" width="100%" height="100%"></embed>
                             </v-card>
                             <!-- add | list of uploaded files  -->
 
@@ -47,7 +48,7 @@
                               <label> Updated </label>  {{ (editedItem.timestamp * 1000) | relativeTime  }}
                           </v-flex>
                         <v-spacer></v-spacer>
-                        <v-switch label="save" @click="save"></v-switch>
+                        <v-switch label="save" @click="submit"></v-switch>
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
@@ -60,17 +61,6 @@
                     @click="filterByCategory(category)">
                     </span>
                 </v-btn-toggle>
-
-                <!-- <ul v-show="eventNotifications.length > 0">
-                    <li v-for="(elem, index) in displayNotifications">
-                        <span v-if="elem.hasOwnProperty('username')">{{elem.username}}</span>
-                        <span v-else>(username N/A)</span>
-                        <span> {{ (elem.notification_time*1000) | relativeTime }} </span>
-                        <p> {{ elem.notification }}
-                            <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a>
-                        </p>
-                    </li>
-                </ul> -->
 
                 <v-data-table :headers="headers" :items="displayNotifications" item-key="timestamp" class="elevation-1" hide-actions>
                     <template slot="items" slot-scope="props">
@@ -161,7 +151,9 @@ export default {
                 'http://www.africau.edu/images/default/sample.pdf',
                 'http://homepages.inf.ed.ac.uk/neilb/TestWordDoc.doc'
             ],
-            fileUrls: []
+            previewFileUrls: [],
+            signedFileUrls: []
+
         };
     },
     components: {
@@ -172,6 +164,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'currentUser',
             'currentEventId',
             'eventNotifications'
         ]),
@@ -219,44 +212,66 @@ export default {
             const index = this.eventNotifications.indexOf(item);
             confirm('Are you sure you want to delete this item?') && this.eventNotifications.splice(index, 1);
         },
-        onFilePicked(e){
-            this.readyToUpload = true;
+        pickFile(){
+            this.$refs.myUpload.click();
         },
-        processFiles(){
+        onFilePicked(e){
+            const files = e.target.files;
+            for(var f=0; f< files.length; f++){
+                const fr = new FileReader();
+                fr.readAsDataURL(files[f]);
+                fr.addEventListener('load', () => {
+                    var fileUrl = fr.result;
+                    this.previewFileUrls.push(fileUrl);
+                });
+            }
+        },
+        processFiles(files){
             console.log('hey == process files ! ');
             var vm = this;
-            var files = this.$refs.myUpload.files;
             // name, size, type;
-            if(files){
-                for(var f=0; f< files.length; f++){
-                    var fileName = files[f].name;
-                    var fileType = files[f].type;
-                    var fileSize = files[f].size;
-                    var file = files[f];
-                    var params = {key: ('event/'+this.currentEventId), filename: fileName};
-                    this.$store.dispatch(FETCH_UPLOAD_URL, params)
-                        .then((payload) => {
-                            if(payload){
-                                var fileLink = payload.url;
-                                vm.fileUrls.push(fileLink);
-                                console.log('1111 ---- dispatch.then ---- ', fileLink);
-                                this.uploadFile(file);
-                            }
-                        });
-                }
+            for(var f=0; f< files.length; f++){
+                var fileName = files[f].name;
+                var fileType = files[f].type;
+                var fileSize = files[f].size;
+                var file = files[f];
+                var params = {key: ('event/'+this.currentEventId), filename: fileName};
+                this.$store.dispatch(FETCH_UPLOAD_URL, params)
+                    .then((payload) => {
+                        if(payload){
+                            var fileLink = payload.url;
+                            vm.signedFileUrls.push(fileLink);
+                            console.log('1111 ---- dispatch.then ---- ', fileLink);
+                            this.uploadFile(file);
+                        }
+                    });
             }
         },
         uploadFile(file){
-
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
                 .then(() => {
-                    console.log('3333 ---- .then ---- ', url);
-                    // this.setPreview(file);
+                    this.save();
                 });
         },
-
+        submit(){
+            var files = this.$refs.myUpload.files;
+            if(files){
+                this.processFiles(files);
+            }else{
+                this.save();
+            }
+        },
         save(){
-            // this.processFiles();
+            var timeNow = new Date();
+            var params = _.extend(this.editedItem, {
+                timestamp: timeNow,
+                username: this.currentUser.username
+            });
+            this.$store.dispatch(CREATE_NOTIFICATION, this.params) /// new notification table or edit events
+                .then((payload) =>{
+
+                    // show confimation or direct to MAP view to show nearby reports
+                });
         },
         close () {
             this.dialog = false;
