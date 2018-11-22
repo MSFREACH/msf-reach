@@ -722,7 +722,7 @@
                     <td>
                       <div class="row">
                         <div class="col-sm-12">
-                            <button type="button" class="btn btn-info btn-block" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe</button>
+                            <button type="button" class="btn btn-info btn-block" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe yourself</button>
                           </div>
                           <div class="col-sm-12">
                             <button type="button"  class="btn btn-danger btn-block" @click="unsubscribe()"><i class="glyphicon glyphicon-eye-close"></i> Unsubscribe</button>
@@ -733,12 +733,12 @@
                           <a :href="manualEmailHref" class="btn btn-info btn-block" style="margin-top:10px;">Send an update</a>
                         </div>
                         <div class="col-sm-12">
-                          <div class="input-group">
-                            <vue-multiselect v-model="selectedInvitees" :options="inviteeOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Type to search contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
-                            <span class="input-group-btn">
-                              <button  class="btn btn-primary" type="button" @click="sendSubscInvite()" style="margin-left:5px;">Invite</button>
-                            </span>
-                          </div><!-- /input-group -->
+
+                            <vue-multiselect v-model="selectedInvitees" :options="inviteeOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Subscribe other contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
+
+                              <button  class="btn btn-primary btn-block" type="button" @click="subscribeOthers()" style="margin-left:5px;">Subscribe</button>
+                            
+
                         </div>
                       </div>
                     </td>

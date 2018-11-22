@@ -519,7 +519,7 @@ var mapAllEvents = function(err, events){
         type = type.toLowerCase().replace('disease_outbreak', 'epidemic').replace('disease_outbreak', '').replace('natural_hazard', '');
 
         var icon_names = type.split(',');
-        
+
         var icon_html = icon_names.map(function (item) {
             if (!item.match(/other/) && item !== '' && disease_subtypes.indexOf(item) === -1) {
                 return '<img src="/resources/images/icons/event_types/' + item + '.svg" width="40">';
@@ -1644,7 +1644,7 @@ ${localStorage.getItem('username')}
             if (currentEventProperties.metadata.hasOwnProperty('areas')) {
                 for (var areai = 0; areai < currentEventProperties.metadata.areas.length; areai++) {
                     if (currentEventProperties.metadata.areas[areai].region) {
-                        searchTerm += '('+currentEventProperties.metadata.areas[areai].region + 
+                        searchTerm += '('+currentEventProperties.metadata.areas[areai].region +
                             ' OR ' + currentEventProperties.metadata.areas[areai].country + ') ';
                     } else {
                         searchTerm += '(' + currentEventProperties.metadata.areas[areai].country +') ';
@@ -2428,28 +2428,29 @@ ${localStorage.getItem('username')}
         openMarkdownSyntax: function(){
             $('#markdownModal').modal('show');
         },
-        sendSubscInvite:function()
+        subscribeOthers:function()
         {
             var vm=this;
             //send invite here
             var body={
-                invitees: vm.selectedInvitees
+                subscribers: vm.selectedInvitees.map(function(e){ return e.mail;})
             };
 
             vm.msLoading=true;
             $.ajax({
                 type: 'POST',
-                url: '/api/events/invitesubscribe/' + vm.event.id,
+                url: '/api/events/subscribeothers/' + vm.event.id,
                 data: JSON.stringify(body),
                 contentType: 'application/json'
             }).done(function(data, textStatus, req) {
                 vm.msLoading=false;
-                alert('Invitation sent to the selected users.');
+                vm.event.subscribers=data.result.subscribers;
+                alert('Successfully subscribed.');
                 vm.selectedInvitees=[];
 
             }).fail(function(err) {
                 vm.msLoading=false;
-                alert('An error occured when sending invitations. '+(err.responseText.includes('expired') ? 'session expired':''));
+                alert('An error occured  '+(err.responseText.includes('expired') ? 'session expired':''));
             });
         }
 

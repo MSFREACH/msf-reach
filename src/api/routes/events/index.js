@@ -80,10 +80,29 @@ export default ({ config, db, logger }) => {
     );
 
     // subscribe to event update emails
-    api.post('/subscribe/:id', ensureAuthenticatedWrite, cacheResponse('1 minute'),
+    api.post('/subscribeself/:id', ensureAuthenticated, cacheResponse('1 minute'),
         (req, res, next) => {
             let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
-            events(config, db, logger).subscribe(req.params.id, email)
+            events(config, db, logger).subscribe(req.params.id, [email])
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+    // subscribe to event update emails
+    api.post('/subscribeothers/:id', ensureAuthenticatedWrite, cacheResponse('1 minute'),
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                subscribers: Joi.array().required()
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).subscribe(req.params.id, req.body.subscribers)
                 .then((data) => handleResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */
