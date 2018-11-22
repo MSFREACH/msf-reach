@@ -33,7 +33,18 @@ Vue.filter('toArray', TextFilter.toArray);
 Vue.filter('renderMarkdown', TextFilter.renderMarkdown);
 Vue.filter('snippetNoMarkdown', TextFilter.snippetNoMarkdown);
 
-Vue.use(Vuetify);
+Vue.use(Vuetify, {
+    theme: {
+        primary: '#EEEEEE',
+        secondary: '#D0D3DA',
+        accent: '#0374C7',
+        error: '#EE0000',
+        editing: '#0374C7',
+        // success: '#4CAF50',
+        
+        warning: '#EE0000'
+    }
+});
 
 ApiService.init();
 

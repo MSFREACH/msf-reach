@@ -19,4 +19,4 @@ export const FETCH_CONTACTS_START = 'setContactLoading';
 export const FETCH_CONTACTS_END = 'setContacts';
 export const UPDATE_CONTACT_IN_LIST = 'updateContactInList';
 
-export const FETCH_UPLOAD_URL_END = 'setEvents';
+export const FETCH_UPLOAD_URL_END = 'setRequestData';

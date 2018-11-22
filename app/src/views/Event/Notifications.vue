@@ -2,8 +2,8 @@
     <v-container class="eventSubContent">
         <div class="notification-rows">
 
-                <v-dialog v-model="dialog" max-width="500px">
-                    <v-btn slot="activator" color="primary" dark class="mb-2"><v-icon>create</v-icon></v-btn>
+                <v-dialog v-model="dialog" color="editing" max-width="880px" dark >
+                    <v-btn slot="activator" color="editing" dark class="mb-2"><v-icon>create</v-icon></v-btn>
                     <v-card>
                       <v-card-title>
                         <span class="headline">{{formTitle }}</span>
@@ -12,20 +12,42 @@
                       <v-card-text>
                         <v-container grid-list-md>
                           <v-layout wrap>
-                            <v-flex xs12 sm6 md4>
+                            <v-flex xs10>
                               <v-select :items="allNotificationCategories" v-model="editedItem.category" label="category"></v-select>
                             </v-flex>
-                            <v-flex xs12 sm6 md4>
-                              <v-text-field v-model="editedItem.description" label="description"></v-text-field>
+                            <v-flex xs2>
+                                <v-icon @click="close">close</v-icon>
                             </v-flex>
+                            <v-flex xs6 style="display: inline-block;">
+                                <label>Notification</label>
+                                <v-textarea solo label="description" value="" auto-grow background-color="white" color="secondary" v-model="editedItem.description"></v-textarea>
+                            </v-flex>
+                            <v-flex xs6 style="display: inline-block;">
+                                <label>PREVIEW</label>
+                                <div class="markdown-fields" v-html="mdRender(editedItem.description)"></div>
+                            </v-flex>
+                            <v-divider light></v-divider>
+                            <v-card class="file-attachment">
+                                <form enctype="multipart/form-data">
+                                  <input id="fileUpload" ref="myUpload" type="file" accept="*/*" multiple @change="onFilePicked"/>
+                                  <v-btn v-if="readyToUpload" label="upload" @click="processFiles" ></v-btn>
+                                </form>
+                            </v-card>
+                            <v-card class="file-attachment" v-for="(item, index) in fileUrls" :key="index">
+                                <embed :src="item"></embed>
+                            </v-card>
+                            <!-- add | list of uploaded files  -->
+
                           </v-layout>
                         </v-container>
                       </v-card-text>
-
                       <v-card-actions>
+                          <v-flex>
+                              <label> Operator </label> {{ editedItem.username }} <br/>
+                              <label> Updated </label>  {{ (editedItem.timestamp * 1000) | relativeTime  }}
+                          </v-flex>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-                        <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+                        <v-switch label="save" @click="save"></v-switch>
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
@@ -58,16 +80,32 @@
                             <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
                             <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
                             <td>{{ props.item.files.length }}</td>
-                            <td class="justify-center layout px-0">
-                              <v-icon small class="mr-2" @click="editItem(props.item)"> edit </v-icon>
-                              <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
-                            </td>
                         </tr>
                     </template>
                     <template slot="expand" slot-scope="props">
-                        <v-card flat :key="props.index" :id="props.index">
+
+                        <v-card class="expanded-field" flat :key="props.index" :id="props.index">
+                            <v-card-actions class="text-xs-right">
+                                <v-icon small class="mr-2" @click="editItem(props.item)"> edit </v-icon>
+                                <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
+                            </v-card-actions>
                             <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
+                            <v-divider light></v-divider>
+
+                            <v-card class="file-attachment">
+                                 <v-img src='https://cdn.vuetifyjs.com/images/cards/halcyon.png' contain></v-img>
+                            </v-card>
+                            <v-card class="file-attachment">
+                                 <v-img src='https://docs.google.com/document/d/1tuZFpkZoDPgy8bMw0aJDGJ5LuiKtt1kBzp9_eDbjaro/edit' contain></v-img>
+                            </v-card>
+                            <v-card class="file-attachment">
+                                 <v-img src='http://www.africau.edu/images/default/sample.pdf' contain></v-img>
+                            </v-card>
+                            <v-card class="file-attachment">
+                                 <v-img src='http://homepages.inf.ed.ac.uk/neilb/TestWordDoc.doc' contain></v-img>
+                            </v-card>
                         </v-card>
+
                     </template>
                     <template slot="no-data">
                         No updates yet
@@ -85,6 +123,9 @@
 import { mapGetters } from 'vuex';
 import marked from 'marked';
 import { EVENT_NOTIFICATION_CATEGORIES } from '@/common/common';
+import { CREATE_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+
+import $ from 'jquery';
 // import { EDIT_EVENT } from '@/store/actions.type';
 
 export default {
@@ -100,17 +141,27 @@ export default {
                 { text: 'UPDATED', value: 'timestamp', sortable: false},
                 { text: 'Category', value: 'category', sortable: false},
                 { text: 'Notification', value: 'description', sortable: false},
-                { text: 'Files', value: 'files.length', sortable: false},
-                { text: 'Actions', value: 'name', sortable: false}],
+                { text: 'Files', value: 'files.length', sortable: false}
+            ],
             editedItem:{
                 category: '',
-                descrption: ''
+                descrption: '',
+                timestamp: null
             },
             editedIndex: -1,
             defaultItem:{
                 category: '',
-                descrption: ''
-            }
+                descrption: '',
+                timestamp: null,
+            },
+            readyToUpload: false,
+            sampleFiles:[
+                'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+                'https://docs.google.com/document/d/1tuZFpkZoDPgy8bMw0aJDGJ5LuiKtt1kBzp9_eDbjaro/edit',
+                'http://www.africau.edu/images/default/sample.pdf',
+                'http://homepages.inf.ed.ac.uk/neilb/TestWordDoc.doc'
+            ],
+            fileUrls: []
         };
     },
     components: {
@@ -121,6 +172,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'currentEventId',
             'eventNotifications'
         ]),
         reversedNotifications: function (){
@@ -139,12 +191,19 @@ export default {
     },
     watch: {
         dialog (val) {
-            val || this.close();
+            if (val){
+                if(!this.editedItem.timestamp){
+                    this.editedItem.timestamp = new Date();
+                }
+            }else{
+                this.close();
+            }
+            // val || this.close();
         }
     },
     methods: {
         mdRender(value){
-            return marked(value);
+            if(value) return marked(value);
         },
         filterByCategory(category){
             this.displayNotifications = this.eventNotifications.filter(item => {
@@ -160,8 +219,44 @@ export default {
             const index = this.eventNotifications.indexOf(item);
             confirm('Are you sure you want to delete this item?') && this.eventNotifications.splice(index, 1);
         },
-        save(){
+        onFilePicked(e){
+            this.readyToUpload = true;
+        },
+        processFiles(){
+            console.log('hey == process files ! ');
+            var vm = this;
+            var files = this.$refs.myUpload.files;
+            // name, size, type;
+            if(files){
+                for(var f=0; f< files.length; f++){
+                    var fileName = files[f].name;
+                    var fileType = files[f].type;
+                    var fileSize = files[f].size;
+                    var file = files[f];
+                    var params = {key: ('event/'+this.currentEventId), filename: fileName};
+                    this.$store.dispatch(FETCH_UPLOAD_URL, params)
+                        .then((payload) => {
+                            if(payload){
+                                var fileLink = payload.url;
+                                vm.fileUrls.push(fileLink);
+                                console.log('1111 ---- dispatch.then ---- ', fileLink);
+                                this.uploadFile(file);
+                            }
+                        });
+                }
+            }
+        },
+        uploadFile(file){
 
+            this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
+                .then(() => {
+                    console.log('3333 ---- .then ---- ', url);
+                    // this.setPreview(file);
+                });
+        },
+
+        save(){
+            // this.processFiles();
         },
         close () {
             this.dialog = false;

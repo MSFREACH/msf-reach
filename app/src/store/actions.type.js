@@ -34,4 +34,6 @@ export const BOOKMARK_CONTACT = 'bookmarkContact';
 export const DELETE_CONTACT = 'deleteContact';
 
 export const FETCH_UPLOAD_URL = 'fetchUploadUrl';
-export const PUT_SIGNED_REQUEST = 'putSignedRequest'; 
+export const PUT_SIGNED_REQUEST = 'putSignedRequest';
+
+export const CREATE_NOTIFICATION = 'createNotification'; 

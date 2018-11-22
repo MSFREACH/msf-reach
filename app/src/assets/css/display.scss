@@ -73,3 +73,40 @@ hr.row-divider{
 .eventSubContent label{
     display: block;
 }
+
+table.v-table tbody tr:hover{
+    background: #D0D3DA;
+}
+
+tr.v-datatable__expand-row .v-card.expanded-field{
+    background: #D0D3DA;
+    padding: 40px;
+}
+
+.markdown-fields{
+    background: #D0D3DA;
+    color: #000;
+    overflow-wrap: break-word;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    padding: 10px;
+}
+
+.v-card.file-attachment{
+    background: #919398;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    margin: 10px;
+}
+
+
+.v-dialog .v-dialog--active{
+    background: #0374C7;
+    color: #fff;
+}
+
+textarea{
+    color: #231F20;
+}

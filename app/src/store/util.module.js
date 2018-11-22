@@ -4,6 +4,7 @@ import { FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from './actions.type';
 import { FETCH_START, FETCH_UPLOAD_URL_END,  } from './mutations.type';
 
 /*eslint no-unused-vars: off*/
+/*eslint no-debugger: off*/
 
 const state = {
     requestData: null,
@@ -21,12 +22,17 @@ const actions = {
         commit(FETCH_START);
         return UtilService.getUpload(params)
             .then(({ data }) =>{
-                commit(FETCH_UPLOAD_URL_END, data.result);
+                commit(FETCH_UPLOAD_URL_END, data);
+                return data;
             });
     },
 
-    [PUT_SIGNED_REQUEST]({commit}, params){
+    [PUT_SIGNED_REQUEST]({commit}, file){
         commit(FETCH_START);
+        const params = {
+            url: state.requestData.signedRequest,
+            file: file
+        };
         return UtilService.signedUpdate(params);
     }
 };

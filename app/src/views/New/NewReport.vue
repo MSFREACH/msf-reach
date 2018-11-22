@@ -77,19 +77,19 @@ export default {
             };
 
             if(this.imageFile){
-                this.$store.dispatch(FETCH_UPLOAD_URL, this.imageName)
+                var param = {key: 'report', filename: this.imageName};
+                this.$store.dispatch(FETCH_UPLOAD_URL, param)
                     .then((payload) => {
-                        var url = payload.signedRequest;
                         var imageLink = payload.url;
-                        this.uploadFile(url, imageLink);
+                        this.uploadFile(imageLink);
                     });
             }else{
                 this.save();
             }
 
         },
-        uploadFile(url, imageLink){
-            this.$store.dispatch(PUT_SIGNED_REQUEST, {url, photo: this.imageFile})
+        uploadFile(imageLink){
+            this.$store.dispatch(PUT_SIGNED_REQUEST, this.imageFile)
                 .then(() => {
                     this.save(imageLink);
                 });

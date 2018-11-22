@@ -7,6 +7,7 @@ import { RESET_STATE, SET_EVENT } from './mutations.type';
 
 const initialState = {
     event: {
+        id: '',
         metadata: {},
         coordinates: [],
         notifications: [],
@@ -55,6 +56,7 @@ const actions = {
 const mutations = {
     [SET_EVENT] (state, payload){
         state.event = payload.result.objects.output.geometries[0];
+        state.event.id = payload.result.objects.output.geometries[0].properties.id;
         state.event.metadata = payload.result.objects.output.geometries[0].properties.metadata;
         // state.event.coordinates = payload.result.objects.output.geometries[0].coordinates;
         state.event.body =payload.result.objects.output.geometries[0].properties;
@@ -78,6 +80,9 @@ const mutations = {
 const getters ={
     event (state){
         return state.event;
+    },
+    currentEventId(state){
+        return state.event.id;
     },
     eventProperties(state){
         return state.event.body;

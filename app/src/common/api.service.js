@@ -130,10 +130,15 @@ export const ContactsService = {
 };
 
 export const UtilService = {
-    getUpload(fileName){
-        return ApiService.query('utils/uploadurl', {filename: fileName, key:'report'});
+
+    getUpload(payload){
+        const params = {
+            key: payload.key,
+            filename: payload.filename
+        };
+        return ApiService.query('utils/uploadurl', {params: params});
     },
     signedUpdate(params){
-        return axios.put(params.url, [params.photo]);
+        return axios.put(params.url, [params.file]);
     }
 };
