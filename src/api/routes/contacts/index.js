@@ -164,7 +164,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact's last_email_sent_at record in the database
-    api.patch('/:id/emailtime', ensureAuthenticated,
+    api.patch('/:id/emailtime', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
@@ -233,7 +233,7 @@ export default ({ config, db, logger }) => {
         });
 
     // Update a contact's sharedWith record in the database
-    api.patch('/:id/share', ensureAuthenticated,
+    api.patch('/:id/share', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
@@ -256,7 +256,7 @@ export default ({ config, db, logger }) => {
 
 
     // Update a contact's privacy record in the database
-    api.patch('/:id/private', ensureAuthenticated,
+    api.patch('/:id/private', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
