@@ -388,7 +388,7 @@ const mapLRAHazards = function(hazards) {
     LRALayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: L.icon({
-                iconUrl: '/resources/images/icons/event_types/conflict.svg',
+                iconUrl: '/resources/images/icons/event_types/armed_conflict.svg',
                 iconSize: [39, 39]
             })});
         },
