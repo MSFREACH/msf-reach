@@ -6,9 +6,8 @@
                     <v-btn slot="activator" color="editing" dark class="mb-2"><v-icon>create</v-icon></v-btn>
                     <v-card>
                       <v-card-title>
-                        <span class="headline">{{formTitle }}</span>
+                        <span class="headline">{{formTitle}}</span>
                       </v-card-title>
-
                       <v-card-text>
                         <v-container grid-list-md>
                           <v-layout wrap>
@@ -20,7 +19,7 @@
                             </v-flex>
                             <v-flex xs6 style="display: inline-block;">
                                 <label>Notification</label>
-                                <v-textarea solo label="description" value="" auto-grow background-color="white" color="secondary" v-model="editedItem.description"></v-textarea>
+                                <v-textarea class="editTextArea" solo label="description" value="" auto-grow background-color="white" color="secondary" v-model="editedItem.description"></v-textarea>
                             </v-flex>
                             <v-flex xs6 style="display: inline-block;">
                                 <label>PREVIEW</label>
@@ -45,7 +44,7 @@
                       <v-card-actions>
                           <v-flex>
                               <label> Operator </label> {{ editedItem.username }} <br/>
-                              <label> Updated </label>  {{ (editedItem.timestamp * 1000) | relativeTime  }}
+                              <label> Updated </label>  {{ (editedItem.createdAt * 1000) | relativeTime  }}
                           </v-flex>
                         <v-spacer></v-spacer>
                         <v-switch label="save" @click="submit"></v-switch>
@@ -62,11 +61,11 @@
                     </span>
                 </v-btn-toggle>
 
-                <v-data-table :headers="headers" :items="displayNotifications" item-key="timestamp" class="elevation-1" hide-actions>
+                <v-data-table :headers="headers" :items="displayNotifications" item-key="createdAt" class="elevation-1" hide-actions>
                     <template slot="items" slot-scope="props">
                         <tr @click="props.expanded = !props.expanded" :key="props.index">
                             <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
-                            <td>{{ (props.item.timestamp * 1000) | relativeTime  }}</td>
+                            <td>{{ (props.item.createdAt * 1000) | relativeTime  }}</td>
                             <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
                             <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
                             <td>{{ props.item.files.length }}</td>
@@ -82,17 +81,8 @@
                             <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
                             <v-divider light></v-divider>
 
-                            <v-card class="file-attachment">
-                                 <v-img src='https://cdn.vuetifyjs.com/images/cards/halcyon.png' contain></v-img>
-                            </v-card>
-                            <v-card class="file-attachment">
-                                 <v-img src='https://docs.google.com/document/d/1tuZFpkZoDPgy8bMw0aJDGJ5LuiKtt1kBzp9_eDbjaro/edit' contain></v-img>
-                            </v-card>
-                            <v-card class="file-attachment">
-                                 <v-img src='http://www.africau.edu/images/default/sample.pdf' contain></v-img>
-                            </v-card>
-                            <v-card class="file-attachment">
-                                 <v-img src='http://homepages.inf.ed.ac.uk/neilb/TestWordDoc.doc' contain></v-img>
+                            <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment">
+                                 <v-img :src="item" contain></v-img>
                             </v-card>
                         </v-card>
 
@@ -112,8 +102,9 @@
 /*eslint no-console: off*/
 import { mapGetters } from 'vuex';
 import marked from 'marked';
-import { EVENT_NOTIFICATION_CATEGORIES } from '@/common/common';
-import { CREATE_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/common/common';
+import { CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
 
 import $ from 'jquery';
 // import { EDIT_EVENT } from '@/store/actions.type';
@@ -126,34 +117,16 @@ export default {
             editing: false,
             allNotificationCategories: EVENT_NOTIFICATION_CATEGORIES,
             selectedCategory: '',
-            headers: [
-                { text: 'Operator', align: 'left', sortable: false, value: 'username'},
-                { text: 'UPDATED', value: 'timestamp', sortable: false},
-                { text: 'Category', value: 'category', sortable: false},
-                { text: 'Notification', value: 'description', sortable: false},
-                { text: 'Files', value: 'files.length', sortable: false}
-            ],
-            editedItem:{
-                category: '',
-                descrption: '',
-                timestamp: null
-            },
+            headers: EVENT_NOTIFICATION_HEADERS,
+            defaultItem: DEFAULT_EVENT_NOTIFICATION_FIELDS,
+            editedItem: DEFAULT_EVENT_NOTIFICATION_FIELDS,
             editedIndex: -1,
-            defaultItem:{
-                category: '',
-                descrption: '',
-                timestamp: null,
-            },
             readyToUpload: false,
             sampleFiles:[
-                'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
-                'https://docs.google.com/document/d/1tuZFpkZoDPgy8bMw0aJDGJ5LuiKtt1kBzp9_eDbjaro/edit',
-                'http://www.africau.edu/images/default/sample.pdf',
-                'http://homepages.inf.ed.ac.uk/neilb/TestWordDoc.doc'
+                'https://cdn.vuetifyjs.com/images/cards/halcyon.png'
             ],
             previewFileUrls: [],
             signedFileUrls: []
-
         };
     },
     components: {
@@ -166,6 +139,7 @@ export default {
         ...mapGetters([
             'currentUser',
             'currentEventId',
+            'oldEventNotifications',
             'eventNotifications'
         ]),
         reversedNotifications: function (){
@@ -176,6 +150,10 @@ export default {
             }
         },
         displayNotifications: function(){
+            if(this.oldEventNotifications.length > 0){
+                _.merge(this.eventNotifications, this.oldEventNotifications);
+            }
+
             return  _.map(this.eventNotifications, _.clone);
         },
         formTitle () {
@@ -185,13 +163,26 @@ export default {
     watch: {
         dialog (val) {
             if (val){
-                if(!this.editedItem.timestamp){
-                    this.editedItem.timestamp = new Date();
+                if(!this.editedItem.updatedAt){
+                    this.editedItem.updatedAt = new Date();
                 }
             }else{
                 this.close();
             }
             // val || this.close();
+        },
+        oldEventNotifications(val){
+            console.log('watch value --oldEventNotifications ', val);
+            if(val){
+                this.eventNotifications = _.merge(val, this.eventNotifications);
+            }
+        },
+        eventNotifications(val){
+            console.log('watch value --eventNotifications ', val);
+
+            if(!val){
+                this.eventNotifications = _.map(this.oldEventNotifications, _.clone);
+            }
         }
     },
     methods: {
@@ -255,7 +246,7 @@ export default {
         },
         submit(){
             var files = this.$refs.myUpload.files;
-            if(files){
+            if(files.length > 0 ){
                 this.processFiles(files);
             }else{
                 this.save();
@@ -263,20 +254,39 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var params = _.extend(this.editedItem, {
-                timestamp: timeNow,
-                username: this.currentUser.username
-            });
-            this.$store.dispatch(CREATE_NOTIFICATION, this.params) /// new notification table or edit events
-                .then((payload) =>{
+            var params;
+            if(this.editIndex && this.editedItem.id){
+                params = _.extend(this.editedItem, {
+                    updatedAt: timeNow,
+                    username: this.currentUser.username
+                });
+                this.$store.dispatch(EDIT_EVENT_NOTIFICATION, params)
+                    .then((payload) =>{
+                        console.log(('Notification UPDATED --- ', payload));
 
-                    // show confimation or direct to MAP view to show nearby reports
+                    });
+            }else{
+                // for migrating exisiting entries into new EventNotification TABLE
+                var timestamp = this.editedItem.createdAt ? this.editedItem.createdAt : timeNow;
+                params = _.extend(this.editedItem, {
+                    createdAt: timestamp,
+                    username: this.currentUser.username
+                });
+                this.createEntry(params);
+            }
+        },
+        createEntry(params){
+            this.$store.dispatch(CREATE_EVENT_NOTIFICATION, params)
+                .then((payload) =>{
+                    console.log(('Notification CREATED --- ', payload));
                 });
         },
         close () {
             this.dialog = false;
             setTimeout(() => {
                 this.editedItem = Object.assign({}, this.defaultItem);
+                this.previewFileUrls = [];
+                this.signedFileUrls = [];
                 this.editedIndex = -1;
             }, 300);
         }

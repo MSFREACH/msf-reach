@@ -50,3 +50,12 @@ export const DEFAULT_EDIT_REPORT_CARD_FIELDS = {
         report_tag: null,
     }
 };
+
+export const DEFAULT_EVENT_NOTIFICATION_FIELDS = {
+    category: '',
+    descrption: '',
+    eventId: null,
+    createdAt: null,
+    updatedAt: null,
+    files: []
+};

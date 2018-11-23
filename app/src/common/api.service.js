@@ -79,6 +79,20 @@ export const EventsService = {
     }
 };
 
+export const EventNotificationService = {
+    query (params) {
+        return ApiService.query('eventNotifications', params);
+    },
+    create (params) {
+        return ApiService.post('eventNotifications', params);
+    },
+    update (slug, params) {
+        return ApiService.update('eventNotifications', slug, params);
+    },
+    destroy (slug) {
+        return ApiService.delete(`eventNotifications/${slug}`);
+    }
+};
 
 export const ReportsService = {
     query () {

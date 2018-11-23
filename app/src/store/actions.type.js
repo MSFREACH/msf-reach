@@ -36,4 +36,12 @@ export const DELETE_CONTACT = 'deleteContact';
 export const FETCH_UPLOAD_URL = 'fetchUploadUrl';
 export const PUT_SIGNED_REQUEST = 'putSignedRequest';
 
-export const CREATE_NOTIFICATION = 'createNotification'; 
+
+export const FETCH_EVENT_NOTIFICATIONS = 'fetchEventNotifications';
+export const CREATE_EVENT_NOTIFICATION = 'createEventNotification';
+export const EDIT_EVENT_NOTIFICATION = 'editEventNotification';
+export const DELETE_EVENT_NOTIFICATION = 'deleteEventNotification';
+
+
+export const CREATE_NOTIFICATION = 'createNotification';
+export const EDIT_NOTIFICATION = 'editNotification';

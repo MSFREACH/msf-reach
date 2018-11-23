@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 
 import events from './events.module';
 import event from './event.module';
+import eventNotification from './eventNotification.module';
+
 import report from './report.module';
 import contact from './contact.module';
 import profile from './profile.module';
@@ -18,6 +20,7 @@ export default new Vuex.Store({
         profile,
         events,
         event,
+        eventNotification,
         report,
         contact,
         util

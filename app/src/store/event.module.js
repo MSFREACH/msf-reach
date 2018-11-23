@@ -93,17 +93,20 @@ const getters ={
     eventCoordinates (state){
         return state.event.coordinates;
     },
-    eventNotifications (state){
+    oldEventNotifications (state){
         if(!state.event.notifications && state.event.metadata){
             var currentNotifications = state.event.metadata.notification;
             if(currentNotifications){
-                return currentNotifications.map(item =>{
+                return currentNotifications.map(item => {
+                    var currentFiles = item.notificationFileUrl ? [item.notificationFileUrl] : [];
                     var newSchema = {
+                        eventId: state.event.id,
                         category: null,
                         description: item.notification,
-                        timestamp: item.notification_time,
+                        createdAt: item.notification_time,
+                        updatedAt: item.notification_time,
                         username: item.username,
-                        files:[item.notificationFileUrl]
+                        files:currentFiles
                     };
                     return newSchema;
                 });
@@ -111,7 +114,6 @@ const getters ={
         }else{
             return state.event.notifications;
         }
-
     },
     eventTypes(state){
         if(state.event.metadata.types){

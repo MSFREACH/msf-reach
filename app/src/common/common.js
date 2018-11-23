@@ -50,6 +50,13 @@ export const EVENT_TYPES = [
 ];
 
 export const EVENT_NOTIFICATION_CATEGORIES = ['ACCESS', 'NEEDS', 'CONTACTS','SECURITY'];
+export const EVENT_NOTIFICATION_HEADERS = [
+    { text: 'Operator', align: 'left', sortable: false, value: 'username'},
+    { text: 'UPDATED', value: 'updated_at', sortable: false},
+    { text: 'Category', value: 'category', sortable: false},
+    { text: 'Notification', value: 'description', sortable: false},
+    { text: 'Files', value: 'files.length', sortable: false}
+];
 
 export const EVENT_STATUSES = [
     { value: 'monitoring', text: 'Monitoring', icon: 'assessment' },

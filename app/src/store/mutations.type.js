@@ -20,3 +20,7 @@ export const FETCH_CONTACTS_END = 'setContacts';
 export const UPDATE_CONTACT_IN_LIST = 'updateContactInList';
 
 export const FETCH_UPLOAD_URL_END = 'setRequestData';
+
+
+export const FETCH_EVENT_NOTIFICATIONS_END = 'fetchEventNotificationsEnd';
+export const SET_EVENT_NOTIFICATION = 'setEventNotification';
