@@ -1757,12 +1757,16 @@ ${localStorage.getItem('username')}
             {
                 vm.msLoading=true;
                 $.ajax({
-                    url: '/api/contacts/usersearch/'+term,
-                    success: function( data ) {
-                        vm.msLoading=false;
-                        //console.log(data);
-                        vm.inviteeOptions=JSON.parse(data.body).value; //JSON.parse(data.body).value
-                    }
+                    type: 'GET',
+                    url: '/api/contacts/usersearch/'+term
+                }).done(function( data ) {
+                    vm.msLoading=false;
+                    console.log(data); // eslint-disable-line no-console
+                    vm.inviteeOptions=JSON.parse(data.body).value; //JSON.parse(data.body).value
+                }
+                ).fail(function (err){
+                    console.log(err); // eslint-disable-line no-console
+                    vm.msLoading=false;
                 });
             }
         },
