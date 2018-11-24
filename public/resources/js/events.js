@@ -2436,6 +2436,11 @@ ${localStorage.getItem('username')}
         {
             var vm=this;
             //send invite here
+            if (vm.selectedInvitees.length == 0)
+            {
+                alert('Please select some contacts first.');
+                return;
+            }
             var body={
                 subscribers: vm.selectedInvitees.map(function(e){ return e.mail;})
             };
