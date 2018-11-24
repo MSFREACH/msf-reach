@@ -1763,9 +1763,8 @@ ${localStorage.getItem('username')}
                 }).done(function( data ) {
                     vm.msLoading=false;
                     console.log(data); // eslint-disable-line no-console
-                    vm.inviteeOptions=JSON.parse(data.body).value; //JSON.parse(data.body).value
-                }
-                ).fail(function (err){
+                    vm.inviteeOptions=JSON.parse(data).value; //JSON.parse(data.body).value
+                }).fail(function (err){
                     console.log(err); // eslint-disable-line no-console
                     vm.msLoading=false;
                 });

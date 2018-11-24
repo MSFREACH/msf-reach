@@ -1194,7 +1194,7 @@ $( '#sharewith_name' ).autocomplete({
         $.ajax({
             url: '/api/contacts/usersearch/'+request.term,
             success: function( data ) {
-                response($.map(JSON.parse(data.body).value, function (item) {
+                response($.map(JSON.parse(data).value, function (item) {
                     return {
                         label: item.displayName,
                         value: item.displayName,

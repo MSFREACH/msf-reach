@@ -321,7 +321,7 @@ export default ({ config, db, logger }) => {
                 }
                 else{
                     logger.info(res);
-                    response.send(res);
+                    response.status(res.statusCode).send(res.body);
                 }
             });
         });
