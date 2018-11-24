@@ -65,10 +65,30 @@ export default ({ config, db, logger }) => {
     );
 
     // unsubscribe from event update emails
-    api.post('/unsubscribe/:id',ensureAuthenticatedWrite,  cacheResponse('1 minute'),
+    api.post('/unsubscribe/:id',ensureAuthenticated,  cacheResponse('1 minute'),
         (req, res, next) => {
             let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
             events(config, db, logger).unsubscribe(req.params.id, email)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // unsubscribe others from event update emails
+    api.post('/unsubscribeothers/:id',ensureAuthenticatedWrite,  cacheResponse('1 minute'),
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                email: Joi.string().required().allow('')
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).unsubscribe(req.params.id, req.body.email)
                 .then((data) => handleResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */

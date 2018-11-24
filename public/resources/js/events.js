@@ -2456,6 +2456,27 @@ ${localStorage.getItem('username')}
                 vm.msLoading=false;
                 alert('An error occured  '+(err.responseText.includes('expired') ? 'session expired':''));
             });
+        },
+        unSubscribeOthers:function(mail)
+        {
+            var vm=this;
+            //send invite here
+            var body={
+                email: mail
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/events/unsubscribeothers/' + vm.event.id,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                vm.event.subscribers=data.result.subscribers;
+                alert('Successfully unsubscribed.');
+
+            }).fail(function(err) {
+                alert('An error occured  '+(err.responseText.includes('expired') ? 'session expired':''));
+            });
         }
 
     },
