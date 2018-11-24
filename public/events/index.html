@@ -718,7 +718,7 @@
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;" v-html="notStr"></td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
                   <tr><td>Follow this event by email:  </td>
-                    <td style="word-break:break-all;"> <span v-for="em in event.subscribers" style="display:block;"><span style="white-space:normal; text-transform: capitalize;" class="label label-success" :title="em" >{{em.split('@')[0].split(/[\.\_]/).join(' ')}}</span><span class="label label-danger" style="cursor:pointer;" @click="unSubscribeOthers(em)">X</span></span> </td>
+                    <td style="word-break:break-all;"> <span v-for="em in event.subscribers" style="display:block;"><span style="white-space:normal; text-transform: capitalize;" class="label label-success" :title="em" >{{em.split('@')[0].split(/[\.\_]/).join(' ')}}</span><span v-if="hasWritePermission" class="label label-danger " style="cursor:pointer;" @click="unSubscribeOthers(em)">X</span></span> </td>
                     <td>
                       <div class="row">
                         <div class="col-sm-12">
@@ -734,9 +734,9 @@
                         </div>
                         <div class="col-sm-12">
 
-                            <vue-multiselect v-model="selectedInvitees" :options="inviteeOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Subscribe other contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
+                            <vue-multiselect v-if="hasWritePermission" v-model="selectedInvitees" :options="inviteeOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Subscribe other contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
 
-                              <button  class="btn btn-primary btn-block" type="button" @click="subscribeOthers()" style="margin-left:5px;">Subscribe</button>
+                              <button v-if="hasWritePermission"  class="btn btn-primary btn-block" type="button" @click="subscribeOthers()" style="margin-left:5px;">Subscribe</button>
 
 
                         </div>

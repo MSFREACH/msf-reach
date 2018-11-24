@@ -8,6 +8,9 @@
 
 var vmEventDetails;
 
+var disease_subtypes = ['cholera', 'ebola','dengue','malaria','measles','meningococcal_meningitis','yellow_fever','other_disease_outbreak'];
+
+
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
@@ -1453,6 +1456,8 @@ var replaceUnderscore = function(value) {
 
 Vue.component('vue-multiselect', window.VueMultiselect.default);
 
+
+
 var vmObject = {
 
     data: {
@@ -1555,7 +1560,8 @@ var vmObject = {
         dateTimeConfig: {
             format: DATETIME_DISPLAY_FORMAT
         },
-        subscInvitee:''
+        subscInvitee:'',
+        hasWritePermission: hasWritePermission
     },
     mounted:function(){
         $('#markdownModal').load('/common/markdown-modal.html');
@@ -1583,13 +1589,13 @@ ${localStorage.getItem('username')}
             vm.manualEmailHref='mailto:'+Cookies.get('email')+'?bcc='+vm.event.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
         }
         // operator check
-        $.ajax({
-            type: 'GET',
-            url: '/api/utils/operatorCheck',
-            statusCode: {
-                403: function () {
-                    $('#eventEditingOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
-                }
+        operatorCheck(function(permission){
+            if (permission){
+                vm.hasWritePermission=true;
+            }
+            else{
+                $('#eventEditingOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                vm.hasWritePermission=false;
             }
         });
 

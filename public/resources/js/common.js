@@ -27,7 +27,7 @@ $(function() {
     });
 });
 var hasWritePermission=false;
-const operatorCheck = function() {
+const operatorCheck = function(callback) {
     $.ajax({
         type: 'GET',
         url: '/api/utils/operatorCheck',
@@ -40,9 +40,13 @@ const operatorCheck = function() {
     }).done(function(){
         hasWritePermission=true;
         $('.show-if-write-permission').show();
+        if (callback)
+            callback(true);
     }).fail(function(){
         hasWritePermission=false;
         $('.show-if-write-permission').hide();
+        if (callback)
+            callback(false);
     });
 };
 
