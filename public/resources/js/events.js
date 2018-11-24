@@ -2160,7 +2160,7 @@ ${localStorage.getItem('username')}
             var vm=this;
             $.ajax({
                 type: 'POST',
-                url: '/api/events/subscribe/' + currentEventId
+                url: '/api/events/subscribeself/' + currentEventId
             }).done(function(data, textStatus, req){
                 vm.event.subscribers=data.result.subscribers;
                 alert('Succesfully subscribed.');
