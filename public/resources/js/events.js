@@ -1758,7 +1758,8 @@ ${localStorage.getItem('username')}
                 vm.msLoading=true;
                 $.ajax({
                     type: 'GET',
-                    url: '/api/contacts/usersearch/'+term
+                    url: '/api/contacts/usersearch/'+term,
+                    contentType: 'application/json'
                 }).done(function( data ) {
                     vm.msLoading=false;
                     console.log(data); // eslint-disable-line no-console
