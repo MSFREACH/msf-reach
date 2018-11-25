@@ -1,7 +1,7 @@
 <div class="modal-content" id="missionDetailsVue">
   <div class="modal-header">
     <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right;">Close</button>
-    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" v-show="hasWritePermission">Edit</button>
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted && !reopenSuccess" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" v-show="hasWritePermission">Edit</button>
     <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" style="float:right;margin-right:5px;" @click="saveMissionEdits()" >Save Edits</button>
 
     <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
@@ -25,7 +25,10 @@
     <div class="alert alert-warning" v-if="isDeleted">
       Mission has been successfully deleted.
     </div>
-    <div v-show="!isSubmitting && !hasSubmissionError && !isDeleted"  class="row">
+    <div class="alert alert-success" v-if="reopenSuccess">
+      The corresponding event has been successfully opened. Click <a :href="'/events/?eventId='+currentMissionEventId">here</a> to go event.
+    </div>
+    <div v-show="!isSubmitting && !hasSubmissionError && !isDeleted && !reopenSuccess"  class="row">
       <div class="col-sm-5">
         <div class="row">
           <div class="col-sm-12">
@@ -66,15 +69,7 @@
             <dl>
               <dt>Status</dt>
               <!-- on landing page  -->
-              <dd v-show="!currentEventId"><span class="event-status">{{mission.event_status}}</span></dd>
-              <!-- on event page  -->
-              <dd v-show="currentEventId"><span v-show="!inEditMode" class="event-status">{{mission.event_status}}</span></dd>
-              <dd v-show="inEditMode && currentEventId">
-                <select v-model="mission.event_status" class="form-control">
-                  <option disabled value="">Please select one</option>
-                  <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
-                </select>
-              </dd>
+              <dd><span class="event-status">{{mission.event_status}}</span></dd>
             </dl>
             <dl>
               <dt>Type of Emergency (nature)</dt>
@@ -653,7 +648,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" v-show="hasWritePermission" type="button" class="btn btn-danger"  @click="confirmDeleteMission" ><span class="glyphicon glyphicon-remove"></span>Delete mission</button>
+    <button v-if="!inEditMode && !isDeleted && !reopenSuccess" v-show="hasWritePermission" type="button" class="btn btn-warning"  @click="confirmReActiveEvent" ><span class="glyphicon glyphicon-repeat"></span> Re-open Event</button>
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted && !reopenSuccess" v-show="hasWritePermission" type="button" class="btn btn-danger"  @click="confirmDeleteMission" ><span class="glyphicon glyphicon-remove"></span> Delete mission</button>
   </div>
 </div>
 
@@ -664,6 +660,7 @@ Vue.component('country-select', {
   props: ['options', 'value'],
   template: '<input  type="text" class="form-control input-sm" >',
   mounted: function () {
+    operatorCheck();
     var vmc = this
     $(this.$el)
       .countrySelect(this.options)
@@ -742,12 +739,14 @@ var vmInstance = new Vue({
     submissionSuccess:false,
     submissionErrorText: '',
     currentMissionId: currentMissionId,
+    currentMissionEventId: currentMissionEventId,
     statuses: statuses,
     dateTimeConfig: {
       format: DATETIME_DISPLAY_FORMAT
     },
     isDeleted:false,
-    hasWritePermission: hasWritePermission
+    hasWritePermission: hasWritePermission,
+    reopenSuccess: false
   },
   methods: {
     confirmDeleteMission:function(){
@@ -771,6 +770,44 @@ var vmInstance = new Vue({
           vm.isDeleted=false;
           vm.hasSubmissionError=true;
           vm.submissionErrorText='An error occured when trying to delete the mission.'
+
+          if (err.responseText.includes('expired')) {
+            alert("session expired");
+          }
+        });
+
+      }
+    },
+    confirmReActiveEvent:function(){
+      var vm=this;
+      if (!(vm.currentMissionEventId))
+      {
+        alert('There is no event associated with this past mission. For re-opening a specific event contact administrators.');
+        return;
+      }
+      if (confirm('Are you sure you want to re-open the orginal event? \nWARNING: This will discard all mission edits and will delete the current mission.'))
+      {
+        vm.isSubmitting=true;
+        vm.reopenSuccess=false;
+        var body={
+          eventId: vm.currentMissionEventId
+        }
+        $.ajax({
+          type: "POST",
+          url: "/api/missions/eventactivate/" + vm.currentMissionId,
+          data: JSON.stringify(body),
+          contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+          vm.isSubmitting=false;
+          vm.reopenSuccess=true;
+          thGetMissions(null);
+          console.log(data);
+
+
+        }).fail(function(err) {
+          vm.isSubmitting=false;
+          vm.hasSubmissionError=true;
+          vm.submissionErrorText='An error occured when trying to reactivate the mission.'
 
           if (err.responseText.includes('expired')) {
             alert("session expired");

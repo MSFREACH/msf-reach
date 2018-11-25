@@ -181,7 +181,7 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
 			SET status = $1,
-          updated_at = now(),
+          updated_at = now()
 			WHERE id = $2
 			RETURNING id, status, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 

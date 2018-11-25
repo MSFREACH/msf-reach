@@ -81,14 +81,16 @@ var getMissions = function(term) {
 var missionData = {};
 var missionCoordinates = {};
 var currentMissionId=0;
+var currentMissionEventId=0;
 
 // open mission modal on click
 var onMissionLinkClick = function(id) {
     $.getJSON('/api/missions/' + id, function(data) {
         currentMissionId=id;
+        currentMissionEventId=data ? data.result.objects.output.geometries[0].properties.event_id : null;
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
         missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
-        $( '#missionModalBody' ).load( '/events/mission.html', operatorCheck );
+        $( '#missionModalBody' ).load( '/events/mission.html');
         $('#missionModal').modal('show');
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
