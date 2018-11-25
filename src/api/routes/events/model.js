@@ -177,22 +177,21 @@ export default (config, db, logger) => ({
             .catch((err) => reject(err));
     }),
 
-    activateEvent: (body) => new Promise((resolve, reject) => {
+    ReActivateEvent: (event_id) => new Promise((resolve, reject) => {
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
 			SET status = $1,
-              updated_at = now(),
-			metadata = metadata || $2
-			WHERE id = $3
-			RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
+          updated_at = now(),
+			WHERE id = $2
+			RETURNING id, status, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
         // Setup values
-        let values = [ body.status, body.metadata, body.eventId];
+        let values = [ 'active', event_id];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(body.eventId), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: data.id, status: data.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));
     }),
     /**

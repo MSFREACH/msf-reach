@@ -220,7 +220,7 @@ export default ({ config, db, logger }) => {
                         // backfill location for compatibility
                         console.log(data); // eslint-disable-line no-console
                         req.body['location'] = {'lat': data.lat, 'lng': data.lng};
-                        missions(config, db, logger).createMission(req.body)
+                        missions(config, db, logger).createMission(req.body,req.params.id)
                             .then((data) => handleGeoResponse(data, req, res, next))
                             .catch((err) => {
                                 /* istanbul ignore next */
