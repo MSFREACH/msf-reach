@@ -724,6 +724,8 @@ var mapReports = function(reports,mapForReports){
                     popupContent += '<BR>';
                 }
                 popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
+                popupContent += '<br/><video width="100%" controls><source src="'+feature.properties.content.image_link+'" >Your browser does not support the video preview.</video>';
+                popupContent += '<br/>Download multimedia content <a target="_blank" href="'+feature.properties.content.image_link+'">here</a> ';
             }
 
             $('#reportsTable').append(
