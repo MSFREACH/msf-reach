@@ -9,7 +9,7 @@ export default (config, db, logger) => ({
 	 */
     all: (eventid) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, event_id as eventId, category, created_at as createdAt, updated_at as updatedAt, descrption, username, files
+        let query = `SELECT id, event_id as eventId, category, created_at as createdAt, updated_at as updatedAt, description, username, files
 			FROM ${config.TABLE_EVENT_NOTIFICATIONS}
 			WHERE event_id = $1
 			ORDER BY created_at DESC`; // xor

@@ -41,7 +41,6 @@ Vue.use(Vuetify, {
         error: '#EE0000',
         editing: '#0374C7',
         // success: '#4CAF50',
-        
         warning: '#EE0000'
     }
 });

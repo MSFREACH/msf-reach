@@ -55,26 +55,33 @@
 
         }
     ],
-    "response": {
+    "responses": [{
+        "timestamp":"",
+        "status": "AUTO-GENERATE",
         "project_code": "",
         "start_date" : "",
         "end_date" : "",
-        "description" : "",
-        "total_days" : "",
+        "response": {
+            "type": "",
+            "description" : ""
+        },
         "location" : {
             "coordinates": [],
             "type": "Point"
         },
         "operational_center" : "",
         "type_of_programmes" : [{
-            "timestamp":"",
-            "status": "AUTO-GENERATE",
-            "programmes" :[{
                 "name":"",
                 "deployment":"1-10",
                 "notes":""
-            }]
-    }],
+        }],
+
+        "supply_chain": {
+            "type": "",
+            "description":""
+        }
+        }
+    ],
     "extCapacity":{
         "government_capacities":{
             "name":"",

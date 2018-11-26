@@ -1,13 +1,9 @@
 <template>
     <v-container class="eventSubContent" v-if="eventMetadata">
-        <div :class="editing ? 'edit-wrapper general-text-fields':'general-text-fields'">
+        <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'">
             <div class="actions">
                 <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                <button v-if="!editing" @click="edit()">Edit</button>
-                <div v-else>
-                    <button @click="cancelEdit()">Cancel</button>
-                    <button @click="save()"> Save </button>
-                </div>
+                <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
             </div>
              <v-layout row wrap v-if="!editing">
                 <div class="top-level primary-text">
@@ -94,10 +90,7 @@
                         <label>Name</label>
                         <input type="text" v-model="eventMetadata.name" placeholder="name" />
                     </div>
-                    <div class="quarter-width">
-                        <label>Project Code</label>
-                        <input type="text" v-model="eventProperties.project_code" placeholder="OCA-###" />
-                    </div>
+
                     <div class="quarter-width">
                         <label>Operator</label>
                         <!-- TODO: dropdown selection form contact list -->

@@ -36,7 +36,7 @@ export const DEFAULT_REPORT_CARD_FIELDS = {
         lng: null
     },
     content: {
-        descrption: null,
+        description: null,
         image_link: null,
         report_tag: null,
         username: null
@@ -53,9 +53,39 @@ export const DEFAULT_EDIT_REPORT_CARD_FIELDS = {
 
 export const DEFAULT_EVENT_NOTIFICATION_FIELDS = {
     category: '',
-    descrption: '',
+    description: '',
     eventId: null,
     createdAt: null,
     updatedAt: null,
     files: []
+};
+
+export const DEFAULT_EVENT_RESPONSE = {
+    timestamp:'',
+    status: '',
+    project_code: '',
+    start_date: null,
+    end_date: null,
+    response: {
+        type: '',
+        description: ''
+    },
+    location: {
+        coordinates: [],
+        type: 'Point',
+        address: {
+            region: '',
+            country: '',
+            country_code: ''
+        }
+    },
+    type_of_programmes:[{
+        name: '',
+        deployment: '',
+        notes: ''
+    }],
+    supply_chain: {
+        type: '',
+        description:''
+    }
 };

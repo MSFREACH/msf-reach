@@ -8,10 +8,10 @@ import { RESET_STATE, SET_EVENT } from './mutations.type';
 const initialState = {
     event: {
         id: '',
+        status: '',
         metadata: {},
         coordinates: [],
         notifications: [],
-        status: '',
         body: {},
         types: []
     } // TODO: add associated reports & contacts later
@@ -60,11 +60,12 @@ const mutations = {
         state.event.metadata = payload.result.objects.output.geometries[0].properties.metadata;
         // state.event.coordinates = payload.result.objects.output.geometries[0].coordinates;
         state.event.body =payload.result.objects.output.geometries[0].properties;
+        state.event.status = payload.result.objects.output.geometries[0].properties.metadata.event_status;
         //------ future proof, when sub-content objs becomes available
         state.event.notifications = payload.result.objects.output.geometries[0].properties.notifications;
-        state.event.response = payload.result.objects.output.geometries[0].properties.response;
+        state.event.responses = payload.result.objects.output.geometries[0].properties.responses;
         state.event.extCapacity = payload.result.objects.output.geometries[0].properties.extCapacity;
-        state.event.staffResources = payload.result.objects.output.geometries[0].properties.staffResources;
+        state.event.resources = payload.result.objects.output.geometries[0].properties.resources;
         state.event.figures = payload.result.objects.output.geometries[0].properties.figures;
         state.event.reflection = payload.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
@@ -86,6 +87,9 @@ const getters ={
     },
     eventProperties(state){
         return state.event.body;
+    },
+    eventStatus(state){
+        return state.event.status;
     },
     eventMetadata (state){
         return state.event.metadata;
@@ -133,40 +137,50 @@ const getters ={
             return cTypes.concat(cSubTypes);
         }
     },
-    eventResponse(state){
+    eventResponses(state){
         if(!state.event.response && state.event.metadata){
             // then we fallback & map out the keys
+
             var payload = state.event.metadata;
+            if(!payload.msf_response){
+                return null;
+            }
+
             var programmes = [];
             var currentPrograms = payload.msf_response_types_of_programmes;
             if(currentPrograms && currentPrograms.length > 0){
                 for(var i=0; i < currentPrograms.length; i++){
                     programmes.push({
                         'name': currentPrograms[i],
+                        'value': currentPrograms[i].toLowerCase().replace(/ /g,'_'), 
                         'deployment': null,
                         'notes':''
                     });
                 }
-                var first_programmes_entry = {
-                    'timestamp': state.event.body.updated_at,
-                    'status': payload.event_status,
-                    'programmes': programmes
-                };
             }
 
-            return {
+            return [{
+                timestamp : state.event.body.updated_at,
+                status: payload.event_status,
                 project_code: state.event.body.project_code,
                 start_date: payload.start_date_msf_response,
                 end_date: payload.end_date_msf_response,
-                description: payload.msf_response,
+                response: {
+                    type: null,
+                    description: payload.msf_response,
+                },
                 total_days : payload.total_days_msf_response,
                 location : payload.msf_response_location, // check if object keys are copied
                 operational_center : payload.operational_center,
-                type_of_programmes : [first_programmes_entry]
-
-            };
+                type_of_programmes : programmes,
+                supply_chain: {
+                    type: null,
+                    description: ''
+                },
+                sharepoint_link: ''
+            }];
         }else{
-            return state.event.response;
+            return state.event.responses;
         }
     },
     eventExtCapacity(state){
@@ -205,7 +219,7 @@ const getters ={
             return state.event.figures;
         }
     },
-    eventStaffResources(state){
+    eventResources(state){
         if(!state.event.staffResources && state.event.metadata){
             var payload = state.event.metadata;
             return {

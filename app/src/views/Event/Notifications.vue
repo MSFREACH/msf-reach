@@ -1,10 +1,9 @@
 <template>
     <v-container class="eventSubContent">
         <div class="notification-rows">
-
-                <v-dialog v-model="dialog" color="editing" max-width="880px" dark >
+                <v-dialog v-model="dialog" max-width="880px" dark>
                     <v-btn slot="activator" color="editing" dark class="mb-2"><v-icon>create</v-icon></v-btn>
-                    <v-card>
+                    <v-card class="editing">
                       <v-card-title>
                         <span class="headline">{{formTitle}}</span>
                       </v-card-title>
@@ -25,19 +24,19 @@
                                 <label>PREVIEW</label>
                                 <div class="markdown-fields" v-html="mdRender(editedItem.description)"></div>
                             </v-flex>
-                            <v-divider light></v-divider>
-                            <v-card class="file-attachment">
+                            <v-layout>
+                                <v-divider light></v-divider>
+                            </v-layout>
+                            <v-card class="file-attachment" light>
                                 <form enctype="multipart/form-data">
                                   <input id="fileUpload" style="display: none" ref="myUpload" type="file" accept="*/*" multiple @change="onFilePicked"/>
-                                  <v-icon @click='pickFile'> attach_file </v-icon>
+                                  <v-icon @click='pickFile' class="file-icon"> attach_file </v-icon>
                                   <v-btn v-if="readyToUpload" label="upload" @click="processFiles" ></v-btn>
                                 </form>
                             </v-card>
                             <v-card class="file-attachment" v-for="(item, index) in previewFileUrls" :key="index">
                                 <embed :src="item" width="100%" height="100%"></embed>
                             </v-card>
-                            <!-- add | list of uploaded files  -->
-
                           </v-layout>
                         </v-container>
                       </v-card-text>

@@ -16,5 +16,30 @@
 
 
 .editTextArea textarea{
-    color: initial !important; 
+    color: initial !important;
+}
+
+.theme--dark.v-card {
+    background-color: #0374C7;
+    border-color: #0374C7;
+}
+
+
+.v-card.file-attachment{
+    background: #fff;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    margin: 10px;
+}
+
+.file-icon{
+    margin: auto;
+    width: 100%;
+    margin-top: 33%;
+    color: #707070;
+}
+
+textarea{
+    color: #231F20;
 }

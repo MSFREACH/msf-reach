@@ -33,6 +33,11 @@ export const REPONSE_PROGRAMME_TYPES =[
     { value: 'violence', text: 'Violence' },
     { value: 'others', text: 'Others' }
 ];
-
+export const RESPONSE_TYPES = [
+    {value: 'direct_activities', text:'Direct activities'},
+    {value: 'remote_activities', text:'Remote activities'},
+    {value: 'coordination', text:'Coordination'},
+    {value: 'donations', text:'Donations'}
+];
 
 export const SUPPLY_CHAIN_SPECIALITIES = ['importation', 'regulations', 'storage'];

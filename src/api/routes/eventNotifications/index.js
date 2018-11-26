@@ -22,7 +22,7 @@ export default ({ config, db, logger }) => {
                 eventId: Joi.number().integer().min(1)
             }
         }),
-        (req, res, next) => eventNotifications(config, db, logger).all((req.query.hasOwnProperty('eventId') ? req.query.eventId : null)
+        (req, res, next) => eventNotifications(config, db, logger).all(req.query.hasOwnProperty('eventId') ? req.query.eventId : null)
             .then((data) => handleResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
