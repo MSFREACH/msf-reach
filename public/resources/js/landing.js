@@ -555,6 +555,11 @@ var mapMissions = function(missions ){
 
 };
 
+function vidImageErrHandler(event)
+{
+    $(event.target).hide();
+}
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
@@ -582,8 +587,8 @@ var mapReports = function(reports,mapForReports){
                     popupContent = popupContent.substring(0,popupContent.length-2);
                     popupContent += '<BR>';
                 }
-                popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
-                popupContent += '<br/><video width="100%" controls><source src="'+feature.properties.content.image_link+'" >Your browser does not support the video preview.</video>';
+                popupContent += '<img src="'+feature.properties.content.image_link+'" width="100%" onerror="vidImageErrHandler(event)">';
+                popupContent += '<br/><video width="100%" controls onerror="vidImageErrHandler(event)" src="'+feature.properties.content.image_link+'" ></video>';
                 popupContent += '<br/>Download multimedia content <a target="_blank" href="'+feature.properties.content.image_link+'">here</a> ';
 
             }
