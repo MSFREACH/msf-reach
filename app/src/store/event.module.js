@@ -1,4 +1,6 @@
 /*eslint no-debugger: off*/
+/*eslint no-console: off*/
+
 import _ from 'lodash';
 import Vue from 'vue';
 import { EventsService} from '@/common/api.service';
@@ -152,7 +154,7 @@ const getters ={
                 for(var i=0; i < currentPrograms.length; i++){
                     programmes.push({
                         'name': currentPrograms[i],
-                        'value': currentPrograms[i].toLowerCase().replace(/ /g,'_'), 
+                        'value': currentPrograms[i].toLowerCase().replace(/ /g,'_'),
                         'deployment': null,
                         'notes':''
                     });
@@ -186,14 +188,25 @@ const getters ={
     eventExtCapacity(state){
         if(!state.event.extCapacity && state.event.metadata){
             var payload = state.event.metadata;
-            return {
-                description : payload.capacity,
-                action_plan : payload.ext_capacity_action_plan,
-                by_humanitarian : payload.ext_capacity_by_humanitarian,
-                type_in_ground : payload.ext_capacity_type_in_ground,
-                who : payload.ext_capacity_who,
-                other_organizations : payload.ext_other_organizations //TODO: check obj array mapped
+            var cap = payload.capacity ? payload.capacity : '';
+            var action = payload.ext_capacity_action_plan ? `Action plan: \n ${payload.ext_capacity_action_plan}` : '';
+            var human = payload.ext_capacity_by_humanitarian ? `Humanitarian: \n  ${payload.ext_capacity_by_humanitarian}` : '';
+            var ground = payload.ext_capacity_type_in_ground ? `On Ground: \n ${payload.ext_capacity_type_in_ground}:`: '';
+            var govCapacity = {
+                type: 'governmental',
+                name: null,
+                arrival_date: null,
+                deployment: cap + action + human + ground
             };
+
+            var capacities = _.map(payload.ext_other_organizations, function(item){
+                item.type = 'other';
+                return item;
+            });
+
+            capacities.push(govCapacity);
+            return capacities;
+
         }else{
             return state.event.extCapacity;
         }
@@ -201,18 +214,21 @@ const getters ={
     eventFigures(state){
         if(!state.event.figures && state.event.metadata){
             var payload = state.event.metadata;
+            var currentKeyFigures = [];
+            if(!_.isEmpty(payload.keyMSFFigures)){
+                currentKeyFigures = [{
+                    status: payload.event_status,
+                    figures: payload.keyMSFFigures,
+                }];
+            }
+
             return {
-                keyFigures : payload.keyMSFFigures, //TODO: check obj array mapped
+                keyFigures : currentKeyFigures,
                 population: {
-                    total:{
-                        amount: payload.population_total,
-                        description:payload.population_total_description
-                    },
-                    affected:{
-                        amount: payload.population_affected,
-                        description: payload.population_affected_description,
-                        percentage: payload.percentage_population_affected
-                    }
+                    total: payload.population_total,
+                    impacted: payload.population_affected,
+                    mortality: payload.percentage_population_affected,
+                    morbidity: null
                 }
             };
         }else{

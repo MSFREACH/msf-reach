@@ -89,3 +89,27 @@ export const DEFAULT_EVENT_RESPONSE = {
         description:''
     }
 };
+
+export const EXTERNAL_CAPACITY_FIELDS = {
+    type: null,
+    name: '',
+    arrival_date: '',
+    deployment: ''
+};
+
+export const DEFAULT_EVENT_FIGURES = {
+    keyFigures : [{
+        status: '',
+        figures: [{
+            category: null,
+            subCategory: null,
+            value: null
+        }],
+    }],
+    population: {
+        total: null,
+        impacted: null,
+        mortality: null,
+        morbidity: null
+    }
+};

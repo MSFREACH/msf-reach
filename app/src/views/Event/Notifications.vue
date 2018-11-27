@@ -71,7 +71,6 @@
                         </tr>
                     </template>
                     <template slot="expand" slot-scope="props">
-
                         <v-card class="expanded-field" flat :key="props.index" :id="props.index">
                             <v-card-actions class="text-xs-right">
                                 <v-icon small class="mr-2" @click="editItem(props.item)"> edit </v-icon>

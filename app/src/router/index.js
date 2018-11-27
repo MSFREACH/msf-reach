@@ -73,9 +73,9 @@ export default new Router({
                         component: () => import('@/views/Event/StaffResources'),
                         props: true
                     },{
-                        path: 'reflection',
-                        name: 'event-reflection',
-                        component: () => import('@/views/Event/Reflection'),
+                        path: 'sitrep',
+                        name: 'event-sitrep',
+                        component: () => import('@/views/Event/SITREP'),
                         props: true
                     }
                 ]

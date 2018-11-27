@@ -49,11 +49,19 @@ body{
   line-height: initial;
 }
 
-.secondary-text{
+.secondary-text,
+.category-text{
   font-family: 'OpenSans', sans-serif;
   font-size: 16px;
   font-weight: normal;
   line-height: initial;
+}
+
+.specified-primary{
+    font-family: 'OpenSans', sans-serif;
+    font-size: 16px;
+    font-style: italic;
+    line-height: initial;
 }
 
 .tertiary-text{
@@ -63,6 +71,11 @@ body{
   line-height: initial;
 }
 
+.sub-category-text{
+    font-size: 12px;
+    font-family: 'OpenSans', sans-serif;
+    font-weight: normal;
+}
 .small-header{
   font-size: 12px;
   font-weight: lighter;

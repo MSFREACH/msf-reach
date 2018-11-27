@@ -39,7 +39,7 @@ import REventResponse from '@/views/Event/Response.vue';
 import REventExtCapacity from '@/views/Event/ExtCapacity.vue';
 import REventFigures from '@/views/Event/Figures.vue';
 import REventStaffResources from '@/views/Event/StaffResources.vue';
-import REventReflection from '@/views/Event/Reflection.vue';
+import REventSitrep from '@/views/Event/SITREP.vue';
 
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/

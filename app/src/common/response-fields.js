@@ -14,7 +14,7 @@ export const REPONSE_PROGRAMME_TYPES =[
         {value: 'yellow_fever', text:'Yellow Fever'},
         {value: 'cholera', text:'Cholera'},
         {value: 'hemorrhagic_fever', text:'Hemorrhagic fever'},
-        {value: 'dengue', text:'Dengue'},
+        {value: 'dengue', text:'Dengue'}
     ]},
     { value: 'maternal_health', text: 'Maternal Health' },
     { value: 'mental_health', text: 'Mental Health' },
@@ -40,4 +40,21 @@ export const RESPONSE_TYPES = [
     {value: 'donations', text:'Donations'}
 ];
 
+export const RESPONSE_INFECTIOUS_DISEASE_PROGRAMMES =[
+    {value: 'hiv', text:'HIV'},
+    {value: 'tb-mdrtb', text:'TB-MDRTB'},
+    {value: 'meningitis', text:'Meningitis'},
+    {value: 'measle', text:'Measle'},
+    {value: 'yellow_fever', text:'Yellow Fever'},
+    {value: 'cholera', text:'Cholera'},
+    {value: 'hemorrhagic_fever', text:'Hemorrhagic fever'},
+    {value: 'dengue', text:'Dengue'}
+];
+export const RESPONSE_NCDS_PROGRAMMES = [
+    { value: 'hta', text: 'HTA' },
+    { value: 'diabetes', text: 'Diabetes' },
+    { value: 'other_ncds', text: 'Other NCDs' }
+];
 export const SUPPLY_CHAIN_SPECIALITIES = ['importation', 'regulations', 'storage'];
+
+export const OPERATIONAL_CENTERS = ['OCA', 'OCBA', 'OCG', 'OCB', 'OCP'];

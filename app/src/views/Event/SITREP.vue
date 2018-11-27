@@ -1,6 +1,5 @@
 <template>
     <div class="eventSubContent">
-        Reflection
         <div v-if="eventReflection">
             <label>Practical Details / Recommendations:</label>
             <div>{{eventReflection.recommendations}}</div>
@@ -8,7 +7,7 @@
             <div>{{eventReflection.comments}}</div>
         </div>
         <div v-else>
-            
+
         </div>
     </div>
 </template>
@@ -19,7 +18,7 @@
 import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
 export default {
-    name: 'r-event-reflection',
+    name: 'r-event-sitrep',
     data(){
         return {
         };

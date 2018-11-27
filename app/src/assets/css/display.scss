@@ -15,7 +15,15 @@ ul{
         }
     }
 }
-
+.full-text-fields{
+    position: relative;
+    width: 80%;
+    margin: 0;
+    border-radius:5px;
+    background: #fff;
+    box-shadow: 1px 5px 10px #707070;
+    padding: 21px;
+}
 .split-text-fields{
     position: relative;
     display: inline-block;

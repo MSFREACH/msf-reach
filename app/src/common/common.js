@@ -58,6 +58,14 @@ export const EVENT_NOTIFICATION_HEADERS = [
     { text: 'Files', value: 'files.length', sortable: false}
 ];
 
+
+export const DEFAULT_EXT_CAPACITY_HEADERS = [
+    { text: 'Organization', align: 'left', value: 'name'},
+    { text: 'Date of Arrival', align: 'left', value: 'arrival_date'},
+    { text: 'Deployment', align: 'left', sortable: false, value: 'deployment'},
+];
+
+
 export const EVENT_STATUSES = [
     { value: 'monitoring', text: 'Monitoring', icon: 'assessment' },
     { value: 'exploration', text: 'Exploration' , icon: 'accessibility_new'},
