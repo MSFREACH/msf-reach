@@ -49,7 +49,9 @@
             <dl>
               <dt>Precise location of the emergency</dt>
               <dd>
+                <p class="help-block"  v-show="inEditMode">To change the location of the emergency center the map and click update location.</p>
                 <div id="eventMap1" style="width: 100%; height: 380px;"></div>
+                <button type="button" class="btn btn-warning" v-show="inEditMode" style="margin-top:5px;" @click="confirmLocationChange">Update Location</button>
               </dd>
             </dl>
             <dl>
@@ -816,6 +818,12 @@ var vmInstance = new Vue({
 
       }
     },
+    confirmLocationChange:function(){
+      var mapCenter=eventMap1.getCenter();
+      missionCoordinates=[mapCenter.lng, mapCenter.lat];
+      eventMap1.removeLayer(eventMap1.eventMarker);
+      eventMap1.eventMarker = L.marker([missionCoordinates[1], missionCoordinates[0]]).addTo(eventMap1);
+    },
     saveMissionEdits: function(){
       var vm=this;
       if ((vm.mission.sharepoint_link)&&(vm.mission.sharepoint_link.indexOf('https://') != 0))
@@ -828,7 +836,11 @@ var vmInstance = new Vue({
       var body={
         status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
         metadata: vm.mission,
-        eventId:  null
+        eventId:  null,
+        location:{
+          lat: missionCoordinates[1],
+          lng: missionCoordinates[0]
+        }
       }
       vm.inEditMode=false;
       vm.submissionSuccess=false;
@@ -940,7 +952,7 @@ var vmInstance = new Vue({
         attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
         id: 'mapbox.streets'
       }).addTo(eventMap1);
-      var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap1);
+      eventMap1.eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap1);
       /** eventMap1 >> */
 
       /** << msfResponseMap1 */

@@ -90,17 +90,18 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_MISSIONS}
-      SET properties = properties || $1
-      WHERE id = $2
+      SET properties = properties || $1,
+          the_geom =   ST_SetSRID(ST_Point($2,$3),4326)
+      WHERE id = $4
       RETURNING id, properties, the_geom`;
 
         // Setup values
-        let values = [ body.metadata, id];
+        let values = [ body.metadata,  body.location.lng, body.location.lat, id];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id),  properties:data.properties }))
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(data.id),  properties:data.properties, the_geom:data.the_geom }))
             .catch((err) => reject(err));
     }),
     /**
