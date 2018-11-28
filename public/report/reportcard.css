@@ -148,3 +148,10 @@ html,body {
   color: #fff;
   background-color:#555555;
 }
+
+#btnUpTrigger {
+  display:flex;
+  flex-flow:row wrap;
+  justify-content:space-around;
+  margin:0px 10px;
+  }
