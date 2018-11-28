@@ -224,3 +224,11 @@ display: block;
   display:inline-block;
   cursor:pointer;
 }
+
+
+#btnUpTrigger {
+  display:flex;
+  flex-flow:row wrap;
+  justify-content:space-around;
+  margin:0px 5px;
+  }
