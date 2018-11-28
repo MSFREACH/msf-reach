@@ -67,7 +67,7 @@ export default (config, db, logger) => ({
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve({ id: String(id), eventId: data.event_id, category:data.category, createdAt: data.created_at, updatedAt: data.updated_at, description: data.description, username:data.username, files:data.files}))
             .catch((err) => reject(err));
-    })
+    }),
 
     /**
     * DELETE an eventNotification from the database
