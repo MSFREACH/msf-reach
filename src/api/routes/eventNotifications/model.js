@@ -84,7 +84,7 @@ export default (config, db, logger) => ({
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve())
+            .then((data) => resolve(data))
             .catch((err) => reject(err));
     })
 
