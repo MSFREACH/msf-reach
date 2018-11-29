@@ -1222,3 +1222,76 @@ $( '#sharewith_name' ).autocomplete({
         $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
     }
 });
+
+
+var addLegendsToAMaps=function(mapVariable){
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+        var symbols = [
+            {
+                iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                text: 'Ongoing MSF Resp.'
+
+            },
+            {
+                iconUrl: '/resources/images/icons/event_types/historical.svg',
+                text: 'Prev. MSF Resp.'
+            },
+            {
+                iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
+                text: 'Contacts'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/access_icon.svg',
+                text: 'Access Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/security_icon.svg',
+                text: 'Security Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
+                text: 'Contacts Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/needs_icon.svg',
+                text: 'Needs Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/pin.svg',
+                text: 'Health site'
+            }
+        ];
+
+        HAZARD_ICON_TYPES.forEach(function(type){
+            symbols.push({
+                iconUrl: '/resources/images/hazards/'+type+'_advisory.svg',
+                text: type[0].toUpperCase()+type.substr(1)
+            });
+        });
+
+        symbols.forEach(function(s) {
+            div.innerHTML +=
+      '<img src="'+s.iconUrl+'"></i> ' +
+      s.text + '<br>';
+        });
+        return div;
+    };
+
+    var btnControl = L.control({position: 'bottomright'});
+
+    btnControl.onAdd = function (map) {
+        var btn = L.DomUtil.create('button', 'btn btn-xs btn-default');
+        btn.innerHTML='Toggle legend';
+        L.DomEvent.on(btn, 'click', function (ev) {
+            $('.legend').toggle();
+            L.DomEvent.stopPropagation(ev);
+        });
+        return btn;
+    };
+    btnControl.addTo(mapVariable);
+    legend.addTo(mapVariable);
+};

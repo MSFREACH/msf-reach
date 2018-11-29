@@ -1039,6 +1039,8 @@ if (L.Browser.touch) {
     L.DomEvent.disableClickPropagation(layerControl._container);
 }
 
+addLegendsToAMaps(mainMap);
+
 // get and map data:
 getAllEvents(mapAllEvents);
 getReports(mainMap, mapReports);

@@ -44,6 +44,8 @@ mainMap.on('load', function(loadEvent) {
 
 mainMap.setView([-6.8, 108.7], 7);
 
+addLegendsToAMaps(mainMap);
+
 
 mainMap.on('zoomend', function(zoomEvent)  {
     getHealthSites(mainMap.getBounds(),mapHealthSites); // load healthsites based on map bounds on each zoom / pan event
