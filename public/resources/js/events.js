@@ -1684,6 +1684,7 @@ ${localStorage.getItem('username')}
             }
             searchTerm += searchSinceDate;
             $('#searchTerm').val(searchTerm);
+            $('#searchTermSP').val(searchTerm);
             $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent(searchTerm.replace(/since:\d\d\d\d-\d\d-\d\d/, '')));
 
             this.searchTerm = searchTerm;
