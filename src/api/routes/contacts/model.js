@@ -151,7 +151,7 @@ export default (config, db, logger) => ({
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+        db.one(query, values).timeout(config.PGTIMEOUT)
         // TODO - why is id forced to a String()?
             .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
