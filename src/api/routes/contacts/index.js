@@ -149,7 +149,6 @@ export default ({ config, db, logger }) => {
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
                 properties: Joi.object().required(),
-                private: Joi.boolean().required(),
                 location: Joi.object().required().keys({
                     lat: Joi.number().min(-90).max(90).required(),
                     lng: Joi.number().min(-180).max(180).required()

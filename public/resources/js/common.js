@@ -1043,6 +1043,7 @@ var onContactLinkClick = function(id) {
     $('#btnShare').prop('disabled',true);
 
     currentContactId = id;
+    $('#contactEditAnchor').attr('href','/contact/?editid='+currentContactId);
     getContact(id);
     $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
     $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);

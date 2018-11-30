@@ -190,9 +190,12 @@ function patchContact() {
         }
     };
 
+    /* wont need this for update
+
     if (localStorage.getItem('oid')) {
         body['oid'] = localStorage.getItem('oid');
     }
+
     if (localStorage.getItem('username')!=null) {
         body.properties['msf_entered'] = true;
         if ($('#inputPrivate').is(':checked')) {
@@ -204,6 +207,7 @@ function patchContact() {
         body.properties['msf_entered'] = false;
         body['private'] = false;
     }
+    */
 
     if ($('#inputContactCell').val()) {
         body.properties['cell']=$('#inputContactCell').intlTelInput('getNumber');
@@ -243,9 +247,14 @@ function patchContact() {
         body.properties['division'] = $('#inputContactEmployerDivision').val() || '';
     }
 
+    var patchUrl='/api/contacts/peers?email='+qEmail+'&guid='+qGUID;
+    if (updateOperatorMode)
+        patchUrl='/api/contacts/'+qContactId;
+
+
     $.ajax({
         type: 'PATCH',
-        url: '/api/contacts/peers?email='+qEmail+'&guid='+qGUID,
+        url: patchUrl,
         data: JSON.stringify(body),
         contentType: 'application/json'
     }).done(function( data, textStatus, req ){

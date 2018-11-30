@@ -586,6 +586,7 @@
             </div>
           </div>
           <div class="modal-footer">
+            <a id="contactEditAnchor" class="btn btn-warning show-if-write-permission" target="_blank" href="" style="display:none;"><span class="glyphicon glyphicon-edit"></span> Edit contact</a>
             <button type="button" class="btn btn-danger show-if-write-permission" onclick="deleteContact(currentContactId)" style="display:none;"><span class="glyphicon glyphicon-remove"></span> Delete contact</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
@@ -787,7 +788,7 @@
                     <!--event tab content-->
                     <div class="tab-content">
                         <div class="form-group" class="display:none;" id="eventSearchBox" >
-                          
+
                           <label for="eventSearchDate">search for events created between</label>
                           <table id="eventSearchDate">
                             <tr>
@@ -799,7 +800,7 @@
                               </td>
                               <td>
                                 <input type="text" id="eventSearchToDate" class="form-control" placeholder="YYYY-MM-DD" >
-                              </td> 
+                              </td>
                             </tr>
                           </table>
                           <input type="text" class="form-control" id="eventSearchTerm" name="" value="" placeholder="Term for searching event name, description, type ...">
