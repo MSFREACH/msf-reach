@@ -27,7 +27,7 @@ $(function() {
     });
 });
 var hasWritePermission=false;
-const operatorCheck = function() {
+const operatorCheck = function(callback) {
     $.ajax({
         type: 'GET',
         url: '/api/utils/operatorCheck',
@@ -40,9 +40,13 @@ const operatorCheck = function() {
     }).done(function(){
         hasWritePermission=true;
         $('.show-if-write-permission').show();
+        if (callback)
+            callback(true);
     }).fail(function(){
         hasWritePermission=false;
         $('.show-if-write-permission').hide();
+        if (callback)
+            callback(false);
     });
 };
 
@@ -881,13 +885,14 @@ var mapUSGSHazards = function(hazards){
 
 function openHazardPopup(id)
 {
-
     switch(id.split('-',1)[0]) {
     case 'USGS':
         USGSHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id === id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
-
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -898,7 +903,10 @@ function openHazardPopup(id)
     case 'PDC':
         PDCHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -909,7 +917,10 @@ function openHazardPopup(id)
     case 'TSR':
         TSRHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -920,7 +931,10 @@ function openHazardPopup(id)
     case 'PTWC':
         PTWCHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -931,7 +945,10 @@ function openHazardPopup(id)
     case 'GDACS':
         GDACSHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+sanitiseId(layer.feature.properties.id)+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -1026,6 +1043,7 @@ var onContactLinkClick = function(id) {
     $('#btnShare').prop('disabled',true);
 
     currentContactId = id;
+    $('#contactEditAnchor').attr('href','/contact/?editid='+currentContactId);
     getContact(id);
     $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
     $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
@@ -1181,7 +1199,7 @@ $( '#sharewith_name' ).autocomplete({
         $.ajax({
             url: '/api/contacts/usersearch/'+request.term,
             success: function( data ) {
-                response($.map(JSON.parse(data.body).value, function (item) {
+                response($.map(JSON.parse(data).value, function (item) {
                     return {
                         label: item.displayName,
                         value: item.displayName,
@@ -1205,3 +1223,76 @@ $( '#sharewith_name' ).autocomplete({
         $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
     }
 });
+
+
+var addLegendsToAMaps=function(mapVariable){
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+        var symbols = [
+            {
+                iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                text: 'Ongoing MSF Resp.'
+
+            },
+            {
+                iconUrl: '/resources/images/icons/event_types/historical.svg',
+                text: 'Prev. MSF Resp.'
+            },
+            {
+                iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
+                text: 'Contacts'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/access_icon.svg',
+                text: 'Access Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/security_icon.svg',
+                text: 'Security Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
+                text: 'Contacts Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/needs_icon.svg',
+                text: 'Needs Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/pin.svg',
+                text: 'Health site'
+            }
+        ];
+
+        HAZARD_ICON_TYPES.forEach(function(type){
+            symbols.push({
+                iconUrl: '/resources/images/hazards/'+type+'_advisory.svg',
+                text: type[0].toUpperCase()+type.substr(1)
+            });
+        });
+
+        symbols.forEach(function(s) {
+            div.innerHTML +=
+      '<img src="'+s.iconUrl+'"></i> ' +
+      s.text + '<br>';
+        });
+        return div;
+    };
+
+    var btnControl = L.control({position: 'bottomright'});
+
+    btnControl.onAdd = function (map) {
+        var btn = L.DomUtil.create('button', 'btn btn-xs btn-default');
+        btn.innerHTML='Toggle legend';
+        L.DomEvent.on(btn, 'click', function (ev) {
+            $('.legend').toggle();
+            L.DomEvent.stopPropagation(ev);
+        });
+        return btn;
+    };
+    btnControl.addTo(mapVariable);
+    legend.addTo(mapVariable);
+};

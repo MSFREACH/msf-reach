@@ -145,6 +145,7 @@ $(function(){
                 'type': types.join(','),
                 'created_at': new Date().toISOString(),
                 'location': (areaSelect ? areaSelect.getBounds().getCenter().wrap() : latlng),
+                'subscribe': $('#inputSubscribe').is(':checked'),
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),

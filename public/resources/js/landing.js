@@ -129,9 +129,9 @@ var mapAllEvents = function(err, events){
     function onEachFeature(feature, layer) {
 
         var dateOfEvent = new Date (feature.properties.metadata.event_datetime || feature.properties.created_at);
-        if ( !(eventSearchFromDate && eventSearchToDate) || 
+        if ( !(eventSearchFromDate && eventSearchToDate) ||
             (eventSearchFromDate && !eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent)) ||
-            (!eventSearchFromDate && eventSearchToDate && (dateOfEvent < (new Date(eventSearchToDate)))) || 
+            (!eventSearchFromDate && eventSearchToDate && (dateOfEvent < (new Date(eventSearchToDate)))) ||
             (eventSearchFromDate && eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent && dateOfEvent < (new Date(eventSearchToDate))))
         ) {
             var affectedPopulationStr = '';
@@ -555,6 +555,11 @@ var mapMissions = function(missions ){
 
 };
 
+function vidImageErrHandler(event)
+{
+    $(event.target).hide();
+}
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
@@ -582,7 +587,10 @@ var mapReports = function(reports,mapForReports){
                     popupContent = popupContent.substring(0,popupContent.length-2);
                     popupContent += '<BR>';
                 }
-                popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
+                popupContent += '<img src="'+feature.properties.content.image_link+'" width="100%" onerror="vidImageErrHandler(event)">';
+                popupContent += '<br/><video width="100%" controls onerror="vidImageErrHandler(event)" src="'+feature.properties.content.image_link+'" ></video>';
+                popupContent += '<br/>Download multimedia content <a target="_blank" href="'+feature.properties.content.image_link+'">here</a> ';
+
             }
 
 
@@ -1030,6 +1038,8 @@ if (L.Browser.touch) {
 } else {
     L.DomEvent.disableClickPropagation(layerControl._container);
 }
+
+addLegendsToAMaps(mainMap);
 
 // get and map data:
 getAllEvents(mapAllEvents);
