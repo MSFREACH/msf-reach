@@ -224,7 +224,7 @@ export default {
                 var fileType = files[f].type;
                 var fileSize = files[f].size;
                 var file = files[f];
-                var params = {key: ('event/'+this.currentEventId), filename: fileName};
+                var params = {key: ('event/'+this.currentEventId+'/notifications/'), filename: fileName};
                 this.$store.dispatch(FETCH_UPLOAD_URL, params)
                     .then((payload) => {
                         if(payload){

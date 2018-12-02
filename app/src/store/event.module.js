@@ -227,8 +227,20 @@ const getters ={
                 population: {
                     total: payload.population_total,
                     impacted: payload.population_affected,
-                    mortality: payload.percentage_population_affected,
-                    morbidity: null
+                    mortality: {
+                        rate: null,
+                        population: null,
+                        period: null
+                    },
+                    morbidity: {
+                        rate:null,
+                        population:null,
+                        period:null
+                    }
+                },
+                satistics: {
+                    collection: null,
+                    source: null
                 }
             };
         }else{

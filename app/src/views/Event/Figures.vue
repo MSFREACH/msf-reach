@@ -8,19 +8,54 @@
                         <a class="statusTabs" v-for="(item, index) in eventFigures.keyFigures" :key="index" @click="switchStatus(item)">{{item.status}}</a>
                     </nav>
                 </div>
-
                 <v-layout row wrap v-if="editing" dark>
                     <v-data-iterator v-if="displayKeyFigures" :items="displayKeyFigures" content-tag="v-layout" row wrap>
-                        <v-flex slot="item" slot-scope="props" xs12>
-                            <v-list dense>
-                                <v-list-tile>
-                                    <v-list-tile-content class="category-text align-end">{{item.category}} </v-list-tile-content>
-                                    <v-list-tile-content class="sub-category-text"> {{item.subCategory}} </v-list-tile-content>
-                                    <v-list-tile-content> {{item.value}} </v-list-tile-content>
-                                </v-list-tile>
-                            </v-list>
-                        </v-flex>
+                        <template slot="items" slot-scope="props">
+                            <v-hover>
+                                <v-flex xs12 :key="props.index"
+                                    v-show="editMode.offset != props.index"
+                                    slot-scope="{hover}">
+                                    <v-list dense>
+                                        <v-list-tile>
+                                            <v-list-tile-content class="category-text align-end">{{item.category}} </v-list-tile-content>
+                                            <v-list-tile-content class="sub-category-text"> {{item.subCategory}} </v-list-tile-content>
+                                            <v-list-tile-content> {{item.value}} </v-list-tile-content>
+                                            <v-list-tile-content v-if="editing" :class="hover ? 'showCrud' : 'hide'">
+                                                <a @click="editKeyFig(props.item, props.index)"> edit </a>
+                                                <a @click="deleteKeyFig(props.item)"> delete </a>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-flex>
+                            </v-hover>
+                            <v-flex xs12 :key="props.index"
+                                v-show="editMode.offset == props.index">
+                                <v-select dark  v-model="editKeyFigure.category" :items="allSelections.keyFigs" ></v-select>
+                                <v-select dark  v-model="editKeyFigure.subCategory" :items="allKeyFigSubSelection" ></v-select>
+                                <v-text-field label="value" v-model="editKeyFigure.value"></v-text-field>
+                                <a @click="confirmKeyFig(props.index)"> edit </a>
+                                <a @click="cancelEditKeyFig(props.index)"> delete </a>
+                            </v-flex>
+                        </template>
                     </v-data-iterator>
+                    <a v-if="editing && !editMode.offset" @click="addKeyFig()"> add </a>
+
+                    <v-divider></v-divider>
+                    <v-text-field label="Country Population" v-model="defaultFigures.population.total"></v-text-field>
+                    <v-text-field label="Affected Population" v-model="defaultFigures.population.impacted"></v-text-field>
+
+                    <v-flex>
+                        <v-text-field label="MORTALITY" v-model="defaultFigures.population.mortality.rate"></v-text-field>
+                        <v-select label="Population at risk" v-model="defaultFigures.mortality.population" :items="allSelections.population"></v-select>
+                        <v-select label="Speficied Time period" v-model="defaultFigures.mortality.peroid" :items="allSelections.period"></v-select>
+                    </v-flex>
+                    <v-flex>
+                        <v-text-field label="MORBIDITY" v-model="defaultFigures.population.morbidity.rate"></v-text-field>
+                        <v-select label="Population at risk" v-model="defaultFigures.morbidity.population" :items="allSelections.population"></v-select>
+                        <v-select label="Speficied Time period" v-model="defaultFigures.morbidity.peroid" :items="allSelections.period"></v-select>
+                    </v-flex>
+                    <v-select label="Collection" v-model="defaultFigures.satistics.collection" :items="allSelections.collectionMeans"></v-select>
+                    <v-select label="Source" v-model="defaultFigures.satistics.source" :items="allSelections.sources"></v-select>
                 </v-layout>
                 <v-layout v-else>
                     <v-layout v-if="displayKeyFigures">
@@ -28,7 +63,6 @@
                             <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                             <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
                         </v-layout>
-
                         <v-flex v-for="(item, index) in displayKeyFigures" :key="index">
                             <v-flex>
                                 <div class="specified-primary"> {{item.value}}</div>
@@ -54,21 +88,29 @@
                     </v-layout>
                     <v-divider></v-divider>
                     <v-layout>
-                        <v-flex xs3>
+                        <v-flex>
                             <label>COUNTRY POPULATION</label>
                             {{eventFigures.population.total}}
                         </v-flex>
-                        <v-flex xs3>
+                        <v-flex>
                             <label>IMPACTED POPULATION</label>
                             {{eventFigures.population.impacted}}
                         </v-flex>
-                        <v-flex xs3>
+                        <v-flex>
                             <label>MORTALITY</label>
-                            {{eventFigures.population.mortality}}
+                            {{eventFigures.population.mortality.rate}}
                         </v-flex>
-                        <v-flex xs3>
+                        <v-flex>
                             <label>MORBIDITY</label>
-                            {{eventFigures.population.morbidity}}
+                            {{eventFigures.population.morbidity.rate}}
+                        </v-flex>
+                        <v-flex>
+                            <label>COUNTRY POPULATION</label>
+                            {{eventFigures.satistics.collection}}
+                        </v-flex>
+                        <v-flex>
+                            <label>COUNTRY POPULATION</label>
+                            {{eventFigures.satistics.source}}
                         </v-flex>
                     </v-layout>
                 </v-layout>
@@ -83,18 +125,34 @@
 <script>
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
+/*eslint no-console: off*/
+
 import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
-import { DEFAULT_EVENT_FIGURES } from '@/common/form-fields';
+import { DEFAULT_EVENT_FIGURES, DEFAULT_KEY_FIGURES } from '@/common/form-fields';
+import { KEY_FIGURES, FIGURES_COLLECTION, FIGURES_SOURCES, POPULATION_RANGES, RISK_PERIOD } from '@/common/keyFigures-fields';
 
 export default {
     name: 'r-event-figures',
     data(){
         return {
             editing: false,
+            editMode:{
+                offset: -1
+            },
+            editKeyFigure: null,
             editFigures: null,
             _beforeEditingCache: {},
-            defaultFigures: DEFAULT_EVENT_FIGURES
+            _beforeEditKeyFigCache: {},
+            defaulKeyFigure: DEFAULT_KEY_FIGURES,
+            defaultFigures: DEFAULT_EVENT_FIGURES,
+            allSelections: {
+                keyFigs:KEY_FIGURES,
+                collectionMeans: FIGURES_COLLECTION,
+                sources: FIGURES_SOURCES,
+                population: POPULATION_RANGES,
+                period: RISK_PERIOD
+            }
         };
     },
     components: {
@@ -104,15 +162,38 @@ export default {
         switchStatus(keyFigures){
             this.displayKeyFigures = Object.assign({}, keyFigures);
         },
-        add(){
-            this.editing = true;
+        addKeyFig(){
+            var newKeyFig = this.defaulKeyFigure;
+            this.displayKeyFigures.push(newKeyFig);
+            this.editKeyFigure = Object.assign({}, newKeyFig);
+            this.editMode.offset = this.displayKeyFigures.length - 1; // the latest one
+        },
+        editKeyFig(item, index){
+            console.log(' editItem --- ', item, index);
+            // Keep track of original
+            this.editKeyFigure = Object.assign({}, item);
+            this.editMode.offset = index;
+        },
+        deleteKeyFig(item){
+            const index = this.displayKeyFigures.indexOf(item);
+            confirm('Are you sure you want to delete this item?') && this.displayKeyFigures.splice(index, 1);
+        },
+        confirmKeyFig(item){
+            Object.assign(this.displayKeyFigures[index], this.editKeyFig);
+            this.editKeyFig = this._beforeEditKeyFigCache = null;
+            this.editMode.offset = -1;
+        },
+        cancelEditKeyFig(index){
+            Object.assign(this.displayKeyFigures[index], this._beforeEditKeyFigCache);
+            this.editKeyFig = this._beforeEditKeyFigCache = null;
+            this.editMode.offset = -1;
+        },
+
+        addEventFigures(){
             this.editFigures = this.defaultFigures;
         },
-        edit(){
-            this.editing = true;
-            // Keep track of original
+        editEventFigures(){
             this._beforeEditingCache = Object.assign({}, this.displayFigures);
-            // Put object into editing mode
             this.editFigures = this.displayFigures;
         },
         cancelEdit(){
@@ -154,6 +235,14 @@ export default {
         totalServices(){
             // TODO calculate cases
             return 100;
+        },
+        allKeyFigSubSelection(){
+            var selectedCategory = this.editKeyFigure.category;
+            var results = this.allSelections.keyFigs.filter(item => {
+                if(item.value == selectedCategory){
+                    return item.options;
+                }
+            });
         }
     }
 };

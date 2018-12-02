@@ -35,7 +35,6 @@
                         </tr>
                     </template>
 
-
                     <template slot="no-data">
                         No external capacities at the moment
                     </template>

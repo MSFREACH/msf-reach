@@ -100,16 +100,30 @@ export const EXTERNAL_CAPACITY_FIELDS = {
 export const DEFAULT_EVENT_FIGURES = {
     keyFigures : [{
         status: '',
-        figures: [{
-            category: null,
-            subCategory: null,
-            value: null
-        }],
+        figures: []
     }],
     population: {
         total: null,
         impacted: null,
-        mortality: null,
-        morbidity: null
+        mortality: {
+            rate: null,
+            population: null,
+            period: null
+        },
+        morbidity: {
+            rate: null,
+            population: null,
+            period: null
+        }
+    },
+    satistics:{
+        collection: null,
+        source: null
     }
+};
+
+export const DEFAULT_KEY_FIGURES = {
+    category: null,
+    subCategory: null,
+    value: null
 };
