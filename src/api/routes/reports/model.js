@@ -5,6 +5,8 @@
 // Import promise support
 import Promise from 'bluebird';
 
+import googleMaps from '@google/maps';
+
 export default (config, db, logger) => ({
 
     /**
@@ -69,6 +71,59 @@ export default (config, db, logger) => ({
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve({ id: data.id, eventId: data.event_id, status:data.status, created: data.created, reportkey:data.report_key, content:data.content, the_geom:data.the_geom }))
             .catch((err) => reject(err));
+    }),
+
+    sms: (body) => new Promise((resolve, reject) => {
+
+        const googleMapsClient = googleMaps.createClient({
+            key: config.GOOGLE_API_KEY
+        });
+
+        let [type, address, message] = body.split('.');
+        type = type.toUpperCase();
+        if (!(type.includes('ACCESS') || type.includes('NEEDS') || type.includes('SECURITY'))) {
+            reject('sms invalid type');
+        }
+
+        // Geocode an address.
+        googleMapsClient.geocode({
+            address: address
+        }, function (err, response) {
+            if (err) {
+                reject('sms geocode failure');
+            } else {
+
+                let query = `INSERT INTO ${config.TABLE_REPORTS}
+			(status, created, content, the_geom)
+			VALUES ($1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
+			RETURNING id, event_id, status, created, report_key, content, the_geom`;
+
+                // Setup values
+                let values = ['unconfirmed', (new Date()).toISOString(), { 'description': message, 'report_tag': type }, response.results[0].geometry.location.lng, response.results[0].geometry.location.lat];
+
+                // Execute
+                logger.debug(query, values);
+                db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+                    .then((data) => resolve({ id: data.id, eventId: data.event_id, status: data.status, created: data.created, reportkey: data.report_key, content: data.content, the_geom: data.the_geom }))
+                    .catch((err) => reject(err));
+
+            }
+        });
+
+        let query = `INSERT INTO ${config.TABLE_REPORTS}
+			(event_id, status, created, report_key, content, the_geom)
+			VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_Point($6,$7),4326))
+			RETURNING id, event_id, status, created, report_key, content, the_geom`;
+
+        // Setup values
+        let values = [body.eventId, body.status, body.created, body.reportkey, body.content, body.location.lng, body.location.lat];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: data.id, eventId: data.event_id, status: data.status, created: data.created, reportkey: data.report_key, content: data.content, the_geom: data.the_geom }))
+            .catch((err) => reject(err));
+
     }),
 
     /**

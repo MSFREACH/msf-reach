@@ -3,6 +3,8 @@ import { Router } from 'express';
 // Import our data model
 import reports from './model';
 
+import twilio from 'twilio';
+
 // Import any required utility functions
 import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
@@ -66,6 +68,27 @@ export default ({ config, db, logger }) => {
         (req, res, next) => {
             reports(config, db, logger).createReport(req.body)
                 .then((data) => handleGeoResponse(data, req, res, next))
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    app.post('/sms', twilio.webhook(), 
+        (req, res, next) => {
+
+            reports(config, db, logger).smsReport(req.body.Body).then((data) => {
+                // Create a TwiML response
+                let twiml = new twilio.TwimlResponse();
+                twiml.message('Thanks for your report!');
+                logger.debug(data);
+                // Render the TwiML response as XML
+                res.type('text/xml');
+                res.send(twiml.toString());
+            })
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);
