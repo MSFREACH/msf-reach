@@ -274,7 +274,7 @@ var loadContacts = function(err, contacts) {
         alert('Error loading contacts: ' + err);
     } else {
         $('#contact_container').html(
-            '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Private?</th><th>Type</th><th>Country</th></tr></thead><tbody>'
+            '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Private?</th><th>Type</th></tr></thead><tbody>'
         );
 
         $.each(contacts, function(key, value) {
