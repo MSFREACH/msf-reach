@@ -91,6 +91,30 @@
       </div>
     </div>
 
+    <!-- Download contact modal -->
+    <div class="modal fade" id="dlContactsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelOperator">
+      <div class="modal-dialog " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" >Download contacts list</h4>
+          </div>
+          <div class="modal-body" >
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="cbContactsAgreed"> <p>I read and accept <a href="http://msf-seasia.org/node/14721" target="_blank">MSF Hong Kong Privacy Policy</a>.</p>
+              </label>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button id="contactDownloadLink" href="/api/contacts/csv/download" type="button" class="btn btn-danger" disabled onclick="checkAndDownloadContacts()">Download <i class="glyphicon glyphicon-download"></i> </span> </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Markdown Explained modal -->
     <div class="modal fade" id="markdownModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
        <!-- content will be loaded from external file -->
@@ -849,7 +873,7 @@
                             </select>
                             <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Name, Phone, Email, etc. ...">
                             <span class="glyphicon glyphicon-search"></span>
-                            <a id="contactDownloadLink" href="/api/contacts/csv/download" target="_blank" class="addContact">Download contacts list<i class="glyphicon glyphicon-download"></i> </span> </a>
+                            <a href="" target="_blank" class="addContact" style="cursor:pointer;" data-toggle="modal" data-target="#dlContactsModal">Download contacts list<i class="glyphicon glyphicon-download"></i> </span> </a>
                             <a href="/contact" target="_blank" class="addContact">Add <span class ="glyphicon glyphicon-plus"> </span> </a>
 
                         </div>

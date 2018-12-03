@@ -1224,6 +1224,13 @@ $( '#sharewith_name' ).autocomplete({
     }
 });
 
+var showLegendIfCookie=function(){
+    if (!(Cookies.get('show-msf-legend')))
+        Cookies.set('show-msf-legend','on');
+    var show=(Cookies.get('show-msf-legend')) === 'on' ;
+    $('.legend').toggle(show);
+};
+
 
 var addLegendsToAMaps=function(mapVariable){
     var legend = L.control({position: 'bottomright'});
@@ -1289,10 +1296,13 @@ var addLegendsToAMaps=function(mapVariable){
         btn.innerHTML='Toggle legend';
         L.DomEvent.on(btn, 'click', function (ev) {
             $('.legend').toggle();
+            var show=Cookies.get('show-msf-legend');
+            Cookies.set('show-msf-legend',show ==='on' ? 'off' : 'on');
             L.DomEvent.stopPropagation(ev);
         });
         return btn;
     };
     btnControl.addTo(mapVariable);
     legend.addTo(mapVariable);
+    showLegendIfCookie();
 };
