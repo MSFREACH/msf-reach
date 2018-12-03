@@ -523,6 +523,7 @@ describe('Cognicity Server Testing Harness', function() {
                                 'email': 'joe@email.com',
                                 'msf_entered': true
                             },
+                            'oid': 'd27de47c-e790-11e8-9f32-f2801f1b9fd1',
                             'private': true,
                             'location': {
                                 'lat': 45,
@@ -565,6 +566,7 @@ describe('Cognicity Server Testing Harness', function() {
                 });
 
                 // Can delete contacts
+                /*
                 it('Delete a contact (delete /contact)', function(done) {
                     test.httpAgent(app)
                         .delete('/api/contacts/1')
@@ -579,6 +581,7 @@ describe('Cognicity Server Testing Harness', function() {
                             }
                         });
                 });
+                */
 
             });
         });

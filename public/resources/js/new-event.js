@@ -32,6 +32,7 @@ function clearGlobalVars(){
     $('#inputSeverityScale').val('2');
     $('#inputSharepointLink').val('');
     $('#inputSecurity').val('');
+    $('#inputProjectCode').val('');
     //uncheck checkboxes:
     $('.newSubEventTypeBox').prop('checked',false);
     $('.newEventTypeBox').prop('checked',false);
@@ -144,6 +145,7 @@ $(function(){
                 'type': types.join(','),
                 'created_at': new Date().toISOString(),
                 'location': (areaSelect ? areaSelect.getBounds().getCenter().wrap() : latlng),
+                'subscribe': $('#inputSubscribe').is(':checked'),
                 'metadata':{
                     'user': localStorage.getItem('username'),
                     'name': $('#inputEventName').val(),

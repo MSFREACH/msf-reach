@@ -26,18 +26,6 @@ var report_id_for_event = null; // null = not creating event from unassigned rep
 // cookie for last page load
 Cookies.set('last_load',String(Date.now()/1000));
 
-const operatorCheck = function() {
-    $.ajax({
-        type: 'GET',
-        url: '/api/utils/operatorCheck',
-        statusCode: {
-            403: function() {
-                $('#operatorCheck').html('<span style="color:red">You do not have operator permission to create new events. To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
-            }
-        }
-    });
-};
-
 // set up the severity scale slider input
 $( '#inputSeverityScale' ).slider({
     value: 2, // default: 2
@@ -73,6 +61,60 @@ var eventsLayer;
 
 var disease_subtypes = ['cholera', 'ebola','dengue','malaria','measles','meningococcal_meningitis','yellow_fever','other_disease_outbreak'];
 
+var deleteEvent= function(event_id){
+    if (confirm('Are you sure you want to permanently delete this event? \nWARNING: ALL linked reports will be deleted. This action cannot be undone.'))
+    {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/events/' + event_id,
+            contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+            //console.log(data);
+            getAllEvents(mapAllEvents);
+            alert('Event successfully deleted.');
+
+
+
+        }).fail(function(err) {
+            alert('Error in deleting Event...');
+
+            if (err.responseText.includes('expired')) {
+                alert('session expired');
+            }
+        });
+
+    }
+};
+
+var deleteContact= function(contact_id){
+
+    if (confirm('Are you sure you want to permanently delete this contact? \nWARNING: This action cannot be undone.'))
+    {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/contacts/' + contact_id,
+            contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+            //console.log(data);
+            getContacts();
+            alert('Contact successfully deleted.');
+            $('#contactDetailsModal').modal('hide');
+
+
+
+        }).fail(function(err) {
+            alert('Error in deleting this contact. You may not be authorized to delete this contact.');
+
+            if (err.responseText.includes('expired')) {
+                alert('session expired');
+            }
+            $('#contactDetailsModal').modal('hide');
+        });
+
+    }
+};
+
+
 /**
 * Function to map and print a table of events
 * @function mapAllEvents
@@ -81,115 +123,128 @@ var disease_subtypes = ['cholera', 'ebola','dengue','malaria','measles','meningo
 */
 var mapAllEvents = function(err, events){
 
+    $('#watchingEventProperties').html('');
+    $('#ongoingEventProperties').html('');
     // Add popups
     function onEachFeature(feature, layer) {
-        var affectedPopulationStr = '';
-        if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
-            affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
+
+        var dateOfEvent = new Date (feature.properties.metadata.event_datetime || feature.properties.created_at);
+        if ( !(eventSearchFromDate && eventSearchToDate) ||
+            (eventSearchFromDate && !eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent)) ||
+            (!eventSearchFromDate && eventSearchToDate && (dateOfEvent < (new Date(eventSearchToDate)))) ||
+            (eventSearchFromDate && eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent && dateOfEvent < (new Date(eventSearchToDate))))
+        ) {
+            var affectedPopulationStr = '';
+            if (typeof(feature.properties.metadata.population_affected) !== 'undefined' && feature.properties.metadata.population_affected !== '') {
+                affectedPopulationStr = 'Population affected: ' + feature.properties.metadata.population_affected + '<br>';
+            }
+
+            var totalPopulationStr = '';
+            if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
+                totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
+            }
+
+            var notificationStr = '';
+            var statusStr = '';
+            if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
+                notificationStr = 'Latest notification: ' + getLatestNotification(feature.properties.metadata.notification).notification + '<br>';
+            } else {
+                notificationStr = 'Latest notification: (none)<br>';
+            }
+            if(typeof(feature.properties.metadata.event_status)!=='undefined') {
+                statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
+            } else {
+                statusStr = 'Status: ' + feature.properties.status + '<br>';
+            }
+
+            var severityStr = '';
+
+            if (feature.properties.metadata.hasOwnProperty('severity')) {
+                severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
+            }
+            if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
+                severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
+            }
+
+
+            var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
+            type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','').replace('natural_hazard','');
+
+            var icon_names = type.split(',');
+            var icon_html = icon_names.map(function (item) {
+                if (!item.match(/other/) && item !== '' && disease_subtypes.indexOf(item) === -1) {
+                    return '<img src="/resources/images/icons/event_types/' + item + '.svg" width="40">';
+                } else return '';
+            }).join('');
+
+            var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
+        '\'>'+icon_html+'</a>' +
+        '<strong><a href=\'/events/?eventId=' + feature.properties.id +
+        '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
+        ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
+        'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
+        'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
+        'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+        statusStr +
+        severityStr +
+        'Description: ' + feature.properties.metadata.description + '<br>' +
+        notificationStr +
+        totalPopulationStr +
+        affectedPopulationStr;
+
+
+            // make sure there's no trailing <br> from above
+            if (popupContent.endsWith('<br>')) {
+                popupContent.substr(0,popupContent.length-4);
+            }
+
+            var eventDiv = '';
+            if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
+                eventDiv = '#watchingEventProperties';
+            } else {
+                eventDiv = '#ongoingEventProperties';
+            }
+            if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
+                feature.properties.metadata.name = '(no name specified)';
+            }
+
+            var location = '';
+            if(!feature.properties.metadata.areas){
+                location = feature.properties.metadata.country;
+            }else{
+                location = _.map(feature.properties.metadata.areas, function(el){
+                    if(!_.isEmpty(el.region)){
+                        return el.region +' '+ el.country_code;
+                    }else{
+                        return el.country;
+                    }
+                }).join(', ');
+            }
+
+            var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
+            $(eventDiv).append(
+                '<div class="list-group-item">' +
+                '<button type="button" class="btn btn-danger btn-sm show-if-write-permission" style="float:right;display:none;" onclick="deleteEvent('+feature.properties.id+')"><span class="glyphicon glyphicon-remove"></span></button>'+
+            ((typeof(feature.properties.metadata.project_code)!=='undefined' && feature.properties.metadata.project_code) ? 'Project code: ' + feature.properties.metadata.project_code + '<br>' : '' ) +
+        'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
+        'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
+        'Last updated at: ' + convertToLocaleDateTime(feature.properties.updated_at) + '<br>' +
+        (hasLocation ? 'Area(s): ' + location + '<br>': '') +
+        'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+        statusStr +
+        notificationStr +
+        totalPopulationStr +
+        affectedPopulationStr +
+        'Description: ' + feature.properties.metadata.description + '<br>' +
+        '</div>'
+            );
+
+            if (feature.properties && feature.properties.popupContent) {
+                popupContent += feature.properties.popupContent;
+            }
+
+            layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
         }
-
-        var totalPopulationStr = '';
-        if (typeof(feature.properties.metadata.population_total) !== 'undefined' && feature.properties.metadata.population_total !== '') {
-            totalPopulationStr = 'Total population: ' + feature.properties.metadata.population_total + '<br>';
-        }
-
-        var notificationStr = '';
-        var statusStr = '';
-        if(typeof(feature.properties.metadata.notification)!=='undefined' && feature.properties.metadata.notification.length > 0) {
-            notificationStr = 'Latest notification: ' + getLatestNotification(feature.properties.metadata.notification).notification + '<br>';
-        } else {
-            notificationStr = 'Latest notification: (none)<br>';
-        }
-        if(typeof(feature.properties.metadata.event_status)!=='undefined') {
-            statusStr = 'Status: ' + feature.properties.metadata.event_status + '<br>';
-        } else {
-            statusStr = 'Status: ' + feature.properties.status + '<br>';
-        }
-
-        var severityStr = '';
-
-        if (feature.properties.metadata.hasOwnProperty('severity')) {
-            severityStr += 'Severity description: ' + feature.properties.metadata.severity + '<br>';
-        }
-        if (feature.properties.metadata.hasOwnProperty('severity_scale')) {
-            severityStr += 'Severity scale: ' + severityLabels[feature.properties.metadata.severity_scale-1] + '<br>';
-        }
-
-
-        var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-        type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','');
-
-        var icon_names = type.split(',');
-        var icon_html = icon_names.map(function(item) {
-            if (item!=='' && disease_subtypes.indexOf(item)===-1) {
-                return '<img src="/resources/images/icons/event_types/'+item+'.svg" width="40">';
-            } else return '';
-        }).join('');
-
-        var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
-    '\'>'+icon_html+'</a>' +
-    '<strong><a href=\'/events/?eventId=' + feature.properties.id +
-    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<br>' +
-    'Opened (local time of event): ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
-    'Last updated at (UTC): ' + feature.properties.updated_at.split('T')[0] + '<br>' +
-    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
-    statusStr +
-    severityStr +
-    'Description: ' + feature.properties.metadata.description + '<br>' +
-    notificationStr +
-    totalPopulationStr +
-    affectedPopulationStr;
-
-
-        // make sure there's no trailing <br> from above
-        if (popupContent.endsWith('<br>')) {
-            popupContent.substr(0,popupContent.length-4);
-        }
-
-        var eventDiv = '';
-        if (statusStr.toLowerCase().includes('monitoring') || statusStr.toLowerCase().includes('exploration') || statusStr.toLowerCase().includes('assessment')) {
-            eventDiv = '#watchingEventProperties';
-        } else {
-            eventDiv = '#ongoingEventProperties';
-        }
-        if (!feature.properties.metadata.name || feature.properties.metadata.name === '') {
-            feature.properties.metadata.name = '(no name specified)';
-        }
-
-        var location = '';
-        if(!feature.properties.metadata.areas){
-            location = feature.properties.metadata.country;
-        }else{
-            location = _.map(feature.properties.metadata.areas, function(el){
-                if(!_.isEmpty(el.region)){
-                    return el.region +' '+ el.country_code;
-                }else{
-                    return el.country;
-                }
-            }).join(', ');
-        }
-
-        var hasLocation = feature.properties.metadata.hasOwnProperty('areas') || feature.properties.metadata.hasOwnProperty('country');
-        $(eventDiv).append(
-            '<div class="list-group-item">' +
-      'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
-      'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? convertToLocaleDate(feature.properties.metadata.event_datetime || feature.properties.created_at) :'') + '<br>' +
-      'Last updated at: ' + convertToLocaleDateTime(feature.properties.updated_at) + '<br>' +
-      (hasLocation ? 'Area(s): ' + location + '<br>': '') +
-    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
-      statusStr +
-      notificationStr +
-      totalPopulationStr +
-      affectedPopulationStr +
-      'Description: ' + feature.properties.metadata.description + '<br>' +
-      '</div>'
-        );
-
-        if (feature.properties && feature.properties.popupContent) {
-            popupContent += feature.properties.popupContent;
-        }
-
-        layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
     }
 
     eventsLayer = L.geoJSON(events, {
@@ -204,6 +259,7 @@ var mapAllEvents = function(err, events){
         },
         onEachFeature: onEachFeature
     });
+    operatorCheck();
 
     if (Cookies.get('Ongoing MSF Responses')==='on') {
         eventsLayer.addTo(mainMap);
@@ -499,6 +555,11 @@ var mapMissions = function(missions ){
 
 };
 
+function vidImageErrHandler(event)
+{
+    $(event.target).hide();
+}
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
@@ -526,7 +587,10 @@ var mapReports = function(reports,mapForReports){
                     popupContent = popupContent.substring(0,popupContent.length-2);
                     popupContent += '<BR>';
                 }
-                popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
+                popupContent += '<img src="'+feature.properties.content.image_link+'" width="100%" onerror="vidImageErrHandler(event)">';
+                popupContent += '<br/><video width="100%" controls onerror="vidImageErrHandler(event)" src="'+feature.properties.content.image_link+'" ></video>';
+                popupContent += '<br/>Download multimedia content <a target="_blank" href="'+feature.properties.content.image_link+'">here</a> ';
+
             }
 
 
@@ -894,13 +958,32 @@ mainMap.on('load', function(loadEvent) {
 mainMap.on('moveend', function(){getContacts($('#contSearchTerm').val());});
 
 let bounds = Cookies.get('landingMapBounds');
+var contactDownloadLink;
+function checkAndDownloadContacts(){
+    if ($('#cbContactsAgreed').is(':checked'))
+        window.open(contactDownloadLink);
+    else {
+        alert('You must agree to MSF Hong Kong Privacy Policy before download. ');
+    }
+}
+function getWarppedLatLng(){
+    let swCoords = mainMap.getBounds().getSouthWest().wrap();
+    let neCoords = mainMap.getBounds().getNorthEast().wrap();
+    return {
+        lngmin: Math.min(swCoords.lng,neCoords.lng),
+        latmin: Math.min(swCoords.lat,neCoords.lat),
+        lngmax: Math.max(swCoords.lng,neCoords.lng),
+        latmax: Math.max(swCoords.lat,neCoords.lat)
+    };
+}
+
 if (typeof(bounds)!=='undefined') {
     boundsArray = bounds.split(',');
     mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
-    let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3]);
+    var wrappedLatLng=getWarppedLatLng();
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
 } else {
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90');
+    contactDownloadLink='/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90';
     mainMap.fitBounds([[-90,-180],[90,180]]);
 }
 
@@ -910,8 +993,8 @@ mainMap.on('zoomend', function(zoomEvent)  {
 
 mainMap.on('moveend', function(){
     Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
-    let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3]);
+    var wrappedLatLng=getWarppedLatLng();
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
     getMSFPresence(mapMSFPresence);
 });
 
@@ -974,6 +1057,8 @@ if (L.Browser.touch) {
 } else {
     L.DomEvent.disableClickPropagation(layerControl._container);
 }
+
+addLegendsToAMaps(mainMap);
 
 // get and map data:
 getAllEvents(mapAllEvents);
@@ -1127,6 +1212,10 @@ if (location.hash.includes('#contact')) {
 }
 
 $(function(){
+
+    $('#cbContactsAgreed').on('change',function(){
+        $('#contactDownloadLink').attr('disabled',!($('#cbContactsAgreed').is(':checked')));
+    });
 
     var bookmarkVue=new Vue({
         el:'#bookmarksList',

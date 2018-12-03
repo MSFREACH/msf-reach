@@ -77,7 +77,7 @@ export default (config, db, logger) => ({
 
     byId: (id) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties, the_geom
+        let query = `SELECT id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties, the_geom, ST_X(the_geom) as lng, ST_Y(the_geom) as lat
      FROM ${config.TABLE_CONTACTS}
      WHERE id = $1`;
 
@@ -133,7 +133,7 @@ export default (config, db, logger) => ({
     }),
 
     /**
-    * Update a contact
+    * Updates a contact - it will not change the privacy or the contact owner
     * @param {integer} id ID of contact
     * @param {object} body Body of request with contact details
     */
@@ -141,17 +141,17 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_CONTACTS}
-   SET properties = properties || $1, updated_at = now(), private=$3, the_geom=ST_SetSRID(ST_Point($4,$5),4326)
+   SET properties = properties || $1, updated_at = now(), the_geom=ST_SetSRID(ST_Point($3,$4),4326)
    WHERE id = $2
    RETURNING id, ad_oid, private, created_at, updated_at, last_email_sent_at, properties,
    the_geom`;
 
         // Setup values
-        let values = [ body.properties, id, body.private, body.location.lng, body.location.lat];
+        let values = [ body.properties, id, body.location.lng, body.location.lat];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+        db.one(query, values).timeout(config.PGTIMEOUT)
         // TODO - why is id forced to a String()?
             .then((data) => resolve({ id: data.id, ad_oid: data.ad_oid, private: data.private, created_at:data.created_at,
                 updated_at:data.updated_at, last_email_sent_at:data.last_email_sent_at,
@@ -189,18 +189,18 @@ export default (config, db, logger) => ({
     * DELETE a contact from the database
     * @param {integer} id ID of contact
     */
-    deleteContact: (id) => new Promise((resolve, reject) => {
+    deleteContact: (id,user_oid) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `DELETE FROM ${config.TABLE_CONTACTS} WHERE id = $1`;
+        let query = `DELETE FROM ${config.TABLE_CONTACTS} WHERE id = $1 and ((ad_oid = $2) or (private=false)) RETURNING id`;
 
         // Setup values
-        let values = [ id ];
+        let values = [ id,user_oid ];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then(() => resolve())
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve(data))
             .catch((err) => reject(err));
     }),
 

@@ -91,6 +91,30 @@
       </div>
     </div>
 
+    <!-- Download contact modal -->
+    <div class="modal fade" id="dlContactsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelOperator">
+      <div class="modal-dialog " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" >Download contacts list</h4>
+          </div>
+          <div class="modal-body" >
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="cbContactsAgreed"> <p>I read and accept <a href="http://msf-seasia.org/node/14721" target="_blank">MSF Hong Kong Privacy Policy</a>.</p>
+              </label>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button id="contactDownloadLink" href="/api/contacts/csv/download" type="button" class="btn btn-danger" disabled onclick="checkAndDownloadContacts()">Download <i class="glyphicon glyphicon-download"></i> </span> </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Markdown Explained modal -->
     <div class="modal fade" id="markdownModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
        <!-- content will be loaded from external file -->
@@ -159,7 +183,7 @@
 
                 <!-- Side pane -->
                 <div id="newEventSidepane" class="col-sm-12">
-                  <div id="operatorCheck"></div>
+                  <div id="eventCreationOperatorCheck"></div>
                   <div id="geocodingNotice"><strong>Note that the event coordinates (only) are sent to Google for geocoding events to country</strong></div>
                   <div id="newEventProperties">
                         <div class="panel panel-default" style="margin-bottom:0px;">
@@ -250,7 +274,7 @@
                             <div class="form-group" >
                               <label for="inputEvStatus">Status</label>
                               <select class="form-control" id="inputEvStatus">
-                                <option value="Monitoring">Monitoring </option>
+                                <option value="Monitoring" selected>Monitoring </option>
                                 <option value="Exploration">Exploration</option>
                                 <option value="Intervention">Intervention</option>
                                 <option value="Completed Missions">Completed Missions</option>
@@ -273,6 +297,11 @@
                             <div class="form-group">
                               <label for="inputSharepointLink">Link to SharePoint folder</label>
                               <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
+                            </div>
+                            <div class="checkbox form-group">
+                              <label>
+                                <input id="inputSubscribe" type="checkbox"> <b>Subscribe ?</b>
+                              </label>
                             </div>
                             <!--<button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>-->
 
@@ -428,7 +457,9 @@
                     </div>
                     <div class="form-group" id="shareWithDiv">
                       <label>Share with</label>
-                      <input type="text" id="sharewith_name" name="sharewith_name">
+                      <input type="text" id="sharewith_name" name="sharewith_name" class="form-control" placeholder="Start by typing a name...">
+                      <button type="button" class="btn btn-success" onclick="shareWithUser()" id="btnShare"><span class="glyphicon glyphicon-share"></span> Share</button>
+
                     </div>
                     <div class="bg-success">Personal Details</div>
                     <div class="form-group" style="display:none;">
@@ -579,6 +610,8 @@
             </div>
           </div>
           <div class="modal-footer">
+            <a id="contactEditAnchor" class="btn btn-warning show-if-write-permission" target="_blank" href="" style="display:none;"><span class="glyphicon glyphicon-edit"></span> Edit contact</a>
+            <button type="button" class="btn btn-danger show-if-write-permission" onclick="deleteContact(currentContactId)" style="display:none;"><span class="glyphicon glyphicon-remove"></span> Delete contact</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -770,14 +803,33 @@
                 <!--event tab menu-->
                 <div id="event" class="tab-pane active">
                     <ul class="nav nav-tabs" id="event_tabs">
-                        <li class="active"><a href="#event_monitoring" data-toggle="tab">Monitoring & Assessment</a></li>
-                        <li><a href="#event_ongoing" data-toggle="tab">Ongoing MSF Responses</a></li>
-                        <li><a href="#event_missions" data-toggle="tab">Previous MSF Responses</a></li>
-                        <li><a href="#event_RSS" data-toggle="tab">RSS Feeds</a></li>
+                        <li class="active"><a href="#event_monitoring" data-toggle="tab" onclick="$('#eventSearchBox').show()">Monitoring & Assessment</a></li>
+                        <li><a href="#event_ongoing" data-toggle="tab" onclick="$('#eventSearchBox').show()">Ongoing MSF Responses</a></li>
+                        <li><a href="#event_missions" data-toggle="tab" onclick="$('#eventSearchBox').hide()">Previous MSF Responses</a></li>
+                        <li><a href="#event_RSS" data-toggle="tab" onclick="$('#eventSearchBox').hide()">RSS Feeds</a></li>
                     </ul>
 
                     <!--event tab content-->
                     <div class="tab-content">
+                        <div class="form-group" class="display:none;" id="eventSearchBox" >
+
+                          <label for="eventSearchDate">search for events created between</label>
+                          <table id="eventSearchDate">
+                            <tr>
+                              <td>
+                                <input type="text" id="eventSearchFromDate" class="form-control" placeholder="YYYY-MM-DD" >
+                              </td>
+                              <td>
+                                to
+                              </td>
+                              <td>
+                                <input type="text" id="eventSearchToDate" class="form-control" placeholder="YYYY-MM-DD" >
+                              </td>
+                            </tr>
+                          </table>
+                          <input type="text" class="form-control" id="eventSearchTerm" name="" value="" placeholder="Term for searching event name, description, type ...">
+                        </div>
+
                         <div id="event_monitoring" class="tab-pane tab-pane-box active">
                           <div id="watchingEventProperties" class="list-group">
                           </div>
@@ -821,7 +873,7 @@
                             </select>
                             <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Name, Phone, Email, etc. ...">
                             <span class="glyphicon glyphicon-search"></span>
-                            <a id="contactDownloadLink" href="/api/contacts/csv/download" target="_blank" class="addContact">Download contacts list<i class="glyphicon glyphicon-download"></i> </span> </a>
+                            <a href="" target="_blank" class="addContact" style="cursor:pointer;" data-toggle="modal" data-target="#dlContactsModal">Download contacts list<i class="glyphicon glyphicon-download"></i> </span> </a>
                             <a href="/contact" target="_blank" class="addContact">Add <span class ="glyphicon glyphicon-plus"> </span> </a>
 
                         </div>

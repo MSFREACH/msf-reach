@@ -16,7 +16,7 @@ export default (config, db, logger) => ({
 	*/
     all: (search,bounds,country) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, properties, the_geom
+        let query = `SELECT id, properties, the_geom, event_id
 		FROM ${config.TABLE_MISSIONS}
 		WHERE ($1 IS NULL OR (
 			properties ->> 'name' ILIKE $1
@@ -45,7 +45,7 @@ export default (config, db, logger) => ({
     byId: id =>
         new Promise((resolve, reject) => {
             // Setup query
-            let query = `SELECT id, properties, the_geom
+            let query = `SELECT id, properties, the_geom, event_id
 			FROM ${config.TABLE_MISSIONS}
 			WHERE id = $1`;
 
@@ -65,15 +65,15 @@ export default (config, db, logger) => ({
         * @function createMission
     		* @param {Object} body - all the details
     		*/
-    createMission: (body) => new Promise((resolve, reject) => {
+    createMission: (body,event_id) => new Promise((resolve, reject) => {
         // Setup query
         let query = `INSERT INTO ${config.TABLE_MISSIONS}
-                    (properties, the_geom)
-                    VALUES ($1, ST_SetSRID(ST_Point($2,$3),4326))
-                    RETURNING id, properties, the_geom`;
+                    (properties, the_geom, event_id)
+                    VALUES ($1, ST_SetSRID(ST_Point($2,$3),4326),$4)
+                    RETURNING id, properties, the_geom, event_id`;
 
         // Setup values
-        let values = [body.metadata, body.location.lng, body.location.lat];
+        let values = [body.metadata, body.location.lng, body.location.lat, event_id || null];
 
         // Execute
         logger.debug(query, values);
@@ -90,17 +90,36 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_MISSIONS}
-      SET properties = properties || $1
-      WHERE id = $2
+      SET properties = properties || $1,
+          the_geom =   ST_SetSRID(ST_Point($2,$3),4326)
+      WHERE id = $4
       RETURNING id, properties, the_geom`;
 
         // Setup values
-        let values = [ body.metadata, id];
+        let values = [ body.metadata,  body.location.lng, body.location.lat, id];
+
+        // Execute
+        logger.debug(query, values);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(data.id),  properties:data.properties, the_geom:data.the_geom }))
+            .catch((err) => reject(err));
+    }),
+    /**
+    * DELETE a mission from the database
+    * @param {integer} id ID of mission
+    */
+    deleteMission: (id) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `DELETE FROM ${config.TABLE_MISSIONS} WHERE id = $1`;
+
+        // Setup values
+        let values = [ id ];
 
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id),  properties:data.properties }))
+            .then(() => resolve())
             .catch((err) => reject(err));
-    }),
+    })
 });

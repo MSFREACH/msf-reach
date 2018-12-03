@@ -148,7 +148,11 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                properties: Joi.object().required()
+                properties: Joi.object().required(),
+                location: Joi.object().required().keys({
+                    lat: Joi.number().min(-90).max(90).required(),
+                    lng: Joi.number().min(-180).max(180).required()
+                })
             })
         }),
         (req, res, next) => {
@@ -200,7 +204,7 @@ export default ({ config, db, logger }) => {
                 //let fieldNames= ['title','name','alias','type','job title','OC (if MSF)', 'email', 'alternate email', 'mobile phone', 'home phone','work phone','address','Facebook','Telegram','WhatsApp','Instagram'];
                 let csv = json2csv(jsonList,{fields: fields});
                 //console.log(csv);
-                csv = ',"Exported on '+(new Date(Date.now())).toUTCString()+', check back on MSF REACH regularly for updates."\n'+csv;
+                csv = ',"Exported on ' + (new Date(Date.now())).toUTCString() +', check back on MSF REACH regularly for updates."\n,"Please make sure you store this file in a safe place.\n,"This is for sole MSF internal use. It is strictly confidential information."\n'+csv;
                 res.setHeader('Content-disposition', 'attachment; filename=contacts.csv');
                 res.set('Content-Type', 'text/csv');
                 res.status(200).send(csv);
@@ -222,8 +226,8 @@ export default ({ config, db, logger }) => {
             params: { id: Joi.number().integer().min(1).required() }
         }),
         (req, res, next) => {
-            contacts(config, db, logger).deleteContact(req.params.id)
-                .then(() => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact deleted' }))
+            contacts(config, db, logger).deleteContact(req.params.id,req.user.oid)
+                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'contact deleted', id: data.id}))
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);
@@ -320,8 +324,8 @@ export default ({ config, db, logger }) => {
                     response.status(404).send(res);
                 }
                 else{
-                    //console.log('res: ' + res);
-                    response.send(res);
+                    logger.info(res);
+                    response.status(res.statusCode).send(res.body);
                 }
             });
         });
