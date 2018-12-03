@@ -77,10 +77,10 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    api.post('/sms', twilio.webhook(config.TWILIO_AUTH_TOKEN, {validate: config.TWILIO_VALIDATE !== 'false', host: 'dev.msf-reach.org', protocol: 'https'}), 
+    api.post('/sms', 
         (req, res, next) => {
             logger.info(req.headers);
-            logger.info(req);
+            logger.info(req.body);
             reports(config, db, logger).smsReport(req.params.Body).then((data) => {
                 // Create a TwiML response
                 let twiml = new twilio.TwimlResponse();
