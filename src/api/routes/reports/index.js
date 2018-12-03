@@ -77,6 +77,8 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    api.enable('trust proxy');
+    
     api.post('/sms', twilio.webhook(), 
         (req, res, next) => {
 
