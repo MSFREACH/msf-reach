@@ -20,10 +20,10 @@ export default ({ config, db, logger }) => {
             query: {
                 search: Joi.string().min(1),
                 country: Joi.string(),
-                latmin: Joi.number().min(-90).max(90),
-                lngmin: Joi.number().min(-180).max(180),
-                latmax: Joi.number().min(-90).max(90),
-                lngmax: Joi.number().min(-180).max(180),
+                latmin: Joi.number(),
+                lngmin: Joi.number(),
+                latmax: Joi.number(),
+                lngmax: Joi.number(),
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
             }
         }),
