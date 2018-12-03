@@ -111,6 +111,8 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         app.use(passport.session());
     }
 
+    app.use(bodyParser.urlencoded({extended: true}));
+
     // Parse body messages into json
     app.use(bodyParser.json({ limit: config.BODY_LIMIT }));
 
