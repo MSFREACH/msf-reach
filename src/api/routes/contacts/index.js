@@ -204,7 +204,7 @@ export default ({ config, db, logger }) => {
                 //let fieldNames= ['title','name','alias','type','job title','OC (if MSF)', 'email', 'alternate email', 'mobile phone', 'home phone','work phone','address','Facebook','Telegram','WhatsApp','Instagram'];
                 let csv = json2csv(jsonList,{fields: fields});
                 //console.log(csv);
-                csv = ',"Exported on '+(new Date(Date.now())).toUTCString()+', check back on MSF REACH regularly for updates."\n'+csv;
+                csv = ',"Exported on ' + (new Date(Date.now())).toUTCString() +', check back on MSF REACH regularly for updates."\n,"Please make sure you store this file in a safe place.\n,"This is for sole MSF internal use. It is strictly confidential information."\n'+csv;
                 res.setHeader('Content-disposition', 'attachment; filename=contacts.csv');
                 res.set('Content-Type', 'text/csv');
                 res.status(200).send(csv);
