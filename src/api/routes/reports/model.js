@@ -93,6 +93,7 @@ export default (config, db, logger) => ({
                 reject('sms geocode failure');
             } else {
 
+                logger.info(response);
                 let query = `INSERT INTO ${config.TABLE_REPORTS}
 			(status, created, content, the_geom)
 			VALUES ($1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
