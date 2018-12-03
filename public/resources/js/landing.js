@@ -966,12 +966,22 @@ function checkAndDownloadContacts(){
         alert('You must agree to MSF Hong Kong Privacy Policy before download. ');
     }
 }
+function getWarppedLatLng(){
+    let swCoords = mainMap.getBounds().getSouthWest().wrap();
+    let neCoords = mainMap.getBounds().getNorthEast().wrap();
+    return {
+        lngmin: Math.min(swCoords.lng,neCoords.lng),
+        latmin: Math.min(swCoords.lat,neCoords.lat),
+        lngmax: Math.max(swCoords.lng,neCoords.lng),
+        latmax: Math.max(swCoords.lat,neCoords.lat)
+    };
+}
 
 if (typeof(bounds)!=='undefined') {
     boundsArray = bounds.split(',');
     mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
-    let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    contactDownloadLink='/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3];
+    var wrappedLatLng=getWarppedLatLng();
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
 } else {
     contactDownloadLink='/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90';
     mainMap.fitBounds([[-90,-180],[90,180]]);
@@ -983,8 +993,8 @@ mainMap.on('zoomend', function(zoomEvent)  {
 
 mainMap.on('moveend', function(){
     Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
-    let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    contactDownloadLink='/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3];
+    var wrappedLatLng=getWarppedLatLng();
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
     getMSFPresence(mapMSFPresence);
 });
 
