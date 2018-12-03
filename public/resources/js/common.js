@@ -51,6 +51,17 @@ const operatorCheck = function(callback) {
 };
 
 
+function getWarppedLatLng(theBounds){
+    let swCoords = theBounds.getSouthWest();
+    let neCoords = theBounds.getNorthEast();
+    return {
+        lngmin: swCoords.lng,
+        latmin: swCoords.lat,
+        lngmax: neCoords.lng,
+        latmax: neCoords.lat
+    };
+}
+
 /**
 * function to convert ISO date string to locale string with basic handling of non-isoDate format
 * @function convertToLocaleDate

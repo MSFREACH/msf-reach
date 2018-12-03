@@ -37,10 +37,10 @@ export default ({ config, db, logger }) => {
                 msf_associate: Joi.string(),
                 msf_peer: Joi.string(),
                 type: Joi.string(),
-                latmin: Joi.number().min(-90).max(90),
-                lngmin: Joi.number().min(-180).max(180),
-                latmax: Joi.number().min(-90).max(90),
-                lngmax: Joi.number().min(-180).max(180),
+                latmin: Joi.number(),
+                lngmin: Joi.number(),
+                latmax: Joi.number(),
+                lngmax: Joi.number(),
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
             }
         }),
@@ -190,10 +190,10 @@ export default ({ config, db, logger }) => {
     api.get('/csv/download',ensureAuthenticated,
         validate({
             query: {
-                latmin: Joi.number().min(-90).max(90),
-                lngmin: Joi.number().min(-180).max(180),
-                latmax: Joi.number().min(-90).max(90),
-                lngmax: Joi.number().min(-180).max(180)
+                latmin: Joi.number(),
+                lngmin: Joi.number(),
+                latmax: Joi.number(),
+                lngmax: Joi.number()
             }
         }),
         (req,res,next)=>{

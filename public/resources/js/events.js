@@ -655,12 +655,9 @@ var loadContacts = function(err, contacts) {
 // Perform GET call to get contacts
 var getContacts = function(term,type){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
-    var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
-    var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
-    var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
+    var bounds=getWarppedLatLng(mainMap.getBounds());
     if (!term) {
-        url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+        url=url+'&lngmin='+bounds.lngmin+'&latmin='+bounds.latmin+'&lngmax='+bounds.lngmax+'&latmax='+bounds.latmax;
     }
     if (type) {
         if (type==='msf_associate') {

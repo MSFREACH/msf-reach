@@ -325,12 +325,9 @@ var loadContacts = function(err, contacts) {
 // Perform GET call to get contacts
 var getContacts = function(term,type){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
-    var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
-    var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
-    var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
+    var bounds=getWarppedLatLng(mainMap.getBounds());
     if (!term) {
-        url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+        url=url+'&lngmin='+bounds.lngmin+'&latmin='+bounds.latmin+'&lngmax='+bounds.lngmax+'&latmax='+bounds.latmax;
     }
     if (type) {
         if (type==='msf_associate') {
@@ -966,21 +963,12 @@ function checkAndDownloadContacts(){
         alert('You must agree to MSF Hong Kong Privacy Policy before download. ');
     }
 }
-function getWarppedLatLng(){
-    let swCoords = mainMap.getBounds().getSouthWest().wrap();
-    let neCoords = mainMap.getBounds().getNorthEast().wrap();
-    return {
-        lngmin: Math.min(swCoords.lng,neCoords.lng),
-        latmin: Math.min(swCoords.lat,neCoords.lat),
-        lngmax: Math.max(swCoords.lng,neCoords.lng),
-        latmax: Math.max(swCoords.lat,neCoords.lat)
-    };
-}
+
 
 if (typeof(bounds)!=='undefined') {
     boundsArray = bounds.split(',');
     mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
-    var wrappedLatLng=getWarppedLatLng();
+    var wrappedLatLng=getWarppedLatLng(mainMap.getBounds());
     contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
 } else {
     contactDownloadLink='/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90';
@@ -993,7 +981,7 @@ mainMap.on('zoomend', function(zoomEvent)  {
 
 mainMap.on('moveend', function(){
     Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
-    var wrappedLatLng=getWarppedLatLng();
+    var wrappedLatLng=getWarppedLatLng(mainMap.getBounds());
     contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
     getMSFPresence(mapMSFPresence);
 });
