@@ -151,6 +151,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         next();
     });
 
+    // Trust proxy header
+    app.enable('trust proxy');
+
     // Try and connect to the db
     initializeDb(config, logger)
         .then((db) => {
