@@ -49,7 +49,7 @@ export default {
     CORS_HEADERS: process.env.CORS_HEADERS || ['Link'],
     CORSANYWHERE_WHITELIST: process.env.CORSANYWHERE_WHITELIST || '',
     DEFAULT_EVENT_SEARCH_DISTANCE: process.env.DEFAULT_EVENT_SEARCH_DISTANCE || 1000000,
-    GOOGLE_API_KEY: process.env.GOOGLE_API _KEY || '',
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
     PEER_GUID_TIMEOUT: process.env.PEER_GUID_TIMEOUT || 7890000,
     PGHOST: process.env.PGHOST || '127.0.0.1',
     PGDATABASE: process.env.PGDATABASE || 'msf_reach',
