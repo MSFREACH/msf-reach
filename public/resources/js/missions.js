@@ -51,7 +51,7 @@ var loadMissions = function(err, missions) {
 var getMissions = function(term) {
 
     var url='/api/missions?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var wrappedBounds=getWarppedLatLng(mainMap.getBounds());
+    var wrappedBounds=getWrappedLatLng(mainMap.getBounds());
     url = url+'&lngmin='+wrappedBounds.lngmin+'&latmin='+wrappedBounds.latmin+'&lngmax='+wrappedBounds.lngmax+'&latmax='+wrappedBounds.latmax;
     $.getJSON(
         url,

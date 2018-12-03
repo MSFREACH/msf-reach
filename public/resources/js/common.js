@@ -51,9 +51,20 @@ const operatorCheck = function(callback) {
 };
 
 
-function getWarppedLatLng(theBounds){
+function getWrappedLatLng(theBounds){
     let swCoords = theBounds.getSouthWest();
     let neCoords = theBounds.getNorthEast();
+
+    let lngmin = swCoords.lng;
+    let lngmax = neCoords.lng;
+
+    if (lngmin > 180 || lngmin < -180) {
+        lngmin -= Math.floor((lngmin + 180) / 360) * 360;
+    }
+    if (lngmax > 180 || lngmax < -180) {
+        lngax -= Math.floor((lngmax + 180) / 360) * 360;
+    }
+
     return {
         lngmin: swCoords.lng,
         latmin: swCoords.lat,

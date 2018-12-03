@@ -655,7 +655,7 @@ var loadContacts = function(err, contacts) {
 // Perform GET call to get contacts
 var getContacts = function(term,type){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var bounds=getWarppedLatLng(mainMap.getBounds());
+    var bounds=getWrappedLatLng(mainMap.getBounds());
     if (!term) {
         url=url+'&lngmin='+bounds.lngmin+'&latmin='+bounds.latmin+'&lngmax='+bounds.lngmax+'&latmax='+bounds.latmax;
     }

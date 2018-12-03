@@ -325,7 +325,7 @@ var loadContacts = function(err, contacts) {
 // Perform GET call to get contacts
 var getContacts = function(term,type){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var bounds=getWarppedLatLng(mainMap.getBounds());
+    var bounds=getWrappedLatLng(mainMap.getBounds());
     if (!term) {
         url=url+'&lngmin='+bounds.lngmin+'&latmin='+bounds.latmin+'&lngmax='+bounds.lngmax+'&latmax='+bounds.latmax;
     }
@@ -968,7 +968,7 @@ function checkAndDownloadContacts(){
 if (typeof(bounds)!=='undefined') {
     boundsArray = bounds.split(',');
     mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
-    var wrappedLatLng=getWarppedLatLng(mainMap.getBounds());
+    var wrappedLatLng=getWrappedLatLng(mainMap.getBounds());
     contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
 } else {
     contactDownloadLink='/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90';
@@ -981,7 +981,7 @@ mainMap.on('zoomend', function(zoomEvent)  {
 
 mainMap.on('moveend', function(){
     Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
-    var wrappedLatLng=getWarppedLatLng(mainMap.getBounds());
+    var wrappedLatLng=getWrappedLatLng(mainMap.getBounds());
     contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
     getMSFPresence(mapMSFPresence);
 });
