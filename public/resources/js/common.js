@@ -1293,6 +1293,18 @@ var addLegendsToAMaps=function(mapVariable){
             {
                 iconUrl: '/resources/images/icons/pin.svg',
                 text: 'Health site'
+            },
+            {
+                iconUrl: '/resources/images/hot_icons/building_footprint.png',
+                text: '(Humanitarian map) building footprint'
+            },
+            {
+                iconUrl: '/resources/images/hot_icons/Hospital-14.svg',
+                text: '(Humanitarian map) hospital'
+            },
+            {
+                iconUrl: '/resources/images/hot_icons/Drinking-water-16.svg',
+                text: '(Humanitarian map) drinking water'
             }
         ];
 
