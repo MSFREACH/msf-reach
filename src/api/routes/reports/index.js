@@ -77,11 +77,11 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    api.post('/sms', 
+    api.post('/sms', twilio.webhook(config.TWILIO_AUTH_TOKEN, {host: 'dev.msf-reach.org', protocol: 'https'}),
         (req, res, next) => {
             logger.info(req.headers);
             logger.info(req.body);
-            reports(config, db, logger).smsReport(req.params.Body).then((data) => {
+            reports(config, db, logger).smsReport(req.body.Body).then((data) => {
                 // Create a TwiML response
                 let twiml = new twilio.TwimlResponse();
                 twiml.message('Thanks for your report!');
