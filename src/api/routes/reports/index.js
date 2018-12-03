@@ -77,7 +77,7 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    app.post('/sms/send', twilio.webhook(), 
+    api.post('/sms', twilio.webhook(), 
         (req, res, next) => {
 
             reports(config, db, logger).smsReport(req.body.Body).then((data) => {
