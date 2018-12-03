@@ -922,7 +922,7 @@ var mapContacts = function(contacts) {
         var newFC = {features: []};
         for(var i = 0; i < contacts.features.length; i++) {
 
-            if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
+            if(contacts.features[i].properties.properties.hasOwnProperty('type') && (contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer'))) {
                 if (msf) {
                     newFC.features.push(contacts.features[i]);
                 }
