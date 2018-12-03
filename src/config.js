@@ -96,6 +96,7 @@ export default {
     TABLE_BOOKMARKS: process.env.TABLE_BOOKMARKS || 'cognicity.bookmarks',
     TABLE_COUNTRY_LINKS: process.env.TABLE_COUNTRY_LINKS || 'cognicity.country_links',
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+    TWILIO_VALIDATE: process.env.TWILIO_VALIDATE || 'true',
     TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
     TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
     TWITTER_ACCESS_KEY: process.env.TWITTER_ACCESS_KEY,
