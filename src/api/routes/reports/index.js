@@ -83,7 +83,8 @@ export default ({ config, db, logger }) => {
             logger.info(req.body);
             reports(config, db, logger).smsReport(req.body.Body).then((data) => {
                 // Create a TwiML response
-                let twiml = new twilio.TwimlResponse();
+                const MessagingResponse = twilio.twiml.MessagingResponse;
+                const twiml = new MessagingResponse();
                 twiml.message('Thanks for your report!');
                 logger.debug(data);
                 // Render the TwiML response as XML
