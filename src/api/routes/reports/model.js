@@ -73,7 +73,7 @@ export default (config, db, logger) => ({
             .catch((err) => reject(err));
     }),
 
-    sms: (body) => new Promise((resolve, reject) => {
+    smsReport: (body) => new Promise((resolve, reject) => {
 
         const googleMapsClient = googleMaps.createClient({
             key: config.GOOGLE_API_KEY
