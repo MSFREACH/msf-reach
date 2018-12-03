@@ -80,6 +80,7 @@ export default (config, db, logger) => ({
         });
 
         let [type, address, message] = body.split('.');
+        message = message.replace(/\s+/,'');
         type = type.toUpperCase();
         if (!(type.includes('ACCESS') || type.includes('NEEDS') || type.includes('SECURITY'))) {
             reject('sms invalid type');
