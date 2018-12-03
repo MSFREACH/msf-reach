@@ -953,7 +953,7 @@
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (elem.notification_time*1000) | formatFullDate }}</td>
-                                  <td v-html="elem.notification">
+                                  <td><span v-html="elem.notification"></span>
                                       <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a>
                                   </td>
                                 </tr>
