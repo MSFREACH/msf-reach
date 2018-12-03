@@ -95,12 +95,12 @@ export default (config, db, logger) => ({
 
                 logger.info(response);
                 let query = `INSERT INTO ${config.TABLE_REPORTS}
-			(status, created, content, the_geom)
-			VALUES ($1, $2, $3, ST_SetSRID(ST_Point($4,$5),4326))
+			(event_id, status, created, content, the_geom)
+			VALUES ($1, $2, $3, $4, ST_SetSRID(ST_Point($5,$6),4326))
 			RETURNING id, event_id, status, created, report_key, content, the_geom`;
 
                 // Setup values
-                let values = ['unconfirmed', (new Date()).toISOString(), { 'description': message, 'report_tag': type }, response.json.results[0].geometry.location.lng, response.json.results[0].geometry.location.lat];
+                let values = [null, 'unconfirmed', (new Date()).toISOString(), { 'description': message, 'report_tag': type }, response.json.results[0].geometry.location.lng, response.json.results[0].geometry.location.lat];
 
                 // Execute
                 logger.debug(query, values);
