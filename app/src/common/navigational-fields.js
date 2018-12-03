@@ -4,7 +4,7 @@ export const EVENT_DETAIL_NAVIGATIONS = [
     { icon: 'track_changes', name: 'Response', component: 'event-response', route: '/response'},
     { icon: 'all_out', name: 'External Capacity', component: 'event-extCapacity', route: '/extCapacity'},
     { icon: 'fingerprint', name: 'Figures', component: 'event-figures', route: '/figures'},
-    { icon: 'people', name: 'Staff Resources', component: 'event-resources', route: '/resources'},
+    { icon: 'people', name: 'Resources', component: 'event-resources', route: '/resources'},
     { icon: 'all_inclusive', name: 'Reflections', component: 'event-sitrep', route: '/sitrep'}
 ];
 

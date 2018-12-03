@@ -248,16 +248,44 @@ const getters ={
         }
     },
     eventResources(state){
-        if(!state.event.staffResources && state.event.metadata){
+        if(!state.event.resources && state.event.metadata){
             var payload = state.event.metadata;
+            var nationalites = [];
+            if(payload.msf_resource_visa_requirement){
+                nationalites = payload.msf_resource_visa_requirement.map(item => {
+                    if(item.is_required){
+                        return item.name;
+                    }
+                });
+            }
+
+            var donors = [];
+            if(payload.msf_resource_institutional_donors){
+                donors = payload.msf_resource_institutional_donors.map(item =>{
+                    return item.from_who +': '+ item.amount;
+                });
+            }
+
+            var currentStatusStat = {
+                status: payload.event_status,
+                staff: {
+                    listFileUrl : payload.msf_resource_staff_list,
+                    expatriateCount: payload.msf_resource_staff_expatriate,
+                    nationalStaffCount: payload.msf_resource_staff_national
+                },
+                budget : {
+                    total: payload.msf_resource_budget,
+                    currency: null
+                }
+            };
             return {
-                budget : payload.msf_resource_budget, //TODO: check obj array mapped
-                category : payload.msf_resource_category,
-                institutional_donors : payload.msf_resource_institutional_donors,
-                staff_expatriate : payload.msf_resource_staff_expatriate,
-                staff_list : payload.msf_resource_staff_list,
-                staff_national : payload.msf_resource_staff_national,
-                visa_requirement : payload.msf_resource_visa_requirement, //TODO: check obj deep mapped
+                perStatus: [currentStatusStat],
+                institutional_donors : donors,
+                visa_requirement : nationalites, //TODO: check obj deep mapped
+                vaccination_requirement: {
+                    required: [],
+                    recommended: []
+                }
             };
         }
     },

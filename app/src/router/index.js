@@ -70,7 +70,7 @@ export default new Router({
                     },{
                         path: 'resources',
                         name: 'event-resources',
-                        component: () => import('@/views/Event/StaffResources'),
+                        component: () => import('@/views/Event/Resources'),
                         props: true
                     },{
                         path: 'sitrep',

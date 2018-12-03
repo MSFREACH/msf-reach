@@ -38,7 +38,7 @@ import REventNotification from '@/views/Event/General.vue';
 import REventResponse from '@/views/Event/Response.vue';
 import REventExtCapacity from '@/views/Event/ExtCapacity.vue';
 import REventFigures from '@/views/Event/Figures.vue';
-import REventStaffResources from '@/views/Event/StaffResources.vue';
+import REventResources from '@/views/Event/Resources.vue';
 import REventSitrep from '@/views/Event/SITREP.vue';
 
 /*eslint no-unused-vars: off*/
@@ -66,7 +66,7 @@ export default {
         };
     },
     components: {
-        REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventFigures, REventStaffResources
+        REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventFigures, REventResources
     },
     beforeRouteEnter(to, from, next){
         Promise.all([

@@ -8,8 +8,13 @@
                         <a class="statusTabs" v-for="(item, index) in eventFigures.keyFigures" :key="index" @click="switchStatus(item)">{{item.status}}</a>
                     </nav>
                 </div>
+                <v-layout class="actions" v-if="allowEdit">
+                    <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
+                    <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
+                </v-layout>
                 <v-layout row wrap v-if="editing" dark>
-                    <v-data-iterator v-if="displayKeyFigures" :items="displayKeyFigures" content-tag="v-layout" row wrap>
+                    <label>KEY FIGURES</label>
+                    <v-data-iterator v-if="activeKeyFigures" :items="activeKeyFigures" content-tag="v-layout" row wrap>
                         <template slot="items" slot-scope="props">
                             <v-hover>
                                 <v-flex xs12 :key="props.index"
@@ -38,31 +43,36 @@
                             </v-flex>
                         </template>
                     </v-data-iterator>
+                    <v-flex v-else> -- </v-flex>
                     <a v-if="editing && !editMode.offset" @click="addKeyFig()"> add </a>
 
                     <v-divider></v-divider>
-                    <v-text-field label="Country Population" v-model="defaultFigures.population.total"></v-text-field>
-                    <v-text-field label="Affected Population" v-model="defaultFigures.population.impacted"></v-text-field>
+                    <v-text-field label="Country Population" v-model="editFigures.population.total"></v-text-field>
+                    <v-text-field label="Affected Population" v-model="editFigures.population.impacted"></v-text-field>
 
                     <v-flex>
-                        <v-text-field label="MORTALITY" v-model="defaultFigures.population.mortality.rate"></v-text-field>
-                        <v-select label="Population at risk" v-model="defaultFigures.mortality.population" :items="allSelections.population"></v-select>
-                        <v-select label="Speficied Time period" v-model="defaultFigures.mortality.peroid" :items="allSelections.period"></v-select>
+                        <v-text-field label="MORTALITY" v-model="editFigures.population.mortality.rate"></v-text-field>
+                        <v-select label="Population at risk" v-model="editFigures.population.mortality.population" :items="allSelections.population"></v-select>
+                        <v-text-field v-if="editFigures.population.mortality.population == 'other'" v-model="editFigures.population.mortality.population"></v-text-field>
+                        <v-select label="Speficied Time period" v-model="editFigures.population.mortality.peroid" :items="allSelections.period"></v-select>
+                        <v-text-field v-if="editFigures.population.mortality.peroid == 'other'" v-model="editFigures.population.mortality.peroid"></v-text-field>
+
                     </v-flex>
                     <v-flex>
-                        <v-text-field label="MORBIDITY" v-model="defaultFigures.population.morbidity.rate"></v-text-field>
-                        <v-select label="Population at risk" v-model="defaultFigures.morbidity.population" :items="allSelections.population"></v-select>
-                        <v-select label="Speficied Time period" v-model="defaultFigures.morbidity.peroid" :items="allSelections.period"></v-select>
+                        <v-text-field label="MORBIDITY" v-model="editFigures.population.morbidity.rate"></v-text-field>
+                        <v-select label="Population at risk" v-model="editFigures.population.morbidity.population" :items="allSelections.population"></v-select>
+                        <v-text-field v-if="editFigures.population.morbidity.population == 'other'" v-model="editFigures.population.morbidity.population"></v-text-field>
+                        <v-select label="Speficied Time period" v-model="editFigures.population.morbidity.peroid" :items="allSelections.period"></v-select>
+                        <v-text-field v-if="editFigures.population.morbidity.peroid == 'other'" v-model="editFigures.population.morbidity.peroid"></v-text-field>
                     </v-flex>
-                    <v-select label="Collection" v-model="defaultFigures.satistics.collection" :items="allSelections.collectionMeans"></v-select>
-                    <v-select label="Source" v-model="defaultFigures.satistics.source" :items="allSelections.sources"></v-select>
+                    <v-select label="Collection" v-model="editFigures.satistics.collection" :items="allSelections.collectionMeans"></v-select>
+                    <v-select label="Source" v-model="editFigures.satistics.source" :items="allSelections.sources"></v-select>
+                    <v-text-field v-if="editFigures.satistics.source == 'other'" v-model="editFigures.satistics.source"></v-text-field>
+
                 </v-layout>
                 <v-layout v-else>
                     <v-layout v-if="displayKeyFigures">
-                        <v-layout class="actions" v-if="displayKeyFigures.status == activeKeyFigures.status">
-                            <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                            <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
-                        </v-layout>
+
                         <v-flex v-for="(item, index) in displayKeyFigures" :key="index">
                             <v-flex>
                                 <div class="specified-primary"> {{item.value}}</div>
@@ -84,7 +94,9 @@
 
                     </v-layout>
                     <v-layout v-else>
-                        <div class="full-width"> No Key figures yet </div>
+                        <v-flex xs12>
+                            <div class="full-width"> No Key figures yet </div>
+                        </v-flex>
                     </v-layout>
                     <v-divider></v-divider>
                     <v-layout>
@@ -214,6 +226,7 @@ export default {
             'eventFigures',
             'eventStatus'
         ]),
+
         activeKeyFigures(){
             if(!this.eventFigures) return null;
             var result = this.eventFigures.keyFigures.filter(item =>{
@@ -226,6 +239,14 @@ export default {
                 return this.activeKeyFigures;
             }else{
                 return null;
+            }
+        },
+        allowEdit(){
+            if(!_.isEmpty(this.displayKeyFigures)){
+                return displayKeyFigures.status == activeKeyFigures.status;
+            }else{
+                //TODO: POPULATION FIGURES CAN BE editted during Monitoring ...
+                return (this.eventStatus != 'monitoring') && (this.eventStatus !='complete');
             }
         },
         totalBeneficiaries(){
