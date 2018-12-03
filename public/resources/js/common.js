@@ -1225,11 +1225,11 @@ $( '#sharewith_name' ).autocomplete({
 });
 
 var showLegendIfCookie=function(){
-  if (!(Cookies.get('show-msf-legend')))
-    Cookies.set('show-msf-legend','on');
-  var show=(Cookies.get('show-msf-legend')) === 'on' ;
-  $('.legend').toggle(show);
-}
+    if (!(Cookies.get('show-msf-legend')))
+        Cookies.set('show-msf-legend','on');
+    var show=(Cookies.get('show-msf-legend')) === 'on' ;
+    $('.legend').toggle(show);
+};
 
 
 var addLegendsToAMaps=function(mapVariable){

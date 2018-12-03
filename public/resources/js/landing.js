@@ -958,13 +958,22 @@ mainMap.on('load', function(loadEvent) {
 mainMap.on('moveend', function(){getContacts($('#contSearchTerm').val());});
 
 let bounds = Cookies.get('landingMapBounds');
+var contactDownloadLink;
+function checkAndDownloadContacts(){
+    if ($('#cbContactsAgreed').is(':checked'))
+        window.open(contactDownloadLink);
+    else {
+        alert('You must agree to MSF Hong Kong Privacy Policy before download. ');
+    }
+}
+
 if (typeof(bounds)!=='undefined') {
     boundsArray = bounds.split(',');
     mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
     let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3]);
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3];
 } else {
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90');
+    contactDownloadLink='/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90';
     mainMap.fitBounds([[-90,-180],[90,180]]);
 }
 
@@ -975,7 +984,7 @@ mainMap.on('zoomend', function(zoomEvent)  {
 mainMap.on('moveend', function(){
     Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
     let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3]);
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3];
     getMSFPresence(mapMSFPresence);
 });
 
@@ -1193,6 +1202,10 @@ if (location.hash.includes('#contact')) {
 }
 
 $(function(){
+
+    $('#cbContactsAgreed').on('change',function(){
+        $('#contactDownloadLink').attr('disabled',!($('#cbContactsAgreed').is(':checked')));
+    });
 
     var bookmarkVue=new Vue({
         el:'#bookmarksList',
