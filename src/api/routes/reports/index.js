@@ -77,7 +77,7 @@ export default ({ config, db, logger }) => {
         }
     );
 
-    api.post('/sms', twilio.webhook(), 
+    api.post('/sms', twilio.webhook({'url':'https://dev.msf-reach.org/api/reports/sms'}), 
         (req, res, next) => {
 
             reports(config, db, logger).smsReport(req.body.Body).then((data) => {
