@@ -111,20 +111,6 @@ export default (config, db, logger) => ({
             }
         });
 
-        let query = `INSERT INTO ${config.TABLE_REPORTS}
-			(event_id, status, created, report_key, content, the_geom)
-			VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_Point($6,$7),4326))
-			RETURNING id, event_id, status, created, report_key, content, the_geom`;
-
-        // Setup values
-        let values = [body.eventId, body.status, body.created, body.reportkey, body.content, body.location.lng, body.location.lat];
-
-        // Execute
-        logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, eventId: data.event_id, status: data.status, created: data.created, reportkey: data.report_key, content: data.content, the_geom: data.the_geom }))
-            .catch((err) => reject(err));
-
     }),
 
     /**
