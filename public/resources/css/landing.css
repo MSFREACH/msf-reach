@@ -159,3 +159,11 @@ ul#reportsTable select{
     margin-right: 8px;
     opacity: 0.7;
 }
+.eventBox {
+  font-weight: normal;
+  display:inline-block;
+  cursor:pointer;
+}
+.subTypes {
+    margin-left: 20px;
+}

@@ -220,6 +220,8 @@ export default ({ config, db, logger }) => {
                         // backfill location for compatibility
                         console.log(data); // eslint-disable-line no-console
                         req.body['location'] = {'lat': data.lat, 'lng': data.lng};
+                        // backfill type to metadata (goes in mission properties)
+                        req.body.metadata['event_type']= req.body.type || '';
                         missions(config, db, logger).createMission(req.body,req.params.id)
                             .then((data) => handleGeoResponse(data, req, res, next))
                             .catch((err) => {

@@ -75,7 +75,27 @@
             </dl>
             <dl>
               <dt>Type of Emergency (nature)</dt>
-              <dd>{{mission.sub_type}}</dd>
+              <dd v-if="!inEditMode">{{ typeStr(mission.event_type || '',mission.sub_type) }}</dd>
+              <dd v-if="inEditMode">
+                <div v-for="(item, index) in eventTypes">
+                <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value" :id="'ev-type'+index"> <label class="eventBox" :for="'ev-type'+index"> {{item.text}} </label>
+                  <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
+                  <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
+                      <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+(sub.text)+index" /> <label class="eventBox" :for="'ev-sub-'+(sub.text)+index"> {{sub.text}} &nbsp&nbsp </label>
+                      <br v-if="index % 4 == 1"/>
+                  </span>
+
+                  <span>
+                    <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" /> <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
+                    <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  class="form-control" placeholder="(Specify)" />
+                  </span>
+                </div>
+              </div>
+                <div>
+                  <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                  <input v-if="otherFields.type.isSelected" type="text" class="form-control" v-model="otherFields.type.description" placeholder="(Specify)" />
+                </div>
+              </dd>
             </dl>
             <dl>
               <dt>Date and time (local time) of the disaster</dt>
@@ -746,6 +766,24 @@ var vmInstance = new Vue({
     currentMissionId: currentMissionId,
     currentMissionEventId: currentMissionEventId,
     statuses: statuses,
+    eventTypes: eventTypes,
+    checkedTypes: [],
+    checkedSubTypes: [],
+    invalidTypesSelection: false,
+    otherFields: {
+        type: {
+            isSelected: false,
+            description: ''
+        },
+        disease_outbreak: {
+            isSelected: false,
+            description: ''
+        },
+        natural_disaster: {
+            isSelected: false,
+            description: ''
+        }
+    },
     dateTimeConfig: {
       format: DATETIME_DISPLAY_FORMAT
     },
@@ -754,6 +792,7 @@ var vmInstance = new Vue({
     reopenSuccess: false
   },
   methods: {
+    typeStr:typeStr,
     confirmDeleteMission:function(){
       var vm=this;
       if (confirm('Are you sure you want to permanently delete this mission? \nWARNING: This action cannot be undone'))
@@ -833,8 +872,51 @@ var vmInstance = new Vue({
       msfResponseMap1.removeLayer(msfResponseMap1.msfResponseMarker);
       msfResponseMap1.eventMarker = L.marker([this.mission.msf_response_location.coordinates[1], this.mission.msf_response_location.coordinates[0]]).addTo(msfResponseMap1);
     },
+    lintTypes: function(){
+
+        var tmpEventWithSubTypes = {};
+        for(var i3= 0; i3 < this.eventTypes.length; i3++){
+            if(eventTypes[i3].subTypes){
+                var tmpSubTypes = eventTypes[i3].subTypes.map(function(el){return el.value;});
+                tmpEventWithSubTypes[eventTypes[i3].value] = tmpSubTypes;
+            }
+        }
+
+        var cleanSubTypes = [];
+        for(var i4=0; i4<this.checkedTypes.length; i4++){
+            var tmpType = tmpEventWithSubTypes[this.checkedTypes[i4]];
+            if(tmpType){
+                for(var j=0; j<this.checkedSubTypes.length; j++){
+                    if(tmpType.indexOf(this.checkedSubTypes[j]) > -1){
+                        cleanSubTypes.push(this.checkedSubTypes[j]);
+                    }
+                }
+            }
+        }
+        this.checkedSubTypes = cleanSubTypes;
+    },
+    lintSubTypesSelected: function(){
+      var vm=this;
+        var tmpType = vm.mission.event_type || '';
+        var tmpSubType = vm.mission.sub_type;
+        if ((tmpType.includes('natural_disaster') || tmpType.includes('disease_outbreak')) && tmpSubType == '') {
+            alert('ensure subtype(s) is/are selected');
+            this.invalidTypesSelection = true;
+        }else{
+            this.invalidTypesSelection = false;
+        }
+    },
     saveMissionEdits: function(){
       var vm=this;
+
+      vm.mission.event_type = vm.checkedTypes.join();
+      vm.mission.sub_type = vm.checkedSubTypes.join();
+
+      vm.lintTypes(); // make sure if type is unselected, subtype is removed
+      vm.lintSubTypesSelected();
+      if (vm.invalidTypesSelection)
+       return;
+
       if ((vm.mission.sharepoint_link)&&(vm.mission.sharepoint_link.indexOf('https://') != 0))
       {
         alert('Please make sure the sharepoint link starts with https:// and try again. ');
@@ -946,6 +1028,20 @@ var vmInstance = new Vue({
    if ((vm.mission.finishDate)&&(!(vm.mission.event_datetime_closed)))
    {
      vm.mission.event_datetime_closed=new moment(vm.mission.finishDate,"DD/MM/YYYY");
+   }
+
+   if (vm.mission.event_type) {
+       var currentTypes = vm.mission.event_type.split(',');
+       for(var t = 0; t < currentTypes.length; t++){
+           this.checkedTypes.push(currentTypes[t]);
+       }
+   }
+
+   if (vm.mission.sub_type) {
+       var currentSubTypes = vm.mission.sub_type.split(',');
+       for(var st = 0; st < currentSubTypes.length; st++){
+           this.checkedSubTypes.push(currentSubTypes[st]);
+       }
    }
 
 
