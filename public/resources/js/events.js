@@ -779,12 +779,13 @@ var mapReports = function(reports,mapForReports){
 
         }
 
-        $('#tableReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
-
-        let clipboard=new ClipboardJS(document.getElementById('tableReportShare'+feature.properties.id));
-        clipboard.on('success', function(e) {
-            alert('Link to report copied to clipboard');
-        });
+        setTimeout(() => {
+            $('#tableReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
+            let clipboard = new ClipboardJS(document.getElementById('tableReportShare' + feature.properties.id));
+            clipboard.on('success', function (e) {
+                alert('Link to report copied to clipboard');
+            });
+        }, 2000);
 
         $('#reportsTable').append('</tbody></table>');
 
