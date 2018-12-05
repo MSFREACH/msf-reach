@@ -718,7 +718,7 @@
                   <tr><td>Status</td><td  colspan="1"> {{ event.metadata.event_status || 'monitoring' }} <i class="glyphicon glyphicon-check" style="color:green;" :title="analyzedTimeTxt" v-if="hasBeenAnalyzed"></i></td><td  colspan="1"> <button type="button" @click="analyzeEvent" class="btn btn-warning"><i :class="'glyphicon glyphicon-refresh'+(isAnalyzing ? ' msf-spin': '')"></i> Analyze</button> </td></tr>
                   <tr><td>Type</td><td  colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
                   <tr><td>Event Date and Time</td><td  colspan="2"> {{ (event.metadata.event_datetime || event.created_at) | formatFullDate }}</td></tr>
-                  <tr><td>Date and hours (local time) of the disater</td><td  colspan="2"> {{ event.metadata.event_local_time | formatFullDate  }}</td></tr>
+                  <tr><td>Date and hours (local time) of the disaster</td><td  colspan="2"> {{ event.metadata.event_local_time | formatFullDate  }}</td></tr>
 
 
 
@@ -857,7 +857,7 @@
                   </tr>
 
                   <tr>
-                    <td>Date and hours (local time) of the disater </td>
+                    <td>Date and hours (local time) of the disaster </td>
                     <td class="datepicker-container">
                       <date-picker v-model="event.metadata.event_local_time" :config="dateTimeConfig"></date-picker>
                     </td>
