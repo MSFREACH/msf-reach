@@ -906,13 +906,49 @@ var vmInstance = new Vue({
             this.invalidTypesSelection = false;
         }
     },
+    lintOtherFields: function(){
+        var emptyFields = [];
+
+        for(var key in this.otherFields){
+            var description = this.otherFields[key].description;
+
+            if(this.otherFields[key].isSelected){
+                if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) != -1 || key == 'type')){ // to be sure that main type was selected
+                    emptyFields.push(key.replace('_', ' '));
+                }else if(this.checkedTypes.indexOf(key) != -1){
+                    this.checkedSubTypes.push('other_'+key+ ': '+ description);
+                }else if(key == 'type'){
+                    var index = _.findIndex(this.checkedTypes, function(el){
+                        return el.indexOf('other:') != -1;
+                    });
+
+                    if(index != -1){
+                        this.checkedTypes[index] = 'other: '+ description;
+                    }else{
+                        this.checkedTypes.push('other: '+ description);
+                    }
+                }
+            }
+        }
+
+        if(emptyFields.length > 0 ){
+            alert(`Please enter description for other ${emptyFields.join(', ')}`);
+            this.invalidTypesSelection = true;
+        }else{
+            this.invalidTypesSelection = false;
+        }
+    },
     saveMissionEdits: function(){
       var vm=this;
+
+
+
+      vm.lintTypes(); // make sure if type is unselected, subtype is removed
+      vm.lintOtherFields();
 
       vm.mission.event_type = vm.checkedTypes.join();
       vm.mission.sub_type = vm.checkedSubTypes.join();
 
-      vm.lintTypes(); // make sure if type is unselected, subtype is removed
       vm.lintSubTypesSelected();
       if (vm.invalidTypesSelection)
        return;
