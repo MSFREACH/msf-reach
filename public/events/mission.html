@@ -49,9 +49,8 @@
             <dl>
               <dt>Precise location of the emergency</dt>
               <dd>
-                <p class="help-block"  v-show="inEditMode">To change the location of the emergency center the map and click update location.</p>
+                <p class="help-block"  v-show="inEditMode">To change the location of the emergency, click on the map to replace the marker.</p>
                 <div id="eventMap1" style="width: 100%; height: 380px;"></div>
-                <button type="button" class="btn btn-warning" v-show="inEditMode" style="margin-top:5px;" @click="confirmLocationChange">Update Location</button>
               </dd>
             </dl>
             <dl>
@@ -210,9 +209,8 @@
                   <dt>Location of MSF response</dt>
 
                   <dd>
-                    <p class="help-block"  v-show="inEditMode">To change the location of the MSF response, center the map and click update location.</p>
+                    <p class="help-block"  v-show="inEditMode">To change the location of the MSF response, click on the map to replace the marker.</p>
                     <div id="msfResponseMap1" style="width: 100%; height: 380px;"></div>
-                    <button type="button" class="btn btn-warning" v-show="inEditMode" style="margin-top:5px;" @click="confirmResponseLocationChange">Update Location</button>
                   </dd>
                 </dl>
                 <dl>
@@ -870,7 +868,7 @@ var vmInstance = new Vue({
       var mapCenter=msfResponseMap1.getCenter();
       this.mission.msf_response_location.coordinates=[mapCenter.lng, mapCenter.lat];
       msfResponseMap1.removeLayer(msfResponseMap1.msfResponseMarker);
-      msfResponseMap1.eventMarker = L.marker([this.mission.msf_response_location.coordinates[1], this.mission.msf_response_location.coordinates[0]]).addTo(msfResponseMap1);
+      msfResponseMap1.msfResponseMarker = L.marker([this.mission.msf_response_location.coordinates[1], this.mission.msf_response_location.coordinates[0]]).addTo(msfResponseMap1);
     },
     lintTypes: function(){
 
@@ -1094,7 +1092,19 @@ var vmInstance = new Vue({
         id: 'mapbox.streets'
       }).addTo(eventMap1);
       eventMap1.eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap1);
+
+      eventMap1.on('click', function(e){
+        if (vm.inEditMode)
+        {
+          var mapCenter=e.latlng;
+          missionCoordinates=[mapCenter.lng, mapCenter.lat];
+          eventMap1.removeLayer(eventMap1.eventMarker);
+          eventMap1.eventMarker = L.marker([missionCoordinates[1], missionCoordinates[0]]).addTo(eventMap1);
+        }
+      });
       /** eventMap1 >> */
+
+
 
       /** << msfResponseMap1 */
       var msfResponseMarkerLatLng = eventDefaultLatLng;
@@ -1108,7 +1118,20 @@ var vmInstance = new Vue({
         id: 'mapbox.streets'
       }).addTo(msfResponseMap1);
       msfResponseMap1.msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap1);
+
+      msfResponseMap1.on('click', function(e){
+        if (vm.inEditMode)
+        {
+          var mapCenter=e.latlng;
+          vm.mission.msf_response_location.coordinates=[mapCenter.lng, mapCenter.lat];
+          msfResponseMap1.removeLayer(msfResponseMap1.msfResponseMarker);
+          msfResponseMap1.msfResponseMarker = L.marker([vm.mission.msf_response_location.coordinates[1], vm.mission.msf_response_location.coordinates[0]]).addTo(msfResponseMap1);
+        }
+      });
+
       /** msfResponseMap1 >> */
+
+
 
       setTimeout(function() {
         eventMap1.invalidateSize();
