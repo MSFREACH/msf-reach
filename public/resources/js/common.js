@@ -259,7 +259,7 @@ const getMSFPresence = function(callback) {
     //get the current bounds
     let bboxString=mainMap.getBounds().toBBoxString();
     //the url
-    let url = 'https://arcgis.cartong.org/arcgis/rest/services/wrl_presence/wrl_presencemsf_view/MapServer/0/query?outFields=*&f=json&outSR=4326&inSR=4326&geometryType=esriGeometryEnvelope&geometry='+bboxString+'&token='+ARCGIS_TOKEN;
+    let url = 'https://arcgis.cartong.org/arcgis/rest/services/briefing_test/msf_map_view/MapServer/0/query?outFields=*&f=json&outSR=4326&inSR=4326&geometryType=esriGeometryEnvelope&geometry='+bboxString+'&token='+ARCGIS_TOKEN;
 
     $.getJSON(url, function( data ){
         if (!data.hasOwnProperty('error')) {
