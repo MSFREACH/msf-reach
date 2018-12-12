@@ -339,7 +339,7 @@ const mapMSFPresence = function(presence) {
 
     presenceLayer = L.geoJSON(presence, {
         pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, {'radius':10, 'color':OCColours[feature.properties.operational_centre.toUpperCase()]});
+            return L.circleMarker(latlng, {'radius':10, 'color':OCColours[feature.properties.operational_center.toUpperCase()]});
         },
         onEachFeature: onEachFeature
     });
