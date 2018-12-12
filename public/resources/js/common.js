@@ -291,15 +291,15 @@ const mapMSFPresence = function(presence) {
 
     // Add popups
     function onEachFeature(feature, layer) {
-        feature.properties.operational_centre = feature.properties.operational_centre.toUpperCase();
+        feature.properties.operational_center = feature.properties.operational_center.toUpperCase();
         var popupContent =
               'Country: ' + feature.properties.country + '<br />' +
-              'Type: ' + feature.properties.type + '<br />' +
+              'Type: ' + feature.properties.presence_type + '<br />' +
               'Name: ' + feature.properties.name + '<br />' +
               'Open Date: ' + (feature.properties.open_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : '') + '<br />' +
               'Close Date: ' + (feature.properties.close_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : 'Still open') + '<br />' +
               'Alternative Name: ' + feature.properties.name_alt + '<br />' +
-              'Operational Centre: ' + '<label class="btn btn-xs" style="background-color:'+OCColours[feature.properties.operational_centre]+';margin-right:5px;margin-bottom:5px;color:white;font-weight: bold">&nbsp;'+feature.properties.operational_centre+'</label><br />' +
+              'Operational Centre: ' + '<label class="btn btn-xs" style="background-color:'+OCColours[feature.properties.operational_center]+';margin-right:5px;margin-bottom:5px;color:white;font-weight: bold">&nbsp;'+feature.properties.operational_center+'</label><br />' +
               'Cell: ' + feature.properties.cell + '<br />' +
               'Project Code: ' + feature.properties.project_code + '<br />' +
               'Intervention Type: ' + feature.properties.intervention_type + '<br />' +
