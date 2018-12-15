@@ -61,6 +61,21 @@ textarea{
     font-size: 14px;
     line-height: normal;
 }
+
+.v-text-field .v-label{
+    top: 0;
+}
+.theme--light.v-chip{
+    background: transparent;
+    border: 1px white solid;
+    color: #fff;
+}
+.v-chip .v-chip__content{
+    height: inherit;
+}
+.theme--light.v-label{
+    color: inherit;
+}
 .linkAttachment{
     border-radius: 50%;
 }

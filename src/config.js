@@ -91,6 +91,7 @@ export default {
     TABLE_REPORTS: process.env.TABLE_REPORTS || 'cognicity.reports',
     TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events',
     TABLE_EVENT_NOTIFICATIONS: process.env.TABLE_EVENT_NOTIFICATIONS || 'cognicity.event_notifications',
+    TABLE_SITREPS: process.env.TABLE_SITREPS || 'cognicity.sitreps',
     TABLE_MISSIONS: process.env.TABLE_MISSIONS || 'cognicity.missions',
     TABLE_CONTACTS: process.env.TABLE_CONTACTS || 'cognicity.contacts',
     TABLE_BOOKMARKS: process.env.TABLE_BOOKMARKS || 'cognicity.bookmarks',

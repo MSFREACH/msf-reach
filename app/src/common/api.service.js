@@ -94,6 +94,21 @@ export const EventNotificationService = {
     }
 };
 
+export const SITREPService = {
+    query (params) {
+        return ApiService.query('SITREPs', params);
+    },
+    create (params) {
+        return ApiService.post('SITREPs', params);
+    },
+    update (slug, params) {
+        return ApiService.update('SITREPs', slug, params);
+    },
+    destroy (slug) {
+        return ApiService.delete(`SITREPs/${slug}`);
+    }
+};
+
 export const ReportsService = {
     query () {
         const params = {
@@ -117,7 +132,6 @@ export const ReportsService = {
         return ApiService.delete(`reports/${slug}`);
     }
 };
-
 
 export const ContactsService = {
     query () {
@@ -144,7 +158,6 @@ export const ContactsService = {
 };
 
 export const UtilService = {
-
     getUpload(payload){
         const params = {
             key: payload.key,

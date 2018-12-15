@@ -13,19 +13,13 @@
                     </v-layout>
 
                     <v-layout row wrap v-if="editing" dark>
-                        <label>Staff List</label>
-                        <v-text-field label="value" v-model="editStatusResource.listFileUrl"></v-text-field>
+                        <v-text-field label="Staff List" v-model="editStatusResource.listFileUrl"></v-text-field>
+                        <v-text-field label="Number of Expatriate" v-model="editStatusResource.expatriateCount"></v-text-field>
+                        <v-text-field label="Number of National Staff" v-model="editStatusResource.nationalStaffCount"></v-text-field>
 
-                        <label>Number of Expatriate</label>
-                        <v-text-field label="value" v-model="editStatusResource.expatriateCount"></v-text-field>
-                        <label>Number of National Staff</label>
-                        <v-text-field label="value" v-model="editStatusResource.nationalStaffCount"></v-text-field>
-
-
-                        <label>Nationalities</label>
-                        <v-text-field label="value" v-model="editResources.visa_requirement"></v-text-field>
                         <v-flex xs12>
-                            <v-autocomplete v-model="editResources.visa_requirement" :disabled="autoNationality.isUpdating" :items="allSelections.countries" box chips color="blue-grey lighten-2" label="Select"
+                            <div class="primary-text">Nationalities that requires Visa</div>
+                            <v-autocomplete v-model="editResources.visa_requirement" :disabled="autoNationality.isUpdating" :items="allSelections.countries" box chips color="blue-grey lighten-2" label="Nationalities"
                             item-text="nationality" item-value="nationality" multiple>
                                 <template slot="selection" slot-scope="data">
                                     <v-chip :selected="data.selected" close class="chip--select-multi" @input="removeNationality(data.item)">
@@ -34,35 +28,56 @@
                                 </template>
                             </v-autocomplete>
                         </v-flex>
+                        <v-flex xs12>
+                            <div class="primary-text">Health and vaccination requirements</div>
 
-                        <label>Required</label>
-                        <v-text-field label="value" v-model="editResources.vaccination_requirement.required"></v-text-field>
-                        <label>Recommended</label>
-                        <v-text-field label="value" v-model="editResources.vaccination_requirement.recommended"></v-text-field>
+                            <v-text-field label="Required" v-model="editResources.vaccination_requirement.required"></v-text-field>
+                            <v-autocomplete v-model="editResources.vaccination_requirement.required"
+                                :disabled="autoVaccinationRequired.isUpdating"
+                                :items="allSelections.vaccinations.required"
+                                box chips label="Required" multiple>
+                            </v-autocomplete>
 
-                        <label>Total Budget</label>
-                        <v-text-field label="value" v-model="editStatusResource.budget.total"></v-text-field>
-                        <v-select :items="allSelections.currencies" v-model="editStatusResource.budget.currency"></v-select>
+                            <v-text-field label="Recommended" v-model="editResources.vaccination_requirement.recommended"></v-text-field>
+                            <v-autocomplete v-model="editResources.vaccination_requirement.recommended"
+                                :disabled="autoVaccinationRecommended.isUpdating"
+                                :items="allSelections.vaccinations.recommended"
+                                box chips label="Recommended" multiple>
+                            </v-autocomplete>
+                        </v-flex>
+                        <v-text-field label="Total Budget" type="number" v-model="editStatusResource.budget.total"></v-text-field>
+                        <v-select :items="allSelections.currencies" v-model="editStatusResource.budget.currency" item-text="currency" item-value="currency">
+                        </v-select>
 
-                        <label>Institutional Donors</label>
-                        <v-text-field label="value" v-model="editResources.institutional_donors"></v-text-field>
+                        <v-text-field label="Institutional Donors" v-model="editResources.institutional_donors"></v-text-field>
 
                     </v-layout>
                     <v-layout v-else>
-                        <v-flex :class="displayStatusResources.status+'Wrapper'">
+                        <v-flex v-if="displayStatusResources" :class="displayStatusResources.status+'Wrapper'">
                             <div class="full-width">
                                 <label>Staff List</label>
-                                <span v-if="!displayStatusResources.staff.listFileUrl">--</span>{{displayStatusResources.staff.listFileUrl}}
+                                {{displayStatusResources.staff.listFileUrl}}
                             </div>
 
                             <div class="one-half">
                                 <label>Number of Expatriate</label>
-                                <span v-if="!displayStatusResources.staff.expatriateCount">--</span>{{displayStatusResources.staff.expatriateCount}}
+                                {{displayStatusResources.staff.expatriateCount}}
                             </div>
 
                             <div class="one-half">
                                 <label>Number of National staff</label>
-                                <span v-if="!displayStatusResources.staff.nationalStaffCount">--</span>{{displayStatusResources.staff.nationalStaffCount}}
+                                {{displayStatusResources.staff.nationalStaffCount}}
+                            </div>
+                        </v-flex>
+                        <v-flex v-else>
+                            <div class="full-width">
+                                <label>Staff List</label> --
+                            </div>
+                            <div class="one-half">
+                                <label>Number of Expatriate</label> --
+                            </div>
+                            <div class="one-half">
+                                <label>Number of National staff</label> --
                             </div>
                         </v-flex>
                         <div class="full-width">
@@ -78,17 +93,28 @@
                             <label>Recommended</label>
                             <span v-if="!eventResources.vaccination_requirement.recommended">--</span> {{eventResources.vaccination_requirement.recommended.toString()}}
                         </div>
-                        <v-flex :class="displayStatusResources.status+'Wrapper'">
+                        <v-flex v-if="displayStatusResources" :class="displayStatusResources.status+'Wrapper'">
                             <div class="one-half">
                                 <label>Total Budget</label>
-                                <span v-if="!displayStatusResources.budget.total">--</span>{{displayStatusResources.budget.total}} {{displayStatusResources.budget.currency}}
+                                {{displayStatusResources.budget.total}} {{displayStatusResources.budget.currency}}
                             </div>
 
                             <div class="one-half">
                                 <label>Institutional Donors</label>
-                                <span v-if="!eventResources.institutional_donors">--</span>{{eventResources.institutional_donors}}
+                                {{eventResources.institutional_donors}}
                             </div>
                         </v-flex>
+                        <v-flex v-else>
+                            <div class="one-half">
+                                <label>Total Budget</label>
+                                <span v-if="!displayStatusResources.budget.total">--</span>
+                            </div>
+                            <div class="one-half">
+                                <label>Institutional Donors</label>
+                                <span v-if="!eventResources.institutional_donors">--</span>
+                            </div>
+                        </v-flex>
+
 
                     </v-layout>
 
@@ -113,7 +139,7 @@ import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
 import COUNTRIES from '@/common/countries.json';
 import CURRENCIES from '@/common/currency-symbols.json';
-
+import VACCINATION from '@/common/WHO_vaccinations.json';
 export default {
     name: 'r-event-resources',
     data(){
@@ -140,7 +166,8 @@ export default {
             },
             allSelections:{
                 countries: COUNTRIES,
-                currencies: CURRENCIES
+                currencies: CURRENCIES,
+                vaccinations: VACCINATION
             }
         };
     },
@@ -162,15 +189,15 @@ export default {
             /// tricky to get the response field where status == active status
         },
         removeNationality (item) {
-            const index = this.requiredNationalities.indexOf(item.nationality);
-            if (index >= 0) this.requiredNationalities.splice(index, 1);
+            const index = this.editResources.visa_requirement.indexOf(item.nationality);
+            if (index >= 0) this.editResources.visa_requirement.splice(index, 1);
         }
     },
     watch: {
         editing(val){
-            if(val) {
-                Object.assign(this._beforeEditingCache, this.eventResources);
-                Object.assign(this._beforeEditPerStatusCache, this.activeStatusResources);
+            if(val){
+                this._beforeEditingCache = this.editResources = this.eventResources;
+                this._beforeEditPerStatusCache = this.editStatusResource = this.activeStatusResources;
             }
         },
         autoNationality(val){
@@ -183,7 +210,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'eventResources'
+            'eventResources',
+            'eventStatus'
         ]),
 
         activeStatusResources(){
@@ -201,11 +229,14 @@ export default {
             }
         },
         allowEdit(){
-            if(!_.isEmpty(this.displayStatusResources)){
-                return displayStatusResources.status == activeStatusResources.status;
-            }else{
-                return (this.eventStatus != 'monitoring') && (this.eventStatus !='complete');
+            if(this.displayStatusResource){
+                if(!_.isEmpty(this.displayStatusResources)){
+                    return displayStatusResources.status == activeStatusResources.status;
+                }else{
+                    return (this.eventStatus != 'monitoring') && (this.eventStatus !='complete');
+                }
             }
+            return this.eventStatus != 'monitoring';
         }
     }
 };

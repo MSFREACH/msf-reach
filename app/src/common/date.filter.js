@@ -18,6 +18,11 @@ export default {
             return 'N/A';
         }
     },
+    dayMonth(value){
+        if(value){
+            return moment(value).format('DD MMM');
+        }
+    }, 
     relativeTime(value){
         return moment(value).fromNow();
     }

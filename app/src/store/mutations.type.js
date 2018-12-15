@@ -24,3 +24,6 @@ export const FETCH_UPLOAD_URL_END = 'setRequestData';
 
 export const FETCH_EVENT_NOTIFICATIONS_END = 'fetchEventNotificationsEnd';
 export const SET_EVENT_NOTIFICATION = 'setEventNotification';
+
+export const FETCH_SITREPS_END = 'fetchSitrepEnd';
+export const SET_SITREP = 'setSitrep'; 

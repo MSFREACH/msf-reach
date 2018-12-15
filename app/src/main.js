@@ -25,6 +25,8 @@ Vue.config.productionTip = false;
 Vue.filter('date', DateFilter.dateOnly);
 Vue.filter('dateTime', DateFilter.dateTime);
 Vue.filter('fullDate', DateFilter.fullDate);
+Vue.filter('dayMonth', DateFilter.dayMonth);
+
 Vue.filter('relativeTime', DateFilter.relativeTime);
 
 Vue.filter('capitalize', TextFilter.capitalize);

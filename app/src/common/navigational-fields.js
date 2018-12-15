@@ -5,7 +5,7 @@ export const EVENT_DETAIL_NAVIGATIONS = [
     { icon: 'all_out', name: 'External Capacity', component: 'event-extCapacity', route: '/extCapacity'},
     { icon: 'fingerprint', name: 'Figures', component: 'event-figures', route: '/figures'},
     { icon: 'people', name: 'Resources', component: 'event-resources', route: '/resources'},
-    { icon: 'all_inclusive', name: 'Reflections', component: 'event-sitrep', route: '/sitrep'}
+    { icon: 'all_inclusive', name: 'SITREP', component: 'event-sitrep', route: '/sitrep'}
 ];
 
 export const EVENT_TOP_NAVIGATIONS = [

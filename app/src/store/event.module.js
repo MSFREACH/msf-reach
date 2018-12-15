@@ -252,7 +252,7 @@ const getters ={
             var payload = state.event.metadata;
             var nationalites = [];
             if(payload.msf_resource_visa_requirement){
-                nationalites = payload.msf_resource_visa_requirement.map(item => {
+                nationalites = payload.msf_resource_visa_requirement.nationality.map(item => {
                     if(item.is_required){
                         return item.name;
                     }

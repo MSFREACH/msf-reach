@@ -15,6 +15,27 @@ ul{
         }
     }
 }
+.SITREP-Container{
+    display: inherit;
+    .searchHeader{
+        display: flex;
+        width: 300px;
+        .v-text-field{
+            padding-top: 0px;
+        }
+        .v-input__control,
+        .v-btn--floating.v-btn--small{
+            background: #fff;
+            border-radius: 20px;
+        }
+        .v-input__control{
+            padding: 4px 21px;
+        }
+    }
+}
+
+
+
 .full-text-fields{
     position: relative;
     width: 80%;
@@ -104,4 +125,9 @@ tr.v-datatable__expand-row .v-card.expanded-field{
 .v-dialog .v-dialog--active{
     background: #0374C7;
     color: #fff;
+}
+
+
+.v-date-picker-table--date td{
+    width: 5px;
 }

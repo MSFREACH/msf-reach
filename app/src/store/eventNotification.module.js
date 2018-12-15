@@ -75,7 +75,7 @@ const mutations = {
         state.isLoadingEventNotifications = false;
     },
     [SET_ERROR] (state, error) {
-        state.errors = error;
+        state.error = error;
         state.isLoadingEvent = false;
     },
     [SET_EVENT_NOTIFICATION] (state, slug){

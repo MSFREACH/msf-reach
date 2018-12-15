@@ -99,13 +99,11 @@
 /*eslint no-debugger: off*/
 /*eslint no-console: off*/
 import { mapGetters } from 'vuex';
+import $ from 'jquery';
 import marked from 'marked';
 import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/common/common';
-import { CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
-
-import $ from 'jquery';
-// import { EDIT_EVENT } from '@/store/actions.type';
 
 export default {
     name: 'r-event-notifications',
@@ -177,13 +175,18 @@ export default {
         },
         eventNotifications(val){
             console.log('watch value --eventNotifications ', val);
-
             if(!val){
                 this.eventNotifications = _.map(this.oldEventNotifications, _.clone);
             }
         }
     },
+    mounted(){
+        this.fetchEventNotifications();
+    },
     methods: {
+        fetchEventNotifications(){
+            this.$store.dispatch(FETCH_EVENT_NOTIFICATIONS, this.currentEventId);
+        },
         mdRender(value){
             if(value) return marked(value);
         },
@@ -261,7 +264,6 @@ export default {
                 this.$store.dispatch(EDIT_EVENT_NOTIFICATION, params)
                     .then((payload) =>{
                         console.log(('Notification UPDATED --- ', payload));
-
                     });
             }else{
                 // for migrating exisiting entries into new EventNotification TABLE

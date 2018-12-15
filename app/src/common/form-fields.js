@@ -127,3 +127,12 @@ export const DEFAULT_KEY_FIGURES = {
     subCategory: null,
     value: null
 };
+
+
+export const DEFAULT_SITREP_FIELDS = {
+    description: '',
+    eventId: null,
+    createdAt: null,
+    updatedAt: null,
+    files: []
+};

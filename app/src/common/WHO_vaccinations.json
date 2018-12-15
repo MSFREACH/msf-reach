@@ -1,0 +1,30 @@
+{
+    "required":[
+        {"value":"Diphtheria", "text":"Diphtheria"},
+        {"value":"Hepatitis B", "text":"Hepatitis B"},
+        {"value":"Haemophilus influenzae type b", "text":"Haemophilus influenzae type b"},
+        {"value":"Human papillomavirus", "text":"Human papillomavirus"},
+        {"value":"Seasonal influenza", "text":"Seasonal influenza"},
+        {"value":"Measles", "text":"Measles"},
+        {"value":"Mumps", "text":"Mumps"},
+        {"value":"Pertussis", "text":"Pertussis"},
+        {"value":"Rubella", "text":"Rubella"},
+        {"value":"Pneumococcal disease", "text":"Pneumococcal disease"},
+        {"value":"Poliomyelitis (Polio)", "text":"Poliomyelitis (Polio)"},
+        {"value":"Rotavirus", "text":"Rotavirus"},
+        {"value":"Tuberculosis (TB)", "text":"Tuberculosis (TB)"},
+        {"value":"Tetanus", "text":"Tetanus"},
+        {"value":"Varicella", "text":"Varicella"}
+    ],
+    "recommended": [
+        {"value":"Cholera", "text":"Cholera"},
+        {"value":"Hepatitis_A", "text":"Hepatitis A"},
+        {"value":"Hepatitis_E", "text":"Hepatitis E"},
+        {"value":"Japanese_encephalitis", "text":"Japanese encephalitis"},
+        {"value":"Meningococcal_disease", "text":"Meningococcal disease"},
+        {"value":"Rabies", "text":"Rabies"},
+        {"value":"Tick-borne_encephalitis", "text":"Tick-borne encephalitis"},
+        {"value":"Typhoid_fever", "text":"Typhoid fever"},
+        {"value":"Yellow_fever", "text":"Yellow fever"}
+    ]
+}
