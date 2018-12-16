@@ -49,7 +49,7 @@ export const EVENT_TYPES = [
     { value: 'search_and_rescue', text: 'Search and Rescue' },
 ];
 
-export const EVENT_NOTIFICATION_CATEGORIES = ['ACCESS', 'NEEDS', 'CONTACTS','SECURITY'];
+export const EVENT_NOTIFICATION_CATEGORIES = ['', 'ACCESS', 'NEEDS', 'CONTACTS','SECURITY'];
 export const EVENT_NOTIFICATION_HEADERS = [
     { text: 'Operator', align: 'left', sortable: false, value: 'username'},
     { text: 'UPDATED', value: 'updated_at', sortable: false},

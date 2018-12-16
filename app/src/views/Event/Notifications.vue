@@ -1,9 +1,23 @@
 <template>
     <v-container class="eventSubContent">
         <div class="notification-rows">
+            <div class="searchHeader">
+                <v-text-field v-model='search' append-icon='search' label='Search' single-line hide-details xs10></v-text-field>
+                <!-- <v-btn-toggle v-model="selectedCategory">
+                    <span v-for="(category, index) in allNotificationCategories"
+                    :value="category"
+                    :key="index"
+                    :class="category + '-fill select-category-filter'"
+                    @click="filterByCategory(category)">
+                    </span>
+                </v-btn-toggle> -->
+                <v-select v-model="selectedCategory" :items="allNotificationCategories" label="Category" round outline></v-select>
                 <v-dialog v-model="dialog" max-width="880px" dark>
-                    <v-btn slot="activator" color="editing" dark class="mb-2"><v-icon>create</v-icon></v-btn>
+                    <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                     <v-card class="editing">
+                        <v-flex xs>
+                            <v-icon @click="close">close</v-icon>
+                        </v-flex>
                       <v-card-title>
                         <span class="headline">{{formTitle}}</span>
                       </v-card-title>
@@ -12,9 +26,6 @@
                           <v-layout wrap>
                             <v-flex xs10>
                               <v-select :items="allNotificationCategories" v-model="editedItem.category" label="category"></v-select>
-                            </v-flex>
-                            <v-flex xs2>
-                                <v-icon @click="close">close</v-icon>
                             </v-flex>
                             <v-flex xs6 style="display: inline-block;">
                                 <label>Notification</label>
@@ -43,53 +54,48 @@
                       <v-card-actions>
                           <v-flex>
                               <label> Operator </label> {{ editedItem.username }} <br/>
-                              <label> Updated </label>  {{ (editedItem.created * 1000) | relativeTime  }}
+                              <label> Updated </label>  {{ editedItem.created | relativeTime  }}
                           </v-flex>
+
                         <v-spacer></v-spacer>
-                        <v-switch label="save" @click="submit"></v-switch>
+                        <v-progress-circular v-if="request.inProgress" :size="50" color="primary" indeterminate></v-progress-circular>
+                        <v-switch v-if='editIndex' label='save' @click='submit'></v-switch>
+                        <v-btn v-else label='add' @click='submit'></v-btn>
+
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-
-                <v-btn-toggle v-model="selectedCategory">
-                    <span v-for="(category, index) in allNotificationCategories"
-                    :value="category"
-                    :key="index"
-                    :class="category + '-fill select-category-filter'"
-                    @click="filterByCategory(category)">
-                    </span>
-                </v-btn-toggle>
-
-                <v-data-table :headers="headers" :items="displayNotifications" item-key="created" class="elevation-1" hide-actions>
-                    <template slot="items" slot-scope="props">
-                        <tr @click="props.expanded = !props.expanded" :key="props.index">
-                            <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
-                            <td>{{ (props.item.created * 1000) | relativeTime  }}</td>
-                            <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
-                            <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
-                            <td>{{ props.item.files.length }}</td>
-                        </tr>
-                    </template>
-                    <template slot="expand" slot-scope="props">
-                        <v-card class="expanded-field" flat :key="props.index" :id="props.index">
-                            <v-card-actions class="text-xs-right">
-                                <v-icon small class="mr-2" @click="editItem(props.item)"> edit </v-icon>
-                                <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
-                            </v-card-actions>
-                            <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
-                            <v-divider light></v-divider>
-
-                            <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment">
-                                 <v-img :src="item" contain></v-img>
-                            </v-card>
-                        </v-card>
-
-                    </template>
-                    <template slot="no-data">
-                        No updates yet
-                    </template>
-                </v-data-table>
             </div>
+
+            <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="created" class="elevation-1" hide-actions>
+                <template slot="items" slot-scope="props">
+                    <tr @click="props.expanded = !props.expanded" :key="props.index">
+                        <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
+                        <td>{{ props.item.created | relativeTime  }}</td>
+                        <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
+                        <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
+                        <td>{{ props.item.files.length }}</td>
+                    </tr>
+                </template>
+                <template slot="expand" slot-scope="props">
+                    <v-card class="expanded-field" flat :key="props.index" :id="props.index">
+                        <v-card-actions class="text-xs-right">
+                            <v-icon small class="mr-2" @click="editItem(props.item)"> edit </v-icon>
+                            <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
+                        </v-card-actions>
+                        <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
+                        <v-divider light></v-divider>
+
+                        <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment">
+                             <v-img :src="item" contain></v-img>
+                        </v-card>
+                    </v-card>
+
+                </template>
+                <template slot="no-data">
+                    No updates yet
+                </template>
+            </v-data-table>
         </div>
     </v-container>
 </template>
@@ -104,6 +110,7 @@ import marked from 'marked';
 import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/common/common';
 import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
+import { REQUEST_STATUSES } from '@/common/network-handler';
 
 export default {
     name: 'r-event-notifications',
@@ -113,14 +120,18 @@ export default {
             editing: false,
             allNotificationCategories: EVENT_NOTIFICATION_CATEGORIES,
             selectedCategory: '',
+            displayNotifications: [],
             headers: EVENT_NOTIFICATION_HEADERS,
             defaultItem: DEFAULT_EVENT_NOTIFICATION_FIELDS,
             editedItem: DEFAULT_EVENT_NOTIFICATION_FIELDS,
-            editedIndex: -1,
+            editIndex: -1,
+            search: '',
             readyToUpload: false,
             sampleFiles:[
                 'https://cdn.vuetifyjs.com/images/cards/halcyon.png'
             ],
+
+            request: REQUEST_STATUSES,
             previewFileUrls: [],
             signedFileUrls: []
         };
@@ -145,15 +156,15 @@ export default {
                 });
             }
         },
-        displayNotifications: function(){
-            if(this.oldEventNotifications.length > 0){
-                _.merge(this.eventNotifications, this.oldEventNotifications);
-            }
-
-            return  _.map(this.eventNotifications, _.clone);
-        },
+        // displayNotifications: function(){
+        //     if(this.oldEventNotifications.length > 0){
+        //         _.merge(this.eventNotifications, this.oldEventNotifications);
+        //     }
+        //
+        //     return  _.map(this.eventNotifications, _.clone);
+        // },
         formTitle () {
-            return this.editedIndex === -1 ? 'Enter new notification' : 'Edit notification';
+            return this.editIndex === -1 ? 'Enter new notification' : 'Edit notification';
         }
     },
     watch: {
@@ -174,10 +185,12 @@ export default {
             }
         },
         eventNotifications(val){
-            console.log('watch value --eventNotifications ', val);
-            if(!val){
-                this.eventNotifications = _.map(this.oldEventNotifications, _.clone);
-            }
+            this.displayNotifications = _.map(this.eventNotifications, _.clone);
+        },
+        selectedCategory(newVal){
+            this.displayNotifications = this.eventNotifications.filter(item => {
+                if(item.category && item.category == newVal) return item;
+            });
         }
     },
     mounted(){
@@ -185,16 +198,16 @@ export default {
     },
     methods: {
         fetchEventNotifications(){
-            this.$store.dispatch(FETCH_EVENT_NOTIFICATIONS, this.currentEventId);
+            this.$store.dispatch(FETCH_EVENT_NOTIFICATIONS, {eventId: parseInt(this.currentEventId)});
         },
         mdRender(value){
             if(value) return marked(value);
         },
-        filterByCategory(category){
-            this.displayNotifications = this.eventNotifications.filter(item => {
-                if(item.category && item.category == category) return item;
-            });
-        },
+        // filterByCategory(category){
+        //     this.displayNotifications = this.eventNotifications.filter(item => {
+        //         if(item.category && item.category == category) return item;
+        //     });
+        // },
         editItem(item){
             this.dialog = true;
             this.editIndex = this.eventNotifications.indexOf(item);
@@ -255,30 +268,33 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var params;
-            if(this.editIndex && this.editedItem.id){
-                params = _.extend(this.editedItem, {
-                    updated: timeNow,
-                    username: this.currentUser.username
-                });
-                this.$store.dispatch(EDIT_EVENT_NOTIFICATION, params)
-                    .then((payload) =>{
-                        console.log(('Notification UPDATED --- ', payload));
-                    });
+            var isEdit = this.editIndex && this.editedItem.id;
+            var action = isEdit? EDIT_EVENT_NOTIFICATION: CREATE_EVENT_NOTIFICATION;
+
+
+            var params  = _.extend(this.editedItem, {
+                username: this.currentUser.username,
+                eventId: this.currentEventId
+            });
+
+            if (isEdit){
+                params.updated = timeNow;
+                delete params.created;
             }else{
-                // for migrating exisiting entries into new EventNotification TABLE
-                var timestamp = this.editedItem.created ? this.editedItem.created : timeNow;
-                params = _.extend(this.editedItem, {
-                    created: timestamp,
-                    username: this.currentUser.username
-                });
-                this.createEntry(params);
+                params.created = timeNow;
+                delete params.updated;
             }
-        },
-        createEntry(params){
-            this.$store.dispatch(CREATE_EVENT_NOTIFICATION, params)
+
+            console.log(' -----save-- ', isEdit, params);
+            this.$store.dispatch(action, params)
                 .then((payload) =>{
-                    console.log(('Notification CREATED --- ', payload));
+                    this.request.inProgress = false;
+                    if(payload.status == 200){
+                        this.request.success = true;
+                        setTimeout(() => this.close(), 1000);
+                    }else{
+                        this.request.failure = true;
+                    }
                 });
         },
         close () {
@@ -287,7 +303,7 @@ export default {
                 this.editedItem = Object.assign({}, this.defaultItem);
                 this.previewFileUrls = [];
                 this.signedFileUrls = [];
-                this.editedIndex = -1;
+                this.editIndex = -1;
             }, 300);
         }
     }

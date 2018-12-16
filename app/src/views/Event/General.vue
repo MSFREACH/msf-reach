@@ -29,20 +29,18 @@
                 </div>
                 <div class="one-third">
                     <label>Areas</label>
-                    <v-flex v-for="(area, index) in eventMetadata.areas" :key="index">
-                        <div>
-                            <span v-if="area.region.length > 0"> {{area.region}}, {{area.country_code}} </span>
-                            <span v-else>{{area.country}}</span>
-                        </div>
-
-                        <span v-if="eventMetadata.areas.length > 1 && index < eventMetadata.areas.length">
-
-                        </span>
-                        <div class="sub-tag" v-if="eventMetadata.severity_measures[index]">
+                    <v-flex v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" :key="index">
+                        <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
+                        <span v-else>{{area.country}}</span>
+                        <div class="sub-tag" v-if="eventMetadata.severity_measures">
                             <span :style="'color:'+allSeverity[eventMetadata.severity_measures[index].scale-1].color">{{allSeverity[eventMetadata.severity_measures[index].scale-1].label}} severity</span>
                             <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
                         </div>
                     </v-flex>
+                    <div v-if="!eventMetadata.severity_measures" class="sub-tag">
+                        <span :style="'color:'+allSeverity[eventMetadata.severity_scale-1].color">{{allSeverity[eventMetadata.severity_scale-1].label}} severity</span>
+                        <span class="notes"><br/> {{ eventMetadata.severity }} </span>
+                    </div>
                 </div>
                 <hr class="row-divider"/>
                 <!-- Temporal row -->
@@ -136,7 +134,7 @@
                 <div class="one-third" id="eventAreas">
                     <label> Area(s) </label>
                     <div v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas">
-                        <span v-if="area.region.length > 0"> {{area.region}}, {{area.country_code}} </span>
+                        <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else> {{area.country}} </span>
                         <span class="remove" @click="removeArea(area)"> x </span>
                         <div class="severity-wrapper" v-if="eventMetadata.severity_measures[index]">
@@ -200,6 +198,8 @@ import 'pc-bootstrap4-datetimepicker';
 // import { EDIT_EVENT } from '@/store/actions.type';
 
 /*eslint no-console: off*/
+/*eslint no-debugger: off*/
+
 /*eslint no-unused-vars: off*/
 /*eslint no-negated-condition: off*/
 
@@ -266,12 +266,11 @@ export default {
         eventMetadata(newVal){
             if(!newVal.areas){
                 var mockArea = {country: newVal.metadata.country, region: ''};
-                vm.eventMetadata.areas = [mockArea];
+                this.eventMetadata.areas = [mockArea];
             }
-
             if(!newVal.severity_measures){
                 var mockSeverity = {scale: newVal.severity_scale, description: newVal.severity};
-                vm.eventMetadata.severity_measures = [mockSeverity];
+                this.eventMetadata.severity_measures = [mockSeverity];
             }
         }
     }

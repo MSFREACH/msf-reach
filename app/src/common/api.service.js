@@ -81,7 +81,7 @@ export const EventsService = {
 
 export const EventNotificationService = {
     query (params) {
-        return ApiService.query('eventNotifications', params);
+        return ApiService.query('eventNotifications', {params});
     },
     create (params) {
         return ApiService.post('eventNotifications', params);

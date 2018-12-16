@@ -6,8 +6,6 @@
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                 <v-card class='editing'>
                     <v-flex>
-                        <v-progress-circular v-if="request.inProgress" :size="50" color="primary" indeterminate></v-progress-circular>
-                        <v-switch v-if='editIndex' label='save' @click='submit'></v-switch>
                         <v-icon @click='close'>close</v-icon>
                     </v-flex>
                   <v-card-title>
@@ -39,13 +37,13 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                      <v-flex>
-                          <label> Operator </label> {{ editedSitRep.username }} <br/>
-                          <label> Updated </label>  {{ (editedSitRep.created * 1000) | relativeTime  }}
-                      </v-flex>
-                    <v-spacer></v-spacer>
+                    <div><label> Operator </label> {{ editedSitRep.username }} </div>
+                    <div><label> Updated </label>  {{ editedSitRep.created | relativeTime  }}</div>
 
-                    <v-btn v-if='!editIndex' label='add' @click='submit'></v-btn>
+                    <v-spacer></v-spacer>
+                    <v-progress-circular v-if="request.inProgress" :size="50" color="primary" indeterminate></v-progress-circular>
+                    <v-switch v-if='editIndex' label='save' @click='submit'></v-switch>
+                    <v-btn v-else label='add' @click='submit'></v-btn>
                   </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -230,7 +228,7 @@ export default {
                 this.editedSitRep = Object.assign({}, this.defaultSitRep);
                 this.previewFileUrls = [];
                 this.signedFileUrls = [];
-                this.editedIndex = -1;
+                this.editIndex = -1;
             }, 300);
         },
         allowedDates(val){
@@ -271,7 +269,7 @@ export default {
             'fetchSitrepError'
         ]),
         formTitle () {
-            return this.editedIndex == -1 ? 'Create new' : 'Edit SITREP';
+            return this.editIndex == -1 ? 'Create new' : 'Edit SITREP';
         }
     }
 };

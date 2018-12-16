@@ -113,6 +113,8 @@ const getters ={
                 };
                 return newSchema;
             });
+        }else{
+            return []; 
         }
     },
     eventTypes(state){
