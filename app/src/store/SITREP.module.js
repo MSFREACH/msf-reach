@@ -12,13 +12,13 @@ import { FETCH_START, FETCH_SITREPS_END, SET_ERROR, RESET_STATE } from './mutati
 const initialState = {
     error: null,
     sitreps: [],
-    isLoadingSitReps: true,
+    isLoadingSitReps: false,
     sitrepCount: 0,
     sitrep : {
         id: '',
         eventId: '',
-        createdAt: null,
-        updatedAt: null,
+        created: null,
+        updated: null,
         description: '',
         username: '',
         files: []
@@ -34,6 +34,9 @@ const getters = {
     sitreps(state){
         return state.sitreps;
     },
+    isLoadingSitReps(state){
+        return state.isLoadingSitReps;
+    },
     fetchSitrepError(state){
         return state.error;
     }
@@ -41,6 +44,7 @@ const getters = {
 
 const actions = {
     [FETCH_SITREPS]({commit}, params){
+        console.log('FETCH_SITREPS----', params); 
         commit(FETCH_START);
         return SITREPService.query(params)
             .then(({data}) =>{

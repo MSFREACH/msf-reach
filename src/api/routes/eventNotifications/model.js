@@ -9,10 +9,10 @@ export default (config, db, logger) => ({
 	 */
     all: (eventid) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, event_id as eventId, category, created_at as createdAt, updated_at as updatedAt, description, username, files
+        let query = `SELECT id, event_id as eventId, category, created, updated, description, username, files
 			FROM ${config.TABLE_EVENT_NOTIFICATIONS}
 			WHERE event_id = $1
-			ORDER BY created_at DESC`; // xor
+			ORDER BY created DESC`; // xor
 
         let values = [ eventid ];
 
@@ -29,17 +29,17 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `INSERT INTO ${config.TABLE_EVENT_NOTIFICATIONS}
-			(event_id, category, created_at, description, username, files)
+			(event_id, category, created, description, username, files)
 			VALUES ($1, $2, $3, $4, $5, $6)
-			RETURNING id, event_id, category, created_at, description, username, files`;
+			RETURNING id, event_id, category, created, description, username, files`;
 
         // Setup values
-        let values = [ body.eventId, body.category, body.createdAt, body.description, body.username, body.files];
+        let values = [ body.eventId, body.category, body.created, body.description, body.username, body.files];
 
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, eventId: data.event_id, category:data.category, createdAt: data.created_at, description:data.description, username:data.username, files:data.files }))
+            .then((data) => resolve({ id: data.id, eventId: data.event_id, category:data.category, created: data.created, description:data.description, username:data.username, files:data.files }))
             .catch((err) => reject(err));
     }),
 
@@ -53,19 +53,19 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENT_NOTIFICATIONS}
 			SET category = category || $1,
-			updated_at = $2,
+			updated = $2,
             description = description || $3
             files = files || $4
 			WHERE id = $5
-			RETURNING event_id, category, created_at, updated_at, description, username, files`;
+			RETURNING event_id, category, created, updated, description, username, files`;
 
         // Setup values
-        let values = [ body.category, body.updatedAt, body.description, body.files, id];
+        let values = [ body.category, body.updated, body.description, body.files, id];
 
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id), eventId: data.event_id, category:data.category, createdAt: data.created_at, updatedAt: data.updated_at, description: data.description, username:data.username, files:data.files}))
+            .then((data) => resolve({ id: String(id), eventId: data.event_id, category:data.category, created: data.created, updated: data.updated, description: data.description, username:data.username, files:data.files}))
             .catch((err) => reject(err));
     }),
 

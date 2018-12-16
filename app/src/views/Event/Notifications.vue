@@ -43,7 +43,7 @@
                       <v-card-actions>
                           <v-flex>
                               <label> Operator </label> {{ editedItem.username }} <br/>
-                              <label> Updated </label>  {{ (editedItem.createdAt * 1000) | relativeTime  }}
+                              <label> Updated </label>  {{ (editedItem.created * 1000) | relativeTime  }}
                           </v-flex>
                         <v-spacer></v-spacer>
                         <v-switch label="save" @click="submit"></v-switch>
@@ -60,11 +60,11 @@
                     </span>
                 </v-btn-toggle>
 
-                <v-data-table :headers="headers" :items="displayNotifications" item-key="createdAt" class="elevation-1" hide-actions>
+                <v-data-table :headers="headers" :items="displayNotifications" item-key="created" class="elevation-1" hide-actions>
                     <template slot="items" slot-scope="props">
                         <tr @click="props.expanded = !props.expanded" :key="props.index">
                             <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
-                            <td>{{ (props.item.createdAt * 1000) | relativeTime  }}</td>
+                            <td>{{ (props.item.created * 1000) | relativeTime  }}</td>
                             <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
                             <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
                             <td>{{ props.item.files.length }}</td>
@@ -159,8 +159,8 @@ export default {
     watch: {
         dialog (val) {
             if (val){
-                if(!this.editedItem.updatedAt){
-                    this.editedItem.updatedAt = new Date();
+                if(!this.editedItem.updated){
+                    this.editedItem.updated = new Date();
                 }
             }else{
                 this.close();
@@ -227,7 +227,7 @@ export default {
                 var fileType = files[f].type;
                 var fileSize = files[f].size;
                 var file = files[f];
-                var params = {key: ('event/'+this.currentEventId+'/notifications/'), filename: fileName};
+                var params = {key: ('event/'+this.currentEventId+'/notifications'), filename: fileName};
                 this.$store.dispatch(FETCH_UPLOAD_URL, params)
                     .then((payload) => {
                         if(payload){
@@ -258,7 +258,7 @@ export default {
             var params;
             if(this.editIndex && this.editedItem.id){
                 params = _.extend(this.editedItem, {
-                    updatedAt: timeNow,
+                    updated: timeNow,
                     username: this.currentUser.username
                 });
                 this.$store.dispatch(EDIT_EVENT_NOTIFICATION, params)
@@ -267,9 +267,9 @@ export default {
                     });
             }else{
                 // for migrating exisiting entries into new EventNotification TABLE
-                var timestamp = this.editedItem.createdAt ? this.editedItem.createdAt : timeNow;
+                var timestamp = this.editedItem.created ? this.editedItem.created : timeNow;
                 params = _.extend(this.editedItem, {
-                    createdAt: timestamp,
+                    created: timestamp,
                     username: this.currentUser.username
                 });
                 this.createEntry(params);

@@ -96,16 +96,16 @@ export const EventNotificationService = {
 
 export const SITREPService = {
     query (params) {
-        return ApiService.query('SITREPs', params);
+        return ApiService.query('sitreps', {params});
     },
     create (params) {
-        return ApiService.post('SITREPs', params);
+        return ApiService.post('sitreps', params);
     },
     update (slug, params) {
-        return ApiService.update('SITREPs', slug, params);
+        return ApiService.update('sitreps', slug, params);
     },
     destroy (slug) {
-        return ApiService.delete(`SITREPs/${slug}`);
+        return ApiService.delete(`sitreps/${slug}`);
     }
 };
 

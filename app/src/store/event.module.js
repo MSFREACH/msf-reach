@@ -64,12 +64,10 @@ const mutations = {
         state.event.body =payload.result.objects.output.geometries[0].properties;
         state.event.status = payload.result.objects.output.geometries[0].properties.metadata.event_status;
         //------ future proof, when sub-content objs becomes available
-        state.event.notifications = payload.result.objects.output.geometries[0].properties.notifications;
         state.event.responses = payload.result.objects.output.geometries[0].properties.responses;
         state.event.extCapacity = payload.result.objects.output.geometries[0].properties.extCapacity;
         state.event.resources = payload.result.objects.output.geometries[0].properties.resources;
         state.event.figures = payload.result.objects.output.geometries[0].properties.figures;
-        state.event.reflection = payload.result.objects.output.geometries[0].properties.reflection;
         ///------/------/------/------/------/------
 
     },
@@ -100,25 +98,21 @@ const getters ={
         return state.event.coordinates;
     },
     oldEventNotifications (state){
-        if(!state.event.notifications && state.event.metadata){
-            var currentNotifications = state.event.metadata.notification;
-            if(currentNotifications){
-                return currentNotifications.map(item => {
-                    var currentFiles = item.notificationFileUrl ? [item.notificationFileUrl] : [];
-                    var newSchema = {
-                        eventId: state.event.id,
-                        category: null,
-                        description: item.notification,
-                        createdAt: item.notification_time,
-                        updatedAt: item.notification_time,
-                        username: item.username,
-                        files:currentFiles
-                    };
-                    return newSchema;
-                });
-            }
-        }else{
-            return state.event.notifications;
+        var currentNotifications = state.event.metadata.notification;
+        if(currentNotifications){
+            return currentNotifications.map(item => {
+                var currentFiles = item.notificationFileUrl ? [item.notificationFileUrl] : [];
+                var newSchema = {
+                    eventId: state.event.id,
+                    category: null,
+                    description: item.notification,
+                    created: item.notification_time,
+                    updated: item.notification_time,
+                    username: item.username,
+                    files: currentFiles
+                };
+                return newSchema;
+            });
         }
     },
     eventTypes(state){
@@ -289,14 +283,12 @@ const getters ={
             };
         }
     },
-    eventReflection(state){
-        if(!state.event.reflection && state.event.metadata){
-            var payload = state.event.metadata;
-            return {
-                recommendations: payload.msf_ref_com_practical_details_recomm,
-                comments: payload.msf_ref_com_reflection_comments
-            };
-        }
+    oldEventReflection(state){
+        var payload = state.event.metadata;
+        return {
+            recommendations: payload.msf_ref_com_practical_details_recomm,
+            comments: payload.msf_ref_com_reflection_comments
+        };
     },
     eventCreatedAt(state){
         return state.event.metadata.event_datetime? state.event.metadata.event_datetime : state.event.created_at;

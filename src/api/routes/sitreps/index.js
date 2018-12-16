@@ -22,7 +22,7 @@ export default ({ config, db, logger }) => {
                 eventId: Joi.number().integer().min(1)
             }
         }),
-        (req, res, next) => sitReps(config, db, logger).all(req.query.hasOwnProperty('eventId') ? req.query.eventId : null)
+        (req, res, next) => sitReps(config, db, logger).all(req.query.eventId)
             .then((data) => handleResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
@@ -37,8 +37,8 @@ export default ({ config, db, logger }) => {
         validate({
             body: Joi.object().keys({
                 eventId: Joi.number().integer().min(1),
-                createdAt: Joi.date().iso().required(),
-                description: Joi.object().required(),
+                created: Joi.date().iso().required(),
+                description: Joi.string().required(),
                 username: Joi.string(),
                 files: Joi.array().items(Joi.string())
             })
@@ -60,8 +60,8 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                updatedAt: Joi.date().iso().required(),
-                description: Joi.object().required(),
+                updated: Joi.date().iso().required(),
+                description: Joi.string().required(),
                 files: Joi.array().items(Joi.string())
             })
         }),

@@ -35,7 +35,7 @@ export default ({ config, db, logger }) => {
     // Mount the various endpoints
     api.use('/events', events({ config, db, logger }));
     api.use('/eventNotifications', eventNotifications({ config, db, logger }));
-    api.use('/sitrep', sitrep({ config, db, logger }));
+    api.use('/sitreps', sitreps({ config, db, logger }));
     api.use('/layers', layers({ config, db, logger}));
     api.use('/reports', reports({ config, db, logger }));
     api.use('/twitter', twitter({ logger }));

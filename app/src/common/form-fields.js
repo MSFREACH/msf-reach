@@ -55,8 +55,8 @@ export const DEFAULT_EVENT_NOTIFICATION_FIELDS = {
     category: '',
     description: '',
     eventId: null,
-    createdAt: null,
-    updatedAt: null,
+    created: null,
+    updated: null,
     files: []
 };
 
@@ -132,7 +132,7 @@ export const DEFAULT_KEY_FIGURES = {
 export const DEFAULT_SITREP_FIELDS = {
     description: '',
     eventId: null,
-    createdAt: null,
-    updatedAt: null,
+    created: null,
+    updated: null,
     files: []
 };

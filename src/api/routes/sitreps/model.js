@@ -7,15 +7,14 @@ export default (config, db, logger) => ({
 	 * Return all eventNotification
    * @param {integer} id ID of event to filter eventNotification by
 	 */
-    all: (eventid) => new Promise((resolve, reject) => {
+    all: (eventId) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, event_id as eventId, created_at as createdAt, updated_at as updatedAt, description, username, files
-			FROM ${config.TABLE_SITREP}
+        let query = `SELECT id, event_id as eventId, created, updated, description, username, files
+			FROM ${config.TABLE_SITREPS}
 			WHERE event_id = $1
-			ORDER BY created_at DESC`; // xor
+			ORDER BY created DESC`; // xor
 
-        let values = [ eventid ];
-
+        let values = [ eventId ];
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))
@@ -28,18 +27,18 @@ export default (config, db, logger) => ({
     createSitRep: (body) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `INSERT INTO ${config.TABLE_SITREP}
-			(event_id, created_at, description, username, files)
-			VALUES ($1, $2, $3, $4, $5, $6)
-			RETURNING id, event_id, created_at, description, username, files`;
+        let query = `INSERT INTO ${config.TABLE_SITREPS}
+			(event_id, created, description, username, files)
+			VALUES ($1, $2, $3, $4, $5)
+			RETURNING id, event_id, created, description, username, files`;
 
         // Setup values
-        let values = [ body.eventId, body.createdAt, body.description, body.username, body.files];
+        let values = [ body.eventId, body.created, body.description, body.username, body.files];
 
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, eventId: data.event_id, createdAt: data.created_at, description: data.description, username:data.username, files:data.files }))
+            .then((data) => resolve({ id: data.id, eventId: data.event_id, created: data.created, description: data.description, username:data.username, files:data.files }))
             .catch((err) => reject(err));
     }),
 
@@ -51,20 +50,20 @@ export default (config, db, logger) => ({
     updateSitRep: (id, body) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `UPDATE ${config.TABLE_SITREP}
-			SET updated_at = $1,
+        let query = `UPDATE ${config.TABLE_SITREPS}
+			SET updated = $1,
             description = description || $2
             files = files || $3
 			WHERE id = $4
-			RETURNING event_id, created_at, updated_at, description, username, files`;
+			RETURNING event_id, created, updated, description, username, files`;
 
         // Setup values
-        let values = [body.updatedAt, body.description, body.files, id];
+        let values = [body.updated, body.description, body.files, id];
 
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id), eventId: data.event_id, createdAt: data.created_at, updatedAt: data.updated_at, description: data.description, username:data.username, files:data.files}))
+            .then((data) => resolve({ id: String(id), eventId: data.event_id, created: data.created, updated: data.updated, description: data.description, username:data.username, files:data.files}))
             .catch((err) => reject(err));
     }),
 
@@ -73,7 +72,7 @@ export default (config, db, logger) => ({
     * @param {integer} id ID of contact
     */
     deleteSitRep: (id) => new Promise((resolve, reject) => {
-        let query = `DELETE FROM ${config.TABLE_SITREP} WHERE id = $1`;
+        let query = `DELETE FROM ${config.TABLE_SITREPS} WHERE id = $1`;
         let values = [ id ];
         // Execute
         logger.debug(query, values);

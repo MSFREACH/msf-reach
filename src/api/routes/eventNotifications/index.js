@@ -38,8 +38,8 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 eventId: Joi.number().integer().min(1),
                 category: Joi.string(),
-                createdAt: Joi.date().iso().required(),
-                description: Joi.object().required(),
+                created: Joi.date().iso().required(),
+                description: Joi.string().required(),
                 username: Joi.string(),
                 files: Joi.array().items(Joi.string())
             })
@@ -62,8 +62,8 @@ export default ({ config, db, logger }) => {
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
                 category: Joi.string(),
-                updatedAt: Joi.date().iso().required(),
-                description: Joi.object().required(),
+                updated: Joi.date().iso().required(),
+                description: Joi.string().required(),
                 files: Joi.array().items(Joi.string())
             })
         }),

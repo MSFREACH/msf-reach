@@ -15,8 +15,8 @@ const initialState = {
         id: '',
         eventId: '',
         category: '',
-        createdAt: null,
-        updatedAt: null,
+        created: null,
+        updated: null,
         description: '',
         username: '',
         files: []
