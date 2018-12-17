@@ -1,5 +1,5 @@
 <template>
-    <v-container class="event-page" app>
+    <v-container class="event-page" xs9 app>
         <span v-if="!slug">
             Please select event for review.
         </span>

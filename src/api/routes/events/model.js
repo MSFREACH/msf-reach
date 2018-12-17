@@ -26,11 +26,11 @@ export default (config, db, logger) => ({
         let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
 			FROM ${config.TABLE_EVENTS}
             WHERE ($1 is null or status = $1) AND
-                ($4 is null or 
-                    (metadata->>'name' ilike $4 or 
-                    metadata->>'description' ilike $4 or 
+                ($4 is null or
+                    (metadata->>'name' ilike $4 or
+                    metadata->>'description' ilike $4 or
                     type ilike $4 or
-                    metadata->>'type' ilike $4 or 
+                    metadata->>'type' ilike $4 or
                     metadata->>'sub_type' ilike $4)) AND
                 ($2 is null or metadata->>'country' = $2) AND
                 ($3 is null or ST_DWITHIN(ST_TRANSFORM(the_geom,3857),ST_TRANSFORM(ST_GEOMFROMTEXT($3,4326),3857),${config.DEFAULT_EVENT_SEARCH_DISTANCE}))
@@ -139,7 +139,7 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
 			SET status = $1,
-      updated_at = now(),
+            updated_at = now(),
             type = $4,
 			metadata = metadata || $2
 			WHERE id = $3

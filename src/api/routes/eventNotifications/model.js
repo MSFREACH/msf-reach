@@ -7,14 +7,14 @@ export default (config, db, logger) => ({
 	 * Return all eventNotification
    * @param {integer} id ID of event to filter eventNotification by
 	 */
-    all: (eventid) => new Promise((resolve, reject) => {
+    all: (eventId) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT id, event_id as eventId, category, created, updated, description, username, files
 			FROM ${config.TABLE_EVENT_NOTIFICATIONS}
 			WHERE event_id = $1
 			ORDER BY created DESC`; // xor
 
-        let values = [ eventid ];
+        let values = [ eventId ];
 
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
@@ -52,10 +52,10 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENT_NOTIFICATIONS}
-			SET category = category || $1,
+			SET category = $1,
 			updated = $2,
-            description = description || $3
-            files = files || $4
+            description = $3,
+            files = $4
 			WHERE id = $5
 			RETURNING event_id, category, created, updated, description, username, files`;
 

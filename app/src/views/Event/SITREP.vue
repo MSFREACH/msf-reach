@@ -139,12 +139,13 @@ export default {
         },
         editSitRep(item){
             this.dialog = true;
-            this.editIndex = this.sitreps.indexOf(item);
+            this.editIndex = _.findIndex(this.sitreps, item);
             this.editedSitRep = Object.assign({}, item);
         },
         deleteSitRep(item){
-            const index = this.sitreps.indexOf(item);
-            confirm('Are you sure you want to delete this item?') && this.sitreps.splice(index, 1);
+            const itemIndex = _.findIndex(this.sitreps, item);
+            this.$store.dispatch(DELETE_SITREP, parseInt(item.id));
+            this.sitreps.splice(itemIndex, 1);
         },
         pickFile(){
             this.$refs.myUpload.click();
@@ -196,21 +197,22 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var isEdit = this.editIndex && this.editedSitRep.id;
+            var isEdit = (this.editIndex && this.editedSitRep.id)  != -1;
 
             var action = isEdit ? EDIT_SITREP : CREATE_SITREP;
             var params = _.extend(this.editedSitRep, {
                 username: this.currentUser.username,
-                eventId: this.currentEventId
             });
+
             if (isEdit){
                 params.updated = timeNow;
                 delete params.created;
+                delete params.eventid;
             }else{
                 params.created = timeNow;
+                params.eventId = this.currentEventId;
                 delete params.updated;
             }
-            console.log(' -----save-- ', isEdit, params);
             this.$store.dispatch(action, params)
                 .then((payload) =>{
                     this.request.inProgress = false;

@@ -106,15 +106,14 @@ const getters ={
                     eventId: state.event.id,
                     category: null,
                     description: item.notification,
-                    created: item.notification_time,
-                    updated: item.notification_time,
+                    created: new Date(item.notification_time * 1000).toISOString(), // units in exisitng db is different
                     username: item.username,
                     files: currentFiles
                 };
                 return newSchema;
             });
         }else{
-            return []; 
+            return [];
         }
     },
     eventTypes(state){

@@ -1,17 +1,9 @@
 <template>
-    <v-container class="eventSubContent">
+    <v-container class="eventSubContent  xs9 app">
         <div class="notification-rows">
             <div class="searchHeader">
-                <v-text-field v-model='search' append-icon='search' label='Search' single-line hide-details xs10></v-text-field>
-                <!-- <v-btn-toggle v-model="selectedCategory">
-                    <span v-for="(category, index) in allNotificationCategories"
-                    :value="category"
-                    :key="index"
-                    :class="category + '-fill select-category-filter'"
-                    @click="filterByCategory(category)">
-                    </span>
-                </v-btn-toggle> -->
-                <v-select v-model="selectedCategory" :items="allNotificationCategories" label="Category" round outline></v-select>
+                <v-text-field v-model='search' label='Search' single-line hide-details xs10></v-text-field>
+                <v-select v-model="selectedCategory" :items="allNotificationCategories" label="Category" round></v-select>
                 <v-dialog v-model="dialog" max-width="880px" dark>
                     <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                     <v-card class="editing">
@@ -67,7 +59,7 @@
                   </v-dialog>
             </div>
 
-            <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="created" class="elevation-1" hide-actions>
+            <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions>
                 <template slot="items" slot-scope="props">
                     <tr @click="props.expanded = !props.expanded" :key="props.index">
                         <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
@@ -108,7 +100,7 @@ import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import marked from 'marked';
 import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/common/common';
-import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
 
@@ -149,19 +141,12 @@ export default {
             'oldEventNotifications',
             'eventNotifications'
         ]),
-        reversedNotifications: function (){
-            if(this.eventNotifications && this.eventNotifications.length > 0){
-                return this.eventNotifications.slice().sort((a,b) => {
-                    return b.notification_time - a.notification_time;
-                });
-            }
-        },
-        // displayNotifications: function(){
-        //     if(this.oldEventNotifications.length > 0){
-        //         _.merge(this.eventNotifications, this.oldEventNotifications);
+        // reversedNotifications: function (){
+        //     if(this.eventNotifications && this.eventNotifications.length > 0){
+        //         return this.eventNotifications.slice().sort((a,b) => {
+        //             return b.notification_time - a.notification_time;
+        //         });
         //     }
-        //
-        //     return  _.map(this.eventNotifications, _.clone);
         // },
         formTitle () {
             return this.editIndex === -1 ? 'Enter new notification' : 'Edit notification';
@@ -176,46 +161,51 @@ export default {
             }else{
                 this.close();
             }
-            // val || this.close();
-        },
-        oldEventNotifications(val){
-            console.log('watch value --oldEventNotifications ', val);
-            if(val){
-                this.eventNotifications = _.merge(val, this.eventNotifications);
-            }
-        },
-        eventNotifications(val){
-            this.displayNotifications = _.map(this.eventNotifications, _.clone);
         },
         selectedCategory(newVal){
-            this.displayNotifications = this.eventNotifications.filter(item => {
-                if(item.category && item.category == newVal) return item;
+            var totalNotifications = _.merge(this.eventNotifications, this.oldEventNotifications);
+            this.displayNotifications = totalNotifications.filter(item => {
+                if(!newVal) return item;
+                if(item.category == newVal) {
+                    return item;
+                }
             });
+        },
+        eventNotifications(newVal){
+            if(this.eventNotifications.length == 0){
+                this.migrateOldEntries();
+            }
+            this.displayNotifications = _.map(newVal, _.clone);
         }
     },
     mounted(){
         this.fetchEventNotifications();
     },
     methods: {
+        migrateOldEntries(){
+            var temp = this.oldEventNotifications;
+            if(temp.length > 0){
+                for(var i = 0; i < temp.length; i++){
+                    this.$store.dispatch(CREATE_EVENT_NOTIFICATION, temp[i]);
+                    if(i == temp.length-1) this.fetchEventNotifications(); // on the last one refresh again
+                }
+            }
+        },
         fetchEventNotifications(){
             this.$store.dispatch(FETCH_EVENT_NOTIFICATIONS, {eventId: parseInt(this.currentEventId)});
         },
         mdRender(value){
             if(value) return marked(value);
         },
-        // filterByCategory(category){
-        //     this.displayNotifications = this.eventNotifications.filter(item => {
-        //         if(item.category && item.category == category) return item;
-        //     });
-        // },
         editItem(item){
             this.dialog = true;
-            this.editIndex = this.eventNotifications.indexOf(item);
+            this.editIndex = _.findIndex(this.eventNotifications, item);
             this.editedItem = Object.assign({}, item);
         },
         deleteItem (item) {
-            const index = this.eventNotifications.indexOf(item);
-            confirm('Are you sure you want to delete this item?') && this.eventNotifications.splice(index, 1);
+            const itemIndex = _.findIndex(this.eventNotifications, item);
+            this.$store.dispatch(DELETE_EVENT_NOTIFICATION, parseInt(item.id));
+            this.eventNotifications.splice(itemIndex, 1);
         },
         pickFile(){
             this.$refs.myUpload.click();
@@ -232,7 +222,6 @@ export default {
             }
         },
         processFiles(files){
-            console.log('hey == process files ! ');
             var vm = this;
             // name, size, type;
             for(var f=0; f< files.length; f++){
@@ -268,19 +257,20 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var isEdit = this.editIndex && this.editedItem.id;
-            var action = isEdit? EDIT_EVENT_NOTIFICATION: CREATE_EVENT_NOTIFICATION;
+            var isEdit = (this.editIndex && this.editedItem.id) != -1;
 
-
+            var action = isEdit? EDIT_EVENT_NOTIFICATION : CREATE_EVENT_NOTIFICATION;
             var params  = _.extend(this.editedItem, {
                 username: this.currentUser.username,
-                eventId: this.currentEventId
+
             });
 
             if (isEdit){
                 params.updated = timeNow;
                 delete params.created;
+                delete params.eventid;
             }else{
+                params.eventId = this.currentEventId;
                 params.created = timeNow;
                 delete params.updated;
             }
@@ -291,6 +281,7 @@ export default {
                     this.request.inProgress = false;
                     if(payload.status == 200){
                         this.request.success = true;
+                        this.fetchEventNotifications();
                         setTimeout(() => this.close(), 1000);
                     }else{
                         this.request.failure = true;
@@ -313,4 +304,30 @@ export default {
 <style lang="scss">
     @import '@/assets/css/display.scss';
     @import '@/assets/css/edit.scss';
+
+    .notification-rows{
+        .searchHeader{
+            width: 40%;
+            .v-input{
+                height: 40px;
+                background: #fff;
+                border-radius: 20px;
+                padding: 6px 21px;
+                display: inline-block;
+            }
+            .v-text-field--single-line{
+                width: 48%;
+            }
+            .v-select{
+                width: 35%;
+            }
+            .v-btn--floating.v-btn--small{
+                background: #fff;
+                display: inline-block;
+            }
+            .v-dialog__container{
+                width: auto;
+            }
+        }
+    }
 </style>

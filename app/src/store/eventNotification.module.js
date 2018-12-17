@@ -55,10 +55,10 @@ const actions = {
         return EventNotificationService.destroy(slug);
     },
     [EDIT_EVENT_NOTIFICATION] (context, params){
-        /// TODO: double check here!
         console.log('[EDIT_EVENT_NOTIFICATION] --- -', params);
-
-        return EventNotificationService.update(params.id, params);
+        var slug = params.id;
+        delete params.id;
+        return EventNotificationService.update(slug, params);
     }
 };
 
@@ -66,7 +66,7 @@ const actions = {
 /* eslint no-param-reassign: ["error", { "props": false }] */
 const mutations = {
     [FETCH_START] (state) {
-        state.isLoadingEvent = true;
+        state.isLoadingEventNotifications = true;
     },
     [FETCH_EVENT_NOTIFICATIONS_END] (state, payload){
         console.log(payload); //eslint-disable-line no-console
@@ -76,7 +76,7 @@ const mutations = {
     },
     [SET_ERROR] (state, error) {
         state.error = error;
-        state.isLoadingEvent = false;
+        state.isLoadingEventNotifications = false;
     },
     [SET_EVENT_NOTIFICATION] (state, slug){
         state.notification = state.notifications.filter(item => item.id == slug);

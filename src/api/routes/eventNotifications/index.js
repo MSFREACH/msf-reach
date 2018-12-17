@@ -37,10 +37,10 @@ export default ({ config, db, logger }) => {
         validate({
             body: Joi.object().keys({
                 eventId: Joi.number().integer().min(1),
-                category: Joi.string(),
+                category: Joi.string().allow(null),
                 created: Joi.date().iso().required(),
                 description: Joi.string().required(),
-                username: Joi.string(),
+                username: Joi.string().allow(null),
                 files: Joi.array().items(Joi.string())
             })
         }),
@@ -61,7 +61,8 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                category: Joi.string(),
+                category: Joi.string().allow(null),
+                username: Joi.string().allow(null),
                 updated: Joi.date().iso().required(),
                 description: Joi.string().required(),
                 files: Joi.array().items(Joi.string())
@@ -86,7 +87,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
             eventNotifications(config, db, logger).deleteEventNotification(req.params.id)
-                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'event notification deleted', id:data.id }))
+                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'event notification deleted', id: req.params.id }))
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);
