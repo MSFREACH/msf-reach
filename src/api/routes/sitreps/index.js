@@ -84,7 +84,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
             sitReps(config, db, logger).deleteSitRep(req.params.id)
-                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'SITREP deleted', id: req.params.id }))
+                .then(() => res.status(200).json({ statusCode: 200, time: new Date().toISOString(), result: 'SITREP deleted', id: req.params.id }))
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);
