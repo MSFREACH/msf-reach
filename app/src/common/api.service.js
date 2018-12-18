@@ -166,6 +166,11 @@ export const UtilService = {
         return ApiService.query('utils/uploadurl', {params: params});
     },
     signedUpdate(params){
-        return axios.put(params.url, [params.file]);
+        return axios.put(params.url, [params.file], {
+            transformRequest: [(data, headers) => {
+                delete headers.common.Authorization;
+                return data;
+            }]
+        });
     }
 };

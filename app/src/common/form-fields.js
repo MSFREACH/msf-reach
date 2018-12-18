@@ -97,6 +97,9 @@ export const EXTERNAL_CAPACITY_FIELDS = {
     deployment: ''
 };
 
+export const EXTERNAL_CAPACITY_TYPES = ['governmental','other']; 
+
+
 export const DEFAULT_EVENT_FIGURES = {
     keyFigures : [{
         status: '',

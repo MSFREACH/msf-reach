@@ -260,6 +260,9 @@ const getters ={
                     return item.from_who +': '+ item.amount;
                 });
             }
+            var totalBudget = _.sumBy(payload.msf_resource_budget, function(budgetItem){
+                return budgetItem.amount;
+            }); 
 
             var currentStatusStat = {
                 status: payload.event_status,
@@ -269,7 +272,7 @@ const getters ={
                     nationalStaffCount: payload.msf_resource_staff_national
                 },
                 budget : {
-                    total: payload.msf_resource_budget,
+                    total: totalBudget,
                     currency: null
                 }
             };

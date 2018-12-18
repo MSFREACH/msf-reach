@@ -176,13 +176,17 @@ export default {
                             vm.signedFileUrls.push(fileLink);
                             console.log('1111 ---- dispatch.then ---- ', fileLink);
                             this.uploadFile(file);
+                            return; 
                         }
                     });
             }
         },
         uploadFile(file){
+            console.log('222 ----uploadFile', file);
+
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
                 .then(() => {
+                    console.log('444 ----uploadFile', file);
                     this.save();
                 });
         },
@@ -197,8 +201,7 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var isEdit = (this.editIndex && this.editedSitRep.id)  != -1;
-
+            var isEdit = this.editIndex && this.editedSitRep.id;
             var action = isEdit ? EDIT_SITREP : CREATE_SITREP;
             var params = _.extend(this.editedSitRep, {
                 username: this.currentUser.username,

@@ -1,13 +1,11 @@
 <template>
-    <v-container class="eventSubContent">
-        <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'" dark>
+    <v-container class="eventSubContent statusToggle">
+        <nav v-if="eventResources.perStatus && eventResources.perStatus.length> 0" class="statusTabWrapper">
+            <v-btn flat small :class="item.status+'Tab statusTabs'" v-for="(item, index) in eventResources.perStatus" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
+        </nav>
+        <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'" dark>
             <div v-if="eventResources">
-                    <div v-for="(item, index) in eventResources.perStatus">
-                        <nav v-if="eventResources.perStatus.length> 0" class="actions">
-                            <a :class="'statusTabs' + item.status" v-for="(item, index) in eventResources.perStatus" :key="index" @click="switchStatus(item)">{{item.status}}</a>
-                        </nav>
-                    </div>
-                    <v-layout class="actions" v-if="allowEdit">
+                    <v-layout row wrap class="actions" v-if="allowEdit">
                         <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                         <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
                     </v-layout>
@@ -53,74 +51,53 @@
 
                     </v-layout>
                     <v-layout v-else>
-                        <v-flex v-if="displayStatusResources" :class="displayStatusResources.status+'Wrapper'">
+                        <v-flex xs12 :class="displayStatusResources.status+'Wrapper'">
                             <div class="full-width">
                                 <label>Staff List</label>
-                                {{displayStatusResources.staff.listFileUrl}}
+                                <span v-if="!displayStatusResources.staff.listFileUrl">--</span> {{displayStatusResources.staff.listFileUrl}}
                             </div>
-
                             <div class="one-half">
                                 <label>Number of Expatriate</label>
-                                {{displayStatusResources.staff.expatriateCount}}
+                                <span v-if="!displayStatusResources.staff.expatriateCount">--</span> {{displayStatusResources.staff.expatriateCount}}
                             </div>
-
                             <div class="one-half">
                                 <label>Number of National staff</label>
-                                {{displayStatusResources.staff.nationalStaffCount}}
+                                <span v-if="!displayStatusResources.staff.nationalStaffCount">--</span> {{displayStatusResources.staff.nationalStaffCount}}
                             </div>
                         </v-flex>
-                        <v-flex v-else>
-                            <div class="full-width">
-                                <label>Staff List</label> --
-                            </div>
-                            <div class="one-half">
-                                <label>Number of Expatriate</label> --
-                            </div>
-                            <div class="one-half">
-                                <label>Number of National staff</label> --
-                            </div>
-                        </v-flex>
-                        <div class="full-width">
+                        <hr class="row-divider"/>
+                        <div>
                             <div class="primary-text">Nationalities that requires Visa</div>
                             <label>Nationalities</label>
                             <span v-if="!eventResources.visa_requirement">--</span> {{eventResources.visa_requirement.toString()}}
                         </div>
-
-                        <div class="full-width">
+                        <hr class="row-divider"/>
+                        <div>
                             <div class="primary-text">Health and vaccination requirements</div>
                             <label>Required</label>
                             <span v-if="!eventResources.vaccination_requirement.required">--</span> {{eventResources.vaccination_requirement.required.toString()}}
                             <label>Recommended</label>
                             <span v-if="!eventResources.vaccination_requirement.recommended">--</span> {{eventResources.vaccination_requirement.recommended.toString()}}
                         </div>
-                        <v-flex v-if="displayStatusResources" :class="displayStatusResources.status+'Wrapper'">
-                            <div class="one-half">
-                                <label>Total Budget</label>
-                                {{displayStatusResources.budget.total}} {{displayStatusResources.budget.currency}}
-                            </div>
+                        <hr class="row-divider"/>
 
-                            <div class="one-half">
-                                <label>Institutional Donors</label>
-                                {{eventResources.institutional_donors}}
-                            </div>
-                        </v-flex>
-                        <v-flex v-else>
+
+                        <v-flex xs12 :class="displayStatusResources.status+'Wrapper'">
                             <div class="one-half">
                                 <label>Total Budget</label>
-                                <span v-if="!displayStatusResources.budget.total">--</span>
+                                <span v-if="displayStatusResources.budget.total > 0">--</span> {{displayStatusResources.budget.total}} {{displayStatusResources.budget.currency}}
                             </div>
                             <div class="one-half">
                                 <label>Institutional Donors</label>
-                                <span v-if="!eventResources.institutional_donors">--</span>
+                                <span v-if="eventResources.institutional_donors.length ==0">--</span>
+                                <span v-else>{{eventResources.institutional_donors}} </span>
                             </div>
                         </v-flex>
-
-
                     </v-layout>
 
             </div>
             <div v-else>
-                NO RECORD YET
+                No resources recorded yet
             </div>
         </div>
     </v-container>

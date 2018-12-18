@@ -7,7 +7,7 @@ import Vue from 'vue';
 import { SITREPService } from '@/common/api.service';
 
 import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, DELETE_SITREP } from './actions.type';
-import { FETCH_START, FETCH_SITREPS_END, SET_ERROR, RESET_STATE } from './mutations.type';
+import { FETCH_SITREPS_START, FETCH_SITREPS_END, SET_ERROR, RESET_STATE } from './mutations.type';
 
 const initialState = {
     error: null,
@@ -44,8 +44,8 @@ const getters = {
 
 const actions = {
     [FETCH_SITREPS]({commit}, params){
-        console.log('FETCH_SITREPS----', params); 
-        commit(FETCH_START);
+        console.log('FETCH_SITREPS----', params);
+        commit(FETCH_SITREPS_START);
         return SITREPService.query(params)
             .then(({data}) =>{
                 commit(FETCH_SITREPS_END, data.result);
@@ -69,7 +69,7 @@ const actions = {
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
 const mutations = {
-    [FETCH_START](state){
+    [FETCH_SITREPS_START](state){
         state.isLoadingSitReps = true;
     },
     [FETCH_SITREPS_END](state, payload){

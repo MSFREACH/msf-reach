@@ -4,7 +4,7 @@
 import Vue from 'vue';
 import { EventNotificationService } from '@/common/api.service';
 import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION } from './actions.type';
-import { FETCH_START, FETCH_EVENT_NOTIFICATIONS_END, SET_ERROR, RESET_STATE, SET_EVENT_NOTIFICATION } from './mutations.type';
+import { FETCH_EVENT_NOTIFICATIONS_START, FETCH_EVENT_NOTIFICATIONS_END, SET_ERROR, RESET_STATE, SET_EVENT_NOTIFICATION } from './mutations.type';
 
 const initialState = {
     error: null,
@@ -38,7 +38,7 @@ const getters = {
 
 const actions = {
     [FETCH_EVENT_NOTIFICATIONS]({commit}, params){
-        commit(FETCH_START);
+        commit(FETCH_EVENT_NOTIFICATIONS_START);
         return EventNotificationService.query(params)
             .then(({ data }) => {
                 commit(FETCH_EVENT_NOTIFICATIONS_END, data.result);
@@ -65,7 +65,7 @@ const actions = {
 
 /* eslint no-param-reassign: ["error", { "props": false }] */
 const mutations = {
-    [FETCH_START] (state) {
+    [FETCH_EVENT_NOTIFICATIONS_START] (state) {
         state.isLoadingEventNotifications = true;
     },
     [FETCH_EVENT_NOTIFICATIONS_END] (state, payload){

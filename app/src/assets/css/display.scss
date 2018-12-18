@@ -3,7 +3,7 @@ ul{
 }
 
 .eventSubContent{
-    padding: 14px;
+    padding: 22px;
     display: flex;
     .actions{
         cursor: pointer;
@@ -33,7 +33,42 @@ ul{
         }
     }
 }
-
+.capacity-rows,
+.notification-rows{
+    width: 75%;
+    max-width: 1180px;
+    display: block;
+    margin: 0;
+    .searchHeader{
+        width: 45%;
+        margin-bottom: 20px;
+        min-width: 400px;
+        .v-input{
+            height: 40px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 6px 21px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .v-text-field--single-line{
+            width: 48%;
+            margin-top: 0;
+        }
+        .v-select{
+            width: 32%;
+            margin: 0 10px;
+        }
+        .v-btn--floating.v-btn--small{
+            background: #fff;
+            display: inline-block;
+            margin: 0;
+        }
+        .v-dialog__container{
+            width: auto;
+        }
+    }
+}
 
 
 .full-text-fields{
@@ -93,8 +128,9 @@ ul{
 
 
 hr.row-divider{
+    border: .5px solid;
     width: 100%;
-    margin: 1em;
+    margin: 1em 0;
     height: 1px;
     color: #ccc;
 }
@@ -127,7 +163,48 @@ tr.v-datatable__expand-row .v-card.expanded-field{
     color: #fff;
 }
 
+.eventSubContent.statusToggle{
+    padding: 0 22px;
+    display: inherit;
+}
 
 .v-date-picker-table--date td{
     width: 5px;
+}
+
+.statusTabWrapper{
+    margin: 20px 20px 0;
+}
+
+.monitoringTab{
+    background: #95E1D3;
+    border: #95E1D3 2px solid;
+}
+.explorationTab{
+    background: #F38181;
+    border: #F38181 2px solid;
+}
+.ongoingTab{
+    background: #FCE38A;
+    border: #FCE38A 2px solid;
+}
+.interventionTab{
+    background: #FFB677;
+    border: #FFB677 2px solid;
+}
+
+.completeTab{
+    background: #919398;
+    border: #919398 2px solid;
+}
+.statusTabs{
+    border-bottom: none;
+    color:#fff;
+    border-radius: 5px 5px 0 0;
+    padding: 0 20px;
+    margin: 0;
+}
+.statusTabs:first-of-type{
+    background: #fff;
+    color: #707070;
 }

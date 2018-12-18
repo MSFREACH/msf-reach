@@ -1,13 +1,13 @@
 <template>
-    <v-container class="eventSubContent">
-        <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'" dark>
+    <v-container class="eventSubContent statusToggle">
+
+        <nav v-if="eventFigures.keyFigures && eventFigures.keyFigures.length > 0" class="statusTabWrapper">
+            <v-btn flat small :class="item.status+'Tab statusTabs'" v-for="(item, index) in eventFigures.keyFigures" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
+        </nav>
+
+        <div :class="editing ? 'edit-wrapper  full-text-fields':' full-text-fields'" dark>
 
             <div v-if="eventFigures">
-                <div v-for="(item, index) in eventFigures.keyFigures">
-                    <nav v-if="eventFigures.keyFigures && eventFigures.keyFigures.length> 0" class="actions">
-                        <a class="statusTabs" v-for="(item, index) in eventFigures.keyFigures" :key="index" @click="switchStatus(item)">{{item.status}}</a>
-                    </nav>
-                </div>
                 <v-layout class="actions" v-if="allowEdit">
                     <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                     <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
@@ -70,19 +70,24 @@
                     <v-text-field v-if="editFigures.satistics.source == 'other'" v-model="editFigures.satistics.source"></v-text-field>
 
                 </v-layout>
-                <v-layout v-else>
-                    <v-layout v-if="displayKeyFigures">
-
-                        <v-flex v-for="(item, index) in displayKeyFigures" :key="index">
-                            <v-flex>
-                                <div class="specified-primary"> {{item.value}}</div>
-                            </v-flex>
-                            <v-flex>
-                                <div class="sub-category-text"> {{item.subCategory}} </div>
+                <v-layout row wrap v-else>
+                    <v-flex v-if="displayKeyFigures">
+                        <div v-for="(item, index) in displayKeyFigures" :key="index">
+                            <div class="specified-primary">
+                                {{item.value}}
+                            </div>
+                            <div class="sub-category-text">
+                                {{item.subCategory}}
                                 <div class="category-text"> {{item.category}} </div>
-                            </v-flex>
-                        </v-flex>
-
+                            </div>
+                        </div>
+                    </v-flex>
+                    <div class="full-width" v-else>
+                        <label>Key Figures</label>
+                        <div>--</div>
+                    </div>
+                    <hr class="row-divider"/>
+                    <v-flex xs12>
                         <div class="one-half">
                             <label>NUMBER OF BENEFICIARIES </label>
                             {{totalBeneficiaries}}
@@ -91,44 +96,27 @@
                             <label>NUMBER OF SERVICES PROVIDED </label>
                             {{totalServices}}
                         </div>
-
-                    </v-layout>
-                    <v-layout v-else>
-                        <v-flex xs12>
-                            <div class="full-width"> No Key figures yet </div>
-                        </v-flex>
-                    </v-layout>
-                    <v-divider></v-divider>
-                    <v-layout>
-                        <v-flex>
+                    </v-flex>
+                    <hr class="row-divider"/>
+                    <v-flex xs12 v-if="eventFigures">
+                        <div class="quarter-width">
                             <label>COUNTRY POPULATION</label>
-                            {{eventFigures.population.total}}
-                        </v-flex>
-                        <v-flex>
+                            <span v-if="!eventFigures.population.total">--</span>{{eventFigures.population.total}}
+                        </div>
+                        <div class="quarter-width">
                             <label>IMPACTED POPULATION</label>
-                            {{eventFigures.population.impacted}}
-                        </v-flex>
-                        <v-flex>
+                            <span v-if="!eventFigures.population.impacted">--</span>{{eventFigures.population.impacted}}
+                        </div>
+                        <div class="quarter-width">
                             <label>MORTALITY</label>
-                            {{eventFigures.population.mortality.rate}}
-                        </v-flex>
-                        <v-flex>
+                            <span v-if="!eventFigures.population.mortality.rate">--</span>{{eventFigures.population.mortality.rate}}
+                        </div>
+                        <div class="quarter-width">
                             <label>MORBIDITY</label>
-                            {{eventFigures.population.morbidity.rate}}
-                        </v-flex>
-                        <v-flex>
-                            <label>COUNTRY POPULATION</label>
-                            {{eventFigures.satistics.collection}}
-                        </v-flex>
-                        <v-flex>
-                            <label>COUNTRY POPULATION</label>
-                            {{eventFigures.satistics.source}}
-                        </v-flex>
-                    </v-layout>
+                            <span v-if="!eventFigures.population.morbidity.rate">--</span>{{eventFigures.population.morbidity.rate}}
+                        </div>
+                    </v-flex>
                 </v-layout>
-
-            </div>
-            <div v-else>
             </div>
         </div>
     </v-container>
@@ -152,8 +140,8 @@ export default {
             editMode:{
                 offset: -1
             },
-            editKeyFigure: null,
-            editFigures: null,
+            editKeyFigure: DEFAULT_KEY_FIGURES,
+            editFigures: DEFAULT_EVENT_FIGURES,
             _beforeEditingCache: {},
             _beforeEditKeyFigCache: {},
             defaulKeyFigure: DEFAULT_KEY_FIGURES,
@@ -245,7 +233,6 @@ export default {
             if(!_.isEmpty(this.displayKeyFigures)){
                 return displayKeyFigures.status == activeKeyFigures.status;
             }else{
-                //TODO: POPULATION FIGURES CAN BE editted during Monitoring ...
                 return (this.eventStatus != 'monitoring') && (this.eventStatus !='complete');
             }
         },
