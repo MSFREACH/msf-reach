@@ -7,7 +7,7 @@
             <div v-if="eventResources">
                     <v-layout row wrap class="actions" v-if="allowEdit">
                         <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                        <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
+                        <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
                     </v-layout>
 
                     <v-layout row wrap v-if="editing" dark>

@@ -3,7 +3,7 @@
         <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'">
             <div class="actions">
                 <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
+                <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
             </div>
              <v-layout row wrap v-if="!editing">
                 <div class="top-level primary-text">
@@ -32,7 +32,7 @@
                     <v-flex v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" :key="index">
                         <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else>{{area.country}}</span>
-                        <div class="sub-tag" v-if="eventMetadata.severity_measures">
+                        <div class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
                             <span :style="'color:'+allSeverity[eventMetadata.severity_measures[index].scale-1].color">{{allSeverity[eventMetadata.severity_measures[index].scale-1].label}} severity</span>
                             <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
                         </div>
@@ -46,34 +46,24 @@
                 <!-- Temporal row -->
 
                 <div class="one-third">
-                    <label>Created at</label>
+                    <label>OPEN DATE</label>
                     {{ eventCreatedAt | relativeTime }}
-                </div>
-                <div class="one-third">
-                    <label>Last Updated</label>
-                    {{ eventProperties.updated_at | relativeTime }}
                 </div>
                 <div class="one-third">
                     <label>Local Date/Time</label>
                     {{eventMetadata.event_local_time | fullDate }}
                 </div>
-
+                <div class="one-third">
+                    <label>Mission Contact Person</label>
+                    <div v-if="eventMetadata.incharge_name"> {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
+                    <div v-else> -- </div>
+                </div>
 
                 <hr class="row-divider"/>
-                <div class="one-third">
+                <div class="full-width">
                     <label>Description</label>
                     {{eventMetadata.description }}
                 </div>
-                <div class="one-third">
-                    <label>Latest Notification</label>
-                    {{eventMetadata.event_local_time | fullDate }}
-                </div>
-                <div class="one-third">
-                    <label>Mission Contact Person</label>
-                    <div> {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
-
-                </div>
-
                 <hr class="row-divider"/>
                 <div>
                     <a :href='eventMetadata.sharepoint_link' target="_blank">
@@ -91,8 +81,7 @@
 
                     <div class="quarter-width">
                         <label>Operator</label>
-                        <!-- TODO: dropdown selection form contact list -->
-                        <input type="text" v-model="eventProperties.operator" placeholder="name-position" />
+                        {{ eventProperties.operator }}
                     </div>
                 </div>
 
@@ -137,10 +126,11 @@
                         <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else> {{area.country}} </span>
                         <span class="remove" @click="removeArea(area)"> x </span>
-                        <div class="severity-wrapper" v-if="eventMetadata.severity_measures[index]">
+                        <div class="severity-wrapper">
                             <span class="label"> Severity analysis </span>
                             <span class="inputSeveritySlider"></span>
-                            <textarea v-model.trim="eventMetadata.severity_measures[index].description" placeholder="Severity description"></textarea>
+                            <!-- ####TODO **HEREHEREH !!! **** -->
+                            <!-- <textarea v-model.trim="eventMetadata.severity_measures[index].description" placeholder="Severity description"></textarea> -->
                         </div>
                     </div>
                     <new-map-entry></new-map-entry>
@@ -150,13 +140,8 @@
 
 
                 <div class="not-editable">
-                    <label> Event datetime  </label>
+                    <label> OPEN DATE  </label>
                     {{ eventCreatedAt | fullDate }}
-                </div>
-
-                <div>
-                    <label> Description </label>
-                    <textarea id="eventDescription" type="text" v-model="eventMetadata.description" placeholder="Event description"> </textarea>
                 </div>
 
                 <div>
@@ -170,6 +155,10 @@
                     <label> Mission Contact Person  </label>
                     <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
                     <input type="text" v-model="eventMetadata.incharge_name" placeholder="Name" />
+                </div>
+                <div>
+                    <label> Description </label>
+                    <textarea id="eventDescription" type="text" v-model="eventMetadata.description" placeholder="Event description"> </textarea>
                 </div>
 
                 <label> ID link - SharePoint </label>

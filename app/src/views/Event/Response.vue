@@ -78,7 +78,7 @@
 
                 <v-layout class="actions" v-if="displayResponse.status == activeResponse.status">
                     <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                    <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
+                    <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
                 </v-layout>
                 <v-layout row wrap>
                     <div class="top-level primary-text">
@@ -87,7 +87,7 @@
                     </div>
                     <div class="one-third">
                         <label>updated</label>
-                        {{displayResponse.timestamp | relativeTime}}
+                        {{displayResponse.updated | relativeTime}}
                     </div>
                     <div class="one-third">
                         <label>status</label>

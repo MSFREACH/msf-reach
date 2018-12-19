@@ -4,19 +4,24 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { EventsService} from '@/common/api.service';
-import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT, RESET_EVENT_STATE } from './actions.type';
+import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT, RESET_EVENT_STATE,
+    EDIT_EVENT_RESPONSES, EDIT_EVENT_EXT_CAPACITY, EDIT_EVENT_FIGURES, EDIT_EVENT_RESOURCES } from './actions.type';
 import { RESET_STATE, SET_EVENT } from './mutations.type';
 
 const initialState = {
+    eventId: null,
+    eventProperties:null,
     event: {
-        id: '',
         status: '',
+        type: '',
+        coordinates: {},
         metadata: {},
-        coordinates: [],
-        notifications: [],
-        body: {},
-        types: []
-    } // TODO: add associated reports & contacts later
+        properties: {},
+        responses: {},
+        extCapacity: {},
+        figures: {},
+        resources: {}
+    }
 };
 
 const state = Object.assign({}, initialState);
@@ -42,7 +47,40 @@ const actions = {
     },
     [EDIT_EVENT] ({state}){
         // TODO: update per section only
-        return EventsService.update(state.event.slug, state.event);
+        var payload = {
+            status: state.event.status,
+            metadata: state.event.metadata,
+            responses: state.event.responses,
+            extCapacity: state.event.extCapacity,
+            figures: state.event.figures,
+            resources: state.event.resources
+        };
+
+        return EventsService.update(state.eventId, payload);
+    },
+    [EDIT_EVENT_RESPONSES]({state}){
+        var payload = {
+            responses: state.event.responses
+        };
+        return EventsService.updateResponses(state.eventId, payload);
+    },
+    [EDIT_EVENT_EXT_CAPACITY]({state}){
+        var payload = {
+            extCapacity: state.event.extCapacity
+        };
+        return EventsService.updateExtCapacity(state.eventId, payload);
+    },
+    [EDIT_EVENT_FIGURES]({state}){
+        var payload = {
+            figures: state.event.figures
+        };
+        return EventsService.updateFigures(state.eventId, payload);
+    },
+    [EDIT_EVENT_RESOURCES]({state}){
+        var payload = {
+            resources: state.event.resources
+        };
+        return EventsService.updateResources(state.eventId, payload);
     },
     [RESET_EVENT_STATE] ({ commit }){
         // When cancel edits
@@ -57,11 +95,11 @@ const actions = {
 /* eslint no-param-reassign: ["error", { "props": false }] */
 const mutations = {
     [SET_EVENT] (state, payload){
-        state.event = payload.result.objects.output.geometries[0];
-        state.event.id = payload.result.objects.output.geometries[0].properties.id;
+        // state.event = payload.result.objects.output.geometries[0];
+        state.eventId = payload.result.objects.output.geometries[0].properties.id;
+        state.eventProperties = payload.result.objects.output.geometries[0].properties;
         state.event.metadata = payload.result.objects.output.geometries[0].properties.metadata;
-        // state.event.coordinates = payload.result.objects.output.geometries[0].coordinates;
-        state.event.body =payload.result.objects.output.geometries[0].properties;
+        state.event.coordinates = payload.result.objects.output.geometries[0].coordinates;
         state.event.status = payload.result.objects.output.geometries[0].properties.metadata.event_status;
         //------ future proof, when sub-content objs becomes available
         state.event.responses = payload.result.objects.output.geometries[0].properties.responses;
@@ -83,10 +121,10 @@ const getters ={
         return state.event;
     },
     currentEventId(state){
-        return state.event.id;
+        return state.eventId;
     },
     eventProperties(state){
-        return state.event.body;
+        return state.eventProperties;
     },
     eventStatus(state){
         return state.event.status;
@@ -103,7 +141,7 @@ const getters ={
             return currentNotifications.map(item => {
                 var currentFiles = item.notificationFileUrl ? [item.notificationFileUrl] : [];
                 var newSchema = {
-                    eventId: state.event.id,
+                    eventId: state.eventId,
                     category: null,
                     description: item.notification,
                     created: new Date(item.notification_time * 1000).toISOString(), // units in exisitng db is different
@@ -118,11 +156,15 @@ const getters ={
     },
     eventTypes(state){
         if(state.event.metadata.types){
-            return state.event.metadata.types;
+            console.log(' ---- it first one',state.event.metadata.types ); 
+            var compactTypes = _.compact(state.event.metadata.types);
+            var compactSubTypes =  _.compact(state.event.metadata.sub_types);
+            return compactTypes.concat(compactSubTypes);
         }
 
-        if(state.event.type){
-            var types = state.event.type.replace(/other:/g, '').split(',');
+        if(state.eventProperties.type){
+            console.log(' ---- it second one',state.eventProperties.type );
+            var types = state.eventProperties.type.replace(/other:/g, '').split(',');
             var cTypes = _.compact(types);
             _.remove(cTypes, function(t){
                 return t.indexOf('disease_outbreak') > -1 || t.indexOf('natural_disaster') > -1 ;
@@ -157,9 +199,9 @@ const getters ={
             }
 
             return [{
-                timestamp : state.event.body.updated_at,
+                updated : state.eventProperties.updated_at,
                 status: payload.event_status,
-                project_code: state.event.body.project_code,
+                project_code: state.eventProperties.project_code,
                 start_date: payload.start_date_msf_response,
                 end_date: payload.end_date_msf_response,
                 response: {
@@ -262,7 +304,7 @@ const getters ={
             }
             var totalBudget = _.sumBy(payload.msf_resource_budget, function(budgetItem){
                 return budgetItem.amount;
-            }); 
+            });
 
             var currentStatusStat = {
                 status: payload.event_status,

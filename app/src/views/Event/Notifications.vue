@@ -259,8 +259,7 @@ export default {
 
             var action = isEdit? EDIT_EVENT_NOTIFICATION : CREATE_EVENT_NOTIFICATION;
             var params  = _.extend(this.editedItem, {
-                username: this.currentUser.username,
-
+                username: this.currentUser.username
             });
 
             if (isEdit){

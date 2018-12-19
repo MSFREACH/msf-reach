@@ -32,7 +32,7 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn label='add' @click='submit'></v-btn>
+                    <v-btn label='add' @click='add'></v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -41,7 +41,7 @@
             <div v-if="eventExtCapacity">
                 <div class="actions">
                     <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                    <span class="cancel" v-if="editing" @click="cancelEdit()">x</span>
+                    <span class="cancel" v-if="editing" @click="editing = false">x</span>
                 </div>
                 <div class="primary-text">External capacity Analysis</div>
                 <v-data-table :headers="headers" :items="displayCapacities" :dark="editing" item-key="arrivalDate" :search="search" hide-actions>
@@ -51,17 +51,19 @@
                                 v-show="editMode.offset != props.index"
                                 slot-scope="{ hover }">
                                 <td><span v-if="!props.item.name"> -- </span> {{ props.item.name }}</td>
+                                <td><span v-if="!props.item.type"> -- </span>{{ props.item.type }}</td>
                                 <td><span v-if="!props.item.arrival_date"> -- </span>{{ props.item.arrival_date }}</td>
                                 <td><span v-if="!props.item.deployment"> -- </span>{{ props.item.deployment}}</td>
                                 <td class="justify-center layout px-0" v-if="editing" :class="hover ? 'showCrud' : 'hide'">
-                                    <a @click="editItem(props.item, props.index)"> edit </a>
-                                    <a @click="deleteItem(props.item)"> delete </a>
+                                    <a @click="edit(props.item, props.index)"> edit </a>
+                                    <a @click="delete(props.item)"> delete </a>
                                 </td>
                             </tr>
                         </v-hover>
                         <tr :key="props.index"
                             v-show="editMode.offset == props.index">
                             <td><v-text-field v-model="editedItem.name" label="name"></v-text-field></td>
+                            <td><v-select :items="allCapacityTypes" v-model="editedItem.type" label="Capacity"></v-select></td>
                             <td>
                                 <v-menu ref="editMode.dateSelected" :close-on-content-click="false" v-model="editMode.dateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
                                     <v-text-field slot="activator" v-model="editedItem.arrival_date" persistent-hint type="date"></v-text-field>
@@ -69,6 +71,10 @@
                                 </v-menu>
                             </td>
                             <td><v-textarea solo label="description" v-model="editedItem.deployment" background-color="white" color="secondary"></v-textarea></td>
+                            <td>
+                                <span class="inline-action" @click="localSave">confirm</span>
+                                <span class="inline-action" @click="clearEdit">cancel</span>
+                            </td>
                         </tr>
                     </template>
 
@@ -76,7 +82,7 @@
                         No external capacities at the moment
                     </template>
                 </v-data-table>
-                <a v-if="editing" @click="addItem()">add</a>
+                <a v-if="editing" @click="add()">add</a>
 
             </div>
             <div v-else>
@@ -95,7 +101,7 @@ import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
 import { DEFAULT_EXT_CAPACITY_HEADERS } from '@/common/common';
 import { EXTERNAL_CAPACITY_FIELDS, EXTERNAL_CAPACITY_TYPES } from '@/common/form-fields';
-
+import { EDIT_EVENT } from '@/store/actions.type';
 export default {
     name: 'r-event-extCapacity',
     data(){
@@ -120,6 +126,14 @@ export default {
         //TODO: add + edit
     },
     watch: {
+        editing(val){
+            debugger;
+            if(!val && (this.editMode.offset != -1)){
+                confirm('Are you sure you want to continue and discard the changes?') && this.clearEdit();
+            }else{
+                this.updateCapacity();
+            }
+        }
     },
     filters: {
     },
@@ -132,20 +146,6 @@ export default {
                 return b.arrival_date - a.arrival_date;
             });
         }
-        // displayGovCapacity(){
-        //     return this.eventExtCapacity.filter(item =>{
-        //         return item.type == 'governmental';
-        //     }).sort(function(a, b){
-        //         return b.arrival_date - a.arrival_date;
-        //     });
-        // },
-        // displayNGOCapacity(){
-        //     return this.eventExtCapacity.filter(item =>{
-        //         return item.type == 'other';
-        //     }).sort(function(a, b){
-        //         return b.arrival_date - a.arrival_date;
-        //     });
-        // }
     },
     methods:{
         filterList(type){
@@ -153,24 +153,37 @@ export default {
                 return item.type == type;
             });
         },
-        addItem(type){
+        add(type){
             console.log('add Entry clicked ---- ', type);
             var newInstance = this.defaultItem;
-            this.displayResponse.push(newInstance);
+            this.displayCapacities.push(newInstance);
             this.editedItem = Object.assign({}, newInstance);
-            this.editMode.offset = this.displayResponse.length - 1; // the latest one
+            this.editMode.offset = this.displayCapacities.length - 1; // the latest one
         },
-        editItem(item, index){
-            console.log(' editItem --- ', item, index);
+        edit(item, index){
+            console.log(' edit --- ', item, index);
             this.editedItem = Object.assign({}, item);
             this.editMode.offset = index;
-
         },
-        deleteItem (item) {
+        clearEdit(){
+            this.editMode.offset = -1;
+            this.editedItem = this.defaultItem;
+        },
+        delete(item){
             const index = this.eventExtCapacity.indexOf(item);
             confirm('Are you sure you want to delete this item?') && this.eventExtCapacity.splice(index, 1);
         },
-        close () {
+        localSave(){
+            this.eventExtCapacity[this.editMode.offset] = this.editedItem;
+            debugger;
+            this.clearEdit();
+        },
+        updateCapacity(){
+            this.$store.dispatch(EDIT_EVENT).then((data) =>{
+                console.log('---- ', data);
+            });
+        },
+        close(){
             this.dialog = false;
             setTimeout(() => {
                 this.createItem = Object.assign({}, this.defaultItem);

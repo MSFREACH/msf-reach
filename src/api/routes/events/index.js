@@ -5,7 +5,7 @@ import events from './model';
 import missions from './../missions/model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
+import { cacheResponse, handleGeoResponse, handleResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 import { celebrate as validate, Joi } from 'celebrate';
@@ -170,6 +170,115 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    api.put('/:id/responses',ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                responses: Joi.array().items(Joi.object().keys({
+                    updated : Joi.date().iso(),
+                    status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+                    project_code: Joi.string().allow(null),
+                    start_date: Joi.date().iso(),
+                    end_date: Joi.date().iso().allow(null),
+                    response: {
+                        type: Joi.string(),
+                        description: Joi.string().allow(null),
+                    },
+                    total_days : Joi.number().integer().min(1),
+                    location: Joi.object().required().keys({
+                        lat: Joi.number().min(-90).max(90).required(),
+                        lng: Joi.number().min(-180).max(180).required()
+                    }),
+                    operational_center : Joi.string(),
+                    type_of_programmes : Joi.array().items(Joi.object()),
+                    supply_chain: {
+                        type: Joi.string().allow(null),
+                        description: ''
+                    },
+                    sharepoint_link: ''
+                }))
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).updateEventResponses(req.params.id, req.body)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                    logger.error(err);
+                    next(err);
+                });
+        });
+
+    api.put('/:id/extCapacity',ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                extCapacity: Joi.array().items(Joi.object().keys({
+                    type: Joi.string(),
+                    name: Joi.string(),
+                    arrival_date: Joi.date().iso(),
+                    deployment: Joi.string()
+                })),
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).updateEventExtCapacity(req.params.id, req.body)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                    logger.error(err);
+                    next(err);
+                });
+        });
+
+    api.put('/:id/figures',ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                figures: Joi.object().keys({
+                    keyFigures: Joi.array().items(Joi.object().keys({
+                        status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+                        figures: Joi.array().items(Joi.object())
+                    })),
+                    population: Joi.object().allow(null),
+                    statistics: Joi.object().allow(null)
+                })
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).updateEventFigures(req.params.id, req.body)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                    logger.error(err);
+                    next(err);
+                });
+        });
+
+    api.put('/:id/resources',ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                resources: Joi.object().keys({
+                    perStatus: Joi.array().items(Joi.object().keys({
+                        status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+                        staff: Joi.object(),
+                        budget: Joi.object()
+                    })),
+                    institutional_donors: Joi.object(),
+                    visa_requirement: Joi.array().items(Joi.string()),
+                    vaccination_requirement: Joi.object().keys({
+                        required: Joi.array().items(Joi.string()).allow(null),
+                        recommended: Joi.array().items(Joi.string()).allow(null)
+                    }),
+                })
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).updateEventResources(req.params.id, req.body)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                    logger.error(err);
+                    next(err);
+                });
+        });
     // Update an event record's location in the database
     api.patch('/updatelocation/:id',ensureAuthenticatedWrite,
         validate({

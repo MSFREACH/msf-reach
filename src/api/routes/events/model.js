@@ -155,6 +155,85 @@ export default (config, db, logger) => ({
             .catch((err) => reject(err));
     }),
 
+
+    updateEventResponses: (id, body) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+            SET updated_at = now(),
+            responses = responses || $1
+            WHERE id = $2
+            RETURNING responses, updated_at, status`;  // not sure if we need to return all fields here like updateEvent
+
+        // Setup values
+        let values = [ body.status, body.responses, id];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), status: data.status, responses: data.responses}))
+            .catch((err) => reject(err));
+    }),
+
+    updateEventExtCapacity: (id, body) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+            SET updated_at = now(),
+            extCapacity = extCapacity || $1
+            WHERE id = $2
+            RETURNING extCapacity, updated_at, status`;
+
+        // Setup values
+        let values = [ body.extCapacity, id];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), status: data.status, extCapacity: data.extCapacity }))
+            .catch((err) => reject(err));
+    }),
+
+
+    updateEventFigures: (id, body) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+            SET updated_at = now(),
+            figures = figures || $1
+            WHERE id = $2
+            RETURNING figures, updated_at`;
+
+        // Setup values
+        let values = [ body.figures, id];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), status: data.status, figures: data.figures }))
+            .catch((err) => reject(err));
+    }),
+
+    updateEventResources: (id, body) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+            SET updated_at = now(),
+            resources = resources || $1
+            WHERE id = $2
+            RETURNING resources, updated_at, status`;
+
+        // Setup values
+        let values = [ body.resources, id];
+
+        // Execute
+        logger.debug(query, values);
+        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), status: data.status, resources: data.resources }))
+            .catch((err) => reject(err));
+    }),
+
+
     activateEvent: (body) => new Promise((resolve, reject) => {
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
