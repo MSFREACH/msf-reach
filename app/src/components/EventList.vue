@@ -12,22 +12,33 @@
             hide-actions
             wrap row>
                 <v-toolbar class="listHeader" slot="header" flat>
-                      <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details xs10></v-text-field>
-                      <new-event xs2></new-event>
-                      <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" round xs5></v-select>
-                      <v-btn-toggle v-model="selectedStatus">
-                          <span v-for="(status, index) in allEventStatuses"
-                          :value="status.value"
-                          :key="index"
-                          :class="status.value + '-fill select-status-filter'"
-                          @click="filterByStatus(status.value)">
-                          </span>
-                      </v-btn-toggle>
+                    <div class="full-width">
+                        <v-text-field v-model="search" label="Search" single-line hide-details xs10></v-text-field>
+                        <new-event xs2></new-event>
+                    </div>
+
+                    <div class="full-width">
+                        <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" round></v-select>
+                        <div :class="selectedStatus + '-wrapper statusWrapper'">
+                            <label>
+                                <span v-if="selectedStatus">{{selectedStatus}}</span>
+                                <span v-else>status</span>
+                            </label>
+                            <v-btn-toggle :value="selectedStatus">
+                                <span v-for="(status, index) in allEventStatuses"
+                                :value="status.value"
+                                :key="index"
+                                :class="status.value + '-fill select-status-filter'"
+                                @click="filterByStatus(status.value)">
+                                </span>
+                            </v-btn-toggle>
+                        </div>
+                    </div>
                 </v-toolbar>
                 <v-list class="result-list" three-line slot="item" slot-scope="props">
                     <v-list-tile :key="props.item.id" avatar ripple :to="{name: 'event-general', params: {'slug': props.item.id}}">
                         <v-list-tile-content>
-                            <v-list-tile-title :class="props.item.metadata.event_status">
+                            <v-list-tile-title :class="props.item.metadata.event_status.toLowerCase()">
                                 <span class="title-text"> {{props.item.metadata.name}} </span>
                                 <span class="list-actions">
                                     <v-icon color="grey lighten-1">exit_to_app</v-icon>
@@ -126,14 +137,15 @@ export default {
                     'length' : 250,
                     'separator' : ' '
                 });
+                var cleanAreas = _.compact(item.metadata.areas);
 
-                if(!item.metadata.areas){
+                if(!item.metadata.areas || _.isEmpty(cleanAreas)){
                     item.place = item.metadata.country;
                 }else{
-                    if(item.metadata.areas[0].region){
-                        item.place = item.metadata.areas[0].region + item.metadata.areas[0].country_code;
+                    if(cleanAreas[0].region){
+                        item.place = cleanAreas[0].region + cleanAreas[0].country_code;
                     }else{
-                        item.place = item.metadata.areas[0].country;
+                        item.place = cleanAreas[0].country;
                     }
                 }
 
@@ -159,6 +171,7 @@ export default {
             this.$store.dispatch(FETCH_EVENTS, this.listConfig);
         },
         filterByStatus(status){
+            this.selectedStatus = status;
             this.displayEvents = this.events.filter(item =>{
                 if(item.metadata.event_status && item.metadata.event_status.toLowerCase() == status) return item;
             });
@@ -247,10 +260,6 @@ export default {
     .v-list__tile__sub-title{
         font-weight: normal;
         color: #000;
-    }
-    .v-btn-toggle{
-      background: inherit !important;
-      display: flex;
     }
     .select-status-filter{
         width: 28px;

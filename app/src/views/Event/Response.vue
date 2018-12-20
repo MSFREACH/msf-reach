@@ -1,7 +1,7 @@
 <template>
     <v-container class="eventSubContent statusToggle">
         <nav v-if="eventResponses && eventResponses.length> 0" class="statusTabWrapper">
-            <v-btn flat small :class="item.status+'Tab statusTabs'" v-for="(item, index) in eventResponses" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
+            <v-btn flat small :class="item.status.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in eventResponses" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
         </nav>
         <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'" dark>
             <v-layout row wrap v-if="editing" dark>

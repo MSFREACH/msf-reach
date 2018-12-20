@@ -156,14 +156,12 @@ const getters ={
     },
     eventTypes(state){
         if(state.event.metadata.types){
-            console.log(' ---- it first one',state.event.metadata.types ); 
             var compactTypes = _.compact(state.event.metadata.types);
             var compactSubTypes =  _.compact(state.event.metadata.sub_types);
             return compactTypes.concat(compactSubTypes);
         }
 
         if(state.eventProperties.type){
-            console.log(' ---- it second one',state.eventProperties.type );
             var types = state.eventProperties.type.replace(/other:/g, '').split(',');
             var cTypes = _.compact(types);
             _.remove(cTypes, function(t){
@@ -225,24 +223,37 @@ const getters ={
     eventExtCapacity(state){
         if(!state.event.extCapacity && state.event.metadata){
             var payload = state.event.metadata;
-            var cap = payload.capacity ? payload.capacity : '';
-            var action = payload.ext_capacity_action_plan ? `Action plan: \n ${payload.ext_capacity_action_plan}` : '';
-            var human = payload.ext_capacity_by_humanitarian ? `Humanitarian: \n  ${payload.ext_capacity_by_humanitarian}` : '';
-            var ground = payload.ext_capacity_type_in_ground ? `On Ground: \n ${payload.ext_capacity_type_in_ground}:`: '';
-            var govCapacity = {
-                type: 'governmental',
-                name: null,
-                arrival_date: null,
-                deployment: cap + action + human + ground
-            };
-
-            var capacities = _.map(payload.ext_other_organizations, function(item){
-                item.type = 'other';
-                return item;
+            var cap = payload.capacity ? payload.capacity : null;
+            var action = payload.ext_capacity_action_plan ? `Action plan: \n ${payload.ext_capacity_action_plan}` : null;
+            var human = payload.ext_capacity_by_humanitarian ? `Humanitarian: \n  ${payload.ext_capacity_by_humanitarian}` : null;
+            var ground = payload.ext_capacity_type_in_ground ? `On Ground: \n ${payload.ext_capacity_type_in_ground}:`: null;
+            var combined = [cap, action, human, ground].filter(function(el){
+                return el != null;
             });
+            var capacities= [];
 
-            capacities.push(govCapacity);
-            return capacities;
+            if(payload.ext_other_organizations && payload.ext_other_organizations.length > 0){
+                capacities = payload.ext_other_organizations.map(function(item){
+                    if(!!item.name && !!item.deployment){
+                        item.type = 'other';
+                        return item;
+                    }
+                });
+            }
+
+            if(combined.length > 0){
+                var govCapacity = {
+                    type: 'governmental',
+                    name: null,
+                    arrival_date: null,
+                    deployment: combined.join('\n')
+                };
+
+                capacities.push(govCapacity);
+            }
+            var cleanCapacities = capacities.filter(Boolean);
+
+            return cleanCapacities; 
 
         }else{
             return state.event.extCapacity;

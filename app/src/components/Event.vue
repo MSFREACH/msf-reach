@@ -125,24 +125,4 @@ export default {
 <style lang='scss'>
     @import '@/assets/css/sideTab.scss';
     @import '@/assets/css/event.scss';
-    textarea#sharepoint{
-        opacity: 0;
-    }
-    .event-page{
-        position: absolute;
-        top: 40px;
-        padding: 0;
-    }
-    .second-nav{
-        margin-left: 30px;
-    }
-    .second-nav-links{
-        color: #707070;
-        padding: 10px 15px;
-        border-bottom: 1px solid #ccc;
-    }
-    .second-nav-links.router-link-exact-active{
-        font-weight: bold;
-        border-bottom: 1px solid #000;
-    }
 </style>

@@ -18,16 +18,18 @@
                     </div>
                 </div>
                 <!-- meta tags -->
-                <div class="one-third">
-                    <label>Type(s)</label>
-                    <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
-                    <!-- TODO: add pairing icon + clickable taglink -->
+                <div class="one-half">
+                  <div class="one-half">
+                      <label>Type(s)</label>
+                      <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
+                      <!-- TODO: add pairing icon + clickable taglink -->
+                  </div>
+                  <div class="one-half">
+                      <label>Status</label>
+                      <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
+                  </div>
                 </div>
-                <div class="one-third">
-                    <label>Status</label>
-                    <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
-                </div>
-                <div class="one-third">
+                <div class="one-half">
                     <label>Areas</label>
                     <v-flex v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" :key="index">
                         <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>

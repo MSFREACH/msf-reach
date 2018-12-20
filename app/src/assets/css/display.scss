@@ -1,3 +1,5 @@
+@import "msfStatus.scss"; 
+
 ul{
     list-style: none;
 }
@@ -35,7 +37,7 @@ ul{
 }
 .capacity-rows,
 .notification-rows{
-    width: 75%;
+    // width: 75%;
     max-width: 1180px;
     display: block;
     margin: 0;
@@ -79,9 +81,11 @@ ul{
     padding: 21px;
 }
 .split-text-fields{
+    max-height: calc(100vh - 200px);
+    overflow: scroll;
     position: relative;
     display: inline-block;
-    width: 60%;
+    width: 70%;
     margin: 0;
     border-radius:5px;
     background: #fff;
@@ -178,23 +182,7 @@ tr.v-datatable__expand-row .v-card.expanded-field{
     background: #95E1D3;
     border: #95E1D3 2px solid;
 }
-.explorationTab{
-    background: #F38181;
-    border: #F38181 2px solid;
-}
-.ongoingTab{
-    background: #FCE38A;
-    border: #FCE38A 2px solid;
-}
-.interventionTab{
-    background: #FFB677;
-    border: #FFB677 2px solid;
-}
 
-.completeTab{
-    background: #919398;
-    border: #919398 2px solid;
-}
 .statusTabs{
     border-bottom: none;
     color:#fff;

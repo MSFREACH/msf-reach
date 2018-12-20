@@ -1,0 +1,56 @@
+@import "./util/colors.scss";
+
+
+.monitoring{
+    color: $ev-status-monitoring !important;
+}
+.exploration{
+    color: $ev-status-exploration !important;
+}
+.ongoing{
+    color: $ev-status-ongoing !important;
+}
+.intervention{
+    color: $ev-status-intervention !important;
+}
+.complete{
+    color:  $ev-status-complete !important;
+}
+
+.monitoring-fill{
+    background: $ev-status-monitoring !important; // green;
+}
+.exploration-fill{
+    background: $ev-status-exploration !important; // red;
+}
+.ongoing-fill{
+    background: $ev-status-ongoing !important; // yellow;
+}
+.intervention-fill{
+    background: $ev-status-intervention !important; // yellow;
+}
+.complete-fill{
+    background:  $ev-status-complete !important; // grey
+}
+
+.monitoring-wrapper{
+    background: $ev-status-monitoring;
+    border: $ev-status-monitoring 2px solid;
+}
+.exploration-wrapper{
+    background: $ev-status-exploration;
+    border: $ev-status-exploration 2px solid;
+}
+.ongoing-wrapper{
+    background: $ev-status-ongoing;
+    border: $ev-status-ongoing 2px solid;
+}
+.intervention-wrapper{
+    background: $ev-status-intervention;
+    border: $ev-status-intervention 2px solid;
+}
+
+.complete-wrapper{
+    background: $ev-status-complete;
+    border: $ev-status-complete 2px solid;
+}

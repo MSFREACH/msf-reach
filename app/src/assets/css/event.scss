@@ -1,39 +1,26 @@
-.monitoring{
-    color: #95E1D3 !important; // green;
-    // border: 1px solid #95E1D3;
-}
-.exploration{
-    color: #F38181 !important; // red;
-    // border: 1px solid #F38181;
-}
-.ongoing{
-    color: #FCE38A !important; // yellow;
-    // border: 1px solid #FCE38A;
-}
-.intervention{
-    color: #FCE38A !important; // yellow;
-    // border: 1px solid #FCE38A;
-}
-.complete{
-    color:  #909297 !important; // grey
-    // background: #F2F2F2;
-    // border: 1px solid #909297;
-}
+@import "./util/colors.scss";
+@import "msfStatus.scss";
 
-.monitoring-fill{
-    background: #95E1D3 !important; // green;
+textarea#sharepoint{
+    opacity: 0;
 }
-.exploration-fill{
-    background: #F38181 !important; // red;
+.event-page{
+    position: absolute;
+    top: 40px;
+    padding: 0;
 }
-.ongoing-fill{
-    background: #FCE38A !important; // yellow;
+.second-nav{
+    margin-left: 30px;
 }
-.intervention-fill{
-    background: #FCE38A !important; // yellow;
+.second-nav-links{
+    color: #707070;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ccc;
 }
-.complete-fill{
-    background:  #909297 !important; // grey
+.second-nav-links.router-link-exact-active{
+
+    font-weight: bold;
+    border-bottom: 1px solid #000;
 }
 
 .eventList{
@@ -43,8 +30,36 @@
 
 .listHeader{
     z-index:3;
+    display: flex;
+    .v-input{
+
+    }
+    .v-select__selections{
+        font-size: 10px;
+    }
+    .v-text-field{
+        padding-top: 0px;
+    }
+    .v-input__control,
+    .v-btn--floating.v-btn--small{
+        background: #fff;
+        border-radius: 20px;
+    }
+    .v-input__control{
+        padding: 4px 21px;
+        height: 40px;
+    }
+
+    .v-btn-toggle{
+      display: flex;
+        background: #d0d3da;
+    }
 }
 
-.listHeader .v-select__selections{
-    font-size: 10px;
+.statusWrapper{
+    border: 2px solid $bg-space-grey;
+    width: 60%;
+    label{
+        margin-right: 10px; 
+    }
 }
