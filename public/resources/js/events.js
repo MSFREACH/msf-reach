@@ -168,9 +168,12 @@ var missionPopupIcon = function(missionType) {
 * @function reduceNotificationArray
 * @param {String} acc - accumulator
 * @param
+*/
 var reduceNotificationArray = function(acc, elem) {
     return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
 };
+
+var currentEventProperties; // doesn't hurt, avoids potential timing issues wrt common.js loading
 
 /**
 * Function to print a list of event details to web page
