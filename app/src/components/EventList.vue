@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="full-width">
-                        <v-select v-model="filteredTypes" :items="allEventTypes" attach chips label="Type" round></v-select>
+                        <v-select v-model="filteredTypes" :items="allEventTypes" attach label="Type" round></v-select>
                         <div :class="selectedStatus + '-wrapper statusWrapper'">
                             <label>
                                 <span v-if="selectedStatus">{{selectedStatus}}</span>
@@ -229,10 +229,11 @@ export default {
         display: inline-flex;
       }
 
-      .v-select {
-          div{
-              display: block;
-          }
+      .v-select.v-select--chips .v-select__selections{
+          min-height: inherit;
+      }
+      .v-select__selections div{
+          display: block;
       }
     }
     .v-menu{

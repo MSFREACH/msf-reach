@@ -14,61 +14,78 @@
                 </v-layout>
                 <v-layout row wrap v-if="editing" dark>
                     <label>KEY FIGURES</label>
-                    <v-data-iterator v-if="activeKeyFigures" :items="activeKeyFigures" content-tag="v-layout" row wrap>
-                        <template slot="items" slot-scope="props">
-                            <v-hover>
-                                <v-flex xs12 :key="props.index"
-                                    v-show="editMode.offset != props.index"
-                                    slot-scope="{hover}">
-                                    <v-list dense>
-                                        <v-list-tile>
-                                            <v-list-tile-content class="category-text align-end">{{item.category}} </v-list-tile-content>
-                                            <v-list-tile-content class="sub-category-text"> {{item.subCategory}} </v-list-tile-content>
-                                            <v-list-tile-content> {{item.value}} </v-list-tile-content>
-                                            <v-list-tile-content v-if="editing" :class="hover ? 'showCrud' : 'hide'">
-                                                <a @click="editKeyFig(props.item, props.index)"> edit </a>
-                                                <a @click="deleteKeyFig(props.item)"> delete </a>
-                                            </v-list-tile-content>
-                                        </v-list-tile>
-                                    </v-list>
+                    <v-layout row wrap>
+                        <v-data-iterator v-if="activeKeyFigures" :items="activeKeyFigures" content-tag="v-layout" row wrap hide-actions>
+                            <template slot="items" slot-scope="props">
+                                <v-hover>
+                                    <v-flex xs4 :key="props.index"
+                                        v-show="editMode.offset != props.index"
+                                        slot-scope="{hover}">
+                                        <v-list dense>
+                                            <v-list-tile>
+                                                <v-list-tile-content class="category-text align-end">{{item.category}} </v-list-tile-content>
+                                                <v-list-tile-content class="sub-category-text"> {{item.subCategory}} </v-list-tile-content>
+                                                <v-list-tile-content> {{item.value}} </v-list-tile-content>
+                                                <v-list-tile-content v-if="editing" :class="hover ? 'showCrud' : 'hide'">
+                                                    <a @click="editKeyFig(props.item, props.index)"> edit </a>
+                                                    <a @click="deleteKeyFig(props.item)"> delete </a>
+                                                </v-list-tile-content>
+                                            </v-list-tile>
+                                        </v-list>
+                                    </v-flex>
+                                </v-hover>
+                                <v-flex xs4 :key="props.index"
+                                    v-show="editMode.offset == props.index">
+                                    <v-select dark  v-model="editKeyFigure.category" :items="allSelections.keyFigs"></v-select>
+                                    <v-select dark  v-model="editKeyFigure.subCategory" :items="allKeyFigSubSelection" ></v-select>
+                                    <v-text-field label="value" v-model="editKeyFigure.value"></v-text-field>
+                                    <a @click="confirmKeyFig(props.index)"> edit </a>
+                                    <a @click="cancelEditKeyFig(props.index)"> delete </a>
                                 </v-flex>
-                            </v-hover>
-                            <v-flex xs12 :key="props.index"
-                                v-show="editMode.offset == props.index">
-                                <v-select dark  v-model="editKeyFigure.category" :items="allSelections.keyFigs" ></v-select>
-                                <v-select dark  v-model="editKeyFigure.subCategory" :items="allKeyFigSubSelection" ></v-select>
-                                <v-text-field label="value" v-model="editKeyFigure.value"></v-text-field>
-                                <a @click="confirmKeyFig(props.index)"> edit </a>
-                                <a @click="cancelEditKeyFig(props.index)"> delete </a>
-                            </v-flex>
-                        </template>
-                    </v-data-iterator>
-                    <v-flex v-else> -- </v-flex>
-                    <a v-if="editing && !editMode.offset" @click="addKeyFig()"> add </a>
+                            </template>
+                        </v-data-iterator>
+                        <div v-else> -- </div>
+                        <a v-if="editing && editMode.offset == -1" @click="addKeyFig()"> add </a>
+                    </v-layout>
+                    <hr class="row-divider">
+                    <div class="one-half">
+                        <label>NUMBER OF BENEFICIARIES </label>
+                        {{totalBeneficiaries}}
+                    </div>
+                    <v-spacer></v-spacer>
+                    <div class="one-half">
+                        <label>NUMBER OF SERVICES PROVIDED </label>
+                        {{totalServices}}
+                    </div>
+                    <hr class="row-divider">
+                    <v-flex xs3>
+                        <v-text-field label="Country Population" type="number" v-model="editFigures.population.total"></v-text-field>
+                    </v-flex>
+                    <v-flex xs3>
+                        <v-text-field label="Affected Population" type="number" v-model="editFigures.population.impacted"></v-text-field>
+                    </v-flex>
 
-                    <v-divider></v-divider>
-                    <v-text-field label="Country Population" v-model="editFigures.population.total"></v-text-field>
-                    <v-text-field label="Affected Population" v-model="editFigures.population.impacted"></v-text-field>
-
-                    <v-flex>
-                        <v-text-field label="MORTALITY" v-model="editFigures.population.mortality.rate"></v-text-field>
+                    <v-flex xs3>
+                        <v-text-field type="number" label="MORTALITY Rate" v-model="editFigures.population.mortality.rate"></v-text-field>
                         <v-select label="Population at risk" v-model="editFigures.population.mortality.population" :items="allSelections.population"></v-select>
                         <v-text-field v-if="editFigures.population.mortality.population == 'other'" v-model="editFigures.population.mortality.population"></v-text-field>
                         <v-select label="Speficied Time period" v-model="editFigures.population.mortality.peroid" :items="allSelections.period"></v-select>
                         <v-text-field v-if="editFigures.population.mortality.peroid == 'other'" v-model="editFigures.population.mortality.peroid"></v-text-field>
-
                     </v-flex>
-                    <v-flex>
-                        <v-text-field label="MORBIDITY" v-model="editFigures.population.morbidity.rate"></v-text-field>
+                    <v-flex xs3>
+                        <v-text-field type="number" label="MORBIDITY Rate" v-model="editFigures.population.morbidity.rate"></v-text-field>
                         <v-select label="Population at risk" v-model="editFigures.population.morbidity.population" :items="allSelections.population"></v-select>
                         <v-text-field v-if="editFigures.population.morbidity.population == 'other'" v-model="editFigures.population.morbidity.population"></v-text-field>
                         <v-select label="Speficied Time period" v-model="editFigures.population.morbidity.peroid" :items="allSelections.period"></v-select>
                         <v-text-field v-if="editFigures.population.morbidity.peroid == 'other'" v-model="editFigures.population.morbidity.peroid"></v-text-field>
                     </v-flex>
-                    <v-select label="Collection" v-model="editFigures.satistics.collection" :items="allSelections.collectionMeans"></v-select>
-                    <v-select label="Source" v-model="editFigures.satistics.source" :items="allSelections.sources"></v-select>
-                    <v-text-field v-if="editFigures.satistics.source == 'other'" v-model="editFigures.satistics.source"></v-text-field>
-
+                    <hr class="row-divider">
+                    <v-flex xs8>
+                        <v-select label="Collection" v-model="editFigures.satistics.collection" :items="allSelections.collectionMeans"></v-select>
+                        <v-spacer></v-spacer>
+                        <v-select label="Source" v-model="editFigures.satistics.source" :items="allSelections.sources"></v-select>
+                        <v-text-field v-if="editFigures.satistics.source == 'other'" v-model="editFigures.satistics.source"></v-text-field>
+                    </v-flex>
                 </v-layout>
                 <v-layout row wrap v-else>
                     <v-flex v-if="displayKeyFigures">
@@ -164,7 +181,12 @@ export default {
         },
         addKeyFig(){
             var newKeyFig = this.defaulKeyFigure;
-            this.displayKeyFigures.push(newKeyFig);
+            if(this.displayKeyFigures){
+                this.displayKeyFigures.push(newKeyFig);
+            }else{
+                this.displayKeyFigures = [newKeyFig];
+            }
+
             this.editKeyFigure = Object.assign({}, newKeyFig);
             this.editMode.offset = this.displayKeyFigures.length - 1; // the latest one
         },
@@ -231,7 +253,7 @@ export default {
         },
         allowEdit(){
             if(!_.isEmpty(this.displayKeyFigures)){
-                return displayKeyFigures.status == activeKeyFigures.status;
+                return this.displayKeyFigures.status == this.activeKeyFigures.status;
             }else{
                 return (this.eventStatus != 'monitoring') && (this.eventStatus !='complete');
             }

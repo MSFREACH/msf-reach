@@ -1,3 +1,5 @@
+@import "./util/colors.scss";
+
 .datepicker-container{
     position: relative;
 }
@@ -6,14 +8,57 @@
 .edit-wrapper{
     background: #0374C7;
     color: #fff;
+    .v-text-field > .v-input__control > .v-input__slot:before{
+        display: none;
+    }
+    .v-text-field > .v-input__control > .v-input__slot:after{
+        display: none;
+    }
     input{
         border-bottom: 2px solid #fff;
     }
     input::placeholder{
         color: rgba(255, 255, 255, 0.5);
     }
+    .v-input__control{
+        flex-grow: .8;
+        width: min-content;
+    }
+    .v-table{
+        background: inherit;
+        color: #fff;
+        thead th{
+            color: rgba(255, 255, 255, .54);
+        }
+        tbody tr:hover{
+            background: initial;
+        }
+    }
+    .v-select{
+        .v-icon{
+            color: rgba(255,255, 255, 0.54);
+        }
+        .v-list{
+            background: #0374c7;
+            color: #fff;
+        }
+        .v-list__tile{
+            font-size: inherit;
+            height: initial;
+        }
+    }
+    .v-select.v-text-field input{
+        position: absolute;
+
+    }
 }
 
+
+
+.action .cancel{
+    margin-top: 20px;
+
+}
 
 .editTextArea textarea{
     color: initial !important;
@@ -91,4 +136,53 @@ textarea{
 
 .hide{
     display: none;
+}
+
+.autocomplete-fields{
+    margin-top: 22px !important;
+    .v-select__slot{
+        height: 40px;
+    }
+    .v-input__control>.v-input__slot{
+        background: inherit !important;
+        :hover{
+            background: inherit !important;
+        }
+    }
+}
+
+
+
+// .edit-wrapper .v-input:not(.v-input--is-disabled) input,
+// .edit-wrapper .v-input:not(.v-input--is-disabled) textarea{
+//     color: #fff;
+// }
+
+.edit-wrapper {
+    .v-input{
+    :not(.v-input--is-disabled){
+        input{
+            color: #fff;
+            ::placeholder{
+                color: $text-light-grey;
+            }
+        }
+
+    }
+
+    }
+    .v-radio{
+        // .v-icon{
+        //     color: #fff;
+        // }
+    }
+}
+.no-border{
+    border: 0;
+}
+
+.create-new{
+    .editTextArea{
+        border: 1px solid $bg-space-grey;
+    }
 }

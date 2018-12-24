@@ -35,7 +35,7 @@ import { FETCH_EVENT } from '@/store/actions.type';
 import { EVENT_DETAIL_NAVIGATIONS } from '@/common/navigational-fields.js';
 import REventGeneral from '@/views/Event/General.vue';
 import REventNotification from '@/views/Event/General.vue';
-import REventResponse from '@/views/Event/Response.vue';
+import REventResponses from '@/views/Event/Responses.vue';
 import REventExtCapacity from '@/views/Event/ExtCapacity.vue';
 import REventFigures from '@/views/Event/Figures.vue';
 import REventResources from '@/views/Event/Resources.vue';
@@ -66,7 +66,7 @@ export default {
         };
     },
     components: {
-        REventGeneral, REventNotification, REventResponse, REventExtCapacity, REventFigures, REventResources
+        REventGeneral, REventNotification, REventResponses, REventExtCapacity, REventFigures, REventResources
     },
     beforeRouteEnter(to, from, next){
         Promise.all([

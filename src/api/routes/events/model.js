@@ -23,7 +23,7 @@ export default (config, db, logger) => ({
         const geom = !!location.lng &&
         !!location.lat && 'POINT(' + location.lng +' '+location.lat +')' || null;
         // Setup query
-        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, responses, ext_capacity as extCapacity, figures, resources, the_geom
 			FROM ${config.TABLE_EVENTS}
             WHERE ($1 is null or status = $1) AND
                 ($4 is null or
@@ -49,7 +49,7 @@ export default (config, db, logger) => ({
     byId: (id) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, responses, ext_capacity as extCapacity, figures, resources, the_geom
       FROM ${config.TABLE_EVENTS}
       WHERE id = $1
       ORDER BY created_at DESC`;
@@ -180,9 +180,9 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
             SET updated_at = now(),
-            extCapacity = extCapacity || $1
+            ext_capacity = ext_capacity || $1
             WHERE id = $2
-            RETURNING extCapacity, updated_at, status`;
+            RETURNING ext_capacity, updated_at, status`;
 
         // Setup values
         let values = [ body.extCapacity, id];

@@ -1,7 +1,7 @@
 <template>
     <v-container class="eventSubContent statusToggle">
         <nav v-if="eventResources.perStatus && eventResources.perStatus.length> 0" class="statusTabWrapper">
-            <v-btn flat small :class="item.status+'-wrapper statusTabs'" v-for="(item, index) in eventResources.perStatus" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
+            <v-btn flat small :class="item.status.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in eventResources.perStatus" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
         </nav>
         <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'" dark>
             <div v-if="eventResources">
@@ -11,13 +11,22 @@
                     </v-layout>
 
                     <v-layout row wrap v-if="editing" dark>
-                        <v-text-field label="Staff List" v-model="editStatusResource.listFileUrl"></v-text-field>
-                        <v-text-field label="Number of Expatriate" v-model="editStatusResource.expatriateCount"></v-text-field>
-                        <v-text-field label="Number of National Staff" v-model="editStatusResource.nationalStaffCount"></v-text-field>
-
-                        <v-flex xs12>
+                        <v-flex xs8>
+                            <v-text-field label="Staff List" v-model="editStatusResource.listFileUrl"></v-text-field>
+                        </v-flex>
+                        <v-flex xs4></v-flex>
+                        <v-flex xs3>
+                            <v-text-field class="no-border" label="Number of Expatriate" v-model="editStatusResource.expatriateCount"></v-text-field>
+                        </v-flex>
+                        <v-spacer></v-spacer>
+                        <v-flex xs3>
+                            <v-text-field class="no-border" label="Number of National Staff" v-model="editStatusResource.nationalStaffCount"></v-text-field>
+                        </v-flex>
+                        <v-flex xs4></v-flex>
+                        <hr class="row-divider"/>
+                        <div>
                             <div class="primary-text">Nationalities that requires Visa</div>
-                            <v-autocomplete v-model="editResources.visa_requirement" :disabled="autoNationality.isUpdating" :items="allSelections.countries" box chips color="blue-grey lighten-2" label="Nationalities"
+                            <v-autocomplete class="autocomplete-fields" v-model="editResources.visa_requirement" :disabled="autoNationality.isUpdating" :items="allSelections.countries" box chips cache-items color="blue-grey lighten-2" label="Nationalities"
                             item-text="nationality" item-value="nationality" multiple>
                                 <template slot="selection" slot-scope="data">
                                     <v-chip :selected="data.selected" close class="chip--select-multi" @input="removeNationality(data.item)">
@@ -25,24 +34,36 @@
                                     </v-chip>
                                 </template>
                             </v-autocomplete>
-                        </v-flex>
-                        <v-flex xs12>
-                            <div class="primary-text">Health and vaccination requirements</div>
+                        </div>
 
-                            <v-text-field label="Required" v-model="editResources.vaccination_requirement.required"></v-text-field>
-                            <v-autocomplete v-model="editResources.vaccination_requirement.required"
+                        <hr class="row-divider"/>
+                        <div>
+                            <div class="primary-text">Health and vaccination requirements</div>
+                            <!-- <v-text-field label="Required" v-model="editResources.vaccination_requirement.required"></v-text-field> -->
+                            <v-autocomplete  class="autocomplete-fields" v-model="editResources.vaccination_requirement.required"
                                 :disabled="autoVaccinationRequired.isUpdating"
                                 :items="allSelections.vaccinations.required"
-                                box chips label="Required" multiple>
+                                box cache-items label="Required" multiple>
+                                <template slot="selection" slot-scope="data">
+                                    <v-chip :selected="data.selected" close @input="removeVaccinRequired(data.item)">
+                                        {{ data.item.text }}
+                                    </v-chip>
+                                </template>
                             </v-autocomplete>
 
-                            <v-text-field label="Recommended" v-model="editResources.vaccination_requirement.recommended"></v-text-field>
-                            <v-autocomplete v-model="editResources.vaccination_requirement.recommended"
+                            <!-- <v-text-field label="Recommended" v-model="editResources.vaccination_requirement.recommended"></v-text-field> -->
+                            <v-autocomplete class="autocomplete-fields" v-model="editResources.vaccination_requirement.recommended"
                                 :disabled="autoVaccinationRecommended.isUpdating"
                                 :items="allSelections.vaccinations.recommended"
-                                box chips label="Recommended" multiple>
+                                box cache-items label="Recommended" multiple>
+                                <template slot="selection" slot-scope="data">
+                                    <v-chip :selected="data.selected" close @input="removeVaccinRequired(data.item)">
+                                        {{ data.item.text }}
+                                    </v-chip>
+                                </template>
                             </v-autocomplete>
-                        </v-flex>
+                        </div>
+                        <hr class="row-divider"/>
                         <v-text-field label="Total Budget" type="number" v-model="editStatusResource.budget.total"></v-text-field>
                         <v-select :items="allSelections.currencies" v-model="editStatusResource.budget.currency" item-text="currency" item-value="currency">
                         </v-select>
@@ -50,7 +71,7 @@
                         <v-text-field label="Institutional Donors" v-model="editResources.institutional_donors"></v-text-field>
 
                     </v-layout>
-                    <v-layout v-else>
+                    <v-layout row wrap v-else>
                         <v-flex xs12 :class="displayStatusResources.status+'Wrapper'">
                             <div class="full-width">
                                 <label>Staff List</label>
@@ -85,7 +106,10 @@
                         <v-flex xs12 :class="displayStatusResources.status+'Wrapper'">
                             <div class="one-half">
                                 <label>Total Budget</label>
-                                <span v-if="displayStatusResources.budget.total > 0">--</span> {{displayStatusResources.budget.total}} {{displayStatusResources.budget.currency}}
+                                <span v-if="displayStatusResources.budget.total">
+                                    {{displayStatusResources.budget.total.amount}} {{displayStatusResources.budget.currency}} - {{displayStatusResources.budget.total.from_who}}
+                                </span>
+                                <span v-else> -- </span>
                             </div>
                             <div class="one-half">
                                 <label>Institutional Donors</label>
@@ -168,6 +192,14 @@ export default {
         removeNationality (item) {
             const index = this.editResources.visa_requirement.indexOf(item.nationality);
             if (index >= 0) this.editResources.visa_requirement.splice(index, 1);
+        },
+        removeVaccinRequired (item) {
+            const index = this.editResources.vaccination_requirement.required.indexOf(item.value);
+            if (index >= 0) this.editResources.vaccination_requirement.required.splice(index, 1);
+        },
+        removeVaccinRec (item) {
+            const index = this.editResources.vaccination_requirement.recommended.indexOf(item.nationality);
+            if (index >= 0) this.editResources.vaccination_requirement.recommended.splice(index, 1);
         }
     },
     watch: {

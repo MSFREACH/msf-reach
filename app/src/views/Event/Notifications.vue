@@ -3,10 +3,10 @@
         <div class="searchHeader">
             <v-text-field v-model='search' label='Search' single-line hide-details xs10></v-text-field>
             <v-select v-model="selectedCategory" :items="allNotificationCategories" label="Category" round></v-select>
-            <v-dialog v-model="dialog" max-width="880px" dark>
+            <v-dialog v-model="dialog" max-width="880px" :dark="editIndex != -1">
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
-                <v-card class="editing">
-                    <v-flex xs>
+                <v-card :class="editIndex != -1 ? 'editing': 'create-new'">
+                    <v-flex right>
                         <v-icon @click="close">close</v-icon>
                     </v-flex>
                   <v-card-title>
@@ -26,9 +26,7 @@
                             <label>PREVIEW</label>
                             <div class="markdown-fields" v-html="mdRender(editedItem.description)"></div>
                         </v-flex>
-                        <v-layout>
-                            <v-divider light></v-divider>
-                        </v-layout>
+                        <hr class="row-divider">
                         <v-card class="file-attachment" light>
                             <form enctype="multipart/form-data">
                               <input id="fileUpload" style="display: none" ref="myUpload" type="file" accept="*/*" multiple @change="onFilePicked"/>
@@ -43,15 +41,15 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                      <v-flex>
+                      <div>
                           <label> Operator </label> {{ editedItem.username }} <br/>
                           <label> Updated </label>  {{ editedItem.created | relativeTime  }}
-                      </v-flex>
+                      </div>
 
                     <v-spacer></v-spacer>
                     <v-progress-circular v-if="request.inProgress" :size="50" color="primary" indeterminate></v-progress-circular>
-                    <v-switch v-if='editIndex' label='save' @click='submit'></v-switch>
-                    <v-btn v-else label='add' @click='submit'></v-btn>
+                    <v-switch v-if='editIndex != -1' label='save' @click='submit'></v-switch>
+                    <v-btn v-else @click='submit' flat dark> add </v-btn>
 
                   </v-card-actions>
                 </v-card>
@@ -70,16 +68,16 @@
             </template>
             <template slot="expand" slot-scope="props">
                 <v-card class="expanded-field" flat :key="props.index" :id="props.index">
-                    <v-card-actions class="text-xs-right">
-                        <v-icon small class="mr-2" @click="editItem(props.item)"> edit </v-icon>
-                        <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
-                    </v-card-actions>
                     <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
                     <v-divider light></v-divider>
 
                     <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment">
                          <v-img :src="item" contain></v-img>
                     </v-card>
+                    <v-card-actions class="text-xs-right list-actions">
+                        <v-switch label='edit' @click="editItem(props.item)"></v-switch>
+                        <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
+                    </v-card-actions>
                 </v-card>
 
             </template>
@@ -161,8 +159,8 @@ export default {
             }
         },
         selectedCategory(newVal){
-            var totalNotifications = _.merge(this.eventNotifications, this.oldEventNotifications);
-            this.displayNotifications = totalNotifications.filter(item => {
+            // var totalNotifications = _.merge(this.eventNotifications, this.oldEventNotifications);
+            this.displayNotifications = this.eventNotifications.filter(item => {
                 if(!newVal) return item;
                 if(item.category == newVal) {
                     return item;
@@ -170,9 +168,9 @@ export default {
             });
         },
         eventNotifications(newVal){
-            if(this.eventNotifications.length == 0){
-                this.migrateOldEntries();
-            }
+            // if(this.eventNotifications.length == 0){
+            //     this.migrateOldEntries();
+            // }
             this.displayNotifications = _.map(newVal, _.clone);
         }
     },

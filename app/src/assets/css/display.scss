@@ -1,4 +1,5 @@
-@import "msfStatus.scss"; 
+@import "msfStatus.scss";
+@import "util/colors.scss";
 
 ul{
     list-style: none;
@@ -33,6 +34,14 @@ ul{
         .v-input__control{
             padding: 4px 21px;
         }
+    }
+    .v-picker{
+        box-shadow: none;
+    }
+
+    .v-expansion-panel{
+        box-shadow: none;
+        margin-left: 5em;
     }
 }
 .capacity-rows,
@@ -72,6 +81,15 @@ ul{
     }
 }
 
+.file-attachment.count{
+    background: $bg-space-grey;
+    border-radius:5px;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    text-align: center;
+}
 .full-text-fields{
     position: relative;
     margin: 0;
@@ -158,6 +176,7 @@ tr.v-datatable__expand-row .v-card.expanded-field{
     height: 100%;
     border-radius: 2px;
     padding: 10px;
+    font-size: 16px
 }
 
 .v-dialog .v-dialog--active{
@@ -193,4 +212,34 @@ tr.v-datatable__expand-row .v-card.expanded-field{
 .statusTabs:first-of-type{
     background: #fff;
     color: #707070;
+}
+
+.dateRange{
+    span{
+        display: inline-block;
+        width: 48%;
+    }
+}
+
+.sitrep-rows,
+.notification-rows{
+    .list-actions{
+        float: right;
+    }
+}
+
+.v-expansion-panel__body{
+    background: $bg-space-grey;
+}
+
+
+.no-data-available{
+    opacity: .4;
+    background: $bg-null-grey;
+    border-radius: 10px;
+    margin: 2em auto;
+    position: relative;
+    padding: 5em;
+    border: 1px solid $text-light-grey;
+    color: $text-light-grey;
 }

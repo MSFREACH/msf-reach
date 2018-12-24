@@ -1,7 +1,7 @@
 export const EVENT_DETAIL_NAVIGATIONS = [
     { icon: 'dashboard', name: 'General', component: 'event-general', route: '/'},
     { icon: 'event_note', name: 'Notifications', component: 'event-notifications', route: '/notifications'},
-    { icon: 'track_changes', name: 'Response', component: 'event-response', route: '/response'},
+    { icon: 'track_changes', name: 'Responses', component: 'event-responses', route: '/responses'},
     { icon: 'all_out', name: 'External Capacity', component: 'event-extCapacity', route: '/extCapacity'},
     { icon: 'fingerprint', name: 'Figures', component: 'event-figures', route: '/figures'},
     { icon: 'people', name: 'Resources', component: 'event-resources', route: '/resources'},

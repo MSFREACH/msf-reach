@@ -41,10 +41,10 @@
             <div v-if="eventExtCapacity">
                 <div class="actions">
                     <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                    <span class="cancel" v-if="editing" @click="editing = false">x</span>
+                    <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
                 </div>
                 <div class="primary-text">External capacity Analysis</div>
-                <v-data-table :headers="headers" :items="displayCapacities" :dark="editing" item-key="arrivalDate" :search="search" hide-actions>
+                <v-data-table :headers="headers" :items="displayCapacities" :class="editing ? 'edit-wrapper':''" item-key="arrivalDate" :search="search" hide-actions>
                     <template slot="items" slot-scope="props">
                         <v-hover>
                             <tr :key="props.index"
@@ -54,9 +54,11 @@
                                 <td><span v-if="!props.item.type"> -- </span>{{ props.item.type }}</td>
                                 <td><span v-if="!props.item.arrival_date"> -- </span>{{ props.item.arrival_date }}</td>
                                 <td><span v-if="!props.item.deployment"> -- </span>{{ props.item.deployment}}</td>
-                                <td class="justify-center layout px-0" v-if="editing" :class="hover ? 'showCrud' : 'hide'">
-                                    <a @click="edit(props.item, props.index)"> edit </a>
-                                    <a @click="delete(props.item)"> delete </a>
+                                <td>
+                                    <span class="justify-center layout px-0" v-if="editing" :class="hover ? 'showCrud' : 'hide'">
+                                        <a @click="edit(props.item, props.index)"> edit </a>
+                                        <a @click="delete(props.item)"> delete </a>
+                                    </span>
                                 </td>
                             </tr>
                         </v-hover>
@@ -107,6 +109,7 @@ export default {
     data(){
         return {
             editing: false,
+            _beforeEditingCache: {},
             search: '',
             selectedType: null,
             dialog: false,
@@ -127,8 +130,9 @@ export default {
     },
     watch: {
         editing(val){
-            debugger;
-            if(!val && (this.editMode.offset != -1)){
+            if(val){
+                this._beforeEditingCache = Object.assign({}, this.displayCapacities);
+            }else if(!val && (this.editMode.offset != -1)){
                 confirm('Are you sure you want to continue and discard the changes?') && this.clearEdit();
             }else{
                 this.updateCapacity();
@@ -165,10 +169,16 @@ export default {
             this.editedItem = Object.assign({}, item);
             this.editMode.offset = index;
         },
+        cancelEdit(){
+            Object.assign(this.eventMetadata, this._beforeEditingCache);
+            this.editing = false;
+            this._beforeEditingCache = null;
+        },
         clearEdit(){
             this.editMode.offset = -1;
             this.editedItem = this.defaultItem;
         },
+
         delete(item){
             const index = this.eventExtCapacity.indexOf(item);
             confirm('Are you sure you want to delete this item?') && this.eventExtCapacity.splice(index, 1);

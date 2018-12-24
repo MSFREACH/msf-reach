@@ -42,7 +42,8 @@ body{
     line-height: normal;
 }
 
-.primary-text{
+.primary-text,
+.calendar-date{
   font-family: 'OpenSans-Semibold', sans-serif;
   font-size: 18px;
   font-weight: 500;
@@ -55,6 +56,13 @@ body{
   font-size: 16px;
   font-weight: normal;
   line-height: initial;
+}
+
+.file-attachment.count{
+    font-family: 'OpenSans-Bold', sans-serif;
+    font-size: 16px;
+    line-height: initial;
+    font-style: bold; 
 }
 
 .specified-primary{
@@ -82,6 +90,7 @@ body{
   font-family: 'OpenSans-Light', sans-serif;
 }
 
+.no-data-available,
 .bold-title{
   font-weight: bold;
   font-size: 34px;

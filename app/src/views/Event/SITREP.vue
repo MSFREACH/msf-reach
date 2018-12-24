@@ -2,28 +2,24 @@
     <v-container class='eventSubContent SITREP-Container'>
         <div class="searchHeader">
             <v-text-field v-model='search' append-icon='search' label='Search' single-line hide-details xs10></v-text-field>
-            <v-dialog v-model='dialog' max-width='1180px' dark>
+            <v-dialog v-model='dialog' max-width='1180px' :dark="editIndex != -1">
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
-                <v-card class='editing'>
-                    <v-flex>
-                        <v-icon @click='close'>close</v-icon>
-                    </v-flex>
-                  <v-card-title>
-                    <span class='headline'>{{formTitle}}</span>
-                  </v-card-title>
+                <v-card :class="editIndex != -1 ? 'editing': 'create-new'">
+                <v-flex right>
+                    <v-icon @click='close'>close</v-icon>
+                </v-flex>
                   <v-card-text>
                     <v-container grid-list-md>
                       <v-layout wrap>
                         <v-flex xs6 style='display: inline-block;'>
                             <label>SITREP</label>
-                            <v-textarea class='editTextArea' solo auto-grow label='Description'
-                            background-color='white' color='secondary' v-model='editedSitRep.description'></v-textarea>
+                            <v-textarea class='editTextArea' auto-grow label='Description' flat color='secondary' background-color="white" v-model='editedSitrep.description'></v-textarea>
                         </v-flex>
                         <v-flex xs6 style='display: inline-block;'>
                             <label>PREVIEW</label>
-                            <div class='markdown-fields' v-html='mdRender(editedSitRep.description)'></div>
+                            <div class='markdown-fields' v-html='mdRender(editedSitrep.description)'></div>
                         </v-flex>
-                        <v-divider light></v-divider>
+                        <hr class="row-divider"/>
                         <v-card class='file-attachment' light>
                             <form enctype='multipart/form-data'>
                               <input id='fileUpload' style='display: none' ref='myUpload' type='file' accept='*/*' multiple @change='onFilePicked'/>
@@ -37,59 +33,50 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <div><label> Operator </label> {{ editedSitRep.username }} </div>
-                    <div><label> Updated </label>  {{ editedSitRep.created | relativeTime  }}</div>
+                    <div v-if="editedSitrep.created">
+                        <label> Operator </label> {{ editedSitrep.username }} <br/>
+                        <label> Updated </label>  {{ editedSitrep.created | relativeTime  }}
+                    </div>
 
                     <v-spacer></v-spacer>
                     <v-progress-circular v-if="request.inProgress" :size="50" color="primary" indeterminate></v-progress-circular>
-                    <v-switch v-if='editIndex' label='save' @click='submit'></v-switch>
-                    <v-btn v-else label='add' @click='submit'></v-btn>
+                    <v-switch v-if='editIndex != -1' label='save' @click='submit'></v-switch>
+                    <v-btn v-else @click='submit' flat dark color="grey lighten-1">add</v-btn>
                   </v-card-actions>
                 </v-card>
             </v-dialog>
         </div>
-        <v-layout>
-            <v-date-picker no-title
-            v-model='date1'
-            :events='arrayEvents'
-            :allowed-dates='allowedDates'
-            event-color='editing'
-            width="150px !important"
-            ></v-date-picker>
-            <v-data-iterator
-            content-tag='v-layout'
-            :items='displaySITREPs'
-            item-key="id"
-            :search='search'
-            no-data-text='No SITREP yet'
-            class="sitrep-iterator"
-            hide-actions
-            wrap row>
-                <template slot="item" slot-scope="props">
-                    <v-flex @click="props.expanded = !props.expanded" :key="props.index">
-                        <v-flex xs3>{{props.item.created | dayMonth}}</v-flex>
-                        <v-flex xs6><span v-if='!props.item.description'> -- </span>{{ props.item.description | snippetNoMarkdown }}</v-flex>
-                        <v-flex xs3><span class='file-attachment'>{{ props.item.files.length }}</span></v-flex>
-                    </v-flex>
-                </template>
-                <template slot="expand" slot-scope="props">
-                    <v-card class="expanded-field" flat :key="props.index" :id="props.index">
-                        <v-card-actions class="text-xs-right">
-                            <v-icon small class="mr-2" @click="editSitRep(props.item)"> edit </v-icon>
-                            <v-icon small @click="deleteSitRep(props.item)"> delete </v-icon>
-                        </v-card-actions>
-                        <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
-                        <v-divider light></v-divider>
+        <v-layout class="full-text-fields sitrep-rows" v-if="displaySITREPs.length > 0">
+            <v-date-picker no-title v-model='date1' :events='arrayEvents' :allowed-dates='allowedDates'
+            event-color='editing' width="150px !important"></v-date-picker>
 
-                        <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment">
-                             <v-img :src="item" contain></v-img>
-                        </v-card>
+            <v-expansion-panel  expand focusable>
+              <v-expansion-panel-content  v-for="(item, i) in displaySITREPs" :key="i">
+                <v-layout row wrap slot="header">
+                    <v-flex xs3 class="calendar-date">{{item.created | dayMonth}}</v-flex>
+                    <v-flex xs6><span v-if='!item.description'> -- </span>{{ item.description | snippetNoMarkdown }}</v-flex>
+                    <v-flex xs3><span class='file-attachment count'>{{ item.files.length }}</span></v-flex>
+                </v-layout>
+                <v-card class="grey lighten-3">
+                    <v-card-text v-html="mdRender(item.description)">
+                    </v-card-text>
+                    <hr class="row-divider"/>
+                    <v-card v-for="(item, index) in item.files" :key="index" class="file-attachment">
+                         <v-img :src="item" contain></v-img>
                     </v-card>
-                </template>
-                <v-alert slot='no-results' :value='true' color='error' icon='warning'>
-                    Your search for '{{ search }}' found no results.
-                </v-alert>
-            </v-data-iterator>
+                    <v-card-actions class="text-xs-right list-actions">
+                        <v-switch label='edit' @click="editSitrep(item)"></v-switch>
+                        <v-icon small @click="deleteSitrep(item)"> delete </v-icon>
+                    </v-card-actions>
+                </v-card>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+
+        </v-layout>
+        <v-layout v-else>
+            <div class="no-data-available">
+                No SITREP available
+            </div>
         </v-layout>
     </v-container>
 </template>
@@ -112,8 +99,8 @@ export default {
         return {
             dialog: false,
             editing: false,
-            defaultSitRep: DEFAULT_SITREP_FIELDS,
-            editedSitRep: DEFAULT_SITREP_FIELDS,
+            defaultSitrep: DEFAULT_SITREP_FIELDS,
+            editedSitrep: DEFAULT_SITREP_FIELDS,
             editIndex: -1,
             previewFileUrls: [],
             signedFileUrls: [],
@@ -128,21 +115,21 @@ export default {
         //TODO: add + edit
     },
     mounted(){
-        this.fetchSitReps();
+        this.fetchSitreps();
     },
     methods: {
-        fetchSitReps(){
+        fetchSitreps(){
             this.$store.dispatch(FETCH_SITREPS, {eventId: parseInt(this.currentEventId)});
         },
         mdRender(value){
             if(value) return marked(value);
         },
-        editSitRep(item){
+        editSitrep(item){
             this.dialog = true;
             this.editIndex = _.findIndex(this.sitreps, item);
-            this.editedSitRep = Object.assign({}, item);
+            this.editedSitrep = Object.assign({}, item);
         },
-        deleteSitRep(item){
+        deleteSitrep(item){
             const itemIndex = _.findIndex(this.sitreps, item);
             this.$store.dispatch(DELETE_SITREP, parseInt(item.id));
             this.sitreps.splice(itemIndex, 1);
@@ -176,7 +163,7 @@ export default {
                             vm.signedFileUrls.push(fileLink);
                             console.log('1111 ---- dispatch.then ---- ', fileLink);
                             this.uploadFile(file);
-                            return; 
+                            return;
                         }
                     });
             }
@@ -201,9 +188,9 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var isEdit = this.editIndex && this.editedSitRep.id;
+            var isEdit = this.editIndex && this.editedSitrep.id;
             var action = isEdit ? EDIT_SITREP : CREATE_SITREP;
-            var params = _.extend(this.editedSitRep, {
+            var params = _.extend(this.editedSitrep, {
                 username: this.currentUser.username,
             });
 
@@ -230,7 +217,7 @@ export default {
         close () {
             this.dialog = false;
             setTimeout(() => {
-                this.editedSitRep = Object.assign({}, this.defaultSitRep);
+                this.editedSitrep = Object.assign({}, this.defaultSitrep);
                 this.previewFileUrls = [];
                 this.signedFileUrls = [];
                 this.editIndex = -1;
@@ -245,8 +232,8 @@ export default {
     watch: {
         dialog (val) {
             if (val){
-                if(!this.editedSitRep.updated){
-                    this.editedSitRep.updated = new Date();
+                if(!this.editedSitrep.updated){
+                    this.editedSitrep.updated = new Date();
                 }
             }else{
                 this.close();
@@ -270,7 +257,7 @@ export default {
             'currentUser',
             'currentEventId',
             'sitreps',
-            'isLoadingSitReps',
+            'isLoadingSitreps',
             'fetchSitrepError'
         ]),
         formTitle () {

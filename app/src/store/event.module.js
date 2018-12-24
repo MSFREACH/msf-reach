@@ -103,7 +103,7 @@ const mutations = {
         state.event.status = payload.result.objects.output.geometries[0].properties.metadata.event_status;
         //------ future proof, when sub-content objs becomes available
         state.event.responses = payload.result.objects.output.geometries[0].properties.responses;
-        state.event.extCapacity = payload.result.objects.output.geometries[0].properties.extCapacity;
+        state.event.extCapacity = payload.result.objects.output.geometries[0].properties.extcapacity;
         state.event.resources = payload.result.objects.output.geometries[0].properties.resources;
         state.event.figures = payload.result.objects.output.geometries[0].properties.figures;
         ///------/------/------/------/------/------
@@ -175,7 +175,7 @@ const getters ={
         }
     },
     eventResponses(state){
-        if(!state.event.response && state.event.metadata){
+        if(!state.event.responses && state.event.metadata){
             // then we fallback & map out the keys
 
             var payload = state.event.metadata;
@@ -217,6 +217,7 @@ const getters ={
                 sharepoint_link: ''
             }];
         }else{
+            console.log('---- return else ---RESPONSES----');
             return state.event.responses;
         }
     },
@@ -253,9 +254,11 @@ const getters ={
             }
             var cleanCapacities = capacities.filter(Boolean);
 
-            return cleanCapacities; 
+            return cleanCapacities;
 
         }else{
+            console.log('---- return else ---extCapacity----');
+
             return state.event.extCapacity;
         }
     },
@@ -292,6 +295,7 @@ const getters ={
                 }
             };
         }else{
+            console.log('---- return else ---FIGURES----');
             return state.event.figures;
         }
     },
@@ -338,6 +342,10 @@ const getters ={
                     recommended: []
                 }
             };
+        }else{
+            console.log('---- return else ---RESOURCES----');
+
+            return state.event.resources;
         }
     },
     oldEventReflection(state){

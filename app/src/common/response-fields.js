@@ -58,3 +58,10 @@ export const RESPONSE_NCDS_PROGRAMMES = [
 export const SUPPLY_CHAIN_SPECIALITIES = ['importation', 'regulations', 'storage'];
 
 export const OPERATIONAL_CENTERS = ['OCA', 'OCBA', 'OCG', 'OCB', 'OCP'];
+
+export const DEFAULT_RESPONSE_PROGRAMME = {
+    name: null,
+    value: null,
+    deployment: null,
+    scale: 1
+};

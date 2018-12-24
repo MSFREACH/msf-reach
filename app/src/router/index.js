@@ -53,9 +53,9 @@ export default new Router({
                         component: () => import('@/views/Event/Notifications'),
                         props: true
                     },{
-                        path: 'response',
-                        name: 'event-response',
-                        component: () => import('@/views/Event/Response'),
+                        path: 'responses',
+                        name: 'event-responses',
+                        component: () => import('@/views/Event/Responses'),
                         props: true
                     },{
                         path: 'extCapacity',
