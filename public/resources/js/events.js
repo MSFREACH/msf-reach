@@ -1129,18 +1129,25 @@ var mapMissions = function(missions ){
 
 };
 
-// Get eventId from URL
-currentEventId = getQueryVariable('eventId');
-// Only ask API where event is specified and not empty
-if (currentEventId !== false && currentEventId != ''){
-    getEvent(currentEventId, printEventProperties);
-    getReports(currentEventId, mainMap, mapReports);
-    //initGetContacts(mapContacts);
-    //initGetMissions(mapMissions);
-} else {
-    // Catch condition where no event specified, print to screen
-    printEventProperties('No event ID specified', null);
-}
+var currentEventId;
+
+window.addEventListener('load', () => {
+    // run after everything is in-place
+    // Get eventId from URL
+    currentEventId = getQueryVariable('eventId');
+    // Only ask API where event is specified and not empty
+    if (currentEventId !== false && currentEventId != '') {
+        getEvent(currentEventId, printEventProperties);
+        getReports(currentEventId, mainMap, mapReports);
+        //initGetContacts(mapContacts);
+        //initGetMissions(mapMissions);
+    } else {
+        // Catch condition where no event specified, print to screen
+        printEventProperties('No event ID specified', null);
+    }
+
+});
+
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
