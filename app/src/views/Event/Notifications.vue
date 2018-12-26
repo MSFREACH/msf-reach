@@ -2,7 +2,7 @@
     <v-container class="eventSubContent notification-rows">
         <div class="searchHeader">
             <v-text-field v-model='search' label='Search' single-line hide-details xs10></v-text-field>
-            <v-select v-model="selectedCategory" :items="allNotificationCategories" label="Category" round></v-select>
+            <v-select v-model="selectedCategory" :items="allNotificationCategories" label="Category" round clearable></v-select>
             <v-dialog v-model="dialog" max-width="880px" :dark="editIndex != -1">
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                 <v-card :class="editIndex != -1 ? 'editing': 'create-new'">
@@ -137,13 +137,6 @@ export default {
             'oldEventNotifications',
             'eventNotifications'
         ]),
-        // reversedNotifications: function (){
-        //     if(this.eventNotifications && this.eventNotifications.length > 0){
-        //         return this.eventNotifications.slice().sort((a,b) => {
-        //             return b.notification_time - a.notification_time;
-        //         });
-        //     }
-        // },
         formTitle () {
             return this.editIndex === -1 ? 'Enter new notification' : 'Edit notification';
         }
@@ -158,19 +151,13 @@ export default {
                 this.close();
             }
         },
-        selectedCategory(newVal){
-            // var totalNotifications = _.merge(this.eventNotifications, this.oldEventNotifications);
+        selectedCategory(val){
             this.displayNotifications = this.eventNotifications.filter(item => {
-                if(!newVal) return item;
-                if(item.category == newVal) {
-                    return item;
-                }
+                if(val) return item.category == val;
+                return item;
             });
         },
         eventNotifications(newVal){
-            // if(this.eventNotifications.length == 0){
-            //     this.migrateOldEntries();
-            // }
             this.displayNotifications = _.map(newVal, _.clone);
         }
     },
@@ -231,7 +218,6 @@ export default {
                         if(payload){
                             var fileLink = payload.url;
                             vm.signedFileUrls.push(fileLink);
-                            console.log('1111 ---- dispatch.then ---- ', fileLink);
                             this.uploadFile(file);
                         }
                     });
@@ -270,7 +256,6 @@ export default {
                 delete params.updated;
             }
 
-            console.log(' -----save-- ', isEdit, params);
             this.$store.dispatch(action, params)
                 .then((payload) =>{
                     this.request.inProgress = false;

@@ -91,27 +91,30 @@
                 <div class="one-third">
                     <label> Type(s) </label>
 
-                    <div v-for="(item, index) in allEventTypes">
-                        <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value" :id="'ev-type'+index">
-                        <label class="eventBox" :for="'ev-type'+index"> {{item.text}} </label>
-                        <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
-                            <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
-                                <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+(sub.text)+index" />
-                                <label class="eventBox" :for="'ev-sub-'+(sub.text)+index"> {{sub.text}} &nbsp&nbsp </label>
-                                <br v-if="index % 4 == 1"/>
-                            </span>
-
-                            <span>
-                                <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" />
-                                <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
-                                <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  placeholder="(Specify)" />
+                    <v-flex v-for="(item, index) in eventTypes" :key="index"  @mouseover="editable.typeIndex = index">
+                        <div>
+                            {{item}}
+                            <span class="row-actions" v-show="editable.typeIndex == index">
+                                <a @click="deleteType(index)">delete</a>
                             </span>
                         </div>
+                    </v-flex>
+                    <div v-if="newType">
+                        <v-flex>
+                            <v-select class="one-half" v-model="newType.type" label="type" :items="allEventTypes"></v-select>
+                            <v-select class="one-half" label="sub-type" v-if="subTypeSelect"
+                                v-model="newType.subtype"
+                                :items="subTypes[newType.type]">
+                            </v-select>
+                        </v-flex>
+                        <v-text-field class="inverse" solo v-if="newType.type == 'other' || (subTypeSelect && newType.subtype == 'other') " placeholder="specify" v-model="newType.specify"></v-text-field>
                     </div>
-
-                    <div>
-                        <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
-                        <input v-if="otherFields.type.isSelected" type="text" v-model="otherFields.type.description" placeholder="(Specify)" />
+                    <a v-if="!newType" class="form-actions" @click="addType()">Add type</a>
+                    <div v-else>
+                        <v-flex class="row-actions" xs12>
+                            <a @click="submitType()">confirm</a>
+                            <a @click="clearType()">cancel</a>
+                        </v-flex>
                     </div>
                 </div>
                 <div class="one-third">
@@ -124,22 +127,32 @@
 
                 <div class="one-third" id="eventAreas">
                     <label> Area(s) </label>
-                    <div v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas">
-                        <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
-                        <span v-else> {{area.country}} </span>
-                        <span class="remove" @click="removeArea(area)"> x </span>
+                    <div v-if="newArea">
+                        <vue-google-autocomplete  ref="address" id="areaMap" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
+                        <label>Severity </label>
+                        <v-slider v-model="newArea.severity.scale" :tick-labels="severityLabels" :max="2" step="1" ticks="always" tick-size="2" ></v-slider>
+                        <v-textarea solo label="analysis" class="inverse" v-model="newArea.severity.description"></v-textarea>
+                    </div>
+                    <div v-else-if="!newArea && eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas" @mouseover="editable.areaIndex = index">
+                        <div v-if="area.region"> {{area.region}}, {{area.country_code}} </div>
+                        <div v-else> {{area.country}} </div>
+
+                        <!-- <span class="remove" @click="removeArea(area)"> x </span> -->
                         <div class="severity-wrapper">
                             <span class="label"> Severity analysis </span>
                             <span class="inputSeveritySlider"></span>
                             <!-- ####TODO **HEREHEREH !!! **** -->
                             <!-- <textarea v-model.trim="eventMetadata.severity_measures[index].description" placeholder="Severity description"></textarea> -->
                         </div>
+
+                        <span class="row-actions" v-show="editable.areaIndex == index">
+                            <a @click="editArea(area)">edit</a>
+                            <a @click="deleteArea(index)">delete</a>
+                        </span>
                     </div>
-                    <new-map-entry></new-map-entry>
+                    <a v-if="!newArea" class="form-actions" @click="addArea()">Add area</a>
+                    <!-- <new-map-entry></new-map-entry> -->
                 </div>
-
-                <!-- <div id="eventMap" class="map-container">   TODO: insert MAP component -->
-
 
                 <div class="not-editable">
                     <label> OPEN DATE  </label>
@@ -160,7 +173,7 @@
                 </div>
                 <div>
                     <label> Description </label>
-                    <textarea id="eventDescription" type="text" v-model="eventMetadata.description" placeholder="Event description"> </textarea>
+                    <v-textarea solo id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
                 </div>
 
                 <label> ID link - SharePoint </label>
@@ -176,7 +189,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { DATETIME_DISPLAY_FORMAT, SEVERITY, EVENT_TYPES, EVENT_STATUSES } from '@/common/common';
+import { DATETIME_DISPLAY_FORMAT, SEVERITY, SEVERITY_LABELS, EVENT_TYPES, DEFAULT_EVENT_TYPE, DISEASE_OUTBREAK_TYPES, NATURAL_DISASTER_TYPES, DEFAULT_EVENT_AREA, EVENT_STATUSES } from '@/common/common';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
 import NewMapEntry from '@/views/Map/NewEntry.vue';
 
@@ -185,6 +198,7 @@ import 'bootstrap';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import 'pc-bootstrap4-datetimepicker';
 // import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+import VueGoogleAutocomplete from 'vue-google-autocomplete';
 
 // import { EDIT_EVENT } from '@/store/actions.type';
 
@@ -201,23 +215,27 @@ export default {
             editing: false,
             allSeverity: SEVERITY,
             allEventTypes: EVENT_TYPES,
-            statuses: EVENT_STATUSES,
-            checkedTypes:[],
-            checkedSubTypes: [],
-            otherFields: {
-                type: {
-                    isSelected: false,
-                    description: ''
-                },
-                disease_outbreak: {
-                    isSelected: false,
-                    description: ''
-                },
-                natural_disaster: {
-                    isSelected: false,
-                    description: ''
-                }
+            subTypes: {
+                disease_outbreak: DISEASE_OUTBREAK_TYPES ,
+                natural_disaster: NATURAL_DISASTER_TYPES
             },
+            editable: {
+                typeIndex: null,
+                areaIndex: null
+            },
+            newType: null,
+            defaultType: DEFAULT_EVENT_TYPE,
+            newArea: null,
+            defaultArea: DEFAULT_EVENT_AREA,
+            severityLabels: SEVERITY_LABELS,
+            areaAutocomplete: {
+                isLoading: false,
+                items: [],
+                model: null,
+                search: null
+            },
+            statuses: EVENT_STATUSES,
+
             dateTimeConfig: {
                 format: DATETIME_DISPLAY_FORMAT
             }
@@ -226,7 +244,7 @@ export default {
     },
     components:{
         //TODO: MAP goes here
-        datePicker, MapAnnotation, NewMapEntry
+        datePicker, MapAnnotation, NewMapEntry, VueGoogleAutocomplete
     },
     computed: {
         ...mapGetters([
@@ -235,9 +253,14 @@ export default {
             'eventCreatedAt',
             'eventProperties',
             'eventCoordinates'
-        ])
+        ]),
+        subTypeSelect(){
+            return this.newType.type == 'disease_outbreak' || this.newType.type == 'natural_disaster';
+        }
     },
+
     mounted (){
+
     },
     methods: {
         edit(){
@@ -251,6 +274,46 @@ export default {
         },
         save(){
 
+        },
+        addType(){
+            this.newType = this.defaultType;
+        },
+        submitType(){
+            // strip value & append to this.eventTypes
+            var tmp = this.newType;
+            if(this.subTypeSelect){
+                tmp.subtype == 'other' ? this.eventTypes.push(tmp.specify) : this.eventTypes.push(tmp.subtype);
+            }else{
+                this.eventTypes.push(tmp.type);
+            }
+            this.clearType();
+        },
+        clearType(){
+            for (var fields in this.newType) delete this.newType[fields];
+            this.newType = null;
+        },
+        deleteType(index){
+            this.eventTypes.splice(index, 1);
+        },
+        addArea(){
+            this.newArea = this.defaultArea;
+        },
+        /**
+        * When the location found
+        * @param {Object} addressData Data of the found location
+        * @param {Object} placeResultData PlaceResult object
+        * @param {String} id Input container ID
+        */
+        getAddressData: function (addressData, placeResultData, id) {
+            console.log('------- ', addressData, placeResultData);
+            // addressData = {
+            //     administrative_area_level_1: "Berlin"
+            //     country: "Germany"
+            //     latitude: 52.5379507
+            //     locality: "Berlin"
+            //     longitude: 13.395074499999964
+            //     route: "Bernauer Straße" }
+            this.address = addressData;
         }
     },
     watch: {

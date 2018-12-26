@@ -2,7 +2,7 @@
     <v-container class="eventSubContent capacity-rows">
         <div class="searchHeader">
             <v-text-field v-model='search' label='Search' single-line hide-details xs10></v-text-field>
-            <v-select v-model="selectedType" :items="allCapacityTypes" label="Capacity" round></v-select>
+            <v-select v-model="selectedType" :items="allCapacityTypes" label="Capacity" round clearable></v-select>
             <v-dialog v-model="dialog" max-width="880px" dark>
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                 <v-card class="editing">
@@ -112,6 +112,7 @@ export default {
             _beforeEditingCache: {},
             search: '',
             selectedType: null,
+            displayCapacities: [],
             dialog: false,
             allCapacityTypes: EXTERNAL_CAPACITY_TYPES,
             editMode:{
@@ -128,6 +129,12 @@ export default {
     components: {
         //TODO: add + edit
     },
+    mounted(){
+        // Not the best place to call this inside mounted
+        this.displayCapacities = this.$store.getters.eventExtCapacity.sort(function(a, b){
+            return b.arrival_date - a.arrival_date;
+        });
+    },
     watch: {
         editing(val){
             if(val){
@@ -137,6 +144,12 @@ export default {
             }else{
                 this.updateCapacity();
             }
+        },
+        selectedType(val){
+            this.displayCapacities = this.eventExtCapacity.filter(item =>{
+                if(val) return item.type == val;
+                return item;
+            });
         }
     },
     filters: {
@@ -144,19 +157,10 @@ export default {
     computed: {
         ...mapGetters([
             'eventExtCapacity'
-        ]),
-        displayCapacities(){
-            return this.eventExtCapacity.sort(function(a, b){
-                return b.arrival_date - a.arrival_date;
-            });
-        }
+        ])
     },
     methods:{
-        filterList(type){
-            this.displayCapacities.filter(item =>{
-                return item.type == type;
-            });
-        },
+
         add(type){
             console.log('add Entry clicked ---- ', type);
             var newInstance = this.defaultItem;

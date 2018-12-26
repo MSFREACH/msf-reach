@@ -9,12 +9,19 @@ ul{
     padding: 22px;
     display: flex;
     .actions{
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        right: 21px;
-        button{
+        float: right;
+        display: inline-flex;
+        .v-input{
+            margin-top: 0;
+            padding-top: 0;
+        }
+    }
+}
 
+.edit-wrapper{
+    .cancel{
+        .v-icon{            
+            color: #fff;
         }
     }
 }

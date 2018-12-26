@@ -3,11 +3,27 @@
 .datepicker-container{
     position: relative;
 }
-
+.row-spacing{
+    margin-bottom: 2em;
+}
+.row-actions{
+    a{
+        padding-left: 12px;
+        text-decoration: underline;
+    }
+}
 
 .edit-wrapper{
     background: #0374C7;
     color: #fff;
+    .inverse{
+        input{
+            color: $text-dark !important;
+        }
+    }
+    .inverse::placeholder{
+        color: $text-light-grey
+    }
     .v-text-field > .v-input__control > .v-input__slot:before{
         display: none;
     }
@@ -51,8 +67,21 @@
         position: absolute;
 
     }
+    .accent--text{
+        color: #fff !important;
+    }
 }
-
+.responseContainer{
+    .edit-wrapper{
+        .v-input__control{
+            flex-grow: .8;
+            width: 95%;
+        }
+        .one-half{
+            display: inline-block;
+        }
+    }
+}
 
 
 .action .cancel{
@@ -185,4 +214,9 @@ textarea{
     .editTextArea{
         border: 1px solid $bg-space-grey;
     }
+}
+
+
+.pac-container, .pac-item {
+    width: inherit !important;
 }

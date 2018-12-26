@@ -1,5 +1,5 @@
 <template>
-    <v-container class="eventSubContent statusToggle">
+    <v-container class="eventSubContent statusToggle responseContainer">
         <nav v-if="eventResponses && eventResponses.length> 0" class="statusTabWrapper">
             <v-btn flat small :class="item.status.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in eventResponses" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
         </nav>
@@ -9,29 +9,16 @@
                 <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
             </v-layout>
             <v-layout row wrap v-if="editing" dark>
-                <div class="quarter-width">
+                <div class="quarter-width row-spacing">
                     <label>Project Code</label>
                     <input type="text" v-model="editResponse.project_code" placeholder="OCA-###" />
                 </div>
-                <div class="full-width">
+                <div class="full-width row-spacing">
                     <label>Type of programmes</label>
-                    <v-flex v-if="!editResponse.type_of_programmes">
-                        <v-flex xs4 d-flex>
-                            <v-select dark  v-model="editResponse.type_of_programmes[0].value" :items="allProgrammes" ></v-select>
-                        </v-flex>
-                        <v-flex xs4 d-flex>
-                            <v-select dark xs3 v-if="editResponse.type_of_programmes[0].value == ('infectious_diseases' || 'ncds')"
-                                v-model="editResponse.type_of_programmes[0].subProgram"
-                                :items="subProgrammes[editResponse.type_of_programmes[0].value]">
-                            </v-select>
-                        </v-flex>
-                        <v-slider dark xs4 v-model="editResponse.type_of_programmes[0].scale" :label="editResponse.type_of_programmes[0].deployment.toString()" min="1" max="10"></v-slider>
-                        <v-textarea xs12 v-model="editResponse.type_of_programmes[0].deployment" label="specify" solo></v-textarea>
-                    </v-flex>
-                    <v-flex v-else v-for="(program, index) in editResponse.type_of_programmes" :key="index" @mouseover="editableIndex = index">
+                    <v-flex v-for="(program, index) in editResponse.type_of_programmes" :key="index" @mouseover="editableIndex = index">
                         <div v-if="!inEditProgrammeIndex">
-                                {{program.name | noUnderscore | capitalize }}
-                                <b> {{program.scale}} </b>
+                                {{program.name}}
+                                <b> {{program.scale}} </b> {{program.arrival_date}}
                                 <span class="notes"> {{program.deployment}} </span>
                                 <span v-show="editableIndex == index">
                                     <a @click="editProgramme(program, index)">edit</a>
@@ -39,70 +26,58 @@
                                 </span>
                         </div>
                         <v-layout row wrap v-else-if="inEditProgrammeIndex == index">
-                            <v-flex xs6>
-                                <v-select dark v-model="program.value" label="type" :items="allProgrammes" ></v-select>
-                                <v-select dark label="sub-type" v-if="program.value == ('infectious_diseases' || 'ncds')"
-                                    v-model="program.subProgram"
-                                    :items="subProgrammes[program.value]">
-                                </v-select>
-                                <v-slider dark v-model="program.scale" label="Deployment scale" min="1" max="10"></v-slider>
-                                <span>
-                                    <a @click="submitProgramme()">confirm</a>
-                                    <a @click="cancelEditProgramme(index)">cancel</a>
-                                </span>
-                            </v-flex>
+                            <div class="one-half">
+                                <div class="full-width">
+                                    <v-select class="one-half" v-model="program.value" label="type" :items="allProgrammes" clearable></v-select>
+                                    <v-select class="one-half" label="sub-type" v-if="program.value == ('infectious_diseases' || 'ncds')"
+                                        v-model="program.subProgram"
+                                        :items="subProgrammes[program.value]">
+                                    </v-select>
+                                </div>
+                                <div class="one-half">
+                                    <label>arrival date</label>
+                                    <v-menu ref="programArrivalDate" :close-on-content-click="false" v-model="programArrivalDate" lazy transition="scale-transition" offset-y full-width width="290px">
+                                        <v-text-field slot="activator" v-model="program.arrival_date" persistent-hint type="date"></v-text-field>
+                                        <v-date-picker v-model="program.arrival_date" no-title @input="programArrivalDate = false"></v-date-picker>
+                                    </v-menu>
+                                </div>
+                                <v-slider class="one-half" xs6 dark v-model="program.scale" label="Deployment scale" min="1" max="10"></v-slider>
+                            </div>
                             <v-textarea xs6 v-model="program.deployment" label="specify" solo></v-textarea>
-
+                            <v-flex class="row-actions" xs12>
+                                <a @click="submitProgramme()">confirm</a>
+                                <a @click="cancelEditProgramme(index)">cancel</a>
+                            </v-flex>
                         </v-layout>
                     </v-flex>
-                    <a class="form-actions" @click="addProgram()">Add</a>
+                    <a v-if="!inEditProgrammeIndex" class="form-actions" @click="addProgram()">Add</a>
                 </div>
-
-                <!-- <div class="full-width" v-for="(program, index) in editResponse.type_of_programmes" :key="index">
-                    <label>Type of programmes</label>
-                    <v-flex>
-                        <v-flex xs4 d-flex>
-                            <v-select dark  v-model="program.value" :items="allProgrammes" ></v-select>
-                        </v-flex>
-                        <v-flex xs4 d-flex>
-                            <v-select dark xs3 v-if="program.value == ('infectious_diseases' || 'ncds')"
-                                v-model="program.subProgram"
-                                :items="subProgrammes[program.value]">
-                            </v-select>
-                        </v-flex>
-                        <v-slider dark xs4 v-model="program.scale" label="Deployment scale" min="1" max="10"></v-slider>
-                        <v-text-field xs12 v-model="program.deployment" single-line label="specify" background-color="white"></v-text-field>
-                    </v-flex>
-                    <a class="form-actions" @click="addProgram()">Add</a>
-                </div> -->
-
-
-                <v-divider/>
+                <hr class="row-divider"/>
                 <div class="one-half">
                     <label>Response</label>
                     <v-flex d-flex>
-                        <v-select dark :items="allResponseTypes" :v-model="editResponse.response.type"></v-select>
+                        <v-select dark :items="allResponseTypes" label="type" :v-model="editResponse.response.type"></v-select>
                     </v-flex>
                     <v-textarea solo label="description" v-model="editResponse.response.description" auto-grow background-color="white" color="secondary"></v-textarea>
                 </div>
 
                 <div class="one-half">
-                    <v-layout row wrap class="dateRange">
-                        <v-flex xs6 class="start" d-flex>
+                    <div class="dateRange">
+                        <span>
                             <label>Start date</label>
                             <v-menu ref="startDateSelected" :close-on-content-click="false" v-model="startDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
                                 <v-text-field slot="activator" v-model="editResponse.start_date" persistent-hint type="date"></v-text-field>
                                 <v-date-picker v-model="editResponse.start_date" no-title @input="startDateSelected = false"></v-date-picker>
                             </v-menu>
-                        </v-flex>
-                        <v-flex xs6 class="end" d-flex>
+                        </span>
+                        <span>
                             <label>End date</label>
                             <v-menu ref="endDateSelected" :close-on-content-click="false" v-model="endDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
                                 <v-text-field slot="activator" v-model="editResponse.end_date" persistent-hint type="date"></v-text-field>
                                 <v-date-picker v-model="editResponse.end_date" no-title @input="endDateSelected = false"></v-date-picker>
                             </v-menu>
-                        </v-flex>
-                    </v-layout>
+                        </span>
+                    </div>
                     <div>
                         <label> Location of MSF Response: </label>
                         <!-- map as input -->
@@ -110,9 +85,9 @@
                 </div>
                 <div class="one-half">
                     <label> Operational Center </label>
-                    <v-flex>
+                    <v-radio-group v-model="editResponse.operational_center" :mandatory="true">
                         <v-radio v-for="oc in allOperationalCenters" :key="oc" :label="oc" :value="oc"></v-radio>
-                    </v-flex>
+                    </v-radio-group>
                 </div>
                 <div class="one-half">
                     <label> Supply Chain Specificities </label>
@@ -142,7 +117,7 @@
                     <div class="full-width">
                         <label>Type of programmes: </label>
                         <div v-if="item" v-for="item in displayResponse.type_of_programmes">
-                                {{item.name | noUnderscore | capitalize }}
+                                {{item.name}}
                                 <b> {{item.scale}} </b>
                                 <span class="notes"> {{item.deployment}} </span>
                         </div>
@@ -226,6 +201,7 @@ export default {
             allOperationalCenters: OPERATIONAL_CENTERS,
             allSupplyChains: SUPPLY_CHAIN_SPECIALITIES,
             defaultResponse: DEFAULT_EVENT_RESPONSE,
+            programArrivalDate: false,
             startDateSelected: false,
             endDateSelected: false
         };
@@ -258,6 +234,7 @@ export default {
         },
         addProgram(){
             this.editResponse.type_of_programmes.push(this.defaultProgram);
+            this.inEditProgrammeIndex = this.editResponse.type_of_programmes.length -1;
         },
         editProgramme(program, index){
             this._beforeEditingProgrammeCache = program;

@@ -6,17 +6,18 @@ export const SEVERITY = [
     {
         color:'green',
         value: 1,
-        label: 'low'
+        text: 'low'
     },{
         color:'orange',
         value: 2,
-        label: 'medium'
+        text: 'medium'
     },{
         color:'red',
         value: 3,
-        label: 'high'
+        text: 'high'
     }
 ];
+export const SEVERITY_LABELS = ['low', 'medium', 'high']; 
 
 export const EVENT_TYPES = [
     { value: 'armed_conflict', text: 'Armed Conflict' },
@@ -47,10 +48,46 @@ export const EVENT_TYPES = [
         ]
     },
     { value: 'search_and_rescue', text: 'Search and Rescue' },
+    { value: 'other', text: 'Other'}
 ];
 
+export const DEFAULT_EVENT_TYPE = {
+    type: null,
+    subtype: null,
+    specify: null
+};
+export const DISEASE_OUTBREAK_TYPES = [
+    { value: 'cholera', text: 'Cholera' },
+    { value: 'ebola', text: 'Ebola' },
+    { value: 'dengue', text: 'Dengue' },
+    { value: 'malaria', text: 'Malaria' },
+    { value: 'measles', text: 'Measles' },
+    { value: 'meningococcal_meningitis', text: 'Meningococcal Meningitis' },
+    { value: 'hemorrhagic_fever', text: 'Hemorrhagic fever'},
+    { value: 'yellow_fever', text: 'Yellow Fever' },
+    { value: 'other', text: 'Other'}
+];
+
+
+export const NATURAL_DISASTER_TYPES =[
+    { value: 'earthquake', text: 'Earthquake' },
+    { value: 'volcano', text: 'Volcano' },
+    { value: 'typhoon', text: 'Typhoon' },
+    { value: 'flood', text: 'Flood' },
+    { value: 'tsunami', text: 'Tsunami' },
+    { value: 'drought', text: 'Drought' },
+    { value: 'landslide', text:'Landslide'},
+    { value: 'other', text: 'Other'}
+];
+
+
+export const DEFAULT_EVENT_AREA = {
+    severity: {
+        scale: null,
+        description: null
+    }
+};
 export const EVENT_NOTIFICATION_CATEGORIES = [
-    {text: '--', value: null },
     {text: 'ACCESS', value: 'ACCESS' },
     {text: 'NEEDS', value: 'NEEDS' },
     {text: 'CONTACTS', value: 'CONTACTS' },
