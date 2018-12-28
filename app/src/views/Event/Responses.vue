@@ -16,7 +16,7 @@
                 <div class="full-width row-spacing">
                     <label>Type of programmes</label>
                     <v-flex v-for="(program, index) in editResponse.type_of_programmes" :key="index" @mouseover="editableIndex = index">
-                        <div v-if="!inEditProgrammeIndex">
+                        <div v-if="inEditProgrammeIndex < 0">
                                 {{program.name}}
                                 <b> {{program.scale}} </b> {{program.arrival_date}}
                                 <span class="notes"> {{program.deployment}} </span>
@@ -175,6 +175,7 @@
 <script>
 
 /*eslint no-debugger: off*/
+/*eslint no-console: off*/
 import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
 import { DEFAULT_EVENT_RESPONSE } from '@/common/form-fields';
@@ -239,6 +240,7 @@ export default {
         editProgramme(program, index){
             this._beforeEditingProgrammeCache = program;
             this.inEditProgrammeIndex = index;
+            console.log(' ------ ', program, index);
         },
         deleteProgramme(index){
             this.editResponse.type_of_programmes.splice(index, 1);

@@ -9,7 +9,8 @@ ul{
     padding: 22px;
     display: flex;
     .actions{
-        float: right;
+        position: absolute;
+        right: 21px;
         display: inline-flex;
         .v-input{
             margin-top: 0;
@@ -20,7 +21,7 @@ ul{
 
 .edit-wrapper{
     .cancel{
-        .v-icon{            
+        .v-icon{
             color: #fff;
         }
     }
@@ -249,4 +250,14 @@ tr.v-datatable__expand-row .v-card.expanded-field{
     padding: 5em;
     border: 1px solid $text-light-grey;
     color: $text-light-grey;
+}
+
+.lowSeverity{
+    color: $low-severity;
+}
+.mediumSeverity{
+    color: $medium-severity;
+}
+.highSeverity{
+    color: $high-severity;
 }

@@ -35,12 +35,12 @@
                         <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
                         <span v-else>{{area.country}}</span>
                         <div class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
-                            <span :style="'color:'+allSeverity[eventMetadata.severity_measures[index].scale-1].color">{{allSeverity[eventMetadata.severity_measures[index].scale-1].label}} severity</span>
+                            <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
                             <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
                         </div>
                     </v-flex>
                     <div v-if="!eventMetadata.severity_measures" class="sub-tag">
-                        <span :style="'color:'+allSeverity[eventMetadata.severity_scale-1].color">{{allSeverity[eventMetadata.severity_scale-1].label}} severity</span>
+                        <span :class="allSeverity[eventMetadata.severity_scale-1].text +'Severity'">{{allSeverity[eventMetadata.severity_scale-1].text}} severity</span>
                         <span class="notes"><br/> {{ eventMetadata.severity }} </span>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 <div class="top-level primary-text">
                     <div class="one-half">
                         <label>Name</label>
-                        <input type="text" v-model="eventMetadata.name" placeholder="name" />
+                        <input class="full-width" type="text" v-model="eventMetadata.name" placeholder="name" />
                     </div>
 
                     <div class="quarter-width">
@@ -91,7 +91,7 @@
                 <div class="one-third">
                     <label> Type(s) </label>
 
-                    <v-flex v-for="(item, index) in eventTypes" :key="index"  @mouseover="editable.typeIndex = index">
+                    <v-flex v-for="(item, index) in eventTypes" :key="index"  @mouseover="editable.typeIndex = index" @mouseleave="editable.typeIndex = null">
                         <div>
                             {{item}}
                             <span class="row-actions" v-show="editable.typeIndex == index">
@@ -119,61 +119,68 @@
                 </div>
                 <div class="one-third">
                     <label> Status </label>
-                    <select v-model="eventMetadata.event_status">
+                    <!-- <select v-model="eventMetadata.event_status">
                     <option disabled value="">Please select one</option>
                     <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
-                    </select>
+                    </select> -->
+                    <v-select class="one-half" v-model="eventMetadata.event_status" label="status" :items="statuses" clearable></v-select>
                 </div>
 
                 <div class="one-third" id="eventAreas">
                     <label> Area(s) </label>
-                    <div v-if="newArea">
-                        <vue-google-autocomplete  ref="address" id="areaMap" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
+                    <div v-if="inEditArea">
+                        <v-text-field v-if="inEditArea.address" v-model="inEditArea.address" disabled></v-text-field>
+                        <vue-google-autocomplete  v-else ref="address" id="areaMap" types="" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
                         <label>Severity </label>
-                        <v-slider v-model="newArea.severity.scale" :tick-labels="severityLabels" :max="2" step="1" ticks="always" tick-size="2" ></v-slider>
-                        <v-textarea solo label="analysis" class="inverse" v-model="newArea.severity.description"></v-textarea>
+                        <v-slider v-model="inEditArea.severity.scale" :tick-labels="severityLabels" :min="1" :max="3" step="1" ticks="always" tick-size="1" ></v-slider>
+                        <v-textarea solo label="analysis" class="inverse" v-model="inEditArea.severity.description"></v-textarea>
+                        <span class="row-actions">
+                            <a @click="submitArea()">confirm</a>
+                            <a @click="clearArea()">cancel</a>
+                        </span>
                     </div>
-                    <div v-else-if="!newArea && eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas" @mouseover="editable.areaIndex = index">
-                        <div v-if="area.region"> {{area.region}}, {{area.country_code}} </div>
-                        <div v-else> {{area.country}} </div>
+                    <div v-else-if="!inEditArea && eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas" @mouseover="editable.areaIndex = index" @mouseleave="editable.areaIndex = null">
+                        <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
+                        <span v-else> {{area.country}} </span>
 
-                        <!-- <span class="remove" @click="removeArea(area)"> x </span> -->
-                        <div class="severity-wrapper">
-                            <span class="label"> Severity analysis </span>
-                            <span class="inputSeveritySlider"></span>
-                            <!-- ####TODO **HEREHEREH !!! **** -->
-                            <!-- <textarea v-model.trim="eventMetadata.severity_measures[index].description" placeholder="Severity description"></textarea> -->
-                        </div>
+                        <span class="severity-wrapper">
+                            <span class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
+                                <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{ allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
+                                <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
+                            </span>
+                        </span>
 
                         <span class="row-actions" v-show="editable.areaIndex == index">
-                            <a @click="editArea(area)">edit</a>
+                            <a @click="editArea(area, eventMetadata.severity_measures[index], index)">edit</a>
                             <a @click="deleteArea(index)">delete</a>
                         </span>
                     </div>
-                    <a v-if="!newArea" class="form-actions" @click="addArea()">Add area</a>
+
+                    <a v-if="!inEditArea" class="form-actions" @click="addArea()">Add area</a>
                     <!-- <new-map-entry></new-map-entry> -->
                 </div>
-
-                <div class="not-editable">
+                <hr class="row-divider"/>
+                <div class="not-editable one-third">
                     <label> OPEN DATE  </label>
                     {{ eventCreatedAt | fullDate }}
                 </div>
 
-                <div>
+                <div class="one-third">
                     <label>Local Date/Time </label>
                     <div class="datepicker-container">
                         <date-picker v-model="eventMetadata.event_local_time" :config="dateTimeConfig"></date-picker>
                     </div>
                 </div>
 
-                <div>
+                <div class="one-third">
                     <label> Mission Contact Person  </label>
                     <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
                     <input type="text" v-model="eventMetadata.incharge_name" placeholder="Name" />
                 </div>
-                <div>
+                <hr class="row-divider"/>
+                <div class="full-width">
                     <label> Description </label>
-                    <v-textarea solo id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
+                    <v-textarea solo auto-grow id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
                 </div>
 
                 <label> ID link - SharePoint </label>
@@ -225,7 +232,8 @@ export default {
             },
             newType: null,
             defaultType: DEFAULT_EVENT_TYPE,
-            newArea: null,
+            inEditArea: null,
+            inEditAreaIndex: null,
             defaultArea: DEFAULT_EVENT_AREA,
             severityLabels: SEVERITY_LABELS,
             areaAutocomplete: {
@@ -234,8 +242,8 @@ export default {
                 model: null,
                 search: null
             },
+            addressAutocomplete: {},
             statuses: EVENT_STATUSES,
-
             dateTimeConfig: {
                 format: DATETIME_DISPLAY_FORMAT
             }
@@ -296,8 +304,33 @@ export default {
             this.eventTypes.splice(index, 1);
         },
         addArea(){
-            this.newArea = this.defaultArea;
+            this.inEditArea = this.defaultArea;
         },
+        editArea(area, severity, index){
+            console.log(' ------ ', area, severity);
+            var tmpAddress = area.region ? `${area.region}, ${area.country_code}` : area.country;
+            var tmpArea = { address: tmpAddress, severity };
+
+            this.inEditArea = tmpArea;
+            this.inEditAreaIndex = index;
+        },
+        submitArea(){
+            var tmp = this.inEditArea;
+            if(tmp.address){ // check if existing area obj
+                this.eventMetadata.severity_measures[this.inEditAreaIndex] = tmp.severity;
+                this.inEditAreaIndex = null;
+            }else{
+                this.eventMetadata.severity_measures.push(tmp.severity);
+                this.eventMetadata.areas.push(this.addressAutocomplete); // double check this obj is useful for mapping [getAddressData]
+            }
+            this.clearArea();
+        },
+        clearArea(){
+            for (var fields in this.inEditArea) delete this.inEditArea[fields];
+            this.inEditArea = null;
+            this.addressAutocomplete = null;
+        },
+
         /**
         * When the location found
         * @param {Object} addressData Data of the found location
@@ -313,7 +346,7 @@ export default {
             //     locality: "Berlin"
             //     longitude: 13.395074499999964
             //     route: "Bernauer Straße" }
-            this.address = addressData;
+            this.addressAutocomplete = addressData;
         }
     },
     watch: {

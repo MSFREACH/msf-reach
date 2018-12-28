@@ -188,8 +188,7 @@ export default {
             confirm('Are you sure you want to delete this item?') && this.eventExtCapacity.splice(index, 1);
         },
         localSave(){
-            this.eventExtCapacity[this.editMode.offset] = this.editedItem;
-            debugger;
+            this.eventExtCapacity[this.editMode.offset] = this.editedItem; 
             this.clearEdit();
         },
         updateCapacity(){

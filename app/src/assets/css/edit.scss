@@ -180,30 +180,20 @@ textarea{
     }
 }
 
-
-
-// .edit-wrapper .v-input:not(.v-input--is-disabled) input,
-// .edit-wrapper .v-input:not(.v-input--is-disabled) textarea{
-//     color: #fff;
-// }
-
 .edit-wrapper {
-    .v-input{
-    :not(.v-input--is-disabled){
+    .v-input:not(.v-input--is-disabled){
         input{
             color: #fff;
             ::placeholder{
                 color: $text-light-grey;
             }
         }
-
     }
-
-    }
-    .v-radio{
-        // .v-icon{
-        //     color: #fff;
-        // }
+    .v-input--is-disabled{
+        input{
+            color: rgba(255, 255, 255, .38);
+            border-bottom: 2px solid rgba(255, 255, 255, .38);
+        }
     }
 }
 .no-border{
