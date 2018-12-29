@@ -2,11 +2,7 @@ export const DEFAULT_EVENT_METADATA = {
     name: null,
     description: null,
     event_datetime: null,
-    areas:[{
-        region: null,
-        country: null,
-        country_code: null
-    }],
+    areas:[],
     status_updates: [{
         status: null,
         timestamp: null
@@ -22,10 +18,7 @@ export const DEFAULT_EVENT_METADATA = {
         position: null
     },
     sharepoint_link: null,
-    severity_measures: [{
-        scale: null,
-        description: null
-    }]
+    severity_measures: []
 };
 
 export const DEFAULT_REPORT_CARD_FIELDS = {
@@ -97,7 +90,7 @@ export const EXTERNAL_CAPACITY_FIELDS = {
     deployment: ''
 };
 
-export const EXTERNAL_CAPACITY_TYPES = ['governmental','other']; 
+export const EXTERNAL_CAPACITY_TYPES = ['governmental','other'];
 
 
 export const DEFAULT_EVENT_FIGURES = {

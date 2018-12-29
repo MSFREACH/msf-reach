@@ -6,8 +6,8 @@
             <v-dialog v-model="dialog" max-width="880px" dark>
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                 <v-card class="editing">
-                    <v-flex xs>
-                        <v-icon @click="close">close</v-icon>
+                    <v-flex right>
+                        <v-icon class="action-link" @click="close">close</v-icon>
                     </v-flex>
                   <v-card-text>
                     <v-container grid-list-md>
@@ -188,7 +188,7 @@ export default {
             confirm('Are you sure you want to delete this item?') && this.eventExtCapacity.splice(index, 1);
         },
         localSave(){
-            this.eventExtCapacity[this.editMode.offset] = this.editedItem; 
+            this.eventExtCapacity[this.editMode.offset] = this.editedItem;
             this.clearEdit();
         },
         updateCapacity(){

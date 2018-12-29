@@ -1,5 +1,5 @@
 <template>
-    <v-container class="eventSubContent" v-if="eventMetadata">
+    <v-container class="eventSubContent generalContainer" v-if="eventMetadata">
         <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'">
             <div class="actions">
                 <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
@@ -82,7 +82,7 @@
                     </div>
 
                     <div class="quarter-width">
-                        <label>Operator</label>
+                        <label>REACH Operator</label>
                         {{ eventProperties.operator }}
                     </div>
                 </div>
@@ -174,17 +174,23 @@
 
                 <div class="one-third">
                     <label> Mission Contact Person  </label>
-                    <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
                     <input type="text" v-model="eventMetadata.incharge_name" placeholder="Name" />
+                    <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
                 </div>
                 <hr class="row-divider"/>
-                <div class="full-width">
+                <v-layout row wrap>
+                    <v-flex xs6 style="display: inline-block;">
                     <label> Description </label>
-                    <v-textarea solo auto-grow id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
-                </div>
+                        <v-textarea solo auto-grow id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
+                    </v-flex>
+                    <v-flex xs6 style="display: inline-block;">
+                        <label>PREVIEW</label>
+                        <div class="markdown-fields" v-html="mdRender(eventMetadata.description)"></div>
+                    </v-flex>
+                </v-layout>
+                <hr class="row-divider"/>
 
-                <label> ID link - SharePoint </label>
-                <input type="text" v-model="eventMetadata.sharepoint_link" placeholder="SharePoint Link" />
+                <v-text-field clearable prepend-icon="link" label="SharePoint Link" v-model="eventMetadata.sharepoint_link" round ></v-text-field>
             </v-layout>
         </div>
 
@@ -196,22 +202,23 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { DATETIME_DISPLAY_FORMAT, SEVERITY, SEVERITY_LABELS, EVENT_TYPES, DEFAULT_EVENT_TYPE, DISEASE_OUTBREAK_TYPES, NATURAL_DISASTER_TYPES, DEFAULT_EVENT_AREA, EVENT_STATUSES } from '@/common/common';
+import { DATETIME_DISPLAY_FORMAT,
+    EVENT_TYPES,
+    DEFAULT_EVENT_TYPE,
+    DISEASE_OUTBREAK_TYPES,
+    NATURAL_DISASTER_TYPES,
+    DEFAULT_EVENT_AREA,
+    EVENT_STATUSES,
+    SEVERITY,
+    SEVERITY_LABELS } from '@/common/common';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
-import NewMapEntry from '@/views/Map/NewEntry.vue';
-
-// import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap';
-import datePicker from 'vue-bootstrap-datetimepicker';
-import 'pc-bootstrap4-datetimepicker';
-// import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+import marked from 'marked';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 
 // import { EDIT_EVENT } from '@/store/actions.type';
 
 /*eslint no-console: off*/
 /*eslint no-debugger: off*/
-
 /*eslint no-unused-vars: off*/
 /*eslint no-negated-condition: off*/
 
@@ -252,7 +259,7 @@ export default {
     },
     components:{
         //TODO: MAP goes here
-        datePicker, MapAnnotation, NewMapEntry, VueGoogleAutocomplete
+        MapAnnotation, VueGoogleAutocomplete
     },
     computed: {
         ...mapGetters([
@@ -271,6 +278,9 @@ export default {
 
     },
     methods: {
+        mdRender(value){
+            if(value) return marked(value);
+        },
         edit(){
             this._beforeEditingCache = Object.assign({}, this.eventMetadata);
             this.editing = true;

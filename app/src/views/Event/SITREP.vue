@@ -6,7 +6,7 @@
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                 <v-card :class="editIndex != -1 ? 'editing': 'create-new'">
                 <v-flex right>
-                    <v-icon @click='close'>close</v-icon>
+                    <v-icon class="action-link" @click='close'>close</v-icon>
                 </v-flex>
                   <v-card-text>
                     <v-container grid-list-md>

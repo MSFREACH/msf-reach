@@ -9,9 +9,7 @@
                     <v-flex right>
                         <v-icon @click="close">close</v-icon>
                     </v-flex>
-                  <v-card-title>
-                    <span class="headline">{{formTitle}}</span>
-                  </v-card-title>
+
                   <v-card-text>
                     <v-container grid-list-md>
                       <v-layout wrap>
@@ -20,7 +18,7 @@
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>Notification</label>
-                            <v-textarea class="editTextArea" solo label="description" value="" auto-grow background-color="white" color="secondary" v-model="editedItem.description"></v-textarea>
+                            <v-textarea class="editTextArea" :solo="editIndex != -1" label="description" value="" auto-grow background-color="white" color="secondary" v-model="editedItem.description"></v-textarea>
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>PREVIEW</label>
@@ -136,10 +134,7 @@ export default {
             'currentEventId',
             'oldEventNotifications',
             'eventNotifications'
-        ]),
-        formTitle () {
-            return this.editIndex === -1 ? 'Enter new notification' : 'Edit notification';
-        }
+        ])
     },
     watch: {
         dialog (val) {

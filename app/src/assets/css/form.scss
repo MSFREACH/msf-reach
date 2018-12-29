@@ -1,0 +1,29 @@
+label{
+    display: block;
+}
+
+
+.one-half,
+.one-third,
+.quarter-width{
+    display: inline-block;
+}
+
+
+.create-wrapper{
+    .v-text-field > .v-input__control > .v-input__slot:before{
+        display: block;
+    }
+
+    .v-input__control{
+        flex-grow: .8;
+        width: min-content;
+    }
+}
+
+
+.top-align{
+    div.one-third{
+        vertical-align: top;
+    }
+}

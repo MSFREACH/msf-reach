@@ -21,6 +21,10 @@
             color: $text-dark !important;
         }
     }
+    // .actions {
+    //     position: absolute;
+    //     right: 21px;
+    // }
     .inverse::placeholder{
         color: $text-light-grey
     }
@@ -71,6 +75,8 @@
         color: #fff !important;
     }
 }
+
+.generalContainer,
 .responseContainer{
     .edit-wrapper{
         .v-input__control{
