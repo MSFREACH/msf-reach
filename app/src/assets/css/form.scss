@@ -13,6 +13,7 @@ label{
 .create-wrapper{
     .v-text-field > .v-input__control > .v-input__slot:before{
         display: block;
+        border-style: solid;
     }
 
     .v-input__control{

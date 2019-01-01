@@ -1,13 +1,12 @@
 <template>
     <v-layout>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
-        <div id="map" class="map"></div>
-        <v-btn fab color="white" small class="layers-trigger">
-            <v-icon>add</v-icon>
+        <div :id="mapId" class="map"></div>
+        <v-btn color="white" small class="anchor-nav" fab absolute bottom right>
+            <v-icon>map</v-icon>
         </v-btn>
     </v-layout>
 </template>
-
 <script>
 /*eslint no-console: off*/
 /*eslint no-unused-vars: off*/
@@ -23,6 +22,10 @@ export default {
     props: {
         coordinates: {
             type: Array
+        },
+        mapId:{
+            type: String,
+            required: true
         }
     },
     data(){
@@ -50,14 +53,14 @@ export default {
     watch: {
         coordinates(newVal){
             console.log('newVal ---coordinates-- ', newVal);
-            this.map.setView([newVal[0], newVal[1]]);
+            this.map.setView([newVal[0], newVal[1]], 10);
             this.map.invalidateSize();
         }
     },
     methods: {
-
         initMap(){
-            this.map = L.map('map', {dragging: !L.Browser.mobile, tap:false});
+            var mapID = this.mapId;
+            this.map = L.map(this.mapId, {dragging: !L.Browser.mobile, tap:false});
             // TILE LAYER OPTIONS
             this.tileLayer.terrain = L.tileLayer(TILELAYER_TERRAIN.URL, TILELAYER_TERRAIN.OPTIONS);
             this.tileLayer.satellite = L.tileLayer(TILELAYER_SATELLITE.URL, TILELAYER_SATELLITE.OPTIONS);
@@ -67,13 +70,11 @@ export default {
 
             this.map.scrollWheelZoom.disable();
             this.map.doubleClickZoom.disable();
-
-            console.log('initMap ---- ', this.coordinates[0], this.coordinates[1]);
-            this.map.setView([this.coordinates[0], this.coordinates[1]], 13);
+            this.map.setView([this.coordinates[0], this.coordinates[1]], 10);
 
             var eventMarker = L.marker([this.coordinates[0], this.coordinates[1]]).addTo(this.map);
-
-            this.map.invalidateSize();
+            var vm = this;
+            setTimeout(function(){ vm.map.invalidateSize(); }, 1000); /// returns error
         },
         initLayers(){
             this.layers.forEach((layer) => {
@@ -110,15 +111,26 @@ export default {
 </script>
 
 <style lang='scss'>
-    #map{
+    #map,
+    #newEventEntry,
+    #generalAnnotation{
         display: block;
         width: 100%;
         height: 500px; // **height require by leaflet
     }
-    .layers-trigger{
-        z-index: 8;
-        position: absolute;
-        right: 0;
-        bottom: 0;
+
+    .anchor-nav{
+        z-index: 11;
+        bottom: 12px;
     }
+
+    .generalContainer{
+        .leaflet-top, .leaflet-bottom {
+            z-index: 5 !important;
+        }
+        .leaflet-pane {
+            z-index: 10 !important;
+        }
+    }
+
 </style>

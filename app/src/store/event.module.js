@@ -217,7 +217,6 @@ const getters ={
                 sharepoint_link: ''
             }];
         }else{
-            console.log('---- return else ---RESPONSES----');
             return state.event.responses;
         }
     },
@@ -257,8 +256,6 @@ const getters ={
             return cleanCapacities;
 
         }else{
-            console.log('---- return else ---extCapacity----');
-
             return state.event.extCapacity;
         }
     },
@@ -295,7 +292,6 @@ const getters ={
                 }
             };
         }else{
-            console.log('---- return else ---FIGURES----');
             return state.event.figures;
         }
     },
@@ -343,8 +339,6 @@ const getters ={
                 }
             };
         }else{
-            console.log('---- return else ---RESOURCES----');
-
             return state.event.resources;
         }
     },

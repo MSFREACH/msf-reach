@@ -15,12 +15,7 @@
               <!-- <v-icon v-else>{{item.icon}}</v-icon> -->
               {{ item.name }}
           </router-link>
-          <v-flex class="tooltip">
-              <v-btn flat small fab @click="copyLink()" v-on:onmouseout="outFunc()" >
-                  <v-icon> link </v-icon>
-                  <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-              </v-btn>
-          </v-flex>
+          <sharepoint-link :link="event.metadata.sharepoint_link"></sharepoint-link>
         </nav>
         <router-view></router-view>
     </v-container>
@@ -40,6 +35,7 @@ import REventExtCapacity from '@/views/Event/ExtCapacity.vue';
 import REventFigures from '@/views/Event/Figures.vue';
 import REventResources from '@/views/Event/Resources.vue';
 import REventSitrep from '@/views/Event/SITREP.vue';
+import SharepointLink from '@/views/util/Sharepoint.vue';
 
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
@@ -66,7 +62,7 @@ export default {
         };
     },
     components: {
-        REventGeneral, REventNotification, REventResponses, REventExtCapacity, REventFigures, REventResources
+        REventGeneral, REventNotification, REventResponses, REventExtCapacity, REventFigures, REventResources, SharepointLink
     },
     beforeRouteEnter(to, from, next){
         Promise.all([
@@ -76,7 +72,6 @@ export default {
         });
     },
     mounted(){
-        console.log('Props ---- firstTime  ', this.firstTime);
         if(this.firstTime){
             this.detailTabs.map(item => item.firstTime = true );
         }
@@ -99,24 +94,6 @@ export default {
         },
         fetchEvent(newId) {
             this.$store.dispatch(FETCH_EVENT, newId);
-        },
-        copyLink(){
-            const el = document.createElement('textarea');
-            el.value = this.event.metadata.sharepoint_link;
-            el.setAttribute('readonly', '');
-            el.style.position = 'absolute';
-            el.style.left = '-9999px';
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-
-            var tooltip = document.getElementById('myTooltip');
-            tooltip.innerHTML = 'Copied: ' + el.value;
-        },
-        outFunc(){
-            var tooltip = document.getElementById('myTooltip');
-            tooltip.innerHTML = 'Copy to clipboard';
         }
     }
 };

@@ -67,11 +67,8 @@
                     {{eventMetadata.description }}
                 </div>
                 <hr class="row-divider"/>
-                <div>
-                    <a :href='eventMetadata.sharepoint_link' target="_blank">
-                        Sharepoint Link
-                    </a>
-                </div>
+
+                <sharepoint-link :link="eventMetadata.sharepoint_link"></sharepoint-link>
             </v-layout>
             <v-layout row wrap v-else>
 
@@ -123,7 +120,11 @@
                     <option disabled value="">Please select one</option>
                     <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
                     </select> -->
-                    <v-select class="one-half" v-model="eventMetadata.event_status" label="status" :items="statuses" clearable></v-select>
+                    <v-select class="one-half" v-model="eventMetadata.event_status" label="status" :items="statuses" clearable>
+                        <template slot="item" slot-scope="data">
+                            <span :class="data.value">{{data.text}}</span>
+                        </template>
+                    </v-select>
                 </div>
 
                 <div class="one-third" id="eventAreas">
@@ -168,7 +169,11 @@
                 <div class="one-third">
                     <label>Local Date/Time </label>
                     <div class="datepicker-container">
-                        <date-picker v-model="eventMetadata.event_local_time" :config="dateTimeConfig"></date-picker>
+                        <v-date-picker v-model="eventMetadata.event_local_time" :config="dateTimeConfig"></v-date-picker>
+                        <!-- <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                            <v-text-field slot="activator" v-model="eventDate" label="Event Date" hint="MM/DD/YYYY format" persistent-hint prepend-icon="event" type="date"></v-text-field>
+                            <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
+                        </v-menu> -->
                     </div>
                 </div>
 
@@ -195,7 +200,7 @@
         </div>
 
         <div class="map-annotation">
-            <map-annotation :coordinates="eventCoordinates"></map-annotation>
+            <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates"></map-annotation>
         </div>
     </v-container>
 </template>
@@ -214,7 +219,7 @@ import { DATETIME_DISPLAY_FORMAT,
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
 import marked from 'marked';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
-
+import SharepointLink from '@/views/util/Sharepoint.vue';
 // import { EDIT_EVENT } from '@/store/actions.type';
 
 /*eslint no-console: off*/
@@ -259,7 +264,7 @@ export default {
     },
     components:{
         //TODO: MAP goes here
-        MapAnnotation, VueGoogleAutocomplete
+        MapAnnotation, VueGoogleAutocomplete, SharepointLink
     },
     computed: {
         ...mapGetters([
