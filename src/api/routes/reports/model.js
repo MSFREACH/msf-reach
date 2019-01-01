@@ -5,6 +5,8 @@
 // Import promise support
 import Promise from 'bluebird';
 
+import googleMaps from '@google/maps';
+
 export default (config, db, logger) => ({
 
     /**
@@ -69,6 +71,47 @@ export default (config, db, logger) => ({
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve({ id: data.id, eventId: data.event_id, status:data.status, created: data.created, reportkey:data.report_key, content:data.content, the_geom:data.the_geom }))
             .catch((err) => reject(err));
+    }),
+
+    smsReport: (body) => new Promise((resolve, reject) => {
+
+        const googleMapsClient = googleMaps.createClient({
+            key: config.GOOGLE_API_KEY
+        });
+
+        let [type, address, message] = body.split('.');
+        message = message.replace(/\s+/,'');
+        type = type.toUpperCase();
+        if (!(type.includes('ACCESS') || type.includes('NEEDS') || type.includes('SECURITY'))) {
+            reject('sms invalid type');
+        }
+
+        // Geocode an address.
+        googleMapsClient.geocode({
+            address: address
+        }, function (err, response) {
+            if (err) {
+                reject('sms geocode failure');
+            } else {
+
+                logger.info(response);
+                let query = `INSERT INTO ${config.TABLE_REPORTS}
+			(event_id, status, created, content, the_geom)
+			VALUES ($1, $2, $3, $4, ST_SetSRID(ST_Point($5,$6),4326))
+			RETURNING id, event_id, status, created, report_key, content, the_geom`;
+
+                // Setup values
+                let values = [null, 'unconfirmed', (new Date()).toISOString(), { 'description': message, 'report_tag': type }, response.json.results[0].geometry.location.lng, response.json.results[0].geometry.location.lat];
+
+                // Execute
+                logger.debug(query, values);
+                db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+                    .then((data) => resolve({ id: data.id, eventId: data.event_id, status: data.status, created: data.created, reportkey: data.report_key, content: data.content, the_geom: data.the_geom }))
+                    .catch((err) => reject(err));
+
+            }
+        });
+
     }),
 
     /**

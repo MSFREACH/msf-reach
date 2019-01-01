@@ -8,6 +8,9 @@
 
 var vmEventDetails;
 
+var disease_subtypes = ['cholera', 'ebola','dengue','malaria','measles','meningococcal_meningitis','yellow_fever','other_disease_outbreak'];
+
+
 var WEB_HOST = location.protocol+'//'+location.host+'/';
 var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 
@@ -15,7 +18,7 @@ var EVENT_PROPERTIES = ['id', 'status', 'type', 'created'];
 Cookies.set('last_load',String(Date.now()/1000));
 
 
-var clipboard = new Clipboard('.btn');
+var clipboard = new Clipboard('.st-btn');
 
 clipboard.on('success', function(e) {
     alert('link copied to your clipboard, ready to share');
@@ -40,6 +43,8 @@ mainMap.on('load', function(loadEvent) {
 });
 
 mainMap.setView([-6.8, 108.7], 7);
+
+addLegendsToAMaps(mainMap);
 
 
 mainMap.on('zoomend', function(zoomEvent)  {
@@ -163,9 +168,12 @@ var missionPopupIcon = function(missionType) {
 * @function reduceNotificationArray
 * @param {String} acc - accumulator
 * @param
+*/
 var reduceNotificationArray = function(acc, elem) {
     return acc + '<tr><td>'+(new Date(elem.notification_time*1000)).toLocaleString() + '</td><td>' + elem.notification + '</td></tr>';
 };
+
+var currentEventProperties; // doesn't hurt, avoids potential timing issues wrt common.js loading
 
 /**
 * Function to print a list of event details to web page
@@ -222,8 +230,10 @@ var printEventProperties = function(err, eventProperties){
     let newAreas = currentEventProperties.metadata.areas.filter(countriesFilter);
 
     for (var areaidx = 0; areaidx < newAreas.length; areaidx++) {
-        countryDetailsCIAContainerContent+='<li role="presentation"><a id="countryDetailsCIATab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
-        countryDetailsLinksContainerContent+='<li role="presentation"><a id="countryDetailsLinksTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryLinks'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+        if (newAreas[areaidx].country)
+        {  countryDetailsCIAContainerContent+='<li role="presentation"><a id="countryDetailsCIATab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+            countryDetailsLinksContainerContent+='<li role="presentation"><a id="countryDetailsLinksTab'+newAreas[areaidx].country.replace(' ','_')+'" data-toggle="tab" '+(areaidx===0 ? 'class="active"' : '' ) + ' href="#countryLinks'+newAreas[areaidx].country.replace(' ','_')+'">'+newAreas[areaidx].country+'</a></li>';
+        }
     }
 
     countryDetailsCIAContainerContent+='</ul>';
@@ -237,106 +247,113 @@ var printEventProperties = function(err, eventProperties){
     let countryLinksCounter = 0;
 
     for (areaidx = 0; areaidx < newAreas.length; areaidx++) {
-        countryDetailsCIAContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
-        countryDetailsLinksContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
-        if (newAreas[areaidx].country_code) {
-            countryDetailsCIAContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': newAreas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
+        if (newAreas[areaidx].country)
+        {
+            countryDetailsCIAContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
+            countryDetailsLinksContainerContent+='<div style="height:70vh; width:100%;" class="tab-pane fade'+(areaidx===0 ? ' in active' : '' ) + '" id="countryCIA'+newAreas[areaidx].country.replace(' ','_')+'">';
+            if (newAreas[areaidx].country_code) {
+                countryDetailsCIAContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'a2': newAreas[areaidx].country_code}).gec.toLowerCase()+'.html"></iframe>';
 
-            $.ajax({
-                type: 'GET',
-                url: '/api/utils/country_links?country=' + newAreas[areaidx].country_code.toUpperCase(),
-                contentType: 'application/json'
-            }).done(function( data, textStatus, req ){
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/utils/country_links?country=' + newAreas[areaidx].country_code.toUpperCase(),
+                    contentType: 'application/json'
+                }).done(function( data, textStatus, req ){
 
-                countryDetailsLinksContainerContent += '<ul>';
-                for (let oc in data.links) {
-                    if (data.links.hasOwnProperty(oc)) {
-                        countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                    countryDetailsLinksContainerContent += '<ul>';
+                    for (let oc in data.links) {
+                        if (data.links.hasOwnProperty(oc)) {
+                            countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                        }
                     }
-                }
-                countryDetailsLinksContainerContent += '</ul>';
-                countryDetailsLinksContainerContent+='</div>';
-                countryLinksCounter++;
-                if (countryLinksCounter===numCountries) {
+                    countryDetailsLinksContainerContent += '</ul>';
                     countryDetailsLinksContainerContent+='</div>';
-                    $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
-                }
-
-            }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                    alert('session expired');
-                } else {
-                    alert('error: '+ err.responseText);
-                }
-            });
-
-
-        } else if (findCountry({'name': newAreas[areaidx].country}) && findCountry({'name': newAreas[areaidx].country}).gec) {
-            countryDetailsCIAContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': newAreas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
-
-            let a2 =findCountry({'name': newAreas[areaidx].country}).a2.toUpperCase();
-
-            $.ajax({
-                type: 'GET',
-                url: '/api/utils/country_links?country=' + a2,
-                contentType: 'application/json'
-            }).done(function( data, textStatus, req ){
-
-                countryDetailsLinksContainerContent += '<ul>';
-                for (let oc in data.links) {
-                    if (data.links.hasOwnProperty(oc)) {
-                        countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                    countryLinksCounter++;
+                    if (countryLinksCounter===numCountries) {
+                        countryDetailsLinksContainerContent+='</div>';
+                        $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
                     }
-                }
-                countryDetailsLinksContainerContent += '</ul>';
-                countryDetailsLinksContainerContent+='</div>';
-                countryLinksCounter++;
-                if (countryLinksCounter===numCountries) {
+
+                }).fail(function(err) {
+                    if (err.responseText.includes('expired')) {
+                        alert('session expired');
+                    } else {
+                        alert('error: '+ err.responseText);
+                    }
+                });
+
+
+            } else if (findCountry({'name': newAreas[areaidx].country}) && findCountry({'name': newAreas[areaidx].country}).gec) {
+                countryDetailsCIAContainerContent+='<iframe style="height:70vh; width:100%;" src="https://www.cia.gov/library/publications/the-world-factbook/geos/'+findCountry({'name': newAreas[areaidx].country}).gec.toLowerCase()+'.html"></iframe>';
+
+                let a2 =findCountry({'name': newAreas[areaidx].country}).a2.toUpperCase();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/utils/country_links?country=' + a2,
+                    contentType: 'application/json'
+                }).done(function( data, textStatus, req ){
+
+                    countryDetailsLinksContainerContent += '<ul>';
+                    for (let oc in data.links) {
+                        if (data.links.hasOwnProperty(oc)) {
+                            countryDetailsLinksContainerContent+='<li><a href="'+data.links[oc]+'">'+oc+'</a></li>';
+                        }
+                    }
+                    countryDetailsLinksContainerContent += '</ul>';
                     countryDetailsLinksContainerContent+='</div>';
-                    $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
-                }
+                    countryLinksCounter++;
+                    if (countryLinksCounter===numCountries) {
+                        countryDetailsLinksContainerContent+='</div>';
+                        $('#countryDetailsLinksContainer').append(countryDetailsLinksContainerContent);
+                    }
 
-            }).fail(function(err) {
-                if (err.responseText.includes('expired')) {
-                    alert('session expired');
-                } else {
-                    alert('error: '+ err.responseText);
-                }
-            });
+                }).fail(function(err) {
+                    if (err.responseText.includes('expired')) {
+                        alert('session expired');
+                    } else {
+                        alert('error: '+ err.responseText);
+                    }
+                });
 
 
-        }
+            }
+        }//if
+    }//for
 
-    }
     countryDetailsCIAContainerContent+='</div>';
     $('#countryDetailsCIAContainer').append(countryDetailsCIAContainerContent);
 
 
     vmEventDetails=new Vue(vmObject);
-    vmEventDetails.$mount('#eventVApp');
+    $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=inline-share-buttons').done( function(){
+        vmEventDetails.$mount('#eventVApp');
+
+        setTimeout(function() {
+            $('#st-1').append(
+                '<span class="st-btn st-last btn-primary" data-clipboard-text="'+window.location+'"  data-network="sharethis"> '+
+              '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height=".8em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
+              '</span>'
+            );
+            $('#st-2').append(
+                '<span class="st-btn st-last btn-primary" data-network="sharethis" data-clipboard-text="'+vmEventDetails.eventReportLink+'">'+
+              '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
+              '</span>'
+            );
+
+        },1000);
+    });
+
 
     eventReportLink= WEB_HOST + 'report/?eventId=' + eventProperties.id + '&reportkey=' + eventProperties.reportkey + '#' + eventProperties.metadata.name;
 
-    $('#eventShareButtons').html('Event page  <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+window.location+'" data-title="I am sharing a link to a MSF REACH event:"></span>');
-    $('#reportShareButtons').html('External Report Card <span class="sharethis-inline-share-buttons" style="display: inline-block" data-url="'+vmEventDetails.eventReportLink+'" data-title="Please send a report to MSF REACH with this link:"></span>');
-    $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(s) {
+
+    //  $.getScript('//platform-api.sharethis.com/js/sharethis.js#property=5b0343fb6d6a0b001193c2b7&product=custom-share-buttons').done( function(s) {
 
 
-        setTimeout(function() {
-            $('#eventCopyButton').append(
-                '<span class="st-btn st-last" data-network="sharethis">'+
-          '<button data-clipboard-text="'+window.location+'" class="btn btn-primary">'+
-          '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height=".8em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
-          '</span>'
-            );
-            $('#reportCopyButton').append(
-                '<span class="st-btn st-last" data-network="sharethis">'+
-          '<button data-clipboard-text="'+vmEventDetails.eventReportLink+'" class="btn btn-primary">'+
-          '<svg fill="#fff" preserveAspectRatio="xMidYMid meet" height="1em" width="1em" viewBox="0 0 40 40"><g><path d="m30 26.8c2.7 0 4.8 2.2 4.8 4.8s-2.1 5-4.8 5-4.8-2.3-4.8-5c0-0.3 0-0.7 0-1.1l-11.8-6.8c-0.9 0.8-2.1 1.3-3.4 1.3-2.7 0-5-2.3-5-5s2.3-5 5-5c1.3 0 2.5 0.5 3.4 1.3l11.8-6.8c-0.1-0.4-0.2-0.8-0.2-1.1 0-2.8 2.3-5 5-5s5 2.2 5 5-2.3 5-5 5c-1.3 0-2.5-0.6-3.4-1.4l-11.8 6.8c0.1 0.4 0.2 0.8 0.2 1.2s-0.1 0.8-0.2 1.2l11.9 6.8c0.9-0.7 2.1-1.2 3.3-1.2z"></path></g></svg>'+
-          '</span>'
-            );
 
-        },100);});
+
+    //});
 
     if (currentEventProperties.metadata.country) {
         getEventsByCountry(currentEventProperties.metadata.country, mapAllEvents);
@@ -507,23 +524,28 @@ var mapAllEvents = function(err, events){
         }
 
         var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-        var icon_name = type.includes(',') ? type.split(',')[0] : type;
-        if (icon_name.includes('disease_outbreak')) {
-            icon_name = 'epidemic';
-        }
+        type = type.toLowerCase().replace('disease_outbreak', 'epidemic').replace('disease_outbreak', '').replace('natural_hazard', '');
+
+        var icon_names = type.split(',');
+
+        var icon_html = icon_names.map(function (item) {
+            if (!item.match(/other/) && item !== '' && disease_subtypes.indexOf(item) === -1) {
+                return '<img src="/resources/images/icons/event_types/' + item + '.svg" width="40">';
+            } else return '';
+        }).join('');
 
         var popupContent = '<a href=\'/events/?eventId=' + feature.properties.id +
-            '\'><img src=\'/resources/images/icons/event_types/'+icon_name+'.svg\' width=\'40\'></a>' +
-            '<strong><a href=\'/events/?eventId=' + feature.properties.id +
-            '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
-            'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
-            'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
-            'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
-            statusStr +
-            severityStr +
-            notificationStr +
-            totalPopulationStr +
-            affectedPopulationStr;
+    '\'>'+icon_html+'</a>' +
+    '<strong><a href=\'/events/?eventId=' + feature.properties.id +
+    '\'>' + feature.properties.metadata.name +'</a></strong>' + '<BR>' +
+    'Opened: ' + ((feature.properties.metadata.event_datetime || feature.properties.created_at) ? (new Date(feature.properties.metadata.event_datetime || feature.properties.created_at)).toLocaleString().replace(/:\d{2}$/,'') : '') + '<BR>' +
+    'Last updated at: ' + (new Date(feature.properties.updated_at)).toLocaleString().replace(/:\d{2}$/,'') + '<br>' +
+    'Type(s): ' + typeStr(feature.properties.type, feature.properties.metadata.sub_type) + '<br>' +
+    statusStr +
+    severityStr +
+    notificationStr +
+    totalPopulationStr +
+    affectedPopulationStr;
 
         $('#ongoingEventsContainer').append('<div class="list-group-item cursorPointer" onclick="openEventPopup('+feature.properties.id+')">' +
             'Name: <a href="/events/?eventId=' + feature.properties.id + '">' + feature.properties.metadata.name + '</a><br>' +
@@ -634,12 +656,9 @@ var loadContacts = function(err, contacts) {
 // Perform GET call to get contacts
 var getContacts = function(term,type){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
-    var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
-    var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
-    var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
+    var bounds=getWrappedLatLng(mainMap.getBounds());
     if (!term) {
-        url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+        url=url+'&lngmin='+bounds.lngmin+'&latmin='+bounds.latmin+'&lngmax='+bounds.lngmax+'&latmax='+bounds.latmax;
     }
     if (type) {
         if (type==='msf_associate') {
@@ -674,6 +693,12 @@ var getContacts = function(term,type){
 let reportIds = [];
 var points = []; // local storage for coordinates of reports (used for map bounds)
 
+function vidImageErrHandler(event)
+{
+    $(event.target).hide();
+}
+
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
@@ -704,7 +729,9 @@ var mapReports = function(reports,mapForReports){
                     popupContent = popupContent.substring(0,popupContent.length-2);
                     popupContent += '<BR>';
                 }
-                popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
+                popupContent += '<img onerror="vidImageErrHandler(event)" src="'+feature.properties.content.image_link+'" width="100%">';
+                popupContent += '<br/><video  width="100%" controls onerror="vidImageErrHandler(event)" src="'+feature.properties.content.image_link+'" </video>';
+                popupContent += '<br/>Download multimedia content <a target="_blank" href="'+feature.properties.content.image_link+'">here</a> ';
             }
 
             $('#reportsTable').append(
@@ -753,12 +780,13 @@ var mapReports = function(reports,mapForReports){
 
         }
 
-        $('#tableReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
-
-        let clipboard=new ClipboardJS(document.getElementById('tableReportShare'+feature.properties.id));
-        clipboard.on('success', function(e) {
-            alert('Link to report copied to clipboard');
-        });
+        setTimeout(() => {
+            $('#tableReportShare'+feature.properties.id).attr('data-clipboard-text',window.location.protocol+'//'+window.location.host+'/events/?eventId='+currentEventId+'#report'+feature.properties.id);
+            let clipboard = new ClipboardJS(document.getElementById('tableReportShare' + feature.properties.id));
+            clipboard.on('success', function (e) {
+                alert('Link to report copied to clipboard');
+            });
+        }, 2000);
 
         $('#reportsTable').append('</tbody></table>');
 
@@ -896,7 +924,7 @@ var mapContacts = function(contacts) {
         var newFC = {features: []};
         for(var i = 0; i < contacts.features.length; i++) {
 
-            if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
+            if(contacts.features[i].properties.properties.hasOwnProperty('type') && (contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer'))) {
                 if (msf) {
                     newFC.features.push(contacts.features[i]);
                 }
@@ -1099,34 +1127,42 @@ var mapMissions = function(missions ){
 
 };
 
-// Get eventId from URL
-currentEventId = getQueryVariable('eventId');
-// Only ask API where event is specified and not empty
-if (currentEventId !== false && currentEventId != ''){
-    getEvent(currentEventId, printEventProperties);
-    getReports(currentEventId, mainMap, mapReports);
-    //initGetContacts(mapContacts);
-    //initGetMissions(mapMissions);
-} else {
-    // Catch condition where no event specified, print to screen
-    printEventProperties('No event ID specified', null);
-}
+var currentEventId;
+
+window.addEventListener('load', () => {
+    // run after everything is in-place
+    // Get eventId from URL
+    currentEventId = getQueryVariable('eventId');
+    // Only ask API where event is specified and not empty
+    if (currentEventId !== false && currentEventId != '') {
+        getEvent(currentEventId, printEventProperties);
+        getReports(currentEventId, mainMap, mapReports);
+        //initGetContacts(mapContacts);
+        //initGetMissions(mapMissions);
+    } else {
+        // Catch condition where no event specified, print to screen
+        printEventProperties('No event ID specified', null);
+    }
+
+});
+
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-    minZoom: 0,
+    minZoom: 2,
     maxZoom: 18
 });
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+    minZoom: 2,
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
 // OSM HOT tiles
 var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-    maxZoom: 19,
+    minZoom: 2,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
 });
 
@@ -1334,9 +1370,9 @@ function translate(data) {
         resp
     ) {
         if (!(resp.data.translations[0].translatedText === 'undefined' || resp.data.translations[0].translatedText == '')) {
-            $('#searchTerm').val(resp.data.translations[0].translatedText);
+            $('#searchTerm').val(resp.data.translations[0].translatedText + ' ' + searchSinceDate);
             $('#btnSearchTwitter').trigger('click');
-            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val()));
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val().replace(/since:\d\d\d\d-\d\d-\d\d/,'')));
         } else {
             $('#searchTerm').val('(no translation found)');
         }
@@ -1423,6 +1459,8 @@ Vue.filter('relaceUnderscore', function(value) {
     return replaceUnderscore(value);
 });
 
+var searchSinceDate = '';
+
 var replaceUnderscore = function(value) {
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1431,6 +1469,11 @@ var replaceUnderscore = function(value) {
     value = value.replace(/__/g, '-');
     return value.replace(/_/g, ' ');
 };
+
+
+Vue.component('vue-multiselect', window.VueMultiselect.default);
+
+
 
 var vmObject = {
 
@@ -1446,6 +1489,11 @@ var vmObject = {
         msfMedicalMaterials:msfMedicalMaterials,
         msfNonMedicalMaterials:msfNonMedicalMaterials,
         newNotification:'',
+        manualEmailHref:'mailto:admin@msf-reach.org',
+        inviteeOptions: [
+        ],
+        selectedInvitees: [],
+        msLoading: false,
         panelEditing:{
             'General': false,
             'Notification': false,
@@ -1528,20 +1576,43 @@ var vmObject = {
         },
         dateTimeConfig: {
             format: DATETIME_DISPLAY_FORMAT
-        }
+        },
+        subscInvitee:'',
+        hasWritePermission: hasWritePermission
     },
     mounted:function(){
         $('#markdownModal').load('/common/markdown-modal.html');
         $('#eventMSFLoader').hide();
+        var vm=this;
 
+        let subject = `${vm.event.metadata.name} - updates on REACH`;
+
+        let body=`
+Hi all,
+
+This is to kindly inform you that there has been updates on the ${vm.event.metadata.name} event to be shared with you. Please read them below:
+- ...
+- ...
+
+For more detailed updates, please find them here ${window.location.href}.
+
+If you have any questions, please do not hesitate to contact me at any time.
+
+Best,
+${localStorage.getItem('username')}
+`;
+        // update mail button
+        if (vm.event.subscribers) {
+            vm.manualEmailHref='mailto:'+Cookies.get('email')+'?bcc='+vm.event.subscribers.join(',')+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+        }
         // operator check
-        $.ajax({
-            type: 'GET',
-            url: '/api/utils/operatorCheck',
-            statusCode: {
-                403: function () {
-                    $('#eventEditingOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
-                }
+        operatorCheck(function(permission){
+            if (permission){
+                vm.hasWritePermission=true;
+            }
+            else{
+                $('#eventEditingOperatorCheck').html('<span style="color:red">To get operator permission contact </span><a href="mailto:lucie.gueuning@hongkong.msf.org">Lucie Gueuning</a>');
+                vm.hasWritePermission=false;
             }
         });
 
@@ -1549,7 +1620,7 @@ var vmObject = {
         $('#btnSearchTwitter').click(function() {
             if ($('#searchTerm').val() !== '') {
                 var search = $('#searchTerm').val();
-                vmObject.data.searchTerm = search;
+                vm.searchTerm = search;
                 getTweets(search);
             }
         });
@@ -1589,49 +1660,63 @@ var vmObject = {
 
         var searchTerm = '';
         if (currentEventProperties) {
-            if (currentEventProperties.metadata.name) {
-                if (currentEventProperties.metadata.name.includes('_')) {
-                    elements = currentEventProperties.metadata.name.split('_');
-                    for (var i = 0; i < elements.length-1; i++) {
-                        searchTerm += elements[i] + ' ';
+            searchTerm = '('+
+                typeStr(currentEventProperties.type, currentEventProperties.metadata.sub_type)
+                    .replace(/\s+/,') OR (')+')';
+            searchTerm = searchTerm + ' AND (';
+            if (currentEventProperties.metadata.hasOwnProperty('areas')) {
+                for (var areai = 0; areai < currentEventProperties.metadata.areas.length; areai++) {
+                    if (currentEventProperties.metadata.areas[areai].region) {
+                        searchTerm += '('+currentEventProperties.metadata.areas[areai].region +
+                            ' OR ' + currentEventProperties.metadata.areas[areai].country + ') ';
+                    } else {
+                        searchTerm += '(' + currentEventProperties.metadata.areas[areai].country +') ';
                     }
-                } else {
-                    searchTerm = currentEventProperties.metadata.name;
+                    if (areai < currentEventProperties.metadata.areas.length - 1) {
+                        searchTerm += ' OR ';
+                    }
                 }
             } else {
-                searchTerm = typeStr(currentEventProperties.type, currentEventProperties.metadata.sub_type);
-                if (currentEventProperties.metadata.hasOwnProperty('event_datetime')) {
-                    searchTerm += ' ' + currentEventProperties.metadata.event_datetime;
+                if (currentEventProperties.metadata.hasOwnProperty('country')) {
+                    searchTerm += currentEventProperties.metadata.country;
                 }
             }
-            if (currentEventProperties.metadata.hasOwnProperty('country')) {
-                searchTerm += ' ' + currentEventProperties.metadata.country;
+            searchTerm += ') ';
+            searchTerm = searchTerm.replace('unknown','').replace('undefined','');
+            searchTerm = searchTerm.replace('()','');
+            if (currentEventProperties.metadata.event_datetime) {
+                searchSinceDate = 'since:'+currentEventProperties.metadata.event_datetime.match(/\d\d\d\d-\d\d-\d\d/);
+            } else {
+                searchSinceDate = 'since:'+currentEventProperties.created_at.match(/\d\d\d\d-\d\d-\d\d/);
             }
+            searchTerm += searchSinceDate;
             $('#searchTerm').val(searchTerm);
-            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent(searchTerm));
+            $('#searchTermSP').val(searchTerm);
+            $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent(searchTerm.replace(/since:\d\d\d\d-\d\d-\d\d/, '')));
 
             this.searchTerm = searchTerm;
 
-            if(currentEventProperties.type){
+            if (currentEventProperties.type) {
                 var currentTypes = currentEventProperties.type.split(',');
                 for(var t = 0; t < currentTypes.length; t++){
                     this.checkedTypes.push(currentTypes[t]);
                 }
             }
 
-            if(currentEventProperties.metadata.sub_type){
+            if (currentEventProperties.metadata.sub_type) {
                 var currentSubTypes = currentEventProperties.metadata.sub_type.split(',');
                 for(var st = 0; st < currentSubTypes.length; st++){
                     this.checkedSubTypes.push(currentSubTypes[st]);
                 }
             }
         }
+
         $('#btnSearchTwitter').trigger('click');
 
         $('#searchTerm').keyup(function(event){
             if(event.keyCode == 13){
                 $('#btnSearchTwitter').trigger('click');
-                $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k='+encodeURIComponent($('#searchTerm').val()));
+                $('#sharePointSearchLink').attr('href', 'https://msfintl.sharepoint.com/sites/hk/projects/MSF-REACH/_layouts/15/osssearchresults.aspx?k=' + encodeURIComponent($('#searchTerm').val().replace(/since:\d\d\d\d-\d\d-\d\d/, '')));
             }
         });
 
@@ -1643,7 +1728,7 @@ var vmObject = {
         // Bind translate function to translate button
             .on('change', function() {
                 var translateObj = {
-                    textToTranslate: $('#searchTerm').val(),
+                    textToTranslate: $('#searchTerm').val().replace(/since:\d\d\d\d-\d\d-\d\d/, ''),
                     targetLang: $(this).val()
                 };
 
@@ -1672,7 +1757,6 @@ var vmObject = {
 
 
 
-
     },
     created:function(){
         //copy-paste from edit.html vue mounted.
@@ -1691,6 +1775,25 @@ var vmObject = {
     },
     methods:{
         typeStr:typeStr,
+        queryContacts:function(term){
+            var vm=this;
+            if (term.length>=3)
+            {
+                vm.msLoading=true;
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/contacts/usersearch/'+term,
+                    contentType: 'application/json'
+                }).done(function( data ) {
+                    vm.msLoading=false;
+                    console.log(data); // eslint-disable-line no-console
+                    vm.inviteeOptions=JSON.parse(data).value; //JSON.parse(data.body).value
+                }).fail(function (err){
+                    console.log(err); // eslint-disable-line no-console
+                    vm.msLoading=false;
+                });
+            }
+        },
         openDirtyPanel:function(str, domElement){
             var panelDirty = false;
             var filteredKeys = Object.keys(currentEventProperties.metadata).filter(function(k) {
@@ -2066,6 +2169,36 @@ var vmObject = {
                 this.submitEventSection(category);
             }
         },
+        unsubscribe(){
+            var vm=this;
+            $.ajax({
+                type: 'POST',
+                url: '/api/events/unsubscribe/' + currentEventId
+            }).done(function(data, textStatus, req){
+                vm.event.subscribers=data.result.subscribers;
+                alert('Succesfully unsubscribed.');
+            }).fail(function(err) {
+                alert('An error occured when unsubscribing from this event.');
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        },
+        subscribe(){
+            var vm=this;
+            $.ajax({
+                type: 'POST',
+                url: '/api/events/subscribeself/' + currentEventId
+            }).done(function(data, textStatus, req){
+                vm.event.subscribers=data.result.subscribers;
+                alert('Succesfully subscribed.');
+            }).fail(function(err) {
+                alert('An error occured when subscribing to this event.');
+                if (err.responseText.includes('expired')) {
+                    alert('session expired');
+                }
+            });
+        },
         submitEventMetadata(){
             this.lintNotification();
             this.lintTypes(); // make sure if type is unselected, subtype is removed
@@ -2326,6 +2459,57 @@ var vmObject = {
         }, 300),
         openMarkdownSyntax: function(){
             $('#markdownModal').modal('show');
+        },
+        subscribeOthers:function()
+        {
+            var vm=this;
+            //send invite here
+            if (vm.selectedInvitees.length == 0)
+            {
+                alert('Please select some contacts first.');
+                return;
+            }
+            var body={
+                subscribers: vm.selectedInvitees.map(function(e){ return e.mail;})
+            };
+
+            vm.msLoading=true;
+            $.ajax({
+                type: 'POST',
+                url: '/api/events/subscribeothers/' + vm.event.id,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                vm.msLoading=false;
+                vm.event.subscribers=data.result.subscribers;
+                alert('Successfully subscribed.');
+                vm.selectedInvitees=[];
+
+            }).fail(function(err) {
+                vm.msLoading=false;
+                alert('An error occured  '+(err.responseText.includes('expired') ? 'session expired':''));
+            });
+        },
+        unSubscribeOthers:function(mail)
+        {
+            var vm=this;
+            //send invite here
+            var body={
+                email: mail
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/events/unsubscribeothers/' + vm.event.id,
+                data: JSON.stringify(body),
+                contentType: 'application/json'
+            }).done(function(data, textStatus, req) {
+                vm.event.subscribers=data.result.subscribers;
+                alert('Successfully unsubscribed.');
+
+            }).fail(function(err) {
+                alert('An error occured  '+(err.responseText.includes('expired') ? 'session expired':''));
+            });
         }
 
     },

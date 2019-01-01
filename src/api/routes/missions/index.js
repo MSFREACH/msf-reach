@@ -20,10 +20,10 @@ export default ({ config, db, logger }) => {
             query: {
                 search: Joi.string().min(1),
                 country: Joi.string(),
-                latmin: Joi.number().min(-90).max(90),
-                lngmin: Joi.number().min(-180).max(180),
-                latmax: Joi.number().min(-90).max(90),
-                lngmax: Joi.number().min(-180).max(180),
+                latmin: Joi.number(),
+                lngmin: Joi.number(),
+                latmax: Joi.number(),
+                lngmax: Joi.number(),
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
             }
         }),
@@ -65,24 +65,51 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 status: Joi.string().required(),
                 metadata: Joi.object().required(),
-                eventId: Joi.number().integer().allow(null)
+                eventId: Joi.number().integer().allow(null),
+                location: Joi.object().required().keys({
+                    lat: Joi.number().min(-90).max(90).required(),
+                    lng: Joi.number().min(-180).max(180).required()
+                })
             })
         }),
         (req, res, next) => {
             missions(config, db, logger).updateMission(req.params.id, req.body)
                 .then((data) => {
-                    if(req.body.status === 'active' && req.body.eventId){
-                        events(config, db, logger).activateEvent(req.body)
-                            .then((data) => handleGeoResponse(data, req, res, next))
-                            .catch((err) => {
-                                /* istanbul ignore next */
-                                logger.error(err);
-                                /* istanbul ignore next */
-                                next(err);
-                            });
-                    }else{
-                        handleGeoResponse(data, req, res, next);
-                    }
+                    handleGeoResponse(data, req, res, next);
+
+                })
+                .catch((err) => {
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // ReActive an event tied to a mission
+    api.post('/eventactivate/:id',ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                eventId: Joi.number().integer().required()
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).ReActivateEvent(req.body.eventId)
+                .then((data) => {
+                    handleGeoResponse(data, req, res, next);
+                    //deleting current mission; can happen async
+                    missions(config, db, logger).deleteMission(req.params.id)
+                        .then(() =>{
+                            logger.info('mission '+req.params.id+ ' successfully deleted.');
+                        })
+                        .catch((err) => {
+                            /* istanbul ignore next */
+                            logger.error(err);
+                            /* istanbul ignore next */
+                            next(err);
+                        });
                 })
                 .catch((err) => {
                     /* istanbul ignore next */

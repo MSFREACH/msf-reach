@@ -28,7 +28,7 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 <!-- markdown -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://js.msf-reach.org/marked.min.js" integrity="sha384-I2nqUi8qf3ekoF24PvLsQdMXV0PATvtN8jkyiXNMTvUbnxbX715AZN241NnitpIi" crossorigin="anonymous"></script>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="/lib/leaflet/leaflet.css"/>
@@ -59,6 +59,13 @@
   <!-- jqueryui css -->
   <link rel="stylesheet" href="/resources/css/jquery-ui-1.12.1.min.css">
 
+  <script src="https://js.msf-reach.org/vue-multiselect.min.js" integrity="sha384-Ok8d4GcfPFibCm7JQtK3ojcp7M/4l1yOnEsHFkT4YgAVtwQ3Ht6GSUm8RRDHgMqJ" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://js.msf-reach.org/vue-multiselect.min.css">
+
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+
   <style type="text/css">
   .page-header {
     margin-top: 20px;
@@ -87,6 +94,7 @@
 
 
   </style>
+
 </head>
 <body>
 
@@ -164,11 +172,15 @@
               <input placeholder="name..." class="form-control" id="inputReportUserName">
             </div>
             <div class="form-section">
-              <h5>4. Would you like to upload an image ? </h5><i>(optional)</i>
+              <h5>4. Would you like to upload a file ? </h5><i>(optional)</i>
               <form enctype="multipart/form-data">
-                <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
-                <a id="btnUpTrigger" class="btn btn-default" style="text-transform:uppercase;" >Upload / take photo</a>
+                 <input id="inputImageUpload" type="file" accept="image/*,video/*,audio/*" style="display:block;" />
                 <div style="margin-top:10px;width:100%;height:55vh;border:1px solid black;">
+                  <div id="btnUpTrigger" >
+                   <i class="fas fa-camera" style="font-size:108px;cursor:pointer;"></i>
+                   <i class="fas fa-video" style="font-size:108px;cursor:pointer;"></i>
+                   <i class="fas fa-microphone" style="font-size:108px;cursor:pointer;"></i>
+                 </div>
                   <img id="imgPreview" src="" alt="your image" style="width:100%;height:55vh;display:none;"/>
                 </div>
               </form>
@@ -648,7 +660,7 @@
           <ul class="dropdown-menu">
             <li><a href="#about" data-toggle="modal" data-target="#about">About MSF REACH</a></li>
             <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
-            <li><a href="/lib/pdfjs/web/viewer.html?file=MSF_REACH_User_Manual_2018-11-06.pdf">User Manual</a></li>
+            <li><a href="/lib/pdfjs/web/viewer.html?file=MSF_REACH_User_Manual_2018-12-05.pdf">User Manual</a></li>
             <li><a href="https://www.youtube.com/playlist?list=PLMlyttCV0rQRU8HWkylhmJdLo0WLUwL8Y">Tutorial Videos</a></li>
             <li><a id="logout" href="/logout">Sign out</a></li>
           </ul>
@@ -661,7 +673,8 @@
         <div id="sidepane" class="col-md-6" style="min-height:90vh;">
           <ul class="nav nav-tabs">
             <li role="presentation" class="active"><a id="eventTab" data-toggle="tab" href="#event">Event</a></li>
-            <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed & SharePoint Search</a></li>
+            <li role="presentation"><a id="feedTab" data-toggle="tab" href="#tweets">Twitter Feed</a></li>
+            <li role="presentation"><a id="sharepointTab" data-toggle="tab" href="#sharepoint">SharePoint Search</a></li>
             <li role="presentation"><a id="contactsTab" data-toggle="tab" href="#contacts" >Contacts</a></li>
             <li role="presentation"><a id="ongoingEventsTab" data-toggle="tab" href="#ongoingEvents">Ongoing MSF Responses</a></li>
             <li role="presentation"><a id="missionsTab" data-toggle="tab" href="#missions">Previous MSF Responses</a></li>
@@ -687,7 +700,7 @@
                 <table class="table" v-show="!panelEditing.General" style="table-layout: fixed;">
                   <tr><td>Project code <span class="highlight" v-show="event.metadata.event_status == 'ongoing' && !event.metadata.project_code">* Please review</span></td><td colspan="2">{{ event.metadata.project_code ? event.metadata.project_code : "As there is no MSF activity yet, no project code is allocated to this event. We are still monitoring the disaster."}}</td></tr>
                   <tr><td>Name</td><td  colspan="2"> {{ event.metadata.name }}</td></tr>
-                  <tr><td>Operator</td><td>{{ event.metadata.user }}</td></tr>
+                  <tr><td>REACH Operator</td><td>{{ event.metadata.user }}</td></tr>
                   <tr><td>Area(s)</td>
 
                     <td colspan="2">
@@ -705,7 +718,7 @@
                   <tr><td>Status</td><td  colspan="1"> {{ event.metadata.event_status || 'monitoring' }} <i class="glyphicon glyphicon-check" style="color:green;" :title="analyzedTimeTxt" v-if="hasBeenAnalyzed"></i></td><td  colspan="1"> <button type="button" @click="analyzeEvent" class="btn btn-warning"><i :class="'glyphicon glyphicon-refresh'+(isAnalyzing ? ' msf-spin': '')"></i> Analyze</button> </td></tr>
                   <tr><td>Type</td><td  colspan="2"> {{ typeStr(event.type,event.metadata.sub_type) }}</td></tr>
                   <tr><td>Event Date and Time</td><td  colspan="2"> {{ (event.metadata.event_datetime || event.created_at) | formatFullDate }}</td></tr>
-                  <tr><td>Date and hours (local time) of the disater</td><td  colspan="2"> {{ event.metadata.event_local_time | formatFullDate  }}</td></tr>
+                  <tr><td>Date and hours (local time) of the disaster</td><td  colspan="2"> {{ event.metadata.event_local_time | formatFullDate  }}</td></tr>
 
 
 
@@ -713,12 +726,46 @@
 
                   <tr v-if='event.metadata.notification'><td>Latest notification: </td><td  colspan="2" style="word-break: break-word;" v-html="notStr"></td></tr>
                   <tr v-else><td>Latest notification:  </td><td  colspan="2">(none)</td></tr>
+                  <tr><td>Follow this event by email:  </td>
+                    <td style="word-break:break-all;"> <span v-for="em in event.subscribers" style="display:block;"><span style="white-space:normal; text-transform: capitalize;" class="label label-success" :title="em" >{{em.split('@')[0].split(/[\.\_]/).join(' ')}}</span><span v-if="hasWritePermission" class="label label-danger " style="cursor:pointer;" @click="unSubscribeOthers(em)">X</span></span> </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" class="btn btn-info btn-block" @click="subscribe()"><i class="glyphicon glyphicon-envelope"></i> Subscribe yourself</button>
+                          </div>
+                          <div class="col-sm-12">
+                            <button type="button"  class="btn btn-danger btn-block" @click="unsubscribe()"><i class="glyphicon glyphicon-eye-close"></i> Unsubscribe</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <a :href="manualEmailHref" class="btn btn-info btn-block" style="margin-top:10px;">Send an update</a>
+                        </div>
+                        <div class="col-sm-12">
+
+                            <vue-multiselect v-if="hasWritePermission" v-model="selectedInvitees" :options="inviteeOptions" :searchable="true" :close-on-select="false" :show-labels="false" placeholder="Subscribe other contacts..." :multiple="true" label="displayName" track-by="displayName" @search-change="queryContacts" :loading="msLoading"></vue-multiselect>
+
+                              <button v-if="hasWritePermission"  class="btn btn-primary btn-block" type="button" @click="subscribeOthers()" style="margin-left:5px;">Subscribe</button>
+
+
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
                   <tr><td>Mission contact person </td><td colspan="2"> {{ event.metadata.incharge_name+', '+event.metadata.incharge_position }}</td></tr>
                   <tr><td>Sharepoint Link </td><td  colspan="2"  style="word-break: break-all;"> <a :href='event.metadata.sharepoint_link' target="_blank"> {{ event.metadata.sharepoint_link || '' }}</a> <span class="label label-success" v-if="hasBeenAnalyzed && ((vizalyticsResp.documents && vizalyticsResp.documents.length>0) || (vizalyticsResp.maps && vizalyticsResp.maps.length>0))">(**suggestions available in edit mode)</span> </td></tr>
                   <tr><td>Last updated at</td><td colspan="2"> {{ event.updated_at  | formatFullDate }}</td></tr>
                   <tr>
                     <td> Share Links to </td>
-                    <td colspan="2"><div> <span id="eventShareButtons"></span><span id="eventCopyButton" class="st-animated" style="display: inline-block"></span> </div><div><span id="reportShareButtons"></span><span id="reportCopyButton" class="st-animated"></span><a data-toggle="modal" data-target="#newReportModal" style="cursor: pointer">open in new tab</a></div></td>
+                    <td>Event page: </td> <td> <span class="sharethis-inline-share-buttons" style="display: inline-block" :data-url="window.location" data-title="I am sharing a link to a MSF REACH event:" data-description="Please click subscribe on event page after logging in to subscribe to updates."></span>
+                      <span id="eventCopyButton" class="st-animated" style="display: inline-block"></span>
+                      </td>
+                </tr>
+                <tr>
+                  <td style="border: none;"></td>
+                  <td style="border: none;">External Report Card: </td>
+                  <td style="border: none;"><div><span class="sharethis-inline-share-buttons" style="display: inline-block" :data-url="eventReportLink" data-title="Please send a report to MSF REACH with this link:"></span>
+                    <span id="reportCopyButton" class="st-animated"></span><a data-toggle="modal" data-target="#newReportModal" style="cursor: pointer"> Open in new tab</a></div></td>
                 </tr>
 
                 </table>
@@ -735,8 +782,8 @@
                     <td> <input id="eventName" type="text" v-model="event.metadata.name" class="form-control" placeholder="Event name" /></td>
                   </tr>
                   <tr>
-                    <td>Operator</td>
-                    <td> <input id="eventProjectCode" type="text" v-model="event.metadata.user ? event.metadata.user : localStorage.getItem('username')" class="form-control" placeholder="Project code" /></td>
+                    <td>REACH Operator</td>
+                    <td> <input id="eventOperator" type="text" v-model="event.metadata.user ? event.metadata.user : localStorage.getItem('username')" class="form-control" placeholder="Event operator" /></td>
                   </tr>
                   <tr>
                     <td class="table-container" id="eventAreas">
@@ -810,7 +857,7 @@
                   </tr>
 
                   <tr>
-                    <td>Date and hours (local time) of the disater </td>
+                    <td>Date and hours (local time) of the disaster </td>
                     <td class="datepicker-container">
                       <date-picker v-model="event.metadata.event_local_time" :config="dateTimeConfig"></date-picker>
                     </td>
@@ -906,7 +953,7 @@
                                   <td v-if="elem.hasOwnProperty('username')">{{elem.username}}</td>
                                   <td v-else>(username not previously recorded)</td>
                                   <td>{{ (elem.notification_time*1000) | formatFullDate }}</td>
-                                  <td v-html="elem.notification">
+                                  <td><span v-html="elem.notification"></span>
                                       <a v-if="elem.notificationFileUrl" :href="elem.notificationFileUrl" target="_blank">(attachment)</a>
                                   </td>
                                 </tr>
@@ -1653,7 +1700,6 @@
               <button id="btnSearchTwitter" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
             </div>
           </div>
-          <div><a id="sharePointSearchLink" href="">SharePoint search page</a></div>
           <div id="translationSuggestedLanguages">Suggested languages (based on country, if in SE Asia): </div>
           <div>
           <select class="goog-te-combo" id="translateLanguageSelection">
@@ -1774,6 +1820,21 @@
           <h4>Saved Tweets</h4>
           <div style="border:1px dashed blue; height:200px; width:500px;" ondrop="dropSaveTweet(event)" ondragover="allowDrop(event)"><p style="padding-left:160px;padding-top:90px;">Drag Tweets Here to Save</p> </div>
           <div id="savedTweets" style="height:45vh;overflow-y:auto;"></div>
+        </div>
+      </div>
+    </div>
+    <div id="sharepoint" class="tab-pane fade">
+      <div class="row">
+        <div class="col-md-12" style="height:80vh;overflow-y:auto;" >
+          <h4>Sharepoint Search</h4>
+          <div class="input-group add-on">
+            <input  class="form-control" placeholder="Search e.g. #earthquake" name="srch-term" id="searchTermSP" type="text">
+            <div class="input-group-btn">
+              <button  class="btn btn-default" ><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+          </div>
+          <div><a id="sharePointSearchLink" class="btn btn-danger" href="" target="_blank">Sharepoint search page</a></div>
+
         </div>
       </div>
     </div>
@@ -1932,6 +1993,7 @@
 
 <script src="/resources/js/countries.js"></script>
 <script src="/resources/js/country-codes.js"></script>
+
 
 <!-- events common variables -->
 <script src="/events/common.js"></script>

@@ -37,10 +37,10 @@ export default ({ config, db, logger }) => {
                 msf_associate: Joi.string(),
                 msf_peer: Joi.string(),
                 type: Joi.string(),
-                latmin: Joi.number().min(-90).max(90),
-                lngmin: Joi.number().min(-180).max(180),
-                latmax: Joi.number().min(-90).max(90),
-                lngmax: Joi.number().min(-180).max(180),
+                latmin: Joi.number(),
+                lngmin: Joi.number(),
+                latmax: Joi.number(),
+                lngmax: Joi.number(),
                 geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT)
             }
         }),
@@ -144,11 +144,15 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact record in the database
-    api.patch('/:id', ensureAuthenticated,
+    api.patch('/:id', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                properties: Joi.object().required()
+                properties: Joi.object().required(),
+                location: Joi.object().required().keys({
+                    lat: Joi.number().min(-90).max(90).required(),
+                    lng: Joi.number().min(-180).max(180).required()
+                })
             })
         }),
         (req, res, next) => {
@@ -164,7 +168,7 @@ export default ({ config, db, logger }) => {
     );
 
     // Update a contact's last_email_sent_at record in the database
-    api.patch('/:id/emailtime', ensureAuthenticated,
+    api.patch('/:id/emailtime', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
@@ -186,10 +190,10 @@ export default ({ config, db, logger }) => {
     api.get('/csv/download',ensureAuthenticated,
         validate({
             query: {
-                latmin: Joi.number().min(-90).max(90),
-                lngmin: Joi.number().min(-180).max(180),
-                latmax: Joi.number().min(-90).max(90),
-                lngmax: Joi.number().min(-180).max(180)
+                latmin: Joi.number(),
+                lngmin: Joi.number(),
+                latmax: Joi.number(),
+                lngmax: Joi.number()
             }
         }),
         (req,res,next)=>{
@@ -200,7 +204,7 @@ export default ({ config, db, logger }) => {
                 //let fieldNames= ['title','name','alias','type','job title','OC (if MSF)', 'email', 'alternate email', 'mobile phone', 'home phone','work phone','address','Facebook','Telegram','WhatsApp','Instagram'];
                 let csv = json2csv(jsonList,{fields: fields});
                 //console.log(csv);
-                csv = ',"Exported on '+(new Date(Date.now())).toUTCString()+', check back on MSF REACH regularly for updates."\n'+csv;
+                csv = ',"Exported on ' + (new Date(Date.now())).toUTCString() +', check back on MSF REACH regularly for updates."\n,"Please make sure you store this file in a safe place.\n,"This is for sole MSF internal use. It is strictly confidential information."\n'+csv;
                 res.setHeader('Content-disposition', 'attachment; filename=contacts.csv');
                 res.set('Content-Type', 'text/csv');
                 res.status(200).send(csv);
@@ -233,7 +237,7 @@ export default ({ config, db, logger }) => {
         });
 
     // Update a contact's sharedWith record in the database
-    api.patch('/:id/share', ensureAuthenticated,
+    api.patch('/:id/share', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
@@ -256,7 +260,7 @@ export default ({ config, db, logger }) => {
 
 
     // Update a contact's privacy record in the database
-    api.patch('/:id/private', ensureAuthenticated,
+    api.patch('/:id/private', ensureAuthenticatedWrite,
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
@@ -320,8 +324,8 @@ export default ({ config, db, logger }) => {
                     response.status(404).send(res);
                 }
                 else{
-                    //console.log('res: ' + res);
-                    response.send(res);
+                    logger.info(res);
+                    response.status(res.statusCode).send(res.body);
                 }
             });
         });

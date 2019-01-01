@@ -1,7 +1,7 @@
 <div class="modal-content" id="missionDetailsVue">
   <div class="modal-header">
     <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right;">Close</button>
-    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" v-show="hasWritePermission">Edit</button>
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted && !reopenSuccess" type="button" class="btn btn-success" style="float:right;margin-right:5px;" @click="inEditMode=true;submissionSuccess=false;" v-show="hasWritePermission">Edit</button>
     <button v-if="inEditMode && !hasSubmissionError" type="button" class="btn btn-primary" style="float:right;margin-right:5px;" @click="saveMissionEdits()" >Save Edits</button>
 
     <h4 class="modal-title" id="myModalLabelMession">MSF Past Response Details</h4>
@@ -25,7 +25,10 @@
     <div class="alert alert-warning" v-if="isDeleted">
       Mission has been successfully deleted.
     </div>
-    <div v-show="!isSubmitting && !hasSubmissionError && !isDeleted"  class="row">
+    <div class="alert alert-success" v-if="reopenSuccess">
+      The corresponding event has been successfully opened. Click <a :href="'/events/?eventId='+currentMissionEventId">here</a> to go event.
+    </div>
+    <div v-show="!isSubmitting && !hasSubmissionError && !isDeleted && !reopenSuccess"  class="row">
       <div class="col-sm-5">
         <div class="row">
           <div class="col-sm-12">
@@ -46,6 +49,7 @@
             <dl>
               <dt>Precise location of the emergency</dt>
               <dd>
+                <p class="help-block"  v-show="inEditMode">To change the location of the emergency, click on the map to replace the marker.</p>
                 <div id="eventMap1" style="width: 100%; height: 380px;"></div>
               </dd>
             </dl>
@@ -66,19 +70,31 @@
             <dl>
               <dt>Status</dt>
               <!-- on landing page  -->
-              <dd v-show="!currentEventId"><span class="event-status">{{mission.event_status}}</span></dd>
-              <!-- on event page  -->
-              <dd v-show="currentEventId"><span v-show="!inEditMode" class="event-status">{{mission.event_status}}</span></dd>
-              <dd v-show="inEditMode && currentEventId">
-                <select v-model="mission.event_status" class="form-control">
-                  <option disabled value="">Please select one</option>
-                  <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
-                </select>
-              </dd>
+              <dd><span class="event-status">{{mission.event_status}}</span></dd>
             </dl>
             <dl>
               <dt>Type of Emergency (nature)</dt>
-              <dd>{{mission.sub_type}}</dd>
+              <dd v-if="!inEditMode">{{ typeStr(mission.event_type || '',mission.sub_type) }}</dd>
+              <dd v-if="inEditMode">
+                <div v-for="(item, index) in eventTypes">
+                <input class ="newEventTypeBox" v-model="checkedTypes" type="checkbox" :index="index" :value="item.value" :id="'ev-type'+index"> <label class="eventBox" :for="'ev-type'+index"> {{item.text}} </label>
+                  <div v-if="item.subTypes && checkedTypes.indexOf(item.value) != -1" class="subTypes">
+                  <span v-if="item.subTypes" :id="item.value + index" v-for="(sub, index) in item.subTypes">
+                      <input class ="newSubEventTypeBox" v-model="checkedSubTypes" type="checkbox" :value="sub.value" :id="'ev-sub-'+(sub.text)+index" /> <label class="eventBox" :for="'ev-sub-'+(sub.text)+index"> {{sub.text}} &nbsp&nbsp </label>
+                      <br v-if="index % 4 == 1"/>
+                  </span>
+
+                  <span>
+                    <input class ="newSubEventTypeBox" v-model="otherFields[item.value].isSelected" type="checkbox" :value="'other_' + item.value" /> <label class="eventBox"> Other {{item.text}} &nbsp&nbsp </label>
+                    <input v-if="otherFields[item.value].isSelected" type="text" v-model="otherFields[item.value].description"  class="form-control" placeholder="(Specify)" />
+                  </span>
+                </div>
+              </div>
+                <div>
+                  <input class ="newEventTypeBox" v-model="otherFields.type.isSelected" type="checkbox" value="other_emergencies"> <label class="eventBox"> Others </label>
+                  <input v-if="otherFields.type.isSelected" type="text" class="form-control" v-model="otherFields.type.description" placeholder="(Specify)" />
+                </div>
+              </dd>
             </dl>
             <dl>
               <dt>Date and time (local time) of the disaster</dt>
@@ -191,7 +207,9 @@
                 </dl>
                 <dl>
                   <dt>Location of MSF response</dt>
+
                   <dd>
+                    <p class="help-block"  v-show="inEditMode">To change the location of the MSF response, click on the map to replace the marker.</p>
                     <div id="msfResponseMap1" style="width: 100%; height: 380px;"></div>
                   </dd>
                 </dl>
@@ -653,7 +671,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted" v-show="hasWritePermission" type="button" class="btn btn-danger"  @click="confirmDeleteMission" ><span class="glyphicon glyphicon-remove"></span>Delete mission</button>
+    <button v-if="!inEditMode && !isDeleted && !reopenSuccess" v-show="hasWritePermission" type="button" class="btn btn-warning"  @click="confirmReActiveEvent" ><span class="glyphicon glyphicon-repeat"></span> Re-open Event</button>
+    <button v-if="!inEditMode && !hasSubmissionError && !isDeleted && !reopenSuccess" v-show="hasWritePermission" type="button" class="btn btn-danger"  @click="confirmDeleteMission" ><span class="glyphicon glyphicon-remove"></span> Delete mission</button>
   </div>
 </div>
 
@@ -664,6 +683,7 @@ Vue.component('country-select', {
   props: ['options', 'value'],
   template: '<input  type="text" class="form-control input-sm" >',
   mounted: function () {
+    operatorCheck();
     var vmc = this
     $(this.$el)
       .countrySelect(this.options)
@@ -742,14 +762,35 @@ var vmInstance = new Vue({
     submissionSuccess:false,
     submissionErrorText: '',
     currentMissionId: currentMissionId,
+    currentMissionEventId: currentMissionEventId,
     statuses: statuses,
+    eventTypes: eventTypes,
+    checkedTypes: [],
+    checkedSubTypes: [],
+    invalidTypesSelection: false,
+    otherFields: {
+        type: {
+            isSelected: false,
+            description: ''
+        },
+        disease_outbreak: {
+            isSelected: false,
+            description: ''
+        },
+        natural_disaster: {
+            isSelected: false,
+            description: ''
+        }
+    },
     dateTimeConfig: {
       format: DATETIME_DISPLAY_FORMAT
     },
     isDeleted:false,
-    hasWritePermission: hasWritePermission
+    hasWritePermission: hasWritePermission,
+    reopenSuccess: false
   },
   methods: {
+    typeStr:typeStr,
     confirmDeleteMission:function(){
       var vm=this;
       if (confirm('Are you sure you want to permanently delete this mission? \nWARNING: This action cannot be undone'))
@@ -779,8 +820,137 @@ var vmInstance = new Vue({
 
       }
     },
+    confirmReActiveEvent:function(){
+      var vm=this;
+      if (!(vm.currentMissionEventId))
+      {
+        alert('There is no event associated with this past mission. For re-opening a specific event contact administrators.');
+        return;
+      }
+      if (confirm('Are you sure you want to re-open the orginal event? \nWARNING: This will discard all mission edits and will delete the current mission.'))
+      {
+        vm.isSubmitting=true;
+        vm.reopenSuccess=false;
+        var body={
+          eventId: vm.currentMissionEventId
+        }
+        $.ajax({
+          type: "POST",
+          url: "/api/missions/eventactivate/" + vm.currentMissionId,
+          data: JSON.stringify(body),
+          contentType: 'application/json'
+        }).done(function(data, textStatus, req) {
+          vm.isSubmitting=false;
+          vm.reopenSuccess=true;
+          thGetMissions(null);
+          console.log(data);
+
+
+        }).fail(function(err) {
+          vm.isSubmitting=false;
+          vm.hasSubmissionError=true;
+          vm.submissionErrorText='An error occured when trying to reactivate the mission.'
+
+          if (err.responseText.includes('expired')) {
+            alert("session expired");
+          }
+        });
+
+      }
+    },
+    confirmLocationChange: function(){
+      var mapCenter=eventMap1.getCenter();
+      missionCoordinates=[mapCenter.lng, mapCenter.lat];
+      eventMap1.removeLayer(eventMap1.eventMarker);
+      eventMap1.eventMarker = L.marker([missionCoordinates[1], missionCoordinates[0]]).addTo(eventMap1);
+    },
+    confirmResponseLocationChange:  function(){
+      var mapCenter=msfResponseMap1.getCenter();
+      this.mission.msf_response_location.coordinates=[mapCenter.lng, mapCenter.lat];
+      msfResponseMap1.removeLayer(msfResponseMap1.msfResponseMarker);
+      msfResponseMap1.msfResponseMarker = L.marker([this.mission.msf_response_location.coordinates[1], this.mission.msf_response_location.coordinates[0]]).addTo(msfResponseMap1);
+    },
+    lintTypes: function(){
+
+        var tmpEventWithSubTypes = {};
+        for(var i3= 0; i3 < this.eventTypes.length; i3++){
+            if(eventTypes[i3].subTypes){
+                var tmpSubTypes = eventTypes[i3].subTypes.map(function(el){return el.value;});
+                tmpEventWithSubTypes[eventTypes[i3].value] = tmpSubTypes;
+            }
+        }
+
+        var cleanSubTypes = [];
+        for(var i4=0; i4<this.checkedTypes.length; i4++){
+            var tmpType = tmpEventWithSubTypes[this.checkedTypes[i4]];
+            if(tmpType){
+                for(var j=0; j<this.checkedSubTypes.length; j++){
+                    if(tmpType.indexOf(this.checkedSubTypes[j]) > -1){
+                        cleanSubTypes.push(this.checkedSubTypes[j]);
+                    }
+                }
+            }
+        }
+        this.checkedSubTypes = cleanSubTypes;
+    },
+    lintSubTypesSelected: function(){
+      var vm=this;
+        var tmpType = vm.mission.event_type || '';
+        var tmpSubType = vm.mission.sub_type;
+        if ((tmpType.includes('natural_disaster') || tmpType.includes('disease_outbreak')) && tmpSubType == '') {
+            alert('ensure subtype(s) is/are selected');
+            this.invalidTypesSelection = true;
+        }else{
+            this.invalidTypesSelection = false;
+        }
+    },
+    lintOtherFields: function(){
+        var emptyFields = [];
+
+        for(var key in this.otherFields){
+            var description = this.otherFields[key].description;
+
+            if(this.otherFields[key].isSelected){
+                if( _.isEmpty(description) && (this.checkedTypes.indexOf(key) != -1 || key == 'type')){ // to be sure that main type was selected
+                    emptyFields.push(key.replace('_', ' '));
+                }else if(this.checkedTypes.indexOf(key) != -1){
+                    this.checkedSubTypes.push('other_'+key+ ': '+ description);
+                }else if(key == 'type'){
+                    var index = _.findIndex(this.checkedTypes, function(el){
+                        return el.indexOf('other:') != -1;
+                    });
+
+                    if(index != -1){
+                        this.checkedTypes[index] = 'other: '+ description;
+                    }else{
+                        this.checkedTypes.push('other: '+ description);
+                    }
+                }
+            }
+        }
+
+        if(emptyFields.length > 0 ){
+            alert(`Please enter description for other ${emptyFields.join(', ')}`);
+            this.invalidTypesSelection = true;
+        }else{
+            this.invalidTypesSelection = false;
+        }
+    },
     saveMissionEdits: function(){
       var vm=this;
+
+
+
+      vm.lintTypes(); // make sure if type is unselected, subtype is removed
+      vm.lintOtherFields();
+
+      vm.mission.event_type = vm.checkedTypes.join();
+      vm.mission.sub_type = vm.checkedSubTypes.join();
+
+      vm.lintSubTypesSelected();
+      if (vm.invalidTypesSelection)
+       return;
+
       if ((vm.mission.sharepoint_link)&&(vm.mission.sharepoint_link.indexOf('https://') != 0))
       {
         alert('Please make sure the sharepoint link starts with https:// and try again. ');
@@ -791,7 +961,11 @@ var vmInstance = new Vue({
       var body={
         status: vm.mission.event_status === 'complete' ? 'complete' : 'active',
         metadata: vm.mission,
-        eventId:  null
+        eventId:  null,
+        location:{
+          lat: missionCoordinates[1],
+          lng: missionCoordinates[0]
+        }
       }
       vm.inEditMode=false;
       vm.submissionSuccess=false;
@@ -890,6 +1064,20 @@ var vmInstance = new Vue({
      vm.mission.event_datetime_closed=new moment(vm.mission.finishDate,"DD/MM/YYYY");
    }
 
+   if (vm.mission.event_type) {
+       var currentTypes = vm.mission.event_type.split(',');
+       for(var t = 0; t < currentTypes.length; t++){
+           this.checkedTypes.push(currentTypes[t]);
+       }
+   }
+
+   if (vm.mission.sub_type) {
+       var currentSubTypes = vm.mission.sub_type.split(',');
+       for(var st = 0; st < currentSubTypes.length; st++){
+           this.checkedSubTypes.push(currentSubTypes[st]);
+       }
+   }
+
 
     this.$nextTick(function() {
       var eventDefaultLayer = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ';
@@ -903,8 +1091,20 @@ var vmInstance = new Vue({
         attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
         id: 'mapbox.streets'
       }).addTo(eventMap1);
-      var eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap1);
+      eventMap1.eventMarker = L.marker(eventDefaultLatLng).addTo(eventMap1);
+
+      eventMap1.on('click', function(e){
+        if (vm.inEditMode)
+        {
+          var mapCenter=e.latlng;
+          missionCoordinates=[mapCenter.lng, mapCenter.lat];
+          eventMap1.removeLayer(eventMap1.eventMarker);
+          eventMap1.eventMarker = L.marker([missionCoordinates[1], missionCoordinates[0]]).addTo(eventMap1);
+        }
+      });
       /** eventMap1 >> */
+
+
 
       /** << msfResponseMap1 */
       var msfResponseMarkerLatLng = eventDefaultLatLng;
@@ -917,8 +1117,21 @@ var vmInstance = new Vue({
         attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
         id: 'mapbox.streets'
       }).addTo(msfResponseMap1);
-      var msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap1);
+      msfResponseMap1.msfResponseMarker = L.marker(msfResponseMarkerLatLng).addTo(msfResponseMap1);
+
+      msfResponseMap1.on('click', function(e){
+        if (vm.inEditMode)
+        {
+          var mapCenter=e.latlng;
+          vm.mission.msf_response_location.coordinates=[mapCenter.lng, mapCenter.lat];
+          msfResponseMap1.removeLayer(msfResponseMap1.msfResponseMarker);
+          msfResponseMap1.msfResponseMarker = L.marker([vm.mission.msf_response_location.coordinates[1], vm.mission.msf_response_location.coordinates[0]]).addTo(msfResponseMap1);
+        }
+      });
+
       /** msfResponseMap1 >> */
+
+
 
       setTimeout(function() {
         eventMap1.invalidateSize();

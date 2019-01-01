@@ -7,6 +7,7 @@ import Promise from 'bluebird';
 
 import request from 'request';
 
+import mail from '../../../lib/mailer';
 
 export default (config, db, logger) => ({
 
@@ -67,17 +68,18 @@ export default (config, db, logger) => ({
     /**
 	 * Create a new event
 	 * @param {object} body Body of request with event details
+   * @param {string} email Email address to subscribe
 	 */
-    createEvent: (body) => new Promise((resolve, reject) => {
+    createEvent: (body,subscribtionEmail) => new Promise((resolve, reject) => {
 
         // Setup query
         let query = `INSERT INTO ${config.TABLE_EVENTS}
-			(status, type, created_at, updated_at, metadata, the_geom)
-			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326))
+			(status, type, created_at, updated_at, metadata, the_geom, subscribers)
+			VALUES ($1, $2, $3, now(), $4, ST_SetSRID(ST_Point($5,$6),4326), $7)
 			RETURNING id, report_key, the_geom`;
 
         // Setup values
-        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat];
+        let values = [ body.status, body.type, body.created_at, body.metadata, body.location.lng, body.location.lat, [subscribtionEmail || ''] ];
 
         // Execute
         logger.debug(query, values);
@@ -133,6 +135,7 @@ export default (config, db, logger) => ({
 	 * Update an event status
 	 * @param {integer} id ID of event
 	 * @param {object} body Body of request with event details
+   * @param {object} email email address to subscribe
 	 */
     updateEvent: (id, body) => new Promise((resolve, reject) => {
 
@@ -143,14 +146,15 @@ export default (config, db, logger) => ({
             type = $4,
 			metadata = metadata || $2
 			WHERE id = $3
-			RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
+			RETURNING subscribers, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
         // Setup values
         let values = [ body.status, body.metadata, id, body.type ];
 
         // Execute
-        logger.debug(query, values);
+        logger.debug(query);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
+            //.then((data) => mail(config,logger).emailSubscribers(data,id))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));
     }),
@@ -237,19 +241,35 @@ export default (config, db, logger) => ({
     activateEvent: (body) => new Promise((resolve, reject) => {
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
-			SET status = $1,
-              updated_at = now(),
-			metadata = metadata || $2
-			WHERE id = $3
-			RETURNING type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
+      SET subscribers = array_distinct(subscribers || $1)
+      WHERE id = $2
+      RETURNING id, subscribers`;
 
         // Setup values
-        let values = [ body.status, body.metadata, body.eventId];
+        let values = [ emailsArray, id ];
+
+        // Execute
+        logger.debug(query);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(data.id) , subscribers: data.subscribers })) // eslint-disable-line no-unused-vars
+            .catch((err) => reject(err));
+    }),
+
+    ReActivateEvent: (event_id) => new Promise((resolve, reject) => {
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+			SET status = $1,
+          updated_at = now()
+			WHERE id = $2
+			RETURNING id, status, type, created_at, updated_at, report_key, metadata, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
+
+        // Setup values
+        let values = [ 'active', event_id];
 
         // Execute
         logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(body.eventId), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: data.id, status: data.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
             .catch((err) => reject(err));
     }),
     /**
@@ -310,6 +330,36 @@ export default (config, db, logger) => ({
         }
 
     }),
+
+    /**
+   * unsubscribe from an event
+   * @param {integer} id ID of event
+   * @param {string} email Email to unsubscribe
+   */
+    unsubscribe: (id, email) => new Promise((resolve, reject) => {
+
+        // Setup query
+        let query = `UPDATE ${config.TABLE_EVENTS}
+      SET subscribers = array_remove(subscribers,$2)
+      WHERE id = $1
+      RETURNING id,subscribers`;
+
+        // Setup values
+        let values = [ id, email ];
+
+        // Execute
+        logger.debug(query, values);
+        db.one(query, values).timeout(config.PGTIMEOUT)
+            .then((data) => resolve({ id: String(id), subscribers: data.subscribers })) // eslint-disable-line no-unused-vars
+            .catch((err) => reject(err));
+    }),
+
+    inviteToSubscribe: (id, data ) => new Promise((resolve,reject) => {
+        mail(config,logger).emailInviteToSubscribe(data,id)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err));
+    }),
+
     /**
     * DELETE an event from the database
     * @param {integer} id ID of contact
@@ -329,4 +379,5 @@ export default (config, db, logger) => ({
             .then((data) => resolve(data))
             .catch((err) => reject(err));
     })
+
 });

@@ -91,6 +91,30 @@
       </div>
     </div>
 
+    <!-- Download contact modal -->
+    <div class="modal fade" id="dlContactsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabelOperator">
+      <div class="modal-dialog " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" >Download contacts list</h4>
+          </div>
+          <div class="modal-body" >
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="cbContactsAgreed"> <p>I read and accept <a href="http://msf-seasia.org/node/14721" target="_blank">MSF Hong Kong Privacy Policy</a>.</p>
+              </label>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button id="contactDownloadLink" href="/api/contacts/csv/download" type="button" class="btn btn-danger" disabled onclick="checkAndDownloadContacts()">Download <i class="glyphicon glyphicon-download"></i> </span> </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Markdown Explained modal -->
     <div class="modal fade" id="markdownModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
        <!-- content will be loaded from external file -->
@@ -273,6 +297,11 @@
                             <div class="form-group">
                               <label for="inputSharepointLink">Link to SharePoint folder</label>
                               <input type="text" id="inputSharepointLink" class="form-control" placeholder="http://" >
+                            </div>
+                            <div class="checkbox form-group">
+                              <label>
+                                <input id="inputSubscribe" type="checkbox"> <b>Subscribe ?</b>
+                              </label>
                             </div>
                             <!--<button  type="button" id="nextEventTab" class="btn btn-msf" data-toggle="tab">Next </button>-->
 
@@ -581,6 +610,7 @@
             </div>
           </div>
           <div class="modal-footer">
+            <a id="contactEditAnchor" class="btn btn-warning show-if-write-permission" target="_blank" href="" style="display:none;"><span class="glyphicon glyphicon-edit"></span> Edit contact</a>
             <button type="button" class="btn btn-danger show-if-write-permission" onclick="deleteContact(currentContactId)" style="display:none;"><span class="glyphicon glyphicon-remove"></span> Delete contact</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
@@ -721,7 +751,7 @@
                   <ul class="dropdown-menu">
                     <li><a href="#about" data-toggle="modal" data-target="#about">About MSF REACH</a></li>
                     <li><a href="#FAQ" data-toggle="modal" data-target="#FAQ">FAQ</a></li>
-                    <li><a href="/lib/pdfjs/web/viewer.html?file=MSF_REACH_User_Manual_2018-11-06.pdf">User Manual</a></li>
+                    <li><a href="/lib/pdfjs/web/viewer.html?file=MSF_REACH_User_Manual_2018-12-05.pdf">User Manual</a></li>
                     <li><a href="https://www.youtube.com/playlist?list=PLMlyttCV0rQRU8HWkylhmJdLo0WLUwL8Y">Tutorial Videos</a></li>
                     <li><a id="logout" href="/logout">Sign out</a></li>
                   </ul>
@@ -782,7 +812,7 @@
                     <!--event tab content-->
                     <div class="tab-content">
                         <div class="form-group" class="display:none;" id="eventSearchBox" >
-                          
+
                           <label for="eventSearchDate">search for events created between</label>
                           <table id="eventSearchDate">
                             <tr>
@@ -794,7 +824,7 @@
                               </td>
                               <td>
                                 <input type="text" id="eventSearchToDate" class="form-control" placeholder="YYYY-MM-DD" >
-                              </td> 
+                              </td>
                             </tr>
                           </table>
                           <input type="text" class="form-control" id="eventSearchTerm" name="" value="" placeholder="Term for searching event name, description, type ...">
@@ -829,7 +859,7 @@
                     <div class="tab-content">
                       <div id="contact_list" class="tab-pane active">
                         <div class="form-group" >
-                            <select class="form-control" style="color:black;" id="inputContactType" >
+                            <select class="form-control" style="color:black; width:auto" id="inputContactType" >
                               <option value="" selected> category </option>
                               <option value="Current MSF Staff">Current MSF Staff</option>
                               <option value="msf_peer">Former Staff</option>
@@ -843,7 +873,7 @@
                             </select>
                             <input type="text" class="form-control" id="contSearchTerm" name="" value="" placeholder="Name, Phone, Email, etc. ...">
                             <span class="glyphicon glyphicon-search"></span>
-                            <a id="contactDownloadLink" href="/api/contacts/csv/download" target="_blank" class="addContact">Download contacts list<i class="glyphicon glyphicon-download"></i> </span> </a>
+                            <a href="" target="_blank" class="addContact" style="cursor:pointer;" data-toggle="modal" data-target="#dlContactsModal">Download contacts list<i class="glyphicon glyphicon-download"></i> </span> </a>
                             <a href="/contact" target="_blank" class="addContact">Add <span class ="glyphicon glyphicon-plus"> </span> </a>
 
                         </div>
@@ -871,11 +901,9 @@
                 </div>
              </div>
           </div>
-          <span class="skype-button bubble" data-contact-id="docnat76"></span>
       </div>
     <!-- markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
     <script src="/lib/lodash.min.js"></script>
     <script src="/lib/moment.min.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

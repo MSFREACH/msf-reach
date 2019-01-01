@@ -129,9 +129,9 @@ var mapAllEvents = function(err, events){
     function onEachFeature(feature, layer) {
 
         var dateOfEvent = new Date (feature.properties.metadata.event_datetime || feature.properties.created_at);
-        if ( !(eventSearchFromDate && eventSearchToDate) || 
+        if ( !(eventSearchFromDate && eventSearchToDate) ||
             (eventSearchFromDate && !eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent)) ||
-            (!eventSearchFromDate && eventSearchToDate && (dateOfEvent < (new Date(eventSearchToDate)))) || 
+            (!eventSearchFromDate && eventSearchToDate && (dateOfEvent < (new Date(eventSearchToDate)))) ||
             (eventSearchFromDate && eventSearchToDate && ((new Date(eventSearchFromDate)) < dateOfEvent && dateOfEvent < (new Date(eventSearchToDate))))
         ) {
             var affectedPopulationStr = '';
@@ -168,12 +168,12 @@ var mapAllEvents = function(err, events){
 
 
             var type = feature.properties.metadata.sub_type != '' ? feature.properties.type + ',' + feature.properties.metadata.sub_type : feature.properties.type;
-            type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','');
+            type = type.toLowerCase().replace('disease_outbreak','epidemic').replace('disease_outbreak','').replace('natural_hazard','');
 
             var icon_names = type.split(',');
-            var icon_html = icon_names.map(function(item) {
-                if (item!=='' && disease_subtypes.indexOf(item)===-1) {
-                    return '<img src="/resources/images/icons/event_types/'+item+'.svg" width="40">';
+            var icon_html = icon_names.map(function (item) {
+                if (!item.match(/other/) && item !== '' && disease_subtypes.indexOf(item) === -1) {
+                    return '<img src="/resources/images/icons/event_types/' + item + '.svg" width="40">';
                 } else return '';
             }).join('');
 
@@ -274,7 +274,7 @@ var loadContacts = function(err, contacts) {
         alert('Error loading contacts: ' + err);
     } else {
         $('#contact_container').html(
-            '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Private?</th><th>Type</th><th>Country</th></tr></thead><tbody>'
+            '<table class="table table-hover" id="contactsTable"><thead><tr><th>&nbsp;</th><th>Name</th><th>Private?</th><th>Type</th></tr></thead><tbody>'
         );
 
         $.each(contacts, function(key, value) {
@@ -325,12 +325,9 @@ var loadContacts = function(err, contacts) {
 // Perform GET call to get contacts
 var getContacts = function(term,type){
     var url='/api/contacts?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var lngmin= mainMap.getBounds().getSouthWest().wrap().lng;
-    var latmin= mainMap.getBounds().getSouthWest().wrap().lat;
-    var lngmax= mainMap.getBounds().getNorthEast().wrap().lng;
-    var latmax= mainMap.getBounds().getNorthEast().wrap().lat;
+    var bounds=getWrappedLatLng(mainMap.getBounds());
     if (!term) {
-        url=url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+        url=url+'&lngmin='+bounds.lngmin+'&latmin='+bounds.latmin+'&lngmax='+bounds.lngmax+'&latmax='+bounds.latmax;
     }
     if (type) {
         if (type==='msf_associate') {
@@ -555,6 +552,11 @@ var mapMissions = function(missions ){
 
 };
 
+function vidImageErrHandler(event)
+{
+    $(event.target).hide();
+}
+
 /**
 * Function to add reports to map
 * @param {Object} reports - GeoJson FeatureCollection containing report points
@@ -582,7 +584,10 @@ var mapReports = function(reports,mapForReports){
                     popupContent = popupContent.substring(0,popupContent.length-2);
                     popupContent += '<BR>';
                 }
-                popupContent += '<img src="'+feature.properties.content.image_link+'" height="140">';
+                popupContent += '<img src="'+feature.properties.content.image_link+'" width="100%" onerror="vidImageErrHandler(event)">';
+                popupContent += '<br/><video width="100%" controls onerror="vidImageErrHandler(event)" src="'+feature.properties.content.image_link+'" ></video>';
+                popupContent += '<br/>Download multimedia content <a target="_blank" href="'+feature.properties.content.image_link+'">here</a> ';
+
             }
 
 
@@ -849,7 +854,7 @@ var mapContacts = function(contacts ){
         var newFC = {features: []};
         for(var i = 0; i < contacts.features.length; i++) {
 
-            if(contacts.features[i].properties.properties.hasOwnProperty('type') && contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer')) {
+            if(contacts.features[i].properties.properties.hasOwnProperty('type') && (contacts.features[i].properties.properties.type === 'Current MSF Staff' || contacts.features[i].properties.properties.type.toUpperCase().includes('MSF') && !contacts.features[i].properties.properties.type.toLowerCase().includes('peer'))) {
                 if (msf) {
                     newFC.features.push(contacts.features[i]);
                 }
@@ -950,13 +955,23 @@ mainMap.on('load', function(loadEvent) {
 mainMap.on('moveend', function(){getContacts($('#contSearchTerm').val());});
 
 let bounds = Cookies.get('landingMapBounds');
+var contactDownloadLink;
+function checkAndDownloadContacts(){
+    if ($('#cbContactsAgreed').is(':checked'))
+        window.open(contactDownloadLink);
+    else {
+        alert('You must agree to MSF Hong Kong Privacy Policy before download. ');
+    }
+}
+
+
 if (typeof(bounds)!=='undefined') {
     boundsArray = bounds.split(',');
     mainMap.fitBounds([[boundsArray[1],boundsArray[0]],[boundsArray[3],boundsArray[2]]]);
-    let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3]);
+    var wrappedLatLng=getWrappedLatLng(mainMap.getBounds());
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
 } else {
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90');
+    contactDownloadLink='/api/contacts/csv/download?lngmin=-180&latmin=-90&lngmax=180&latmax=90';
     mainMap.fitBounds([[-90,-180],[90,180]]);
 }
 
@@ -966,26 +981,27 @@ mainMap.on('zoomend', function(zoomEvent)  {
 
 mainMap.on('moveend', function(){
     Cookies.set('landingMapBounds',mainMap.getBounds().toBBoxString());
-    let contactCoords = L.CRS.EPSG4326.wrapLatLngBounds(mainMap.getBounds()).toBBoxString().split(',');
-    $('#contactDownloadLink').attr('href','/api/contacts/csv/download?lngmin='+contactCoords[2]+'&latmin='+contactCoords[1]+'&lngmax='+contactCoords[0]+'&latmax='+contactCoords[3]);
+    var wrappedLatLng=getWrappedLatLng(mainMap.getBounds());
+    contactDownloadLink='/api/contacts/csv/download?lngmin='+wrappedLatLng.lngmin+'&latmin='+wrappedLatLng.latmin+'&lngmax='+wrappedLatLng.lngmax+'&latmax='+wrappedLatLng.latmax;
     getMSFPresence(mapMSFPresence);
 });
 
 // Add some base tiles
 var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
-    minZoom: 0,
+    minZoom: 2,
     maxZoom: 18
 });
 
 // Add some satellite tiles
 var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+    minZoom: 2,
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
 
 // OSM HOT tiles
 var OpenStreetMap_HOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-    maxZoom: 19,
+    minZoom: 2,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>'
 });
 
@@ -1030,6 +1046,8 @@ if (L.Browser.touch) {
 } else {
     L.DomEvent.disableClickPropagation(layerControl._container);
 }
+
+addLegendsToAMaps(mainMap);
 
 // get and map data:
 getAllEvents(mapAllEvents);
@@ -1183,6 +1201,10 @@ if (location.hash.includes('#contact')) {
 }
 
 $(function(){
+
+    $('#cbContactsAgreed').on('change',function(){
+        $('#contactDownloadLink').attr('disabled',!($('#cbContactsAgreed').is(':checked')));
+    });
 
     var bookmarkVue=new Vue({
         el:'#bookmarksList',

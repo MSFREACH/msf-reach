@@ -27,7 +27,7 @@ $(function() {
     });
 });
 var hasWritePermission=false;
-const operatorCheck = function() {
+const operatorCheck = function(callback) {
     $.ajax({
         type: 'GET',
         url: '/api/utils/operatorCheck',
@@ -40,12 +40,38 @@ const operatorCheck = function() {
     }).done(function(){
         hasWritePermission=true;
         $('.show-if-write-permission').show();
+        if (callback)
+            callback(true);
     }).fail(function(){
         hasWritePermission=false;
         $('.show-if-write-permission').hide();
+        if (callback)
+            callback(false);
     });
 };
 
+
+function getWrappedLatLng(theBounds){
+    let swCoords = theBounds.getSouthWest();
+    let neCoords = theBounds.getNorthEast();
+
+    let lngmin = swCoords.lng;
+    let lngmax = neCoords.lng;
+
+    if (lngmin > 180 || lngmin < -180) {
+        lngmin -= Math.floor((lngmin + 180) / 360) * 360;
+    }
+    if (lngmax > 180 || lngmax < -180) {
+        lngmax -= Math.floor((lngmax + 180) / 360) * 360;
+    }
+
+    return {
+        lngmin: swCoords.lng,
+        latmin: swCoords.lat,
+        lngmax: neCoords.lng,
+        latmax: neCoords.lat
+    };
+}
 
 /**
 * function to convert ISO date string to locale string with basic handling of non-isoDate format
@@ -233,7 +259,7 @@ const getMSFPresence = function(callback) {
     //get the current bounds
     let bboxString=mainMap.getBounds().toBBoxString();
     //the url
-    let url = 'https://arcgis.cartong.org/arcgis/rest/services/wrl_presence/wrl_presencemsf_view/MapServer/0/query?outFields=*&f=json&outSR=4326&inSR=4326&geometryType=esriGeometryEnvelope&geometry='+bboxString+'&token='+ARCGIS_TOKEN;
+    let url = 'https://arcgis.cartong.org/arcgis/rest/services/briefing_test/msf_map_view/MapServer/0/query?outFields=*&f=json&outSR=4326&inSR=4326&geometryType=esriGeometryEnvelope&geometry='+bboxString+'&token='+ARCGIS_TOKEN;
 
     $.getJSON(url, function( data ){
         if (!data.hasOwnProperty('error')) {
@@ -265,15 +291,15 @@ const mapMSFPresence = function(presence) {
 
     // Add popups
     function onEachFeature(feature, layer) {
-        feature.properties.operational_centre = feature.properties.operational_centre.toUpperCase();
+        feature.properties.operational_center = feature.properties.operational_center.toUpperCase();
         var popupContent =
               'Country: ' + feature.properties.country + '<br />' +
-              'Type: ' + feature.properties.type + '<br />' +
+              'Type: ' + feature.properties.presence_type + '<br />' +
               'Name: ' + feature.properties.name + '<br />' +
               'Open Date: ' + (feature.properties.open_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : '') + '<br />' +
               'Close Date: ' + (feature.properties.close_date ? (new Date(feature.properties.open_date)).toLocaleDateString() : 'Still open') + '<br />' +
               'Alternative Name: ' + feature.properties.name_alt + '<br />' +
-              'Operational Centre: ' + '<label class="btn btn-xs" style="background-color:'+OCColours[feature.properties.operational_centre]+';margin-right:5px;margin-bottom:5px;color:white;font-weight: bold">&nbsp;'+feature.properties.operational_centre+'</label><br />' +
+              'Operational Centre: ' + '<label class="btn btn-xs" style="background-color:'+OCColours[feature.properties.operational_center]+';margin-right:5px;margin-bottom:5px;color:white;font-weight: bold">&nbsp;'+feature.properties.operational_center+'</label><br />' +
               'Cell: ' + feature.properties.cell + '<br />' +
               'Project Code: ' + feature.properties.project_code + '<br />' +
               'Intervention Type: ' + feature.properties.intervention_type + '<br />' +
@@ -313,7 +339,7 @@ const mapMSFPresence = function(presence) {
 
     presenceLayer = L.geoJSON(presence, {
         pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, {'radius':10, 'color':OCColours[feature.properties.operational_centre.toUpperCase()]});
+            return L.circleMarker(latlng, {'radius':10, 'color':OCColours[feature.properties.operational_center.toUpperCase()]});
         },
         onEachFeature: onEachFeature
     });
@@ -388,7 +414,7 @@ const mapLRAHazards = function(hazards) {
     LRALayer = L.geoJSON(hazards, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: L.icon({
-                iconUrl: '/resources/images/icons/event_types/conflict.svg',
+                iconUrl: '/resources/images/icons/event_types/armed_conflict.svg',
                 iconSize: [39, 39]
             })});
         },
@@ -881,13 +907,14 @@ var mapUSGSHazards = function(hazards){
 
 function openHazardPopup(id)
 {
-
     switch(id.split('-',1)[0]) {
     case 'USGS':
         USGSHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id === id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
-
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -898,7 +925,10 @@ function openHazardPopup(id)
     case 'PDC':
         PDCHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -909,7 +939,10 @@ function openHazardPopup(id)
     case 'TSR':
         TSRHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -920,7 +953,10 @@ function openHazardPopup(id)
     case 'PTWC':
         PTWCHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+layer.feature.properties.id+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -931,7 +967,10 @@ function openHazardPopup(id)
     case 'GDACS':
         GDACSHazardsLayer.eachLayer(function(layer){
             if (layer.feature.properties.id == id)
+            {
+                mainMap.panTo(layer.getLatLng());
                 layer.openPopup();
+            }
             var selector='[id="rssdiv'+sanitiseId(layer.feature.properties.id)+'"]';
             layer.on('mouseover',function(e){$(selector).addClass('isHovered');});
             layer.on('mouseout',function(e){$(selector).removeClass('isHovered');});
@@ -1026,6 +1065,7 @@ var onContactLinkClick = function(id) {
     $('#btnShare').prop('disabled',true);
 
     currentContactId = id;
+    $('#contactEditAnchor').attr('href','/contact/?editid='+currentContactId);
     getContact(id);
     $('#privateContactDiv').toggle(localStorage.getItem('username')!=null);
     $('#shareWithDiv').toggle(localStorage.getItem('username')!=null);
@@ -1181,7 +1221,7 @@ $( '#sharewith_name' ).autocomplete({
         $.ajax({
             url: '/api/contacts/usersearch/'+request.term,
             success: function( data ) {
-                response($.map(JSON.parse(data.body).value, function (item) {
+                response($.map(JSON.parse(data).value, function (item) {
                     return {
                         label: item.displayName,
                         value: item.displayName,
@@ -1205,3 +1245,98 @@ $( '#sharewith_name' ).autocomplete({
         $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
     }
 });
+
+var showLegendIfCookie=function(){
+    if (!(Cookies.get('show-msf-legend')))
+        Cookies.set('show-msf-legend','on');
+    var show=(Cookies.get('show-msf-legend')) === 'on' ;
+    $('.legend').toggle(show);
+};
+
+
+var addLegendsToAMaps=function(mapVariable){
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+        var symbols = [
+            {
+                iconUrl: '/resources/images/icons/event_types/open_event.svg',
+                text: 'Ongoing MSF Resp.'
+
+            },
+            {
+                iconUrl: '/resources/images/icons/event_types/historical.svg',
+                text: 'Prev. MSF Resp.'
+            },
+            {
+                iconUrl: '/resources/images/icons/contacts/Contact_Red-42.svg',
+                text: 'Contacts'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/access_icon.svg',
+                text: 'Access Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/security_icon.svg',
+                text: 'Security Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/contacts_icon.svg',
+                text: 'Contacts Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/reports/needs_icon.svg',
+                text: 'Needs Report'
+            },
+            {
+                iconUrl: '/resources/images/icons/pin.svg',
+                text: 'Health site'
+            },
+            {
+                iconUrl: '/resources/images/hot_icons/building_footprint.png',
+                text: '(Humanitarian map) building footprint'
+            },
+            {
+                iconUrl: '/resources/images/hot_icons/Hospital-14.svg',
+                text: '(Humanitarian map) hospital'
+            },
+            {
+                iconUrl: '/resources/images/hot_icons/Drinking-water-16.svg',
+                text: '(Humanitarian map) drinking water'
+            }
+        ];
+
+        HAZARD_ICON_TYPES.forEach(function(type){
+            symbols.push({
+                iconUrl: '/resources/images/hazards/'+type+'_advisory.svg',
+                text: type[0].toUpperCase()+type.substr(1)
+            });
+        });
+
+        symbols.forEach(function(s) {
+            div.innerHTML +=
+      '<img src="'+s.iconUrl+'"></i> ' +
+      s.text + '<br>';
+        });
+        return div;
+    };
+
+    var btnControl = L.control({position: 'bottomright'});
+
+    btnControl.onAdd = function (map) {
+        var btn = L.DomUtil.create('button', 'btn btn-xs btn-default');
+        btn.innerHTML='Toggle legend';
+        L.DomEvent.on(btn, 'click', function (ev) {
+            $('.legend').toggle();
+            var show=Cookies.get('show-msf-legend');
+            Cookies.set('show-msf-legend',show ==='on' ? 'off' : 'on');
+            L.DomEvent.stopPropagation(ev);
+        });
+        return btn;
+    };
+    btnControl.addTo(mapVariable);
+    legend.addTo(mapVariable);
+    showLegendIfCookie();
+};

@@ -1,12 +1,15 @@
 var doItOnce=true;
 var updateMode=false;
+var updateOperatorMode=false;
 var qGUID=null;
 var qEmail=null;
+var qContactId=null;
 
 
 $(function () {
     qGUID=getQueryVariable('token');
     qEmail=getQueryVariable('email');
+    qContactId=getQueryVariable('editid');
     $('#GDPR').toggle(localStorage.getItem('username')==null);
     $('#permission').toggle(localStorage.getItem('username')!=null);
     $('#sharepoint').toggle(localStorage.getItem('username')!=null);
@@ -26,11 +29,11 @@ $(function () {
             .eq(index)
             .addClass('current');
         // Show only the navigation buttons that make sense for the current section:
-        $('.form-navigation .previous').toggle(index > (updateMode ? NAMESECTIONINDEX : 0) && index<($sections.length - 1));
+        $('.form-navigation .previous').toggle(index > ((updateMode || updateOperatorMode) ? NAMESECTIONINDEX : 0) && index<($sections.length - 1));
         var atTheEnd = index >= $sections.length - 2;
         $('.form-navigation .next').toggle(!atTheEnd);
-        $('.form-navigation [id=createContact]').toggle((!updateMode)&&(index ==  $sections.length - 2) );
-        $('.form-navigation [id=updateContact]').toggle((updateMode)&&(index ==  $sections.length - 2) );
+        $('.form-navigation [id=createContact]').toggle((!(updateMode || updateOperatorMode))&&(index ==  $sections.length - 2) );
+        $('.form-navigation [id=updateContact]').toggle((updateMode || updateOperatorMode)&&(index ==  $sections.length - 2) );
         if (index == MAPSECTIONINDEX && doItOnce)
         {
             newContactMap.invalidateSize();
@@ -45,7 +48,7 @@ $(function () {
 
     if (qGUID && qEmail)
     {
-        updateMode=true;
+
         $('#updateModal').modal('show');
         $('#updateModalMsg').html('Loading contact data ...');
         $('#updateModalBody .msf-contact-loader').show();
@@ -78,6 +81,7 @@ $(function () {
                 email: qEmail },
             contentType: 'application/json'
         }).done(function( resp, textStatus, req ){ // eslint-disable-line no-unused-vars
+            updateMode=true;
             $('#updateModalBody .msf-contact-loader').hide();
             $('#updateModalMsg').html('Your contact details have been successfully retrieved.');
             //'location':newContactMap.msf_latlng,
@@ -152,8 +156,93 @@ $(function () {
             $('#updateModalMsg').html('An error, ' + err + ', occured');
         });
 
-    }
+    } else if (qContactId){
 
+        $.ajax({
+            type: 'GET',
+            url: '/api/contacts/'+qContactId,
+            contentType: 'application/json'
+        }).done(function( resp, textStatus, req ){ // eslint-disable-line no-unused-vars
+            if (resp.result)
+            {
+                updateOperatorMode=true;
+                $('#updateModalBody .msf-contact-loader').hide();
+                $('#updateModalMsg').html('Your contact details have been successfully retrieved.');
+                //'location':newContactMap.msf_latlng,
+                newContactMap.setView([resp.result.lat, resp.result.lng],17);
+                newContactMap.msf_latlng = {lat: resp.result.lat, lng: resp.result.lng};
+                newContactMap.msf_marker = L.marker({lat: resp.result.lat, lng: resp.result.lng}).addTo(newContactMap);
+                var props=resp.result.properties;
+                $('#mapAddress').val(props.address);
+                $('#inputContactTitle').val(props.title); //'title':  || $('#inputContactOtherTitle').val(),
+                $('#inputContactOtherName').val(props.otherNames);
+                // if ((props.gender=='male')||(props.gender=='female'))
+                //     $('#inputGender').val(props.gender);
+                // else {
+                //     $('#inputGender option:last').attr('selected',true);
+                //     $('#inputContactOtherGender').val(props.gender);
+                // }
+
+                $('#inputContactType').val(props.type);
+                $('#divOtherType').toggle(props.type == 'Other');
+                $('#divNonMSFFields').toggle(props.type != 'Current MSF Staff');
+                $('#divMSFFields').toggle(props.type == 'Current MSF Staff');
+                if (props.type === 'Current MSF Staff') {
+                    $('#inputContactOC').val(props.OC);
+                    $('#inputContactMSFEmploy').val(props.msf_employment);
+                    $('#inputMSFAdditional').val(props.msf_additional);
+                    $('#inputContactJobTitle').val(props.job_title);
+
+                } else {
+                    $('#inputContactMSFAssociate').prop('checked', props.msf_associate);
+                    $('#inputContactMSFPeer').prop('checked', props.msf_peer);
+                    $('#inputContactEmployerName').val(props.employer);
+                    $('#inputContactJobTitle').val(props.job_title);
+                    $('#inputContactEmployerDivision').val(props.division);
+                }
+                if (props.hasOwnProperty('cell')) {
+                    $('#inputContactCell').intlTelInput('setNumber', props.cell);
+                }
+                if (props.hasOwnProperty('work')) {
+                    $('#inputContactWork').intlTelInput('setNumber', props.work);
+                }
+                if (props.hasOwnProperty('home')) {
+                    $('#inputContactHome').intlTelInput('setNumber', props.home);
+                }
+                // if (props.hasOwnProperty('fax')) {
+                //     $('#inputContactFax').intlTelInput('setNumber', props.fax);
+                // }
+
+                //'gender': $('#inputGender').val() || $('#inputContactOtherGender').val(),
+                //var contName=($('#inputContactFirstName').val() || '')+' '+($('#inputContactLastName').val() || '')+' '+($('#inputContactOtherName').val() || '');
+                $('#inputContactFirstName').val(props.name.split(' ')[0]);
+                $('#inputContactLastName').val(props.name.split(' ')[1]);
+
+                // $('#inputSpeciality').val(props.speciality);
+                //'type': $('#inputContactTypeOther').val() || $('#inputContactType').val() || '',
+                // $('#datepicker').val(props.dob);
+                // $('#inputContactWeb').val(props.web) ;
+                //'email':$('#inputContactEmail').val(),
+                $('#inputContactEmailRO').attr('readonly',false);
+                $('#inputContactEmailRO').val(props.email);
+                $('#inputContactEmail2').val(props.email2);
+                $('#inputContactSharepoint').val(props.sharepoint);
+                $('#inputWhatsApp').val(props.WhatsApp);
+                $('#inputFacebook').val(props.Facebook);
+                $('#inputTwitter').val(props.Twitter);
+                $('#inputInstagram').val(props.Instagram);
+                $('#inputTelegram').val(props.Telegram);
+                $('#inputSkype').val(props.Skype);
+                navigateTo(NAMESECTIONINDEX);
+            }
+        }).fail(function (req, textStatus, err){
+            $('#updateModalBody .msf-contact-loader').hide();
+            $('#updateModalMsg').html('An error, ' + err + ', occured');
+        });
+
+
+
+    }
 
 
     var $sections = $('.form-section');

@@ -27,9 +27,8 @@
 
   <link rel="stylesheet" href="/report/reportcard.css">
 
-  <link rel="stylesheet" href="/resources/fonts/fontello/css/fontello.css">
-  <link rel="stylesheet" href="/resources/fonts/fontello/css/animation.css">
 
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
 </head>
 <body>
@@ -73,11 +72,15 @@
               <input placeholder="name..." style="width:100%;color:black;" id="inputReportUserName">
             </div>
             <div class="form-section">
-              <h4>Would you like to upload an image ? </h4><i>(optional)</i>
+              <h4>Would you like to upload a file ? </h4><i>(optional)</i>
               <form enctype="multipart/form-data">
-                <input id="inputImageUpload" type="file" accept="image/*" style="display:none;"/>
+                <input id="inputImageUpload" type="file" accept="image/*,video/*,audio/*" style="display:block;" />
                 <div style="margin-top:10px;width:100%;height:auto;color:#fff;text-align:center;">
-                  <i id="btnUpTrigger" class="icon-camera" style="font-size:108px;cursor:pointer;"></i>
+                  <div id="btnUpTrigger" >
+                   <i class="fas fa-camera" style="font-size:108px;cursor:pointer;"></i>
+                   <i class="fas fa-video" style="font-size:108px;cursor:pointer;"></i>
+                   <i class="fas fa-microphone" style="font-size:108px;cursor:pointer;"></i>
+                 </div>
                   <img id="imgPreview" src="#" alt="your image" style="max-width:100%;height:auto;display:none;"/>
                 </div>
               </form>

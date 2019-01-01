@@ -5,7 +5,7 @@ import events from './model';
 import missions from './../missions/model';
 
 // Import any required utility functions
-import { cacheResponse, handleGeoResponse, handleResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
+import { cacheResponse, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 
 // Import validation dependencies
 import { celebrate as validate, Joi } from 'celebrate';
@@ -64,6 +64,89 @@ export default ({ config, db, logger }) => {
             })
     );
 
+    // unsubscribe from event update emails
+    api.post('/unsubscribe/:id',ensureAuthenticated,  cacheResponse('1 minute'),
+        (req, res, next) => {
+            let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
+            events(config, db, logger).unsubscribe(req.params.id, email)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // unsubscribe others from event update emails
+    api.post('/unsubscribeothers/:id',ensureAuthenticatedWrite,  cacheResponse('1 minute'),
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                email: Joi.string().required().allow('')
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).unsubscribe(req.params.id, req.body.email)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // subscribe to event update emails
+    api.post('/subscribeself/:id', ensureAuthenticated, cacheResponse('1 minute'),
+        (req, res, next) => {
+            let email= (req.user ? req.user._json.preferred_username : process.env.TESTEMAIL);
+            events(config, db, logger).subscribe(req.params.id, [email])
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+    // subscribe to event update emails
+    api.post('/subscribeothers/:id', ensureAuthenticatedWrite, cacheResponse('1 minute'),
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                subscribers: Joi.array().required()
+            })
+        }),
+        (req, res, next) => {
+            events(config, db, logger).subscribe(req.params.id, req.body.subscribers)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
+    // unsubscribe from event update emails
+    api.post('/unsubscribeEmailLink/:id', cacheResponse('1 minute'),
+        (req, res, next) => {
+            events(config, db, logger).unsubscribe(req.params.id, req.body.email)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
     // Create a new event record in the database
     api.post('/',ensureAuthenticatedWrite,
         validate({
@@ -114,11 +197,13 @@ export default ({ config, db, logger }) => {
                 location: Joi.object().required().keys({
                     lat: Joi.number().min(-90).max(90).required(),
                     lng: Joi.number().min(-180).max(180).required()
-                })
+                }),
+                subscribe: Joi.boolean()
             })
         }),
         (req, res, next) => {
-            events(config, db, logger).createEvent(req.body)
+            let userEmail=((req.body.subscribe && req.user ) ? req.user._json.preferred_username : null);
+            events(config, db, logger).createEvent(req.body,userEmail)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                     /* istanbul ignore next */
@@ -149,7 +234,9 @@ export default ({ config, db, logger }) => {
                         // backfill location for compatibility
                         console.log(data); // eslint-disable-line no-console
                         req.body['location'] = {'lat': data.lat, 'lng': data.lng};
-                        missions(config, db, logger).createMission(req.body)
+                        // backfill type to metadata (goes in mission properties)
+                        req.body.metadata['event_type']= req.body.type || '';
+                        missions(config, db, logger).createMission(req.body,req.params.id)
                             .then((data) => handleGeoResponse(data, req, res, next))
                             .catch((err) => {
                                 /* istanbul ignore next */
@@ -305,6 +392,31 @@ export default ({ config, db, logger }) => {
         }
     );
 
+    // invite users to subscribe
+    api.post('/invitesubscribe/:id', ensureAuthenticatedWrite,
+        validate({
+            params: { id: Joi.number().integer().min(1).required() } ,
+            body: Joi.object().keys({
+                invitees: Joi.array().required()
+            })
+        }),
+        (req, res, next) => {
+            let inviteData={
+                inviter: req.user,
+                invitees: req.body.invitees
+            };
+            events(config, db, logger).inviteToSubscribe(req.params.id,inviteData)
+                .then((data) => handleResponse(data, req, res, next))
+                .catch((err) => {
+                /* istanbul ignore next */
+                    /* istanbul ignore next */
+                    logger.error(err);
+                    /* istanbul ignore next */
+                    next(err);
+                });
+        }
+    );
+
     // Delete an event's record and associated reports from the database
     api.delete('/:id', ensureAuthenticatedWrite,
         validate({
@@ -319,7 +431,8 @@ export default ({ config, db, logger }) => {
                     /* istanbul ignore next */
                     next(err);
                 });
-        });
+        }
+    );
 
     return api;
 };

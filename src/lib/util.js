@@ -105,7 +105,8 @@ const ensureAuthenticatedLanding = (req, res, next) => {
 
 
 const ensureAuthenticatedWrite = (req, res, next) => {
-    if(!config.AUTH){
+    console.log(req.user); // eslint-disable-line no-console
+    if(!config.AUTH || process.env.ALL_WRITE){
         return next(); //If we are not using auth then carry on
     }
     if(config.AZURE_AD_TENANT_NAME){ //Check if we are using azure ad auth

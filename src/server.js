@@ -62,7 +62,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
     const removeUser = function(user) {
         for (var i = 0, len = users.length; i < len; i++) {
-            if (users[i].oid === user.oid) {
+            if ((typeof(users[i])!=='undefined') && (typeof(user)!=='undefined') && users[i].oid === user.oid) {
                 users.splice(i,1);
                 return;
             }
@@ -131,6 +131,8 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         app.use(passport.session());
     }
 
+    app.use(bodyParser.urlencoded({extended: true}));
+
     // Parse body messages into json
     app.use(bodyParser.json({ limit: config.BODY_LIMIT }));
 
@@ -171,6 +173,9 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         next();
     });
 
+    // Trust proxy header
+    app.enable('trust proxy');
+
     // Try and connect to the db
     initializeDb(config, logger)
         .then((db) => {
@@ -190,6 +195,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
+                        res.cookie('email', req.user._json.preferred_username);
                         res.cookie('oid', req.user.oid, { maxAge: 1000 * 60 * 1 });
                         res.redirect('/authreturn');
                     });
@@ -211,6 +217,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 }
             });
             app.use('/report', express.static(config.STATIC_REPORT_PATH));
+            app.use('/unsubscribe', express.static(config.STATIC_UNSUBSCRIBE_PATH));
             app.use('/contact', express.static(config.STATIC_CONTACT_PATH));
             app.use('/lib', express.static(config.STATIC_LIB_PATH)); // Allow resources to be shared with un-authed path
             app.use('/resources', express.static(config.STATIC_RESOURCES_PATH)); // Allow resources to be shared with un-authed path

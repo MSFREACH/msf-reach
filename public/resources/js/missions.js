@@ -33,8 +33,8 @@ var loadMissions = function(err, missions) {
           value.properties.properties.region +
           '</span><span><label>Start  </label>' +
           (convertToLocaleDate(value.properties.properties.event_datetime) || value.properties.properties.startDate + '(old format please edit)'  )+
-          '</span><span><label>End  </label>' +
-          (convertToLocaleDate(value.properties.properties.event_datetime_closed) || value.properties.properties.finishDate + '(old format please edit)' ) +
+          '</span ><span>' + (value.properties.properties.finishDate ? '<label>End date of MSF response </label>' : '<label>Closure date of event </label>') +
+          (value.properties.properties.finishDate || convertToLocaleDate(value.properties.properties.event_datetime_closed)  + '(old format please edit)' ) +
           '</span><div><label>Severity  </label>' +
           value.properties.properties.severity +
           '</div><div><label>Capacity </label>' +
@@ -51,11 +51,8 @@ var loadMissions = function(err, missions) {
 var getMissions = function(term) {
 
     var url='/api/missions?geoformat=geojson' +(term ? ('&search='+term) :'');
-    var lngmin = mainMap.getBounds().getSouthWest().wrap().lng;
-    var latmin = mainMap.getBounds().getSouthWest().wrap().lat;
-    var lngmax = mainMap.getBounds().getNorthEast().wrap().lng;
-    var latmax = mainMap.getBounds().getNorthEast().wrap().lat;
-    url = url+'&lngmin='+lngmin+'&latmin='+latmin+'&lngmax='+lngmax+'&latmax='+latmax;
+    var wrappedBounds=getWrappedLatLng(mainMap.getBounds());
+    url = url+'&lngmin='+wrappedBounds.lngmin+'&latmin='+wrappedBounds.latmin+'&lngmax='+wrappedBounds.lngmax+'&latmax='+wrappedBounds.latmax;
     $.getJSON(
         url,
         function(data) {
@@ -81,14 +78,16 @@ var getMissions = function(term) {
 var missionData = {};
 var missionCoordinates = {};
 var currentMissionId=0;
+var currentMissionEventId=0;
 
 // open mission modal on click
 var onMissionLinkClick = function(id) {
     $.getJSON('/api/missions/' + id, function(data) {
         currentMissionId=id;
+        currentMissionEventId=data ? data.result.objects.output.geometries[0].properties.event_id : null;
         missionData = data ? data.result.objects.output.geometries[0].properties.properties : {};
         missionCoordinates = data ? data.result.objects.output.geometries[0].coordinates : {};
-        $( '#missionModalBody' ).load( '/events/mission.html', operatorCheck );
+        $( '#missionModalBody' ).load( '/events/mission.html');
         $('#missionModal').modal('show');
     }).fail(function(err) {
         if (err.responseText.includes('expired')) {
