@@ -16,6 +16,12 @@ export default {
     other: {
         BASE_CONTENT_URL: ''
     }
+    // azure: {
+    //     TENANT_ID: '',
+    //     CLIENT_ID: ''
+    //     RETURN_URL:
+    //     OPERATORS_GROUP_ID:
+    // }
 };
 
 export const API_URL = '/api/';

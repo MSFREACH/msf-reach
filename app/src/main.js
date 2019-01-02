@@ -6,6 +6,7 @@ import Vuetify from 'vuetify';
 
 import { CHECK_AUTH } from '@/store/actions.type';
 import Amplify from 'aws-amplify';
+// import Adal from 'vue-adal';
 import config from '@/common/config.js';
 
 Amplify.configure({
@@ -46,6 +47,20 @@ Vue.use(Vuetify, {
         warning: '#EE0000'
     }
 });
+
+// Vue.use(Adal, {
+//     // This config gets passed along to Adal, so all settings available to adal can be used here.
+//     config: {
+//         tenant: config.azure.TENANT_ID,
+//         clientId: config.azure.CLIENT_ID,
+//         redirectUri: config.azure.RETURN_URL,
+//         cacheLocation: 'localStorage'
+//     },
+//     // Set this to true for authentication on startup
+//     requireAuthOnInitialize: true,
+//     // Pass a vue-router object in to add route hooks with authentication and role checking
+//     router: router
+// });
 
 ApiService.init();
 

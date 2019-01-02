@@ -37,6 +37,10 @@ const actions = {
                     resolve(payload);
                 }).catch(err =>{
                     context.commit(SET_ERROR, err);
+                    context.commit(PURGE_AUTH);
+                    if(router.history.pending.path !== '/login'){
+                        router.push({name:'login'});
+                    }
                 });
         });
     },
@@ -119,6 +123,7 @@ const actions = {
 const mutations = {
     [SET_ERROR] (state, error) {
         state.errors = error;
+
     },
     [SET_AUTH] (state, user) {
         state.isAuthenticated = true;

@@ -4,6 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+    mode: 'history', // Required for Adal library
     routes: [{
         path: '/',
         component: () => import('@/views/Landing'),
@@ -19,7 +20,7 @@ export default new Router({
                 component: () => import('@/views/LandingMyEvents')
             }
         ]
-    }, {
+    },{
         name: 'login',
         path: '/login',
         component: () => import('@/views/Login'),
@@ -30,7 +31,7 @@ export default new Router({
                 component: () => import('@/views/About')
             }
         ]
-    }, {
+    },{
         name: 'events',
         path: '/events',
         component: () => import('@/components/EventList'), // TODO: need to merge eventsMeta & action here.
