@@ -13,11 +13,13 @@ const ApiService = {
         Vue.axios.defaults.baseURL = API_URL;
 
         axios.interceptors.response.use((response) => {
+            console.log('interceptors----res-- ', response);
             return response;
         }, (error) => {
             if (error.response && error.response.data && error.response.data.location) {
                 window.location = error.response.data.location;
             } else {
+                console.log('interceptors----err-- ', error);
                 return Promise.reject(error);
             }
         });
@@ -31,7 +33,7 @@ const ApiService = {
         return Vue.axios
             .get(resource, params)
             .catch((error) => {
-                throw new Error(`[Refactored Vue] ApiService ${error}`);
+                throw new Error(`[ApiService] ${error}`);
             });
     },
 
@@ -39,7 +41,7 @@ const ApiService = {
         return Vue.axios
             .get(`${resource}/${slug}`)
             .catch((error) => {
-                throw new Error(`[Refactored Vue] ApiService ${error}`);
+                throw new Error(`[ApiService] ${error}`);
             });
     },
 
@@ -59,7 +61,7 @@ const ApiService = {
         return Vue.axios
             .delete(resource)
             .catch((error) => {
-                throw new Error(`[Refactored Vue] ApiService ${error}`);
+                throw new Error(`[ApiService] ${error}`);
             });
     }
 };
