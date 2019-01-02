@@ -246,7 +246,7 @@ export default (config, db, logger) => ({
       RETURNING id, subscribers`;
 
         // Setup values
-        let values = [ emailsArray, id ];
+        let values = [ body.emailsArray, body.id ];
 
         // Execute
         logger.debug(query);

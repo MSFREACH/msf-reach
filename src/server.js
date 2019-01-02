@@ -39,6 +39,52 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
     let app = express();
     app.server = http.createServer(app);
 
+
+    app.use(bodyParser.urlencoded({extended: true}));
+
+    // Parse body messages into json
+    app.use(bodyParser.json({ limit: config.BODY_LIMIT }));
+
+    // Winston stream function we can plug in to express so we can capture its logs along with our own
+    const winstonStream = {
+        write: function(message) {
+            logger.info(message.slice(0, -1));
+        }
+    };
+
+    // Setup express logger
+    app.use(morgan('combined', { stream: winstonStream }));
+
+    // Compress responses if required but only if caching is disabled
+    if (config.COMPRESS && !config.CACHE) {
+        app.use(compression());
+    }
+
+    if (!config.CACHE) {
+        app.use(nocache());
+    }
+
+    // Provide CORS support (not required if behind API gateway)
+    if (config.CORS) {
+        app.use(cors({ exposedHeaders: config.CORS_HEADERS }));
+    }
+
+    // Provide response time header in response
+    if (config.RESPONSE_TIME) {
+        app.use(responseTime());
+    }
+
+    // Redirect http to https
+    app.use(function redirectHTTP(req, res, next) {
+        if (config.REDIRECT_HTTP ) { // && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'].toLowerCase() === 'http') {
+            return res.redirect('https://' + req.headers.host + req.url);
+        }
+        next();
+    });
+
+    // Trust proxy header
+    app.enable('trust proxy');
+
     // Create webpack compiler
     var compiler = webpack(webpackConfig);
     app.use(webpackDevMiddleware(compiler, {quiet: true, publicPath: webpackConfig.output.publicPath}));
@@ -131,50 +177,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
         app.use(passport.session());
     }
 
-    app.use(bodyParser.urlencoded({extended: true}));
-
-    // Parse body messages into json
-    app.use(bodyParser.json({ limit: config.BODY_LIMIT }));
-
-    // Winston stream function we can plug in to express so we can capture its logs along with our own
-    const winstonStream = {
-        write: function(message) {
-            logger.info(message.slice(0, -1));
-        }
-    };
-
-    // Setup express logger
-    app.use(morgan('combined', { stream: winstonStream }));
-
-    // Compress responses if required but only if caching is disabled
-    if (config.COMPRESS && !config.CACHE) {
-        app.use(compression());
-    }
-
-    if (!config.CACHE) {
-        app.use(nocache());
-    }
-
-    // Provide CORS support (not required if behind API gateway)
-    if (config.CORS) {
-        app.use(cors({ exposedHeaders: config.CORS_HEADERS }));
-    }
-
-    // Provide response time header in response
-    if (config.RESPONSE_TIME) {
-        app.use(responseTime());
-    }
-
-    // Redirect http to https
-    app.use(function redirectHTTP(req, res, next) {
-        if (config.REDIRECT_HTTP && req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'].toLowerCase() === 'http') {
-            return res.redirect('https://' + req.headers.host + req.url);
-        }
-        next();
-    });
-
-    // Trust proxy header
-    app.enable('trust proxy');
 
     // Try and connect to the db
     initializeDb(config, logger)
