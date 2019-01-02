@@ -91,7 +91,8 @@ const actions = {
                 .then(user => {
                     context.commit(SET_AUTH, user);
                 }).catch( err => {
-                    context.commit(SET_ERROR, response.data.errors);
+                    console.log(err);
+                    context.commit(SET_ERROR, err);
                 });
         } else {
             context.commit(PURGE_AUTH);
