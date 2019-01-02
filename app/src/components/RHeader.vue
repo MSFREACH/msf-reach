@@ -125,8 +125,10 @@ export default {
         // }
     },
     watch: {
-        currentUser(newValue){
-            this.nameInitial = this.currentUser.username.charAt(0);
+        currentUser(val){
+            if(val){
+                this.nameInitial = val.username.charAt(0);
+            }
         }
     },
     methods: {
