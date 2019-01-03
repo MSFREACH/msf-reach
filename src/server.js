@@ -9,8 +9,6 @@ import http from 'http';
 import expressSession from 'express-session';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import fs from 'fs';
-import path from 'path';
 import cors from 'cors';
 import compression from 'compression';
 import responseTime from 'response-time';
@@ -39,18 +37,7 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
     // Create the server
     let app = express();
-
-    if(config.NODE_ENV === 'development'){
-        var certOptions = {
-          key: fs.readFileSync(path.resolve('src/cert/server.key')),
-          cert: fs.readFileSync(path.resolve('src/cert/server.crt'))
-        }
-        app.server = http.createServer(certOptions, app);
-    }else{
-        app.server = http.createServer(app);
-    }
-
-
+    app.server = http.createServer(app);
     app.use(bodyParser.urlencoded({extended: true}));
 
     // Parse body messages into json
@@ -197,7 +184,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
 
             // Mount the routes
             if(config.AZURE_AD_TENANT_NAME){
-                console.log('------0-----0-----0---- ', config.AZURE_AD_TENANT_NAME);
                 app.get('/login',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res) {
@@ -206,7 +192,6 @@ const init = (config, initializeDb, routes, logger) => new Promise((resolve, rej
                 app.post('/auth/openid/return',
                     passport.authenticate('azuread-openidconnect', { failureRedirect: '/login'}),
                     function(req, res, next) { // eslint-disable-line no-unused-vars
-                        console.log('hello yes -------- ', req, res);
                         //set a cookie here and then on the static page store it in localstorage
                         res.cookie('userdisplayName', req.user.displayName, { maxAge: 1000 * 60 * 1 }); //1 min cookie age should be enough
                         res.cookie('email', req.user._json.preferred_username);
