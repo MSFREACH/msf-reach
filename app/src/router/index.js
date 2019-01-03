@@ -21,8 +21,8 @@ export default new Router({
             }
         ]
     },{
-        name: 'login',
-        path: '/login',
+        name: 'cognito-login',
+        path: '/cognito-login',
         component: () => import('@/views/Login'),
         children: [
             {

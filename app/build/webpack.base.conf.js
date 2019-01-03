@@ -37,9 +37,7 @@ module.exports = {
         include: [resolve('src'), resolve('test')],
         options: {
           emitWarning: true,
-          configFile: "./.eslintrc.json", 
-          formatter: require('eslint-friendly-formatter'),
-          indent: [2, 2, "error", "tab"]
+          formatter: require('eslint-friendly-formatter')
         }
       },
       {

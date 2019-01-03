@@ -38,8 +38,8 @@ const actions = {
                 }).catch(err =>{
                     context.commit(SET_ERROR, err);
                     context.commit(PURGE_AUTH);
-                    if(router.history.pending.path !== '/login'){
-                        router.push({name:'login'});
+                    if(router.history.pending.path !== '/cognito-login'){
+                        router.push({name:'cognito-login'});
                     }
                 });
         });
@@ -100,8 +100,8 @@ const actions = {
                 });
         } else {
             context.commit(PURGE_AUTH);
-            if(router.history.pending.path !== '/login'){ //TODO:  still buggy when you type in /events
-                router.push({name:'login'});
+            if(router.history.pending.path !== '/cognito-login'){ //TODO:  still buggy when you type in /events
+                router.push({name:'cognito-login'});
             }
         }
     },
