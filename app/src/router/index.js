@@ -32,6 +32,10 @@ export default new Router({
             }
         ]
     },{
+        name: 'map-main',
+        path: '/map',
+        component: () => import('@/components/MapMain.vue')
+    },{
         name: 'events',
         path: '/events',
         component: () => import('@/components/EventList'), // TODO: need to merge eventsMeta & action here.

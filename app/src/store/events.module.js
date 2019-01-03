@@ -9,7 +9,8 @@ const state = {
     errors: null,
     events: [],
     isLoadingEvent: true,
-    eventsCount: 0
+    eventsCount: 0,
+    eventsGeoJson: []
 };
 
 const getters = {
@@ -18,6 +19,9 @@ const getters = {
     },
     events(state){
         return state.events;
+    },
+    eventsGeoJson(state){
+        return state.eventsGeoJson;
     },
     isLoadingEvent(state){
         return state.isLoadingEvent;
@@ -48,6 +52,8 @@ const mutations = {
     [FETCH_EVENTS_END] (state, payload){
         // TODO: // // Add popups see: [mapAllEvents] parse GeoJSON here
         console.log(payload); //eslint-disable-line no-console
+
+        state.eventsGeoJson = payload;
         state.events = _.map(payload.objects.output.geometries, function(item){
             return item.properties;
         });

@@ -1,7 +1,7 @@
 <template>
     <v-toolbar app class="main-nav" flat fixed :clipped-left="$vuetify.breakpoint.mdAndUp" >
         <v-flex class="logo">
-            <img src="../assets/images/msf-reach-logo-trans-01.png" alt=""></img>
+            <router-link :to="{ name: 'map-main' }"><img src="../assets/images/msf-reach-logo-trans-01.png" alt=""></img></router-link>
         </v-flex>
         <v-layout v-show="isAuthenticated">
             <v-toolbar-items class="hidden-sm-and-down">

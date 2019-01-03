@@ -38,7 +38,15 @@
                 <v-list class="result-list" three-line slot="item" slot-scope="props">
                     <v-list-tile :key="props.item.id" avatar ripple :to="{name: 'event-general', params: {'slug': props.item.id}}">
                         <v-list-tile-content>
-                            <v-list-tile-title :class="props.item.metadata.event_status.toLowerCase()">
+                            <v-list-tile-title v-if="props.item.metadata.event_status" :class="props.item.metadata.event_status.toLowerCase()">
+                                <span class="title-text"> {{props.item.metadata.name}} </span>
+                                <span class="list-actions">
+                                    <v-icon color="grey lighten-1">exit_to_app</v-icon>
+                                    <v-icon color="grey lighten-1">bookmark</v-icon>
+                                    <v-icon color="grey lighten-1">minimize</v-icon>
+                                </span>
+                            </v-list-tile-title>
+                            <v-list-tile-title v-else>
                                 <span class="title-text"> {{props.item.metadata.name}} </span>
                                 <span class="list-actions">
                                     <v-icon color="grey lighten-1">exit_to_app</v-icon>

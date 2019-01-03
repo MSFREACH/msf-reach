@@ -1,14 +1,17 @@
 <template>
     <v-layout row wrap>
         <v-flex xs12>
-            <label> Add area for the emergency </label>
-            <input type="text" class="form-control input-sm" placeholder="Search address/location..." id="editEventAddress">
-            <vue-google-autocomplete ref="address"  id="createEventGeolocate"  types="" classname="form-control" placeholder="Search address/location..." v-on:placechanged="getAddressData"></vue-google-autocomplete>
-            OR
-            <input type="text" v-model="coordinates[0]" id="editEventAddressLat" placeholder="Latitude">
-            <input type="text" v-model="coordinates[1]" id="editEventAddressLng" placeholder="Longitude">
-            <button type="button" class="btn btn-info btn-sm" id="editEventAddressLocate">
-            <span class="glyphicon glyphicon-search"></span></button>
+            <label> Search area for the emergency </label>
+        </v-flex>
+        <v-flex xs4>
+            <vue-google-autocomplete ref="address"  id="createEventGeolocate" class="full-width" types="" classname="form-control" placeholder="Search address/location..." v-on:placechanged="getAddressData"></vue-google-autocomplete>
+        </v-flex>
+        <v-spacer></v-spacer>
+        <v-flex xs3>
+            <v-text-field type="text" label="Latitude" v-model="coordinates[0]" id="editEventAddressLat"></v-text-field>
+        </v-flex>
+        <v-flex xs3>
+            <v-text-field type="text" label="Longitude" v-model="coordinates[1]" id="editEventAddressLng"></v-text-field>
         </v-flex>
         <v-flex xs12>
             <map-annotation ref="mapAnnotation" mapId="newEventEntry" :coordinates="coordinates"></map-annotation>
@@ -27,7 +30,7 @@ export default {
     data () {
         return {
             dialog: false,
-            coordinates: [52.52, 13.40]
+            coordinates: [2.2180, 115.6628]
         };
     },
     components:{
@@ -49,8 +52,13 @@ export default {
             //     locality: "Berlin"
             //     longitude: 13.395074499999964
             //     route: "Bernauer Straße" }
-            this.coordinates = [addressData.latitude, addressData.longitude]; 
+            this.coordinates = [addressData.latitude, addressData.longitude];
             this.addressAutocomplete = addressData;
+        },
+        getGeoJson(){
+
+
+
         }
     }
 };

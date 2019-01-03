@@ -21,3 +21,10 @@ export const TILELAYER_HOTOSM = {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>',
     }
 };
+
+export const TILELAYER_REACH = {
+    URL: 'https://api.mapbox.com/styles/v1/usergroup/cjqgq0x5m81vc2soitj9bem5u/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidXNlcmdyb3VwIiwiYSI6ImNqcWdweHVraTBkdDEzd3FpbnpvdmZra3QifQ.Oy6hC3BcXG7b54rnJCI6ww',
+    OPTIONS: {
+        attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
+    }
+};

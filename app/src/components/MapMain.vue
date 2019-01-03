@@ -1,10 +1,7 @@
 <template>
     <v-layout>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
-        <div :id="mapId" class="map"></div>
-        <v-btn color="white" small class="anchor-nav" fab absolute bottom right>
-            <v-icon>map</v-icon>
-        </v-btn>
+        <div id="map" class="map"></div>
     </v-layout>
 </template>
 <script>
@@ -14,18 +11,16 @@
 /*eslint no-debugger: off*/
 
 import L from 'leaflet';
+import { mapGetters } from 'vuex';
 // import 'leaflet/dist/leaflet.css';
-import { TILELAYER_TERRAIN, TILELAYER_SATELLITE, TILELAYER_HOTOSM, TILELAYER_REACH } from '@/common/map-fields';
+import { TILELAYER_REACH } from '@/common/map-fields';
+import { FETCH_EVENTS } from '@/store/actions.type';
 
 export default {
     name: 'map-annotation',
     props: {
         coordinates: {
             type: Array
-        },
-        mapId:{
-            type: String,
-            required: true
         }
     },
     data(){
@@ -47,36 +42,50 @@ export default {
         };
     },
     mounted(){
-        this.initMap();
-        this.initLayers();
+        this.fetchEvents();
     },
     watch: {
         coordinates(newVal){
-            this.map.setView([newVal[1], newVal[0]], 7);
-            console.log("[----new coords ----- ]", newVal);
-            // var vm = this;
-            // setTimeout(function(){ vm.map.invalidateSize }, 000);
+            console.log('newVal ---coordinates-- ', newVal);
+            this.map.setView([newVal[0], newVal[1]], 7);
+            this.map.invalidateSize();
+        },
+        eventsGeoJson(val){
+            if(val){
+                this.initMap();
+                this.initLayers();
+            }
         }
     },
+    computed: {
+        ...mapGetters([
+            'eventsCount',
+            'isLoadingEvent',
+            'eventsGeoJson',
+            'fetchEventsError'
+        ])
+    },
     methods: {
+        fetchEvents() {
+            this.$store.dispatch(FETCH_EVENTS, {});
+        },
         initMap(){
             var mapID = this.mapId;
-            this.map = L.map(this.mapId, {dragging: !L.Browser.mobile, tap:false});
-            // TILE LAYER OPTIONS
-            // this.tileLayer.terrain = L.tileLayer(TILELAYER_TERRAIN.URL, TILELAYER_TERRAIN.OPTIONS);
-            // this.tileLayer.satellite = L.tileLayer(TILELAYER_SATELLITE.URL, TILELAYER_SATELLITE.OPTIONS);
-            // this.tileLayer.HotOSM = L.tileLayer(TILELAYER_HOTOSM.URL, TILELAYER_HOTOSM.OPTIONS);
+            this.map = L.map('map', {dragging: !L.Browser.mobile, tap:false, minZoom: 4});
             this.tileLayer.reachTiles = L.tileLayer(TILELAYER_REACH.URL);
-            // SWITCH CASES FROM USER PREFERENCE
             this.tileLayer.reachTiles.addTo(this.map);  // Defaul use OpenStreetMap_hot
+            var lastCoordinate = this.eventsGeoJson.objects.output.geometries[0].coordinates;
+            console.log('---- hey mate----- ', lastCoordinate);
+            this.map.setView([lastCoordinate[1], lastCoordinate[0]], 10);
 
-            this.map.scrollWheelZoom.disable();
-            this.map.doubleClickZoom.disable();
-            this.map.setView([this.coordinates[1], this.coordinates[0]], 10);
+            // var bbox = this.eventsGeoJson.bbox;
+            // this.map.fitBounds([ [bbox[0], bbox[1]], [bbox[2], bbox[1]]]);
 
-            // var eventMarker = L.marker([this.coordinates[0], this.coordinates[1]]).addTo(this.map);
+            L.control.scale().addTo(this.map);
+            // event Lat/Lng :: this.eventsGeoJson.objects.output.geometries
+            var eventMarker = L.marker([lastCoordinate[0], lastCoordinate[1]]).addTo(this.map);
             var vm = this;
-            setTimeout(function(){ vm.map.invalidateSize(); }, 1000);
+            setTimeout(function(){ vm.map.invalidateSize(); }, 1000); /// returns error
         },
         initLayers(){
             this.layers.forEach((layer) => {
@@ -113,12 +122,11 @@ export default {
 </script>
 
 <style lang='scss'>
-    #map,
-    #newEventEntry,
-    #generalAnnotation{
+    #map{
         display: block;
         width: 100%;
-        height: 500px; // **height require by leaflet
+        top: 64px;
+        height: calc(100vh - 64px); // **height require by leaflet
     }
 
     .anchor-nav{
@@ -126,7 +134,7 @@ export default {
         bottom: 12px;
     }
 
-    .generalContainer{
+    .mapContainer{
         .leaflet-top, .leaflet-bottom {
             z-index: 5 !important;
         }
