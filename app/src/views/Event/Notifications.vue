@@ -69,9 +69,14 @@
                     <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
                     <v-divider light></v-divider>
 
-                    <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment">
+                    <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment" @click="previewDialog = true">
                          <v-img :src="item" contain></v-img>
                     </v-card>
+                    <v-dialog v-model="previewDialog" justify-center max-width="800px" transition="dialog-transition">
+                        <v-carousel hide-controls>
+                            <v-carousel-item v-for="(item, i) in props.item.files" :key="i" :src="item"></v-carousel-item>
+                        </v-carousel>
+                    </v-dialog>
                     <v-card-actions class="text-xs-right list-actions">
                         <v-switch label='edit' @click="editItem(props.item)"></v-switch>
                         <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
@@ -103,6 +108,7 @@ export default {
     data(){
         return {
             dialog: false,
+            previewDialog: false,
             editing: false,
             allNotificationCategories: EVENT_NOTIFICATION_CATEGORIES,
             selectedCategory: '',
@@ -279,6 +285,9 @@ export default {
 <style lang="scss">
     @import '@/assets/css/display.scss';
     @import '@/assets/css/edit.scss';
-
+    .v-carousel,
+    .v-carousel__item{
+        height: inherit !important;
+    }
 
 </style>

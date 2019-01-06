@@ -52,24 +52,15 @@ export default {
     },
     watch: {
         coordinates(newVal){
-            this.map.setView([newVal[1], newVal[0]], 7);
-            console.log("[----new coords ----- ]", newVal);
-            // var vm = this;
-            // setTimeout(function(){ vm.map.invalidateSize }, 000);
+            this.map.panTo([newVal[1], newVal[0]]);
         }
     },
     methods: {
         initMap(){
             var mapID = this.mapId;
             this.map = L.map(this.mapId, {dragging: !L.Browser.mobile, tap:false});
-            // TILE LAYER OPTIONS
-            // this.tileLayer.terrain = L.tileLayer(TILELAYER_TERRAIN.URL, TILELAYER_TERRAIN.OPTIONS);
-            // this.tileLayer.satellite = L.tileLayer(TILELAYER_SATELLITE.URL, TILELAYER_SATELLITE.OPTIONS);
-            // this.tileLayer.HotOSM = L.tileLayer(TILELAYER_HOTOSM.URL, TILELAYER_HOTOSM.OPTIONS);
             this.tileLayer.reachTiles = L.tileLayer(TILELAYER_REACH.URL);
-            // SWITCH CASES FROM USER PREFERENCE
-            this.tileLayer.reachTiles.addTo(this.map);  // Defaul use OpenStreetMap_hot
-
+            this.tileLayer.reachTiles.addTo(this.map);
             this.map.scrollWheelZoom.disable();
             this.map.doubleClickZoom.disable();
             this.map.setView([this.coordinates[1], this.coordinates[0]], 10);

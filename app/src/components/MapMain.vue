@@ -14,6 +14,7 @@ import L from 'leaflet';
 import { mapGetters } from 'vuex';
 // import 'leaflet/dist/leaflet.css';
 import { TILELAYER_REACH } from '@/common/map-fields';
+import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
 
 export default {
@@ -26,6 +27,9 @@ export default {
     data(){
         return{
             map: null,
+            icons: {
+                statuses: STATUS_ICONS
+            },
             tileLayer:{
                 terrain: null,
                 satellite: null,
@@ -53,7 +57,9 @@ export default {
         eventsGeoJson(val){
             if(val){
                 this.initMap();
-                this.initLayers();
+                // this.initLayers();
+                this.loadEventsLayer();
+
             }
         }
     },
@@ -75,7 +81,6 @@ export default {
             this.tileLayer.reachTiles = L.tileLayer(TILELAYER_REACH.URL);
             this.tileLayer.reachTiles.addTo(this.map);  // Defaul use OpenStreetMap_hot
             var lastCoordinate = this.eventsGeoJson.objects.output.geometries[0].coordinates;
-            console.log('---- hey mate----- ', lastCoordinate);
             this.map.setView([lastCoordinate[1], lastCoordinate[0]], 10);
 
             // var bbox = this.eventsGeoJson.bbox;
@@ -114,6 +119,39 @@ export default {
             } else {
                 feature.leafletObject.removeFrom(this.map);
             }
+        },
+        loadEventsLayer(){
+            var vm = this;
+            var eventsLayer = L.geoJSON(this.eventsGeoJson.objects.output, {
+                pointToLayer: function (feature, latlng) {
+                    var evStatus = feature.geometry.properties.metadata.event_status ? feature.geometry.properties.metadata.event_status.toUpperCase() : 'MONITORING';
+                    var statusIcon = vm.icons.statuses[evStatus];
+                    return L.marker(latlng, {icon: L.icon(statusIcon)});
+                },
+                onEachFeature: vm.onEachFeature
+            });
+
+            eventsLayer.addTo(this.map);
+            layerControl.addOverlay(eventsLayer, 'Ongoing MSF Responses');
+        },
+        onEachFeature(feature, layer) {
+
+            var popupContent = '';
+
+            if (feature.properties && feature.properties.properties) {
+                popupContent = 'Full name: <a href="#" onclick="onContactLinkClick(' +
+            feature.properties.id +
+            ')" data-toggle="modal" data-target="#contactDetailsModal">' +
+          (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
+          '<br>Private contact? ' + (feature.private ? 'yes' : 'no') +
+          '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
+          '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
+          '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
+          '<br>Organisation: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.employer) +
+          '<br>Job title: '+(typeof(feature.properties.properties.job_title)==='undefined' ? '' : feature.properties.properties.job_title);
+            }
+
+            layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
         }
     }
 

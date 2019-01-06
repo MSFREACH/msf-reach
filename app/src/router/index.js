@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history', // Required for Adal library
+    // mode: 'history', // Required for Adal library
     routes: [{
         path: '/',
         component: () => import('@/views/Landing'),

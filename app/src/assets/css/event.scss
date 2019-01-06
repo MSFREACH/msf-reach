@@ -54,12 +54,23 @@ textarea#sharepoint{
       display: flex;
         background: #d0d3da;
     }
+    .v-list{
+        div{
+            display: block !important;
+        }
+    }
+    .v-menu__content{
+        max-width: 100%; 
+    }
 }
 
 .statusWrapper{
     border: 2px solid $bg-space-grey;
     width: 60%;
+    border-radius: 22px;
+    padding: 0 10px;
+    align-items: center;
     label{
-        margin-right: 10px; 
+        // margin-right: 10px;
     }
 }

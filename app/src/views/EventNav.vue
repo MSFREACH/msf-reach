@@ -48,7 +48,6 @@ export default {
         height: 40px;
         width: -webkit-fill-available;
         border-bottom: 1px solid #ccc;
-        overflow-x: scroll;
     }
     .first-nav-links{
         color: #2B2024;

@@ -40,7 +40,7 @@
                         </div>
                     </v-flex>
                     <div v-if="!eventMetadata.severity_measures" class="sub-tag">
-                        <span :class="allSeverity[eventMetadata.severity_scale-1].text +'Severity'">{{allSeverity[eventMetadata.severity_scale-1].text}} severity</span>
+                        <span v-if="eventMetadata.severity_scale" :class="allSeverity[eventMetadata.severity_scale-1].text +'Severity'">{{allSeverity[eventMetadata.severity_scale-1].text}} severity</span>
                         <span class="notes"><br/> {{ eventMetadata.severity }} </span>
                     </div>
                 </div>
@@ -207,15 +207,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { DATETIME_DISPLAY_FORMAT,
-    EVENT_TYPES,
-    DEFAULT_EVENT_TYPE,
-    DISEASE_OUTBREAK_TYPES,
-    NATURAL_DISASTER_TYPES,
-    DEFAULT_EVENT_AREA,
-    EVENT_STATUSES,
-    SEVERITY,
-    SEVERITY_LABELS } from '@/common/common';
+import { DATETIME_DISPLAY_FORMAT, EVENT_TYPES, DEFAULT_EVENT_TYPE, DISEASE_OUTBREAK_TYPES, NATURAL_DISASTER_TYPES, DEFAULT_EVENT_AREA, EVENT_STATUSES, SEVERITY, SEVERITY_LABELS } from '@/common/common';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
 import marked from 'marked';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';

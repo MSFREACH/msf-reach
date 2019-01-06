@@ -130,6 +130,7 @@ const mutations = {
         state.user = user;
         state.username = user.username;
         state.errors = {};
+        console.log('[SET_AUTH] currentUSER ---- ', user.username);
         if(state.user.signInUserSession){
             JwtService.saveToken(state.user.signInUserSession.idToken.jwtToken);
         }
