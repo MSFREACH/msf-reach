@@ -19,7 +19,6 @@ const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
     secret: config.AWS_COGNITO_PEM, // RSA Public Key
     // Extract the JWT from cookie in requests
     getToken: function fromHeader(req) {
-        let jwt; // token from client (to check)
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
             return req.headers.authorization.split(' ')[1];
         }else{
