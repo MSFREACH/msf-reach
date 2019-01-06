@@ -1,4 +1,4 @@
-const ID_TOKEN_KEY = 'cognito-JWT';
+const ID_TOKEN_KEY = 'jwt';
 
 export default {
     getToken () {

@@ -131,7 +131,7 @@ const mutations = {
         state.username = user.username;
         state.errors = {};
         if(state.user.signInUserSession){
-            JwtService.saveToken(state.user.signInUserSession.accessToken.jwtToken);
+            JwtService.saveToken(state.user.signInUserSession.idToken.jwtToken);
         }
     },
     [SET_TOKEN] (state, session){

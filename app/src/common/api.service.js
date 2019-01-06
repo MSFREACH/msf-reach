@@ -11,18 +11,18 @@ const ApiService = {
     init () {
         Vue.use(VueAxios, axios);
         Vue.axios.defaults.baseURL = API_URL;
-
-        axios.interceptors.response.use((response) => {
-            console.log('interceptors----res-- ', response);
-            return response;
-        }, (error) => {
-            if (error.response && error.response.data && error.response.data.location) {
-                window.location = error.response.data.location;
-            } else {
-                console.log('interceptors----err-- ', error);
-                return Promise.reject(error);
-            }
-        });
+        Vue.axios.defaults.withCredentials = true; 
+        // axios.interceptors.response.use((response) => {
+        //     console.log('interceptors----res-- ', response);
+        //     return response;
+        // }, (error) => {
+        //     if (error.response && error.response.data && error.response.data.location) {
+        //         window.location = error.response.data.location;
+        //     } else {
+        //         console.log('interceptors----err-- ', error);
+        //         return Promise.reject(error);
+        //     }
+        // });
     },
 
     setHeader () {

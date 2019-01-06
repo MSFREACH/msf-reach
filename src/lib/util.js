@@ -14,24 +14,15 @@ let cache = apicache.middleware;
 
 // Cache response if enabled
 const cacheResponse = (duration) => cache(duration, ((config.CACHE && config.CACHE==true) ? (req, res) => (res.statusCode === 200):(req,res) => false)); // eslint-disable-line no-unused-vars
-
 // Configure our JWT checker
 const jwtCheck = expressJWT({ algorithm: config.AWS_COGNITO_ALGORITHM,
     secret: config.AWS_COGNITO_PEM, // RSA Public Key
     // Extract the JWT from cookie in requests
     getToken: function fromHeader(req) {
         let jwt; // token from client (to check)
-        if (req.headers.cookie) {
-            let cookies = (req.headers.cookie).split('; '); // Extract cookies from header
-            // Find cookies labelled 'jwt'
-            for (let i = 0; i < cookies.length; i++) {
-                if (cookies[i].split('=')[0] === 'jwt') {
-                    jwt = cookies[i].split('=')[1]; // Extract the jwt from cookie label
-                }
-            }
-            return jwt;
-        }
-        else {
+        if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+            return req.headers.authorization.split(' ')[1];
+        }else{
             return new Error({name: 'UnauthorizedError'});
         }
     }
@@ -52,16 +43,16 @@ const ensureAuthenticated = (req, res, next) => {
     }
     //we must be using jwt, call express-jwt middleware
     jwtCheck(req, res, function(err){ // eslint-disable-line no-unused-vars
-        /*Left this here in case you really need it for anything.
+        /* Left this here in case you really need it for anything.
+        console.log('----------- ', err);
         if (err.name === 'UnauthorizedError') {
             res.redirect('/login');
             return
-        }
-        else if (err) {
+        } else if (err) {
             next(err);
             return
-        }
-        */
+        }*/
+
         if (req.isAuthenticated()) { //since express-jwt is "Middleware that validates JsonWebTokens and sets req.user." this should work.
             return next();
         }
