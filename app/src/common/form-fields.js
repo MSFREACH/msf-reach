@@ -9,13 +9,15 @@ export const DEFAULT_EVENT_METADATA = {
     }],
     types: [],
     sub_types: [],
-    person_incharge: {
-        name: null,
-        position: null
-    },
-    operator: {
-        name: null,
-        position: null
+    incharge_contact: {
+        local: {
+            name: '',
+            position: ''
+        },
+        operator: {
+            name: '',
+            position: ''
+        }
     },
     sharepoint_link: null,
     severity_measures: []

@@ -188,13 +188,13 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var isEdit = this.editIndex && this.editedSitrep.id;
-            var action = isEdit ? EDIT_SITREP : CREATE_SITREP;
+            var isEdit = (this.editIndex > -1) && this.editedSitrep.id;
+            var action = (!!isEdit) ? EDIT_SITREP : CREATE_SITREP;
             var params = _.extend(this.editedSitrep, {
                 username: this.currentUser.username,
             });
 
-            if (isEdit){
+            if (!!isEdit){
                 params.updated = timeNow;
                 delete params.created;
                 delete params.eventid;

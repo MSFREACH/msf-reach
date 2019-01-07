@@ -11,8 +11,7 @@
             :key="item.component"
             :to="{name: item.component}"
             @click="item.firstTime = false">
-              <v-badge v-model="item.firstTime" color="cyan" left v-if="item.firstTime" ><v-icon>{{item.icon}}</v-icon></v-badge>
-              <!-- <v-icon v-else>{{item.icon}}</v-icon> -->
+              <v-badge color="accent" left v-if="item.firstTime" v-model="item.firstTime" small><span slot="badge"></span></v-badge>
               {{ item.name }}
           </router-link>
           <sharepoint-link :link="event.metadata.sharepoint_link"></sharepoint-link>
@@ -49,7 +48,6 @@ export default {
         },
         firstTime: {
             type: Boolean,
-            required: false,
             default: false
         }
     },
@@ -73,7 +71,9 @@ export default {
     },
     mounted(){
         if(this.firstTime){
-            this.detailTabs.map(item => item.firstTime = true );
+            this.detailTabs.map(item => {
+                if(item.name != 'General') item.firstTime = true;
+            });
         }
     },
     computed: {
@@ -102,4 +102,10 @@ export default {
 <style lang='scss'>
     @import '@/assets/css/sideTab.scss';
     @import '@/assets/css/event.scss';
+    .v-badge__badge{
+        height: 12px;
+        width: 12px;
+        position: initial;
+        align-items: unset;
+    }
 </style>

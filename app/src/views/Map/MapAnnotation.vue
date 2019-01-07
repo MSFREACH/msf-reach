@@ -26,6 +26,9 @@ export default {
         mapId:{
             type: String,
             required: true
+        },
+        geocoding: {
+            type: Boolean
         }
     },
     data(){
@@ -64,7 +67,6 @@ export default {
             this.map.scrollWheelZoom.disable();
             this.map.doubleClickZoom.disable();
             this.map.setView([this.coordinates[1], this.coordinates[0]], 10);
-
             // var eventMarker = L.marker([this.coordinates[0], this.coordinates[1]]).addTo(this.map);
             var vm = this;
             setTimeout(function(){ vm.map.invalidateSize(); }, 1000);

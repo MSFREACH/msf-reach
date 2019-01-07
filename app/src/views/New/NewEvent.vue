@@ -63,24 +63,12 @@
                                   </div>
                                   <div class="one-third">
                                       <label> Status </label>
-                                      <v-select  v-model="metadata.event_status" :items="statuses"></v-select>
+                                      <v-select  v-model="selectedStatus" :items="statuses"></v-select>
                                   </div>
                                   <div class="one-third">
                                       <label> Area(s) </label>
-                                      <div v-if="inEditArea">
-                                          <v-text-field v-if="inEditArea.address" v-model="inEditArea.address" disabled></v-text-field>
-                                          <vue-google-autocomplete  v-else ref="address" id="areaMap" types="" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
-                                          <label>Severity </label>
-                                          <v-slider v-model="inEditArea.severity.scale" :tick-labels="severityLabels" :min="1" :max="3" step="1" ticks="always" tick-size="1" ></v-slider>
-                                          <v-textarea label="analysis" v-model="inEditArea.severity.description"></v-textarea>
-                                          <span class="row-actions">
-                                              <a @click="submitArea()">confirm</a>
-                                              <a @click="clearArea()">cancel</a>
-                                          </span>
-                                      </div>
-                                      <div v-else-if="!inEditArea && metadata.areas" v-for="(area, index) in metadata.areas" class="tags" v-model="metadata.areas" @mouseover="editable.areaIndex = index" @mouseleave="editable.areaIndex = null">
-                                          <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
-                                          <span v-else> {{area.country}} </span>
+                                      <div v-if="metadata.areas" v-for="(area, index) in metadata.areas" class="tags" v-model="metadata.areas">
+                                          <span v-if="area.region"> {{area.region}}, {{area.country}}</span>
 
                                           <span class="severity-wrapper">
                                               <span class="sub-tag" v-if="metadata.severity_measures && metadata.severity_measures[index]">
@@ -88,14 +76,7 @@
                                                   <span class="notes"><br/> {{ metadata.severity_measures[index].description }} </span>
                                               </span>
                                           </span>
-
-                                          <span class="row-actions" v-show="editable.areaIndex == index">
-                                              <a @click="editArea(area, metadata.severity_measures[index], index)">edit</a>
-                                              <a @click="deleteArea(index)">delete</a>
-                                          </span>
                                       </div>
-
-                                      <a v-if="!inEditArea" class="form-actions" @click="addArea()">Add area</a>
                                   </div>
                               </div>
                               <hr class="row-divider"/>
@@ -114,8 +95,9 @@
                                   </div>
                                   <div class="one-third">
                                       <label> Mission Contact Person </label>
-                                      <v-text-field label="Name" v-model="metadata.incharge_name" ></v-text-field>
-                                      <v-text-field label="Position" v-model="metadata.incharge_position" ></v-text-field>
+
+                                      <v-text-field label="Name" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.name" ></v-text-field>
+                                      <v-text-field label="Position" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.position" ></v-text-field>
                                   </div>
                               </div>
                               <hr class="row-divider"/>
@@ -176,29 +158,17 @@ export default {
         allSeverity: SEVERITY,
         allEventTypes: EVENT_TYPES,
         subTypes: {
-            disease_outbreak: DISEASE_OUTBREAK_TYPES ,
+            disease_outbreak: DISEASE_OUTBREAK_TYPES,
             natural_disaster: NATURAL_DISASTER_TYPES
         },
         editable: {
-            typeIndex:null,
-            areaIndex: null,
+            typeIndex:null
         },
         newType: null,
         defaultType: DEFAULT_EVENT_TYPE,
-        inEditArea: null,
-        inEditAreaIndex: null,
-        defaultArea: DEFAULT_EVENT_AREA,
         severityLabels: SEVERITY_LABELS,
-        areaAutocomplete: {
-            isLoading: false,
-            items: [],
-            model: null,
-            search: null
-        },
-        addressAutocomplete: {},
         statuses: EVENT_STATUSES,
         selectedStatus: null,
-
         eventDate: null,
         eventTime: null,
         dateSelected: false,
@@ -216,6 +186,7 @@ export default {
         ]),
         operatorName(){
             if(this.currentUser){
+                this.metadata.incharge_contact.operator.name = this.currentUser.username;
                 return this.currentUser.username;
             }
             return '--';
@@ -231,6 +202,16 @@ export default {
                 setTimeout(function(){
                     vm.$refs.mapEntry.$refs.mapAnnotation.map.invalidateSize();
                 }, 500);
+            }
+        },
+        e1(val){
+            if(val == 2){
+                var address = this.$refs.mapEntry.addressData;
+                var semanticAddress = _(address).omit(_.isUndefined).omit(_.isNull).value();
+                delete semanticAddress.latitude;
+                delete semanticAddress.longitude;
+                semanticAddress["region"] = semanticAddress.administrative_area_level_1 ? [semanticAddress.locality, semanticAddress.administrative_area_level_1].join(',') : semanticAddress.locality;
+                this.metadata.areas = [semanticAddress];
             }
         }
     },
@@ -248,6 +229,8 @@ export default {
             var tmp = this.newType;
             if(this.subTypeSelect){
                 tmp.subtype == 'other' ? this.metadata.types.push(tmp.specify) : this.metadata.types.push(tmp.subtype);
+            }else if(tmp.type == 'other'){
+                 this.metadata.types.push(tmp.specify);
             }else{
                 this.metadata.types.push(tmp.type);
             }
@@ -258,34 +241,30 @@ export default {
             this.newType = null;
         },
         close(){
-            this.dialog = false;
             for (var fields in this.metadata) delete this.metadata[fields];
             this.metadata = DEFAULT_EVENT_METADATA;
+            this.dialog = false;
         },
         save(){
-            this.metadata.areas = [{
-                region: 'Berlin',
-                country: 'Germany',
-                country_code: 'DE'
-            }];
-
+            var address = this.$refs.mapEntry.addressData;
             this.lintDateTime();
             this.lintStatus();
+            this.metadata.types = _.compact(this.metadata.types);
             this.inProgress = true;
             // TODO: replace geoJSON with map input
             var timestamp = new Date();
             var ISOTime = timestamp.toISOString();
             var payload = {
                 location:{
-                    lat: 52.5200,
-                    lng: 13.4050
+                    lat: address.latitude,
+                    lng: address.longitude
                 },
                 created_at: ISOTime,
-                type: this.checkedTypes.join(','),
+                type: this.metadata.types.join(','),
                 status: 'active',
                 metadata: this.metadata
             };
-
+            var vm = this;
             this.$store.dispatch(CREATE_EVENT, payload)
                 .then((payload) =>{
                     var eventID = payload.data.result.objects.output.geometries[0].properties.id;
@@ -294,6 +273,7 @@ export default {
                         name: 'event-general',
                         params: { slug: eventID, firstTime: true }
                     });
+                    setTimeout(() => vm.close(), 1000);
                 });
         },
         lintDateTime(){
@@ -304,7 +284,7 @@ export default {
             var timestamp = new Date();
             var ISOTime = timestamp.toISOString();
             this.metadata.event_status = this.selectedStatus;
-            this.metadata.status_updates = [{status: this.selectedStatus, timestamp: ISOTime}];
+            this.metadata.status_updates = [{type: this.selectedStatus, timestamp: ISOTime}];
         },
         parseDate (date) {
             if (!date) return null;

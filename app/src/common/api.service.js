@@ -11,7 +11,7 @@ const ApiService = {
     init () {
         Vue.use(VueAxios, axios);
         Vue.axios.defaults.baseURL = API_URL;
-        Vue.axios.defaults.withCredentials = true; 
+        Vue.axios.defaults.withCredentials = true;
         // axios.interceptors.response.use((response) => {
         //     console.log('interceptors----res-- ', response);
         //     return response;
@@ -78,6 +78,7 @@ export const EventsService = {
         return ApiService.get('events', slug);
     },
     create (params) {
+        console.log('create (params)-------', params); 
         return ApiService.post('events', params);
     },
     update (slug, params) {

@@ -40,6 +40,7 @@ const actions = {
     },
     [CREATE_EVENT] (context, metadata){
         // TODO: geojson for location validation
+        console.log('[CREATE_EVENT] ---------- ', metadata); 
         return EventsService.create(metadata);
     },
     [DELETE_EVENT] (context, slug){

@@ -180,15 +180,10 @@ export default ({ config, db, logger }) => {
                             position: Joi.string().allow('')
                         })
                     }),
-
-                    sharepoint_link: Joi.string().allow(''),
+                    sharepoint_link: Joi.string().allow(null),
                     security_details: Joi.string().allow(''),
                     bounds: Joi.object(),
-                    areas: Joi.array().items(Joi.object().keys({
-                        region: Joi.string(),
-                        country: Joi.string(),
-                        country_code: Joi.string()
-                    })),
+                    areas: Joi.array().items(Joi.object()),
                     severity_measures: Joi.array().items(Joi.object().keys({
                         scale: Joi.number().min(1).max(3),
                         description: Joi.string().allow('')

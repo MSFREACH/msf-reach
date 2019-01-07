@@ -8,13 +8,13 @@
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs3>
-            <v-text-field type="text" label="Latitude" v-model="coordinates[0]" id="editEventAddressLat"></v-text-field>
+            <v-text-field type="text" label="Latitude" v-model="coordinates[1]" id="editEventAddressLat"></v-text-field>
         </v-flex>
         <v-flex xs3>
-            <v-text-field type="text" label="Longitude" v-model="coordinates[1]" id="editEventAddressLng"></v-text-field>
+            <v-text-field type="text" label="Longitude" v-model="coordinates[0]" id="editEventAddressLng"></v-text-field>
         </v-flex>
         <v-flex xs12>
-            <map-annotation ref="mapAnnotation" mapId="newEventEntry" :coordinates="coordinates"></map-annotation>
+            <map-annotation ref="mapAnnotation" mapId="newEventEntry" :coordinates="coordinates" geocoding></map-annotation>
         </v-flex>
     </v-layout>
 </template>
@@ -30,7 +30,7 @@ export default {
     data () {
         return {
             dialog: false,
-            coordinates: [2.2180, 115.6628]
+            coordinates: [115.6628, 2.2180]
         };
     },
     components:{
@@ -44,7 +44,6 @@ export default {
         * @param {String} id Input container ID
         */
         getAddressData: function (addressData, placeResultData, id) {
-            console.log('------- ', addressData, placeResultData, id);
             // addressData = {
             //     administrative_area_level_1: "Berlin"
             //     country: "Germany"
@@ -52,7 +51,8 @@ export default {
             //     locality: "Berlin"
             //     longitude: 13.395074499999964
             //     route: "Bernauer Straße" }
-            this.coordinates = [addressData.latitude, addressData.longitude];
+            this.addressData = addressData;
+            this.coordinates = [addressData.longitude, addressData.latitude];
             this.addressAutocomplete = addressData;
         },
         getGeoJson(){

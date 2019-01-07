@@ -4,7 +4,7 @@
             <v-btn flat small :class="item.status.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in eventResponses" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
         </nav>
         <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'" dark>
-            <v-layout class="actions" v-if="displayResponse.status == activeResponse.status">
+            <v-layout class="actions" v-if="displayResponse && (displayResponse.status == activeResponse.status)">
                 <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                 <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
             </v-layout>

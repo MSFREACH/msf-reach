@@ -240,22 +240,23 @@ export default {
         },
         save(){
             var timeNow = new Date();
-            var isEdit = this.editIndex && this.editedItem.id;
-
-            var action = isEdit? EDIT_EVENT_NOTIFICATION : CREATE_EVENT_NOTIFICATION;
+            var isEdit = (this.editIndex > -1) && this.editedItem.id;
+            var action = (!!isEdit) ? EDIT_EVENT_NOTIFICATION : CREATE_EVENT_NOTIFICATION;
+    
             var params  = _.extend(this.editedItem, {
                 username: this.currentUser.username
             });
 
-            if (isEdit){
+            if (!!isEdit){
                 params.updated = timeNow;
                 delete params.created;
                 delete params.eventid;
             }else{
-                params.eventId = this.currentEventId;
+                params.eventId = parseInt(this.currentEventId);
                 params.created = timeNow;
                 delete params.updated;
             }
+            console.log('--------- ', isEdit, action, params);
 
             this.$store.dispatch(action, params)
                 .then((payload) =>{

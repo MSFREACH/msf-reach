@@ -26,7 +26,7 @@
                   </div>
                   <div class="one-half">
                       <label>Status</label>
-                      <span :class="eventMetadata.event_status + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
+                      <span :class="eventMetadata.event_status.toLowerCase() + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
                   </div>
                 </div>
                 <div class="one-half">
@@ -68,7 +68,7 @@
                 </div>
                 <hr class="row-divider"/>
 
-                <sharepoint-link :link="eventMetadata.sharepoint_link"></sharepoint-link>
+                <sharepoint-link v-if="eventMetadata.sharepoint_link" :link="eventMetadata.sharepoint_link"></sharepoint-link>
             </v-layout>
             <v-layout row wrap v-else>
 
