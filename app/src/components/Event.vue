@@ -9,12 +9,13 @@
             class="second-nav-links"
             v-for="item in detailTabs"
             :key="item.component"
-            :to="{name: item.component}"
-            @click="item.firstTime = false">
-              <v-badge color="accent" left v-if="item.firstTime" v-model="item.firstTime" small><span slot="badge"></span></v-badge>
-              {{ item.name }}
+            :to="{name: item.component}">
+            <span @click="item.firstTime = false">
+                 <v-badge color="accent" left v-if="item.firstTime && item.name != 'General'" v-model="item.firstTime" small><span slot="badge"></span></v-badge>
+                 {{ item.name }}
+              </span>
           </router-link>
-          <sharepoint-link :link="event.metadata.sharepoint_link"></sharepoint-link>
+          <sharepoint-link v-if="event.metadata.sharepoint_link" :link="event.metadata.sharepoint_link"></sharepoint-link>
         </nav>
         <router-view></router-view>
     </v-container>
@@ -49,6 +50,9 @@ export default {
         firstTime: {
             type: Boolean,
             default: false
+        },
+        statusChanged: {
+            type: String
         }
     },
     data(){
@@ -70,11 +74,7 @@ export default {
         });
     },
     mounted(){
-        if(this.firstTime){
-            this.detailTabs.map(item => {
-                if(item.name != 'General') item.firstTime = true;
-            });
-        }
+
     },
     computed: {
         ...mapGetters([
@@ -86,6 +86,9 @@ export default {
     watch: {
         slug(newVal){
             this.fetchEvent(newVal);
+            if(this.firstTime){
+                this.detailTabs.map(item => item.firstTime = true);
+            }
         }
     },
     methods: {

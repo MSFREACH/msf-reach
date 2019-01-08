@@ -62,7 +62,9 @@ const actions = {
     },
     [EDIT_SITREP](context, params){
         console.log('[EDIT_SITREP] ---- ', params);
-        return SITREPService.update(params.id, params);
+        var slug = params.id;
+        delete params.id;
+        return SITREPService.update(slug, params);
     }
 };
 

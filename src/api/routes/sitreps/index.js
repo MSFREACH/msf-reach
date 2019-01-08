@@ -60,6 +60,7 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
+                username: Joi.string().allow(null),
                 updated: Joi.date().iso().required(),
                 description: Joi.string().required(),
                 files: Joi.array().items(Joi.string())

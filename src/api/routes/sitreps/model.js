@@ -52,13 +52,14 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_SITREPS}
 			SET updated = $1,
-            description = description || $2
-            files = files || $3
-			WHERE id = $4
+            description = description || $2,
+            username = username || $3,
+            files = files || $4
+			WHERE id = $5
 			RETURNING event_id, created, updated, description, username, files`;
 
         // Setup values
-        let values = [body.updated, body.description, body.files, id];
+        let values = [body.updated, body.description, body.username, body.files, id];
 
         // Execute
         logger.debug(query, values);

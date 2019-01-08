@@ -39,24 +39,12 @@ const actions = {
             });
     },
     [CREATE_EVENT] (context, metadata){
-        // TODO: geojson for location validation
-        console.log('[CREATE_EVENT] ---------- ', metadata); 
         return EventsService.create(metadata);
     },
     [DELETE_EVENT] (context, slug){
         return EventsService.destroy(slug);
     },
-    [EDIT_EVENT] ({state}){
-        // TODO: update per section only
-        var payload = {
-            status: state.event.status,
-            metadata: state.event.metadata,
-            responses: state.event.responses,
-            extCapacity: state.event.extCapacity,
-            figures: state.event.figures,
-            resources: state.event.resources
-        };
-
+    [EDIT_EVENT] ({state}, payload){
         return EventsService.update(state.eventId, payload);
     },
     [EDIT_EVENT_RESPONSES]({state}){

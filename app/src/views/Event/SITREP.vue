@@ -27,6 +27,7 @@
                             </form>
                         </v-card>
                         <v-card class='file-attachment' v-for='(item, index) in previewFileUrls' :key='index'>
+                            <v-icon @click='removeFile(index)' class="remove-file-icon"> close </v-icon>
                             <embed :src='item' width='100%' height='100%'></embed>
                         </v-card>
                       </v-layout>
@@ -89,7 +90,7 @@
 import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import marked from 'marked';
-import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, DELETE_SITREP, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { DEFAULT_SITREP_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
 
@@ -118,6 +119,10 @@ export default {
         this.fetchSitreps();
     },
     methods: {
+        removeFile(index){
+            $('#fileUpload').val("");
+            this.previewFileUrls.splice(index, 1);
+        },
         fetchSitreps(){
             this.$store.dispatch(FETCH_SITREPS, {eventId: parseInt(this.currentEventId)});
         },
@@ -208,6 +213,10 @@ export default {
                     this.request.inProgress = false;
                     if(payload.status == 200){
                         this.request.success = true;
+                        this.$router.push({
+                            name: 'event-sitrep',
+                            params: { slug: this.currentEventId}
+                        });
                         setTimeout(() => this.close(), 1000);
                     }else{
                         this.request.failure = true;

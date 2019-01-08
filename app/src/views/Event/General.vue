@@ -75,7 +75,7 @@
                 <div class="top-level primary-text">
                     <div class="one-half">
                         <label>Name</label>
-                        <input class="full-width" type="text" v-model="eventMetadata.name" placeholder="name" />
+                        <input class="full-width" type="text" v-model="eventMetadata.name" placeholder="Event name" />
                     </div>
 
                     <div class="quarter-width">
@@ -120,9 +120,12 @@
                     <option disabled value="">Please select one</option>
                     <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
                     </select> -->
-                    <v-select class="one-half" v-model="eventMetadata.event_status" label="status" :items="statuses" clearable>
+                    <v-select v-model="eventMetadata.event_status" :items="statuses">
+                        <template slot="selection" slot-scope="data">
+                            <span :class="data.item.value">{{data.item.text}}</span>
+                        </template>
                         <template slot="item" slot-scope="data">
-                            <span :class="data.value">{{data.text}}</span>
+                            <span :class="data.item.value">{{data.item.text}}</span>
                         </template>
                     </v-select>
                 </div>
@@ -168,19 +171,25 @@
 
                 <div class="one-third">
                     <label>Local Date/Time </label>
+
                     <div class="datepicker-container">
-                        <v-date-picker v-model="eventMetadata.event_local_time" :config="dateTimeConfig"></v-date-picker>
-                        <!-- <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                            <v-text-field slot="activator" v-model="eventDate" label="Event Date" hint="MM/DD/YYYY format" persistent-hint prepend-icon="event" type="date"></v-text-field>
+                        <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                            <v-text-field slot="activator" v-model="eventDate" persistent-hint type="date"></v-text-field>
                             <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
-                        </v-menu> -->
+                        </v-menu>
+                    </div>
+                    <div class="timepicker-container">
+                        <v-menu ref="menu" :close-on-content-click="false" v-model="timeSelected" :nudge-right="40" :return-value.sync="eventTime" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                            <v-text-field slot="activator" time v-model="eventTime" type="time"></v-text-field>
+                            <v-time-picker v-if="timeSelected" v-model="eventTime" event-color="black" color="grey lighten-1" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
+                        </v-menu>
                     </div>
                 </div>
 
                 <div class="one-third">
                     <label> Mission Contact Person  </label>
-                    <input type="text" v-model="eventMetadata.incharge_name" placeholder="Name" />
-                    <input type="text" v-model="eventMetadata.incharge_position" placeholder="Position" />
+                    <v-text-field v-model="eventMetadata.incharge_name" placeholder="Name" />
+                    <v-text-field v-model="eventMetadata.incharge_position" placeholder="Position" />
                 </div>
                 <hr class="row-divider"/>
                 <v-layout row wrap>
@@ -212,7 +221,7 @@ import MapAnnotation from '@/views/Map/MapAnnotation.vue';
 import marked from 'marked';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import SharepointLink from '@/views/util/Sharepoint.vue';
-// import { EDIT_EVENT } from '@/store/actions.type';
+import { EDIT_EVENT } from '@/store/actions.type';
 
 /*eslint no-console: off*/
 /*eslint no-debugger: off*/
@@ -248,9 +257,15 @@ export default {
             },
             addressAutocomplete: {},
             statuses: EVENT_STATUSES,
+            _beforeEditStatus: null,
+            statusChanged: false,
             dateTimeConfig: {
                 format: DATETIME_DISPLAY_FORMAT
-            }
+            },
+            eventDate: null,
+            eventTime: null,
+            dateSelected: false,
+            timeSelected: false,
 
         };
     },
@@ -264,7 +279,8 @@ export default {
             'eventTypes',
             'eventCreatedAt',
             'eventProperties',
-            'eventCoordinates'
+            'eventCoordinates',
+            'currentUser'
         ]),
         subTypeSelect(){
             return this.newType.type == 'disease_outbreak' || this.newType.type == 'natural_disaster';
@@ -272,7 +288,6 @@ export default {
     },
 
     mounted (){
-
     },
     methods: {
         mdRender(value){
@@ -287,7 +302,41 @@ export default {
             this.editing = false;
             this._beforeEditingCache = null;
         },
+        lintDateTime(){
+            var tempDateTime = new Date(this.eventDate +' '+this.eventTime);
+            this.eventMetadata.event_datetime = tempDateTime.toISOString();
+        },
+        lintStatus(){
+            // check if status changed
+            if(this.eventMetadata.event_status == this._beforeEditStatus) return;
+            this.statusChanged = true;
+            var timestamp = new Date();
+            var ISOTime = timestamp.toISOString();
+            this.eventMetadata.event_status = this._beforeEditStatus;
+            this.eventMetadata.status_updates.push({type: this._beforeEditStatus, timestamp: ISOTime});
+        },
         save(){
+            this.lintStatus();
+            this.lintDateTime();
+            this.eventMetadata.types = _.compact(this.eventMetadata.types);
+            this.eventMetadata.incharge_contact.operator.name = this.currentUser.username;
+            this.inProgress = true;
+            var payload = {
+                type: this.eventMetadata.types.join(','),
+                status: 'active',
+                metadata: this.eventMetadata
+            };
+            var vm = this;
+            console.log(payload); 
+            this.$store.dispatch(EDIT_EVENT, payload)
+                .then((payload) =>{
+                    var eventID = payload.data.result.objects.output.geometries[0].properties.id;
+                    this.inProgress = false;
+                    this.$router.push({
+                        name: 'event-general',
+                        params: { slug: eventID, statusChanged: this.statusChanged}
+                    });
+                });
 
         },
         addType(){
@@ -345,18 +394,17 @@ export default {
         * @param {String} id Input container ID
         */
         getAddressData: function (addressData, placeResultData, id) {
-            console.log('------- ', addressData, placeResultData);
-            // addressData = {
-            //     administrative_area_level_1: "Berlin"
-            //     country: "Germany"
-            //     latitude: 52.5379507
-            //     locality: "Berlin"
-            //     longitude: 13.395074499999964
-            //     route: "Bernauer Straße" }
             this.addressAutocomplete = addressData;
         }
     },
     watch: {
+        editing(val){
+            if(val){
+                this._beforeEditStatus = this.eventMetadata.event_status;
+            }else{
+                this.save();
+            }
+        },
         eventMetadata(newVal){
             if(!newVal.areas){
                 var mockArea = {country: newVal.metadata.country, region: ''};
@@ -366,6 +414,7 @@ export default {
                 var mockSeverity = {scale: newVal.severity_scale, description: newVal.severity};
                 this.eventMetadata.severity_measures = [mockSeverity];
             }
+            this.statusChanged = false;
         }
     }
 };

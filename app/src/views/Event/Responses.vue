@@ -3,6 +3,10 @@
         <nav v-if="eventResponses && eventResponses.length> 0" class="statusTabWrapper">
             <v-btn flat small :class="item.status.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in eventResponses" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
         </nav>
+        <nav v-else class="statusTabWrapper">
+            <v-btn flat small :class="eventStatus+'-wrapper statusTabs'">{{eventStatus}}</v-btn>
+        </nav>
+
         <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'" dark>
             <v-layout class="actions" v-if="displayResponse && (displayResponse.status == activeResponse.status)">
                 <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
@@ -97,8 +101,6 @@
                     <v-textarea solo label="description" v-model="editResponse.supply_chain.description" background-color="white" color="secondary"></v-textarea>
                 </div>
                 <v-text-field class="linkAttachment" xs12 v-model="editResponse.sharepoint_link" single-line prepend-icon="link" label="link" background-color="white"></v-text-field>
-
-
             </v-layout>
             <v-layout v-else-if="displayResponse">
                 <v-layout row wrap>
@@ -163,7 +165,7 @@
             </v-layout>
             <v-layout v-else>
                 No response recorded yet
-                <v-btn v-if="eventStatus == 'ongoing' || eventStatus == 'emergency'" @click="add"> add record </v-btn>
+                <v-btn v-if="eventStatus == 'ongoing' || eventStatus == 'emergency'" @click="add"> add response </v-btn>
             </v-layout>
         </div>
 

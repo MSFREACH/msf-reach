@@ -37,8 +37,7 @@
                 </v-card>
               </v-dialog>
         </div>
-        <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'">
-            <div v-if="eventExtCapacity">
+            <div v-if="displayCapacities.length > 0" :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'">
                 <div class="actions">
                     <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                     <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
@@ -79,18 +78,14 @@
                             </td>
                         </tr>
                     </template>
-
-                    <template slot="no-data">
-                        No external capacities at the moment
-                    </template>
                 </v-data-table>
                 <a v-if="editing" @click="add()">add</a>
-
             </div>
-            <div v-else>
-                Not available
-            </div>
-        </div>
+            <v-layout v-else row wrap>
+                <div class="no-data-available">
+                    No external capacities yet
+                </div>
+            </v-layout>
     </v-container>
 </template>
 

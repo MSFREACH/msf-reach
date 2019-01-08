@@ -7,118 +7,119 @@
             <template>
               <v-stepper v-model="e1" class="elevation-0">
                 <v-stepper-header flat>
-                  <v-stepper-step editable :complete="e1 > 1" step="1">Geolocation</v-stepper-step>
+                  <v-stepper-step :complete="e1 > 1" step="1">Geolocation <small>map</small></v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step editable :complete="e1 > 2" step="2">General</v-stepper-step>
+                  <v-stepper-step :complete="e1 > 2" step="2">General <small>metadata</small></v-stepper-step>
                   <v-spacer></v-spacer>
                   <v-icon class="action-link" @click="close">close</v-icon>
                 </v-stepper-header>
                 <v-stepper-items>
                   <v-stepper-content step="1">
                     <new-map-entry ref="mapEntry"></new-map-entry>
-                    <v-btn flat @click="e1 = 2"> Continue</v-btn>
+                    <v-btn class="right" flat @click="e1 = 2"> Continue</v-btn>
                   </v-stepper-content>
 
                   <v-stepper-content step="2">
-                      <v-card>
-                          <v-container grid-list-md class="create-wrapper">
+                      <v-container grid-list-md class="create-wrapper">
 
-                              <div class="one-half">
-                                  <v-text-field label="Name" v-model="metadata.name" required></v-text-field>
-                              </div>
-                              <div class="quarter-width">
-                                  <label>REACH Operator</label>
-                                  <span> {{ operatorName }} </span>
-                              </div>
-                              <hr class="row-divider"/>
-                              <div class="top-align">
-                                  <div class="one-third">
-                                      <label> Type(s) </label>
+                          <div class="one-half">
+                              <v-text-field label="Event Name" v-model="metadata.name" required></v-text-field>
+                          </div>
+                          <div class="quarter-width">
+                              <label>REACH Operator</label>
+                              <span> {{ operatorName }} </span>
+                          </div>
+                          <hr class="row-divider"/>
+                          <div class="top-align">
+                              <div class="one-third">
+                                  <label> Type(s) </label>
 
-                                      <v-flex v-for="(item, index) in metadata.types" :key="index"  @mouseover="editable.typeIndex = index" @mouseleave="editable.typeIndex = null">
-                                          <div>
-                                              {{item}}
-                                              <span class="row-actions" v-show="editable.typeIndex == index">
-                                                  <a @click="deleteType(index)">delete</a>
-                                              </span>
-                                          </div>
-                                      </v-flex>
-                                      <div v-if="newType">
-                                          <v-flex>
-                                              <v-select class="one-half" v-model="newType.type" label="type" :items="allEventTypes"></v-select>
-                                              <v-select class="one-half" label="sub-type" v-if="subTypeSelect"
-                                                  v-model="newType.subtype"
-                                                  :items="subTypes[newType.type]">
-                                              </v-select>
-                                          </v-flex>
-                                          <v-text-field class="inverse" v-if="newType.type == 'other' || (subTypeSelect && newType.subtype == 'other') " placeholder="specify" v-model="newType.specify"></v-text-field>
-                                      </div>
-                                      <a v-if="!newType" class="form-actions" @click="addType()">Add type</a>
-                                      <div v-else>
-                                          <v-flex class="row-actions" xs12>
-                                              <a @click="submitType()">confirm</a>
-                                              <a @click="clearType()">cancel</a>
-                                          </v-flex>
-                                      </div>
-                                  </div>
-                                  <div class="one-third">
-                                      <label> Status </label>
-                                      <v-select  v-model="selectedStatus" :items="statuses"></v-select>
-                                  </div>
-                                  <div class="one-third">
-                                      <label> Area(s) </label>
-                                      <div v-if="metadata.areas" v-for="(area, index) in metadata.areas" class="tags" v-model="metadata.areas">
-                                          <span v-if="area.region"> {{area.region}}, {{area.country}}</span>
-
-                                          <span class="severity-wrapper">
-                                              <span class="sub-tag" v-if="metadata.severity_measures && metadata.severity_measures[index]">
-                                                  <span :class="allSeverity[metadata.severity_measures[index].scale-1].text + 'Severity'">{{ allSeverity[metadata.severity_measures[index].scale-1].text}} severity</span>
-                                                  <span class="notes"><br/> {{ metadata.severity_measures[index].description }} </span>
-                                              </span>
+                                  <v-flex v-for="(item, index) in metadata.types" :key="index"  @mouseover="editable.typeIndex = index" @mouseleave="editable.typeIndex = null">
+                                      <div>
+                                          {{item}}
+                                          <span class="row-actions" v-show="editable.typeIndex == index">
+                                              <a @click="deleteType(index)">delete</a>
                                           </span>
                                       </div>
+                                  </v-flex>
+                                  <div v-if="newType">
+                                      <v-flex>
+                                          <v-select class="one-half" v-model="newType.type" label="type" :items="allEventTypes"></v-select>
+                                          <v-select class="one-half" label="sub-type" v-if="subTypeSelect"
+                                              v-model="newType.subtype"
+                                              :items="subTypes[newType.type]">
+                                          </v-select>
+                                      </v-flex>
+                                      <v-text-field class="inverse" v-if="newType.type == 'other' || (subTypeSelect && newType.subtype == 'other') " placeholder="specify" v-model="newType.specify"></v-text-field>
+                                  </div>
+                                  <a v-if="!newType" class="form-actions" @click="addType()">Add type</a>
+                                  <div v-else>
+                                      <v-flex class="row-actions" xs12>
+                                          <a @click="submitType()">confirm</a>
+                                          <a @click="clearType()">cancel</a>
+                                      </v-flex>
                                   </div>
                               </div>
-                              <hr class="row-divider"/>
-                              <div class="top-align">
-                                  <div class="one-third">
-                                      <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                          <v-text-field slot="activator" v-model="eventDate" label="Event Date" hint="MM/DD/YYYY format" persistent-hint prepend-icon="event" type="date"></v-text-field>
-                                          <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
-                                      </v-menu>
-                                  </div>
-                                  <div class="one-third">
-                                      <v-menu ref="menu" :close-on-content-click="false" v-model="timeSelected" :nudge-right="40" :return-value.sync="eventTime" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                          <v-text-field slot="activator" time v-model="eventTime" label="Local event time" prepend-icon="access_time" type="time"></v-text-field>
-                                          <v-time-picker v-if="timeSelected" v-model="eventTime" event-color="black" color="grey lighten-1" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
-                                      </v-menu>
-                                  </div>
-                                  <div class="one-third">
-                                      <label> Mission Contact Person </label>
-
-                                      <v-text-field label="Name" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.name" ></v-text-field>
-                                      <v-text-field label="Position" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.position" ></v-text-field>
-                                  </div>
+                              <div class="one-third">
+                                  <label> Status </label>
+                                  <v-select  v-model="selectedStatus" :items="statuses"></v-select>
                               </div>
-                              <hr class="row-divider"/>
-                              <v-layout row wrap>
-                                  <v-flex xs6 style="display: inline-block;">
-                                  <label> Description </label>
-                                      <v-textarea auto-grow id="eventDescription" v-model="metadata.description" placeholder="Event description"> </v-textarea>
-                                  </v-flex>
-                                  <v-flex xs6 style="display: inline-block;">
-                                      <label>PREVIEW</label>
-                                      <div class="markdown-fields" v-html="mdRender(metadata.description)"></div>
-                                  </v-flex>
-                              </v-layout>
-                              <hr class="row-divider"/>
+                              <div class="one-third">
+                                  <label> Area(s) </label>
+                                  <div v-if="metadata.areas" v-for="(area, index) in metadata.areas" class="tags" v-model="metadata.areas">
+                                      <span v-if="area.region"> {{area.region}}, {{area.country}}</span>
 
-                              <v-text-field clearable prepend-icon="link" label="SharePoint Link" v-model="metadata.sharepoint_link" round ></v-text-field>
-                              </v-text-field>
-                          </v-container>
-                          <v-progress-linear v-if="inProgress" :indeterminate="true"></v-progress-linear>
-                      </v-card>
-                      <v-btn round flat @click.native="save">Create</v-btn>
+                                      <span class="severity-wrapper">
+                                          <span class="sub-tag" v-if="metadata.severity_measures && metadata.severity_measures[index]">
+                                              <span :class="allSeverity[metadata.severity_measures[index].scale-1].text + 'Severity'">{{ allSeverity[metadata.severity_measures[index].scale-1].text}} severity</span>
+                                              <span class="notes"><br/> {{ metadata.severity_measures[index].description }} </span>
+                                          </span>
+                                      </span>
+                                  </div>
+                                  <a @click="e1 = 1" class="form-actions">edit area</a>
+                              </div>
+                          </div>
+                          <hr class="row-divider"/>
+                          <div class="top-align">
+                              <div class="one-third">
+                                  <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                      <v-text-field slot="activator" v-model="eventDate" label="Event Date" hint="MM/DD/YYYY format" persistent-hint type="date"></v-text-field>
+                                      <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
+                                  </v-menu>
+                              </div>
+                              <div class="one-third">
+                                  <v-menu ref="menu" :close-on-content-click="false" v-model="timeSelected" :nudge-right="40" :return-value.sync="eventTime" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                      <v-text-field slot="activator" time v-model="eventTime" label="Local event time" type="time"></v-text-field>
+                                      <v-time-picker v-if="timeSelected" v-model="eventTime" event-color="black" color="grey lighten-1" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
+                                  </v-menu>
+                              </div>
+                              <div class="one-third">
+                                  <label> Mission Contact Person </label>
+
+                                  <v-text-field label="Name" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.name" ></v-text-field>
+                                  <v-text-field label="Position" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.position" ></v-text-field>
+                              </div>
+                          </div>
+                          <hr class="row-divider"/>
+                          <v-layout row wrap>
+                              <v-flex xs6 style="display: inline-block;">
+                              <label> Description </label>
+                                  <v-textarea auto-grow id="eventDescription" v-model="metadata.description" placeholder="Event description"> </v-textarea>
+                              </v-flex>
+                              <v-flex xs6 style="display: inline-block;">
+                                  <label>PREVIEW</label>
+                                  <div class="markdown-fields" v-html="mdRender(metadata.description)"></div>
+                              </v-flex>
+                          </v-layout>
+                          <hr class="row-divider"/>
+
+                          <v-text-field class="sharepoint-input" clearable prepend-icon="link" label="SharePoint Link" v-model="metadata.sharepoint_link" round ></v-text-field>
+                          </v-text-field>
+                      </v-container>
+                      <span class="right">
+                          <v-progress-circular v-if="inProgress" :indeterminate="true"></v-progress-circular>
+                          <v-btn round flat @click.native="save">Create</v-btn>
+                      </span>
                   </v-stepper-content>
                 </v-stepper-items>
               </v-stepper>
@@ -173,7 +174,7 @@ export default {
         eventTime: null,
         dateSelected: false,
         timeSelected: false,
-
+        defaultMetadata: DEFAULT_EVENT_METADATA,
         metadata: DEFAULT_EVENT_METADATA,
         inProgress: false
     }),
@@ -186,7 +187,6 @@ export default {
         ]),
         operatorName(){
             if(this.currentUser){
-                this.metadata.incharge_contact.operator.name = this.currentUser.username;
                 return this.currentUser.username;
             }
             return '--';
@@ -195,6 +195,7 @@ export default {
             return this.newType.type == 'disease_outbreak' || this.newType.type == 'natural_disaster';
         }
     },
+
     watch:{
         dialog(val){
             if(val){
@@ -202,6 +203,8 @@ export default {
                 setTimeout(function(){
                     vm.$refs.mapEntry.$refs.mapAnnotation.map.invalidateSize();
                 }, 500);
+                this.e1 = 1;
+                this.metadata = this.defaultMetadata;
             }
         },
         e1(val){
@@ -242,14 +245,16 @@ export default {
         },
         close(){
             for (var fields in this.metadata) delete this.metadata[fields];
-            this.metadata = DEFAULT_EVENT_METADATA;
+            this.metadata = _.cloneDeep(this.defaultMetadata);
             this.dialog = false;
+            this.clearType();
         },
         save(){
             var address = this.$refs.mapEntry.addressData;
             this.lintDateTime();
             this.lintStatus();
             this.metadata.types = _.compact(this.metadata.types);
+            this.metadata.incharge_contact.operator.name = this.currentUser.username;
             this.inProgress = true;
             // TODO: replace geoJSON with map input
             var timestamp = new Date();
@@ -310,5 +315,6 @@ export default {
     }
     .v-stepper__header{
         box-shadow: none;
+        border-bottom: 1px solid lightgray;
     }
 </style>

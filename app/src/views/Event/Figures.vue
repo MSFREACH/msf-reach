@@ -4,6 +4,9 @@
         <nav v-if="eventFigures.keyFigures && eventFigures.keyFigures.length > 0" class="statusTabWrapper">
             <v-btn flat small :class="item.status+'-wrapper statusTabs'" v-for="(item, index) in eventFigures.keyFigures" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
         </nav>
+        <nav v-else class="statusTabWrapper">
+            <v-btn flat small :class="eventStatus+'-wrapper statusTabs'">{{eventStatus}}</v-btn>
+        </nav>
 
         <div :class="editing ? 'edit-wrapper  full-text-fields':' full-text-fields'" dark>
 

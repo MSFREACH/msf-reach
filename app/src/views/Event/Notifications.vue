@@ -9,7 +9,6 @@
                     <v-flex right>
                         <v-icon @click="close">close</v-icon>
                     </v-flex>
-
                   <v-card-text>
                     <v-container grid-list-md>
                       <v-layout wrap>
@@ -33,6 +32,7 @@
                             </form>
                         </v-card>
                         <v-card class="file-attachment" v-for="(item, index) in previewFileUrls" :key="index">
+                            <v-icon @click='removeFile(index)' class="remove-file-icon"> close </v-icon>
                             <embed :src="item" width="100%" height="100%"></embed>
                         </v-card>
                       </v-layout>
@@ -47,47 +47,50 @@
                     <v-spacer></v-spacer>
                     <v-progress-circular v-if="request.inProgress" :size="50" color="primary" indeterminate></v-progress-circular>
                     <v-switch v-if='editIndex != -1' label='save' @click='submit'></v-switch>
-                    <v-btn v-else @click='submit' flat dark> add </v-btn>
+                    <v-btn v-else @click='submit' flat> add </v-btn>
 
                   </v-card-actions>
                 </v-card>
               </v-dialog>
         </div>
+        <v-layout v-if="displayNotifications.length > 0" row wrap>
+            <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions>
+                <template slot="items" slot-scope="props">
+                    <tr @click="props.expanded = !props.expanded" :key="props.index">
+                        <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
+                        <td>{{ props.item.created | relativeTime  }}</td>
+                        <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
+                        <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
+                        <td>{{ props.item.files.length }}</td>
+                    </tr>
+                </template>
+                <template slot="expand" slot-scope="props">
+                    <v-card class="expanded-field" flat :key="props.index" :id="props.index">
+                        <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
+                        <v-divider light></v-divider>
 
-        <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions>
-            <template slot="items" slot-scope="props">
-                <tr @click="props.expanded = !props.expanded" :key="props.index">
-                    <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
-                    <td>{{ props.item.created | relativeTime  }}</td>
-                    <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
-                    <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
-                    <td>{{ props.item.files.length }}</td>
-                </tr>
-            </template>
-            <template slot="expand" slot-scope="props">
-                <v-card class="expanded-field" flat :key="props.index" :id="props.index">
-                    <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
-                    <v-divider light></v-divider>
-
-                    <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment" @click="previewDialog = true">
-                         <v-img :src="item" contain></v-img>
+                        <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment" @click="previewDialog = true">
+                             <v-img :src="item" contain></v-img>
+                        </v-card>
+                        <v-dialog v-model="previewDialog" justify-center max-width="800px" transition="dialog-transition">
+                            <v-carousel hide-controls>
+                                <v-carousel-item v-for="(item, i) in props.item.files" :key="i" :src="item"></v-carousel-item>
+                            </v-carousel>
+                        </v-dialog>
+                        <v-card-actions class="text-xs-right list-actions">
+                            <v-switch label='edit' @click="editItem(props.item)"></v-switch>
+                            <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
+                        </v-card-actions>
                     </v-card>
-                    <v-dialog v-model="previewDialog" justify-center max-width="800px" transition="dialog-transition">
-                        <v-carousel hide-controls>
-                            <v-carousel-item v-for="(item, i) in props.item.files" :key="i" :src="item"></v-carousel-item>
-                        </v-carousel>
-                    </v-dialog>
-                    <v-card-actions class="text-xs-right list-actions">
-                        <v-switch label='edit' @click="editItem(props.item)"></v-switch>
-                        <v-icon small @click="deleteItem(props.item)"> delete </v-icon>
-                    </v-card-actions>
-                </v-card>
 
-            </template>
-            <template slot="no-data">
-                No updates yet
-            </template>
-        </v-data-table>
+                </template>
+            </v-data-table>
+        </v-layout>
+        <v-layout v-else>
+            <div class="no-data-available">
+                No notifications yet
+            </div>
+        </v-layout>
     </v-container>
 </template>
 
@@ -166,14 +169,9 @@ export default {
         this.fetchEventNotifications();
     },
     methods: {
-        migrateOldEntries(){
-            var temp = this.oldEventNotifications;
-            if(temp.length > 0){
-                for(var i = 0; i < temp.length; i++){
-                    this.$store.dispatch(CREATE_EVENT_NOTIFICATION, temp[i]);
-                    if(i == temp.length-1) this.fetchEventNotifications(); // on the last one refresh again
-                }
-            }
+        removeFile(index){
+            $('#fileUpload').val("");
+            this.previewFileUrls.splice(index, 1);
         },
         fetchEventNotifications(){
             this.$store.dispatch(FETCH_EVENT_NOTIFICATIONS, {eventId: parseInt(this.currentEventId)});
@@ -242,7 +240,7 @@ export default {
             var timeNow = new Date();
             var isEdit = (this.editIndex > -1) && this.editedItem.id;
             var action = (!!isEdit) ? EDIT_EVENT_NOTIFICATION : CREATE_EVENT_NOTIFICATION;
-    
+
             var params  = _.extend(this.editedItem, {
                 username: this.currentUser.username
             });
@@ -256,14 +254,16 @@ export default {
                 params.created = timeNow;
                 delete params.updated;
             }
-            console.log('--------- ', isEdit, action, params);
 
             this.$store.dispatch(action, params)
                 .then((payload) =>{
                     this.request.inProgress = false;
                     if(payload.status == 200){
                         this.request.success = true;
-                        this.fetchEventNotifications();
+                        this.$router.push({
+                            name: 'event-notifications',
+                            params: { slug: this.currentEventId}
+                        });
                         setTimeout(() => this.close(), 1000);
                     }else{
                         this.request.failure = true;

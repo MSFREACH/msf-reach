@@ -245,12 +245,14 @@ export default {
       }
     }
     .v-menu{
-      display: block !important;
+        .v-list{
+            display: block !important;
+        }
     }
     .v-data-iterator{
         width: 100%;
         overflow: auto;
-        height: calc(100vh - 68px);
+        height: 100vh;
     }
     .v-list__tile{
         padding: 8px 12px;

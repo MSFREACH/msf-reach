@@ -63,9 +63,12 @@ ul{
     display: block;
     margin: 0;
     .searchHeader{
-        width: 45%;
+        width: 400px;
         margin-bottom: 20px;
         min-width: 400px;
+        .v-text-field{
+            padding-top: 0px;
+        }
         .v-input{
             height: 40px;
             background: #fff;
