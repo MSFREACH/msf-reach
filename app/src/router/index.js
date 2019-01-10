@@ -34,7 +34,13 @@ export default new Router({
     },{
         name: 'map-main',
         path: '/map',
+        props: true,
         component: () => import('@/components/MapMain.vue')
+    },{
+        name: 'mapbox',
+        path: '/mapbox',
+        props: true,
+        component: () => import('@/components/MapboxMap.vue')
     },{
         name: 'events',
         path: '/events',

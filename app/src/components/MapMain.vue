@@ -22,11 +22,15 @@ export default {
     props: {
         coordinates: {
             type: Array
+        },
+        eventId: {
+            type: Number
         }
     },
     data(){
         return{
             map: null,
+
             icons: {
                 statuses: STATUS_ICONS
             },

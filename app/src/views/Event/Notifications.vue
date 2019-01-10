@@ -108,6 +108,11 @@ import { REQUEST_STATUSES } from '@/common/network-handler';
 
 export default {
     name: 'r-event-notifications',
+    props:{
+        reviewFields:{
+            type: Array
+        }
+    },
     data(){
         return {
             dialog: false,
@@ -125,7 +130,6 @@ export default {
             sampleFiles:[
                 'https://cdn.vuetifyjs.com/images/cards/halcyon.png'
             ],
-
             request: REQUEST_STATUSES,
             previewFileUrls: [],
             signedFileUrls: []

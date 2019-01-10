@@ -1,8 +1,9 @@
 <template>
     <v-layout class="eventList" app>
-        <v-card v-if="isLoadingEvent" class="event-preview">
+        <v-flex xs3 v-if="isLoadingEvent" class="event-preview">
               Loading events...
-        </v-card>
+              <v-progress-circular :size="50" color="active" indeterminate></v-progress-circular>
+        </v-flex>
         <v-flex xs3 v-else>
             <v-data-iterator
             content-tag="v-layout"
@@ -12,11 +13,11 @@
             hide-actions
             wrap row>
                 <v-toolbar class="listHeader" slot="header" flat>
-                    <div class="full-width">
-                        <v-text-field v-model="search" label="Search" single-line hide-details xs10></v-text-field>
-                        <new-event xs2></new-event>
+                    <div class="full-width align-baseline">
+                        <v-text-field v-model="search" label="Search" single-line hide-details xs11></v-text-field>
+                        <new-event></new-event>
                     </div>
-
+                    <hr class="row-divider"/>
                     <div class="full-width">
                         <v-select v-model="filteredTypes" :items="allEventTypes" attach label="Type" round></v-select>
                         <div :class="selectedStatus + '-wrapper statusWrapper'">
@@ -43,7 +44,9 @@
                                 <span class="list-actions">
                                     <v-icon color="grey lighten-1">exit_to_app</v-icon>
                                     <v-icon color="grey lighten-1">bookmark</v-icon>
-                                    <v-icon color="grey lighten-1">minimize</v-icon>
+                                    <router-link :to="{ name: 'map-main', params:{eventId: props.item.id}}">
+                                        <v-icon color="grey lighten-1">map</v-icon>
+                                    </router-link>
                                 </span>
                             </v-list-tile-title>
                             <v-list-tile-title v-else>
@@ -51,7 +54,7 @@
                                 <span class="list-actions">
                                     <v-icon color="grey lighten-1">exit_to_app</v-icon>
                                     <v-icon color="grey lighten-1">bookmark</v-icon>
-                                    <v-icon color="grey lighten-1">minimize</v-icon>
+                                    <v-icon color="grey lighten-1">map</v-icon>
                                 </span>
                             </v-list-tile-title>
                             <span class="not-render list-types" v-for="(eventType, index) in props.item.metadata.types" :key="index">  {{eventType}}  </span>
@@ -211,6 +214,7 @@ export default {
 <style lang="scss">
     @import '@/assets/css/lists.scss';
     @import '@/assets/css/event.scss';
+    @import '@/assets/css/display.scss';
 
     .result-list.v-list{
         width: 100%;

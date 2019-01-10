@@ -15,3 +15,57 @@ export const EVENT_TOP_NAVIGATIONS = [
     { name: 'Country Details', component: 'placeholder'},
     { name: 'Related Response', component: 'placeholder'}
 ];
+
+
+
+export const STATUS_CHANGE_STEPPERS = {
+    monitoring :[],
+    exploration :[{
+        section: 'Notifications',
+        component: 'event-notifications',
+        fields: ['explo-findings']
+    }, {
+        section: 'Figures',
+        component: 'event-figures',
+        fields: ['total-beneficiaries', 'key-figures']
+    }, {
+        section: 'Resources',
+        component: 'event-resources',
+        fields: ['staff-list', 'visa-requirements', 'vaccination-requirements', 'total-budget', 'institutional-donors']
+    }],
+    ongoing :[{
+        section: 'Response',
+        component: 'event-responses',
+        fields: ['project-code', 'programmes', 'response-type', 'start-date', 'end-date', 'location', 'oc', 'supply-spec', 'sharepoint']
+    },{
+        section: 'Figures',
+        component: 'event-figures',
+        fields: ['total-beneficiaries', 'key-figures']
+    },{
+        section: 'Resources',
+        component: 'event-resources',
+        fields: ['staff-list', 'expatriates', 'national-staff']
+    }],
+    intervention :[{
+        section: 'Response',
+        component: 'event-responses',
+        fields: ['project-code', 'programmes', 'response-type', 'start-date', 'end-date', 'location', 'oc', 'supply-spec', 'sharepoint']
+    },{
+        section: 'Figures',
+        component: 'event-figures',
+        fields: ['total-beneficiaries', 'key-figures']
+    },{
+        section: 'Resources',
+        component: 'event-resources',
+        fields: ['staff-list', 'expatriates', 'national-staff']
+    }],
+    complete :[{
+        section: 'General',
+        component: 'event-general',
+        fields: ['project-history', 'emergency-date', 'end-date', 'last-contact']
+    },{
+        section: 'Response',
+        component: 'event-responses',
+        fields: ['end-date']
+    }]
+};

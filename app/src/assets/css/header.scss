@@ -1,3 +1,5 @@
+@import "./util/colors.scss";
+
 a{
     text-decoration: none;
     color: inherit;
@@ -9,5 +11,42 @@ a{
 
 
 .main-nav{
-    z-index: 8; 
+    z-index: 8;
+    color: $text-dark;
+
+    .top-nav-links{
+        height: 50px !important;
+        box-sizing: border-box;
+        border-top: 10px solid $bg-light-mode;
+    }
+    .top-nav-links.router-link-active{
+        border-top: 10px solid $color-active;
+    }
+}
+
+
+.v-avatar{
+    height: 40px;
+    width: 40px;
+    background: #CCCCCC;
+}
+
+
+.v-text-field{
+    .v-input__control{
+        .v-input__slot:before{
+            border-style: none;
+        }
+    }
+}
+
+.headerSearch {
+    .v-text-field__slot{
+        background: #CCCCCC;
+        border-radius: 15px;
+        padding-inline-start: 21px;
+    }
+    .v-input input {
+        max-height: inherit;
+    }
 }

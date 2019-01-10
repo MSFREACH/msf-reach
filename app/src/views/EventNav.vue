@@ -40,22 +40,5 @@ export default {
 </script>
 <style lang='scss'>
     @import '@/assets/css/util/typography.scss';
-    .detail-section{
-        background: #D0D3DA;
-    }
-    .first-nav{
-        background: #E8E8E8;
-        height: 40px;
-        width: -webkit-fill-available;
-        border-bottom: 1px solid #ccc;
-    }
-    .first-nav-links{
-        color: #2B2024;
-        padding: 9px 23px;
-        display: inline-block;
-    }
-    .first-nav-links.router-link-active{
-        color: #FFF;
-        background: #0374C7;
-    }
+    @import '@/assets/css/event.scss'; 
 </style>

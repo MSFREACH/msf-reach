@@ -312,8 +312,7 @@ export default {
             this.statusChanged = true;
             var timestamp = new Date();
             var ISOTime = timestamp.toISOString();
-            this.eventMetadata.event_status = this._beforeEditStatus;
-            this.eventMetadata.status_updates.push({type: this._beforeEditStatus, timestamp: ISOTime});
+            this.eventMetadata.status_updates.push({type: this.eventMetadata.event_status, timestamp: ISOTime});
         },
         save(){
             this.lintStatus();
@@ -327,7 +326,7 @@ export default {
                 metadata: this.eventMetadata
             };
             var vm = this;
-            console.log(payload); 
+            console.log(payload);
             this.$store.dispatch(EDIT_EVENT, payload)
                 .then((payload) =>{
                     var eventID = payload.data.result.objects.output.geometries[0].properties.id;

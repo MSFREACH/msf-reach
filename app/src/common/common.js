@@ -17,7 +17,7 @@ export const SEVERITY = [
         text: 'high'
     }
 ];
-export const SEVERITY_LABELS = ['low', 'medium', 'high']; 
+export const SEVERITY_LABELS = ['low', 'medium', 'high'];
 
 export const EVENT_TYPES = [
     { value: 'armed_conflict', text: 'Armed Conflict' },
@@ -91,7 +91,8 @@ export const EVENT_NOTIFICATION_CATEGORIES = [
     {text: 'ACCESS', value: 'ACCESS' },
     {text: 'NEEDS', value: 'NEEDS' },
     {text: 'CONTACTS', value: 'CONTACTS' },
-    {text: 'SECURITY', value: 'SECURITY' }
+    {text: 'SECURITY', value: 'SECURITY' },
+    {text: 'EXPLO findings', value: 'EXPLO_FINDINGS' }
 ];
 
 export const EVENT_NOTIFICATION_HEADERS = [

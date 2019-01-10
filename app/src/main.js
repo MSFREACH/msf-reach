@@ -64,14 +64,8 @@ Vue.use(Vuetify, {
 
 ApiService.init();
 
-// Ensure we checked auth before each page load.
 router.beforeEach(
     (to, from, next) => {
-        // if(!store.getters.isAuthenticated && to.path !== '/login'){
-        //     next({ name: 'login', query: { from: to.path } });
-        // }else{
-        //     next();
-        // }
         return Promise
             .all([store.dispatch(CHECK_AUTH)])
             .then(next);

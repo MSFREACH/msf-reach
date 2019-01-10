@@ -1,19 +1,19 @@
 <template>
     <v-toolbar app class="main-nav" flat fixed :clipped-left="$vuetify.breakpoint.mdAndUp" >
-        <v-flex class="logo">
+        <v-flex xs3 class="logo">
             <router-link :to="{ name: 'map-main' }"><img src="../assets/images/msf-reach-logo-trans-01.png" alt=""></img></router-link>
         </v-flex>
-        <v-layout v-show="isAuthenticated">
-            <v-toolbar-items class="hidden-sm-and-down">
-                <v-btn flat><router-link :to="{ name: 'events' }">Events</router-link></v-btn>
-                <v-btn flat><router-link :to="{ name: 'reports' }">Reports</router-link></v-btn>
-                <v-btn flat><router-link :to="{ name: 'contacts' }">Contacts</router-link></v-btn>
+        <v-layout align-baseline v-show="isAuthenticated">
+            <v-toolbar-items>
+                <router-link class="top-nav-links" :to="{ name: 'events' }"><v-btn flat>Event List</v-btn></router-link>
+                <router-link class="top-nav-links" :to="{ name: 'reports' }"><v-btn flat>Report Cards</v-btn></router-link>
+                <router-link class="top-nav-links" :to="{ name: 'contacts' }"><v-btn flat>Contacts</v-btn></router-link>
             </v-toolbar-items>
             <v-spacer></v-spacer>
             <v-spacer></v-spacer>
-            <v-text-field hide-details append-icon="search" single-line></v-text-field>
+            <v-text-field class="headerSearch" single-line></v-text-field>
             <v-menu offset-y>
-                <v-btn fab flat small outline slot="activator">
+                <v-btn fab flat small dark slot="activator">
                     <v-icon>notifications</v-icon>
                 </v-btn>
                 <v-container xs12 sm6 md4 lg3>
@@ -22,7 +22,6 @@
                             <v-subheader v-if="item.header" :key="index" >
                                 {{ item.header }}
                             </v-subheader>
-
                             <v-divider v-else-if="item.divider" :inset="item.inset" :key="index" ></v-divider>
 
                             <v-list-tile v-else :key="index" avatar @click="" >
@@ -40,7 +39,7 @@
                 <v-btn flat fab dark color="primary"  slot="activator">
                     <!-- <v-toolbar-title> {{ currentUser.username }}</v-toolbar-title>
                     <v-icon>person</v-icon> -->
-                    <v-avatar :size="56">
+                    <v-avatar :size="40">
                         {{ nameInitial }}
                     </v-avatar>
                 </v-btn>
@@ -120,15 +119,10 @@ export default {
             'currentUser',
             'isAuthenticated'
         ]),
-        // nameInitial(){
-        //     return this.currentUser ? this.currentUser.username.charAt(0) : null;
-        // }
     },
     watch: {
         currentUser(val){
-            if(val){
-                this.nameInitial = val.username.charAt(0);
-            }
+            this.nameInitial = val ? val.username.charAt(0): 'U';
         }
     },
     methods: {

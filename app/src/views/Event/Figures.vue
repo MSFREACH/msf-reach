@@ -17,41 +17,46 @@
                 </v-layout>
                 <v-layout row wrap v-if="editing" dark>
                     <label>KEY FIGURES</label>
-                    <v-layout row wrap>
-                        <v-data-iterator v-if="activeKeyFigures" :items="activeKeyFigures" content-tag="v-layout" row wrap hide-actions>
-                            <template slot="items" slot-scope="props">
-                                <v-hover>
+                    <div class="full-width">
+                        <v-layout row wrap v-if="activeKeyFigures" ref="key-figures">
+                            <v-data-iterator  :items="activeKeyFigures" content-tag="v-layout" row wrap hide-actions>
+                                <template slot="items" slot-scope="props">
+                                    <v-hover>
+                                        <v-flex xs4 :key="props.index"
+                                            v-show="editMode.offset != props.index"
+                                            slot-scope="{hover}">
+                                            <v-list dense>
+                                                <v-list-tile>
+                                                    <v-list-tile-content class="category-text align-end">{{item.category}} </v-list-tile-content>
+                                                    <v-list-tile-content class="sub-category-text"> {{item.subCategory}} </v-list-tile-content>
+                                                    <v-list-tile-content> {{item.value}} </v-list-tile-content>
+                                                    <v-list-tile-content v-if="editing" :class="hover ? 'showCrud' : 'hide'">
+                                                        <a @click="editKeyFig(props.item, props.index)"> edit </a>
+                                                        <a @click="deleteKeyFig(props.item)"> delete </a>
+                                                    </v-list-tile-content>
+                                                </v-list-tile>
+                                            </v-list>
+                                        </v-flex>
+                                    </v-hover>
                                     <v-flex xs4 :key="props.index"
-                                        v-show="editMode.offset != props.index"
-                                        slot-scope="{hover}">
-                                        <v-list dense>
-                                            <v-list-tile>
-                                                <v-list-tile-content class="category-text align-end">{{item.category}} </v-list-tile-content>
-                                                <v-list-tile-content class="sub-category-text"> {{item.subCategory}} </v-list-tile-content>
-                                                <v-list-tile-content> {{item.value}} </v-list-tile-content>
-                                                <v-list-tile-content v-if="editing" :class="hover ? 'showCrud' : 'hide'">
-                                                    <a @click="editKeyFig(props.item, props.index)"> edit </a>
-                                                    <a @click="deleteKeyFig(props.item)"> delete </a>
-                                                </v-list-tile-content>
-                                            </v-list-tile>
-                                        </v-list>
+                                        v-show="editMode.offset == props.index">
+                                        <v-select dark  v-model="editKeyFigure.category" :items="allSelections.keyFigs"></v-select>
+                                        <v-select dark  v-model="editKeyFigure.subCategory" :items="allKeyFigSubSelection" ></v-select>
+                                        <v-text-field label="value" v-model="editKeyFigure.value"></v-text-field>
+                                        <a @click="confirmKeyFig(props.index)"> edit </a>
+                                        <a @click="cancelEditKeyFig(props.index)"> delete </a>
                                     </v-flex>
-                                </v-hover>
-                                <v-flex xs4 :key="props.index"
-                                    v-show="editMode.offset == props.index">
-                                    <v-select dark  v-model="editKeyFigure.category" :items="allSelections.keyFigs"></v-select>
-                                    <v-select dark  v-model="editKeyFigure.subCategory" :items="allKeyFigSubSelection" ></v-select>
-                                    <v-text-field label="value" v-model="editKeyFigure.value"></v-text-field>
-                                    <a @click="confirmKeyFig(props.index)"> edit </a>
-                                    <a @click="cancelEditKeyFig(props.index)"> delete </a>
-                                </v-flex>
-                            </template>
-                        </v-data-iterator>
-                        <div v-else> -- </div>
-                        <a v-if="editing && editMode.offset == -1" @click="addKeyFig()"> add </a>
-                    </v-layout>
+                                </template>
+                            </v-data-iterator>
+                            <a v-if="editing && editMode.offset == -1" @click="addKeyFig()"> add </a>
+                        </v-layout>
+                        <div class="one-half" ref="key-figures" v-else>
+                            <div> -- </div>
+                            <a class="form-actions" @click="addKeyFig()"> add Key figures </a>
+                        </div>
+                    </div>
                     <hr class="row-divider">
-                    <div class="one-half">
+                    <div class="one-half" ref="total-beneficiaries">
                         <label>NUMBER OF BENEFICIARIES </label>
                         {{totalBeneficiaries}}
                     </div>
@@ -91,8 +96,8 @@
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap v-else>
-                    <v-flex v-if="displayKeyFigures">
-                        <div v-for="(item, index) in displayKeyFigures" :key="index">
+                    <v-flex v-if="displayKeyFigures" ref="key-figures">
+                        <div ref="key-figures" v-for="(item, index) in displayKeyFigures" :key="index">
                             <div class="specified-primary">
                                 {{item.value}}
                             </div>
@@ -103,12 +108,14 @@
                         </div>
                     </v-flex>
                     <div class="full-width" v-else>
-                        <label>Key Figures</label>
-                        <div>--</div>
+                        <div class="one-half" ref="key-figures">
+                            <label>Key Figures</label>
+                            --
+                        </div>
                     </div>
                     <hr class="row-divider"/>
                     <v-flex xs12>
-                        <div class="one-half">
+                        <div class="one-half" ref="total-beneficiaries">
                             <label>NUMBER OF BENEFICIARIES </label>
                             {{totalBeneficiaries}}
                         </div>
@@ -154,6 +161,11 @@ import { KEY_FIGURES, FIGURES_COLLECTION, FIGURES_SOURCES, POPULATION_RANGES, RI
 
 export default {
     name: 'r-event-figures',
+    props: {
+        reviewFields:{
+            type: Array
+        }
+    },
     data(){
         return {
             editing: false,
@@ -178,7 +190,22 @@ export default {
     components: {
         //TODO: add + edit
     },
+    mounted(){
+        if(this.reviewFields) this.highlightReview();
+    },
     methods: {
+        highlightReview(isEdit){
+            var vm = this;
+            this.reviewFields.forEach(function(field){
+                vm.$refs[field].style.background = isEdit ? 'rgba(255,255,255, .25)' : '#E5F0F9';
+            });
+        },
+        removeHighlight(){
+            var vm = this;
+            this.reviewFields.forEach(function(field){
+                vm.$refs[field].style.background = "none";
+            })
+        },
         switchStatus(keyFigures){
             this.displayKeyFigures = Object.assign({}, keyFigures);
         },
@@ -194,7 +221,6 @@ export default {
             this.editMode.offset = this.displayKeyFigures.length - 1; // the latest one
         },
         editKeyFig(item, index){
-            console.log(' editItem --- ', item, index);
             // Keep track of original
             this.editKeyFigure = Object.assign({}, item);
             this.editMode.offset = index;
@@ -231,6 +257,16 @@ export default {
         }
     },
     watch: {
+        editing(val){
+            if(this.reviewFields){
+                if(val) {
+                    var vm = this;
+                    setTimeout(function(){ vm.highlightReview(true)}, 500);
+                }else{
+                    this.removeHighlight();
+                }
+            }
+        }
     },
     filters: {
     },

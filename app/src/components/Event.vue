@@ -18,6 +18,7 @@
           <sharepoint-link v-if="event.metadata.sharepoint_link" :link="event.metadata.sharepoint_link"></sharepoint-link>
         </nav>
         <router-view></router-view>
+        <status-stepper :currentStatus="eventStatus"></status-stepper>
     </v-container>
 </template>
 
@@ -36,6 +37,8 @@ import REventFigures from '@/views/Event/Figures.vue';
 import REventResources from '@/views/Event/Resources.vue';
 import REventSitrep from '@/views/Event/SITREP.vue';
 import SharepointLink from '@/views/util/Sharepoint.vue';
+import StatusStepper from './StatusStepper.vue';
+
 
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
@@ -52,7 +55,8 @@ export default {
             default: false
         },
         statusChanged: {
-            type: String
+            type: Boolean,
+            default: false
         }
     },
     data(){
@@ -64,7 +68,7 @@ export default {
         };
     },
     components: {
-        REventGeneral, REventNotification, REventResponses, REventExtCapacity, REventFigures, REventResources, SharepointLink
+        REventGeneral, REventNotification, REventResponses, REventExtCapacity, REventFigures, REventResources, SharepointLink, StatusStepper
     },
     beforeRouteEnter(to, from, next){
         Promise.all([
@@ -79,6 +83,7 @@ export default {
     computed: {
         ...mapGetters([
             'event',
+            'eventStatus',
             'currentUser',
             'isAuthenticated'
         ])
