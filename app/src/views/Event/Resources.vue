@@ -72,11 +72,12 @@
 
                     </v-layout>
                     <v-layout row wrap v-else>
-                        <v-flex xs12 :class="displayStatusResources.status+'Wrapper'">
-                            <div class="full-width" ref="staff-list">
+                        <div class="full-width" :class="displayStatusResources.status+'Wrapper'">
+                            <div class="one-half" ref="staff-list">
                                 <label>Staff List</label>
                                 <span v-if="!displayStatusResources.staff.listFileUrl">--</span> {{displayStatusResources.staff.listFileUrl}}
                             </div>
+                            <v-spacer></v-spacer>
                             <div class="one-half" ref="expatriates">
                                 <label>Number of Expatriate</label>
                                 <span v-if="!displayStatusResources.staff.expatriateCount">--</span> {{displayStatusResources.staff.expatriateCount}}
@@ -85,7 +86,7 @@
                                 <label>Number of National staff</label>
                                 <span v-if="!displayStatusResources.staff.nationalStaffCount">--</span> {{displayStatusResources.staff.nationalStaffCount}}
                             </div>
-                        </v-flex>
+                        </div>
                         <hr class="row-divider"/>
                         <div ref="visa-requirements">
                             <div class="primary-text">Nationalities that requires Visa</div>
@@ -186,7 +187,6 @@ export default {
         highlightReview(isEdit){
             var vm = this;
             this.reviewFields.forEach(function(field){
-                console.log('review fields under resources ----- ', field);
                 vm.$refs[field].style.background = isEdit ? 'rgba(255,255,255, .25)' : '#E5F0F9';
             });
         },

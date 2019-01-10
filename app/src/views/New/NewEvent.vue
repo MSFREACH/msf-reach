@@ -62,7 +62,14 @@
                               </div>
                               <div class="one-third">
                                   <label> Status </label>
-                                  <v-select  v-model="selectedStatus" :items="statuses"></v-select>
+                                  <v-select  v-model="selectedStatus" :items="statuses">
+                                      <template slot="selection" slot-scope="data">
+                                          <span :class="data.item.value">{{data.item.text}}</span>
+                                      </template>
+                                      <template slot="item" slot-scope="data">
+                                          <span :class="data.item.value">{{data.item.text}}</span>
+                                      </template>
+                                  </v-select>
                               </div>
                               <div class="one-third">
                                   <label> Area(s) </label>

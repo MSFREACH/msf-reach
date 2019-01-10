@@ -18,7 +18,7 @@
           <sharepoint-link v-if="event.metadata.sharepoint_link" :link="event.metadata.sharepoint_link"></sharepoint-link>
         </nav>
         <router-view></router-view>
-        <status-stepper :currentStatus="eventStatus"></status-stepper>
+        <status-stepper v-if="showStepper" :currentStatus="event.metadata.event_status"></status-stepper>
     </v-container>
 </template>
 
@@ -53,10 +53,6 @@ export default {
         firstTime: {
             type: Boolean,
             default: false
-        },
-        statusChanged: {
-            type: Boolean,
-            default: false
         }
     },
     data(){
@@ -64,7 +60,8 @@ export default {
             active: null,
             detailTabs: EVENT_DETAIL_NAVIGATIONS,
             mini: true,
-            right: null
+            right: null,
+            statusChanged: false
         };
     },
     components: {
@@ -86,7 +83,10 @@ export default {
             'eventStatus',
             'currentUser',
             'isAuthenticated'
-        ])
+        ]),
+        showStepper(){
+            return (this.statusChanged && this.event.metadata.event_status != 'monitoring');
+        }
     },
     watch: {
         slug(newVal){

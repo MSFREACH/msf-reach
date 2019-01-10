@@ -12,8 +12,17 @@
                   <v-card-text>
                     <v-container grid-list-md>
                       <v-layout wrap>
-                        <v-flex xs10>
+                        <v-flex xs4>
                           <v-select :items="allNotificationCategories" v-model="editedItem.category" label="category"></v-select>
+                        </v-flex>
+                        <v-flex xs12></v-flex>
+                        <v-flex xs8>
+                            <span class="reminder-notes" v-if="editedItem.category =='EXPLO_FINDINGS'">
+                                Type of needs, capacities on the ground <br/>
+                                How many people affected, Call for int'l aid by authorities? <br/>
+                                MSF proposed intervention <br/>
+                                type of activities location of activities
+                            </span>
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>Notification</label>
@@ -51,7 +60,8 @@
 
                   </v-card-actions>
                 </v-card>
-              </v-dialog>
+            </v-dialog>
+            <v-btn @click="addExploFindings" class="exploration" right flat v-if="showExploFindings"> add Explo findings </v-btn>
         </div>
         <v-layout v-if="displayNotifications.length > 0" row wrap>
             <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions>
@@ -59,7 +69,14 @@
                     <tr @click="props.expanded = !props.expanded" :key="props.index">
                         <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
                         <td>{{ props.item.created | relativeTime  }}</td>
-                        <td><span v-if="!props.item.category"> -- </span>{{ props.item.category }}</td>
+                        <td><span v-if="!props.item.category"> -- </span>
+                            <span v-if="props.item.category && props.item.category == 'EXPLO_FINDINGS'" class="exploration">
+                                EXPLORATION findings
+                            </span>
+                            <span v-else>
+                                {{ props.item.category }}
+                            </span>
+                        </td>
                         <td><span v-if="!props.item.description"> -- </span>{{ props.item.description | snippetNoMarkdown }}</td>
                         <td>{{ props.item.files.length }}</td>
                     </tr>
@@ -147,7 +164,10 @@ export default {
             'currentEventId',
             'oldEventNotifications',
             'eventNotifications'
-        ])
+        ]),
+        showExploFindings(){
+            if(this.reviewFields) return this.reviewFields.indexOf('explo-findings') != -1;
+        }
     },
     watch: {
         dialog (val) {
@@ -173,6 +193,10 @@ export default {
         this.fetchEventNotifications();
     },
     methods: {
+        addExploFindings(){
+            this.dialog = true;
+            this.editedItem.category = 'EXPLO_FINDINGS';
+        },
         removeFile(index){
             $('#fileUpload').val("");
             this.previewFileUrls.splice(index, 1);
@@ -294,5 +318,14 @@ export default {
     .v-carousel__item{
         height: inherit !important;
     }
-
+    .reminder-notes{
+        color: $text-light-grey;
+        font-style: italic;
+        margin-bottom: 21px;
+    }
+    .theme--dark{
+        .reminder-notes{
+            color: #fff;
+        }
+    }
 </style>

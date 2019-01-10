@@ -17,17 +17,14 @@
                         --
                     </div>
                 </div>
-                <!-- meta tags -->
-                <div class="one-half">
-                  <div class="one-half">
-                      <label>Type(s)</label>
-                      <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
-                      <!-- TODO: add pairing icon + clickable taglink -->
-                  </div>
-                  <div class="one-half">
-                      <label>Status</label>
-                      <span :class="eventMetadata.event_status.toLowerCase() + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
-                  </div>
+                <div class="quarter-width">
+                  <label>Type(s)</label>
+                  <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
+                  <!-- TODO: add pairing icon + clickable taglink -->
+                </div>
+                <div class="quarter-width">
+                  <label>Status</label>
+                  <span :class="eventMetadata.event_status.toLowerCase() + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
                 </div>
                 <div class="one-half">
                     <label>Areas</label>
@@ -116,10 +113,6 @@
                 </div>
                 <div class="one-third">
                     <label> Status </label>
-                    <!-- <select v-model="eventMetadata.event_status">
-                    <option disabled value="">Please select one</option>
-                    <option v-for="item in statuses" :value="item.value">{{ item.text }}</option>
-                    </select> -->
                     <v-select v-model="eventMetadata.event_status" :items="statuses">
                         <template slot="selection" slot-scope="data">
                             <span :class="data.item.value">{{data.item.text}}</span>
@@ -222,12 +215,12 @@ import marked from 'marked';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import SharepointLink from '@/views/util/Sharepoint.vue';
 import { EDIT_EVENT } from '@/store/actions.type';
+import moment from 'moment';
 
 /*eslint no-console: off*/
 /*eslint no-debugger: off*/
 /*eslint no-unused-vars: off*/
 /*eslint no-negated-condition: off*/
-
 export default {
     name: 'r-event-general',
     data(){
@@ -258,7 +251,7 @@ export default {
             addressAutocomplete: {},
             statuses: EVENT_STATUSES,
             _beforeEditStatus: null,
-            statusChanged: false,
+            showStepper: false,
             dateTimeConfig: {
                 format: DATETIME_DISPLAY_FORMAT
             },
@@ -288,6 +281,11 @@ export default {
     },
 
     mounted (){
+        if(this.eventMetadata && this.eventMetadata.event_local_time){
+            var localDT = this.eventMetadata.event_local_time;
+            this.eventDate = moment(localDT).format("YYYY-MM-DD");
+            this.eventTime = moment(localDT).format("HH:mm");
+        }
     },
     methods: {
         mdRender(value){
@@ -304,12 +302,12 @@ export default {
         },
         lintDateTime(){
             var tempDateTime = new Date(this.eventDate +' '+this.eventTime);
-            this.eventMetadata.event_datetime = tempDateTime.toISOString();
+            this.eventMetadata.event_local_time = tempDateTime.toISOString();
         },
         lintStatus(){
             // check if status changed
             if(this.eventMetadata.event_status == this._beforeEditStatus) return;
-            this.statusChanged = true;
+            this.showStepper = true;
             var timestamp = new Date();
             var ISOTime = timestamp.toISOString();
             this.eventMetadata.status_updates.push({type: this.eventMetadata.event_status, timestamp: ISOTime});
@@ -331,12 +329,13 @@ export default {
                 .then((payload) =>{
                     var eventID = payload.data.result.objects.output.geometries[0].properties.id;
                     this.inProgress = false;
+                    this.$parent.statusChanged = this.showStepper;
+                    // TODO: CHECK if router actually pushed, store state didn't set to new event
                     this.$router.push({
                         name: 'event-general',
-                        params: { slug: eventID, statusChanged: this.statusChanged}
+                        params: { slug: eventID}
                     });
                 });
-
         },
         addType(){
             this.newType = this.defaultType;
@@ -413,7 +412,12 @@ export default {
                 var mockSeverity = {scale: newVal.severity_scale, description: newVal.severity};
                 this.eventMetadata.severity_measures = [mockSeverity];
             }
-            this.statusChanged = false;
+            this.showStepper = false;
+            if(newVal.event_local_time){
+                var localDT = this.eventMetadata.event_local_time;
+                this.eventDate = moment(localDT).format("YYYY-MM-DD");
+                this.eventTime = moment(localDT).format("HH:mm");
+            }
         }
     }
 };

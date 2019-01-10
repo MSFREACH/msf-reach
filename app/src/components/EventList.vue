@@ -4,7 +4,7 @@
               Loading events...
               <v-progress-circular :size="50" color="active" indeterminate></v-progress-circular>
         </v-flex>
-        <v-flex xs3 v-else>
+        <v-flex xs3 class="eventListPanel" v-else>
             <v-data-iterator
             content-tag="v-layout"
             :items="displayEvents"
@@ -218,7 +218,6 @@ export default {
 
     .result-list.v-list{
         width: 100%;
-        background: #E8E8E8;
         border-radius: 5px;
         margin: 5px;
         box-sizing: border-box;
@@ -228,6 +227,9 @@ export default {
     .result-list.v-list:hover{
         border: 2px #0374C7 solid;
         background: #fff;
+    }
+    .eventListPanel{
+        background: $bg-milk-grey;
     }
     .listHeader{
       height: 128px;

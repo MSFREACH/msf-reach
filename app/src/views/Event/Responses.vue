@@ -165,7 +165,7 @@
             </v-layout>
             <v-layout v-else>
                 No response recorded yet
-                <v-btn v-if="eventStatus == 'ongoing' || eventStatus == 'emergency'" @click="add"> add response </v-btn>
+                <v-btn v-if="eventStatus == 'ongoing' || eventStatus == 'intervention'" @click="add"> add response </v-btn>
             </v-layout>
         </div>
 
