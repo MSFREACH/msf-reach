@@ -361,7 +361,6 @@ export default {
             this.inEditArea = this.defaultArea;
         },
         editArea(area, severity, index){
-            console.log(' ------ ', area, severity);
             var tmpAddress = area.region ? `${area.region}, ${area.country_code}` : area.country;
             var tmpArea = { address: tmpAddress, severity };
 

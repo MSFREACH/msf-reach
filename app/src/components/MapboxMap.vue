@@ -14,6 +14,21 @@ import { TILELAYER_REACH } from '@/common/map-fields';
 import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
 
+function getFeatures(topology, key) {
+  return topology.objects[key].geometries.map(function(geom) {
+    return {
+      type: "Feature",
+      id: geom.properties.id,
+      properties: geom.properties || {},
+      geometry: {
+        type: geom.type,
+        coordinates: geom.coordinates
+      }
+    };
+  });
+}
+
+
 export default {
     name: 'map-annotation',
     props: {
@@ -56,23 +71,26 @@ export default {
         },
         initMap(){
             var geojsonEvents = this.eventsGeoJson.objects.output;
+            var featureEvents = getFeatures(this.eventsGeoJson, 'output');
             var recentCoordinate = geojsonEvents.geometries[0].coordinates;
             var map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/usergroup/cjqgq0x5m81vc2soitj9bem5u',
                 center: recentCoordinate,
-                zoom: 10
+                zoom: 10,
+                minZoom: 4
             });
 
-
-            console.log(' geoJson ----- ',geojsonEvents );
             map.on('load', function () {
                 map.addSource("reach-events", {
                     type: "geojson",
-                    data: geojsonEvents
-                    // cluster: true,
-                    // clusterMaxZoom: 14, // Max zoom to cluster points on
-                    // clusterRadius: 50
+                    data: {
+                        "type": "FeatureCollection",
+                        "features": featureEvents
+                    },
+                    cluster: true,
+                    clusterMaxZoom: 14, // Max zoom to cluster points on
+                    clusterRadius: 50
                 });
 
                 map.addLayer({
@@ -80,19 +98,14 @@ export default {
                     type: "circle",
                     source: "reach-events",
                     paint: {
-                        // Use step expressions (https://www.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-                       // with three steps to implement three types of circles:
-                       //   * Blue, 20px circles when point count is less than 100
-                       //   * Yellow, 30px circles when point count is between 100 and 750
-                       //   * Pink, 40px circles when point count is greater than or equal to 750
                        "circle-color": [
                            "step",
                            ["get", "point_count"],
-                           "#51bbd6",
+                           "#A46664", // wine red , less than 100
                            100,
-                           "#f1f075",
+                           "#A9272D", // standard red, between 100 and 750
                            750,
-                           "#f28cb1"
+                           "#EE0000" // bright red, greater than or equal to 750
                        ],
                        "circle-radius": [
                            "step",
@@ -107,6 +120,62 @@ export default {
                     "filter": ["==", "$type", "Point"],
                 });
             });
+
+            // Create a popup, but don't add it to the map yet.
+             var popup = new mapboxgl.Popup({
+                 closeButton: false,
+                 closeOnClick: false
+             });
+
+             map.on('mouseenter', 'event-epicenter', function(e) {
+                 // Change the cursor style as a UI indicator.
+                 map.getCanvas().style.cursor = 'pointer';
+                 var coordinates = e.features[0].geometry.coordinates.slice();
+
+                 var evMeta = JSON.parse(e.features[0].properties.metadata);
+                 var description = evMeta.description; // <<< missing feature.properties, need to convert GeometryCollection to FeatureCollection
+                 var evName = evMeta.name;
+                 // var evType = evMeta.types.join(',');
+                 var evStatus = evMeta.event_status;
+
+                 var cleanAreas = _.compact(evMeta.areas);
+                 var evPlace;
+                 if(!evMeta.areas || _.isEmpty(cleanAreas)){
+                     evPlace = evMeta.country;
+                 }else{
+                     if(cleanAreas[0].region){
+                         evPlace = cleanAreas[0].region + cleanAreas[0].country_code;
+                     }else{
+                         evPlace = cleanAreas[0].country;
+                     }
+                 }
+
+                 var evLastUpdate = e.features[0].properties.updated_at
+
+                 var contentStr = `<a href="#/events/${e.features[0].properties.id}">
+                     <div class="primary-text">${evName}</div>
+                     <div class="secondary-text">${evStatus} - \n ${evPlace} </div>
+                     <label>${evLastUpdate} </label>
+                     </a>
+                 `;
+
+                 // Ensure that if the map is zoomed out such that multiple
+                 // copies of the feature are visible, the popup appears
+                 // over the copy being pointed to.
+                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                 }
+                 // Populate the popup and set its coordinates
+                 // based on the feature found.
+                 popup.setLngLat(coordinates)
+                     .setHTML(contentStr)
+                     .addTo(map);
+             });
+
+             map.on('mouseleave', 'places', function() {
+                 map.getCanvas().style.cursor = '';
+                 popup.remove();
+             });
         },
 
         loadEventsLayer(){
