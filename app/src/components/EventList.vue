@@ -54,7 +54,9 @@
                                 <span class="list-actions">
                                     <v-icon color="grey lighten-1">exit_to_app</v-icon>
                                     <v-icon color="grey lighten-1">bookmark</v-icon>
-                                    <v-icon color="grey lighten-1">map</v-icon>
+                                    <router-link :to="{ name: 'map-main', params:{eventId: props.item.id}}">
+                                        <v-icon color="grey lighten-1">map</v-icon>
+                                    </router-link>
                                 </span>
                             </v-list-tile-title>
                             <span class="not-render list-types" v-for="(eventType, index) in props.item.metadata.types" :key="index">  {{eventType}}  </span>

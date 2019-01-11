@@ -27,26 +27,32 @@ function getFeatures(topology, key) {
     };
   });
 }
-
+var map;
 
 export default {
     name: 'map-annotation',
     props: {
         coordinates: {
             type: Array
+        },
+        eventId: {
+            type: String
         }
     },
     data(){
         return{
-            map: {}
+            eventFeatureCollection:[],
+            recentCoordinates: []
         };
     },
     mounted(){
         this.fetchEvents();
+        if(this.eventId){
+            // this.zoomToEventCenter();
+        }
     },
     watch: {
         coordinates(newVal){
-            console.log('newVal ---coordinates-- ', newVal);
             this.map.setView([newVal[0], newVal[1]], 7);
             this.map.invalidateSize();
         },
@@ -71,12 +77,27 @@ export default {
         },
         initMap(){
             var geojsonEvents = this.eventsGeoJson.objects.output;
-            var featureEvents = getFeatures(this.eventsGeoJson, 'output');
-            var recentCoordinate = geojsonEvents.geometries[0].coordinates;
-            var map = new mapboxgl.Map({
+            var eventFeatureCollection = getFeatures(this.eventsGeoJson, 'output');
+
+            if(this.eventId){
+                var eventObj = eventFeatureCollection.filter(item =>{
+                    return item.properties.id == this.eventId;
+                });
+                console.log(' ------- eventObj', eventObj );
+                var gotoCoordinates = eventObj[0].geometry.coordinates;
+                this.recentCoordinates = gotoCoordinates;
+            }else if(this.recentCoordinates){
+                console.log('------- this.recentCoordinates ', this.recentCoordinates); 
+                var gotoCoordinates = this.recentCoordinates; // to not lose center when refreshing
+            }else{
+                var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
+            }
+
+
+            map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/usergroup/cjqgq0x5m81vc2soitj9bem5u',
-                center: recentCoordinate,
+                center: gotoCoordinates,
                 zoom: 10,
                 minZoom: 4
             });
@@ -86,7 +107,7 @@ export default {
                     type: "geojson",
                     data: {
                         "type": "FeatureCollection",
-                        "features": featureEvents
+                        "features": eventFeatureCollection
                     },
                     cluster: true,
                     clusterMaxZoom: 14, // Max zoom to cluster points on
@@ -123,7 +144,7 @@ export default {
 
             // Create a popup, but don't add it to the map yet.
              var popup = new mapboxgl.Popup({
-                 closeButton: false,
+                 closeButton: true,
                  closeOnClick: false
              });
 
@@ -172,33 +193,23 @@ export default {
                      .addTo(map);
              });
 
-             map.on('mouseleave', 'places', function() {
-                 map.getCanvas().style.cursor = '';
-                 popup.remove();
-             });
+             // map.on('mouseleave', 'event-epicenter', function() {
+             //     map.getCanvas().style.cursor = '';
+             //     popup.remove();
+             // });
         },
 
         loadEventsLayer(){
 
         },
-        onEachFeature(feature, layer) {
+        zoomToEventCenter(){
+            var eventObj = this.eventFeatureCollection.filter(item =>{
+                return item.properties.id == this.eventId;
+            });
 
-            var popupContent = '';
+            console.log('eventObj-------- ',eventObj );
 
-            if (feature.properties && feature.properties.properties) {
-                popupContent = 'Full name: <a href="#" onclick="onContactLinkClick(' +
-            feature.properties.id +
-            ')" data-toggle="modal" data-target="#contactDetailsModal">' +
-          (typeof(feature.properties.properties.title)==='undefined' ? '' : feature.properties.properties.title) + ' ' + feature.properties.properties.name + '</a>' +
-          '<br>Private contact? ' + (feature.private ? 'yes' : 'no') +
-          '<br>Email address: '+(typeof(feature.properties.properties.email)==='undefined' ? '' : '<a href="mailto:'+feature.properties.properties.email+'">'+feature.properties.properties.email+'</a>') +
-          '<br>Mobile: '+(typeof(feature.properties.properties.cell)==='undefined' ? '' : feature.properties.properties.cell) +
-          '<br>Type of contact: '+(typeof(feature.properties.properties.type)==='undefined' ? '' : feature.properties.properties.type) +
-          '<br>Organisation: '+(typeof(feature.properties.properties.employer)==='undefined' ? '' : feature.properties.properties.employer) +
-          '<br>Job title: '+(typeof(feature.properties.properties.job_title)==='undefined' ? '' : feature.properties.properties.job_title);
-            }
-
-            layer.bindPopup(new L.Rrose({ autoPan: false, offset: new L.Point(0,0)}).setContent(popupContent));
+            map.flyTo({center: [eventObj.geometry.coordinates]});
         }
     }
 

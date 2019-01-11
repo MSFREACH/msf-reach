@@ -2,8 +2,10 @@
     <v-layout>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
         <div :id="mapId" class="map"></div>
-        <v-btn color="white" small class="anchor-nav" fab absolute bottom right>
-            <v-icon>map</v-icon>
+        <v-btn color="white" small class="anchor-nav" fab absolute right>
+            <router-link :to="{ name: 'map-main', params:{eventId: $route.params.slug}}">
+                <v-icon>map</v-icon>
+            </router-link>
         </v-btn>
     </v-layout>
 </template>
@@ -115,8 +117,10 @@ export default {
     }
 
     .anchor-nav{
-        z-index: 11;
-        bottom: 12px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 30 !important;
     }
 
     .generalContainer{
