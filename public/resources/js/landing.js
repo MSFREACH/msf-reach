@@ -987,14 +987,14 @@ mainMap.on('moveend', function(){
 });
 
 // Add some base tiles
-var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXNmaGsiLCJhIjoiY2pxdnp0N3E2MTBwZDQybWhtMGw2aWljYSJ9.I6nmYZcm6p77JgxlITRfpQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 2,
     maxZoom: 18
 });
 
 // Add some satellite tiles
-var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG9tYXN1c2VyZ3JvdXAiLCJhIjoiY2o0cHBlM3lqMXpkdTJxcXN4bjV2aHl1aCJ9.AjzPLmfwY4MB4317m4GBNQ', {
+var mapboxSatellite = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXNmaGsiLCJhIjoiY2pxdnp0N3E2MTBwZDQybWhtMGw2aWljYSJ9.I6nmYZcm6p77JgxlITRfpQ', {
     minZoom: 2,
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
 });
