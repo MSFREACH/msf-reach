@@ -1315,7 +1315,7 @@ if (window.location.hostname.toLowerCase().startsWith('test.') || window.locatio
 
 // Enter an API key from the Google API Console:
 //   https://console.developers.google.com/apis/credentials
-const GoogleApiKey = 'AIzaSyDRRHBlIoij_c4Lx8IzwY8OpPmVPABC81g';
+const GoogleApiKey = 'AIzaSyBI92Die-8EJ8kKGk5H1s7uoJlj9zn7PkU';
 
 // Set endpoints for Google
 const GoogleEndpoints = {
