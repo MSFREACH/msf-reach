@@ -68,7 +68,7 @@ $(function () {
 
                     }
                 }).fail(function (req, textStatus, err){ // eslint-disable-line no-unused-vars
-                    $('#updateModalMsg').html('Error in deleting contact, contact <a href="mailto:admin@msf-reach.org">MSF admin</a> for manual deletion.');
+                    $('#updateModalMsg').html('Error in deleting contact, contact <a href="mailto:admin.reach@hongkong.msf.org">MSF admin</a> for manual deletion.');
 
                 });
 

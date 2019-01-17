@@ -1491,7 +1491,7 @@ var vmObject = {
         msfMedicalMaterials:msfMedicalMaterials,
         msfNonMedicalMaterials:msfNonMedicalMaterials,
         newNotification:'',
-        manualEmailHref:'mailto:admin@msf-reach.org',
+        manualEmailHref:'mailto:admin.reach@hongkong.msf.org',
         inviteeOptions: [
         ],
         selectedInvitees: [],
