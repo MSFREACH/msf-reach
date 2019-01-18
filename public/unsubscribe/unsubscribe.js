@@ -10,5 +10,5 @@ $.ajax({
 }).done(function() {
     $('#confirmationDiv').append('unsubscribed');
 }).fail(function(err) {
-    ('#confirmationDiv').append('unsubscribe failed' + err + ' please contact <a href="mailto:admin@msf-reach.org">MSF REACH</a> with details of the error');
+    ('#confirmationDiv').append('unsubscribe failed' + err + ' please contact <a href="mailto:admin.reach@hongkong.msf.org">MSF REACH</a> with details of the error');
 });

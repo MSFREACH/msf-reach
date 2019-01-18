@@ -37,7 +37,7 @@ export default ( config, logger ) => ({
         let emContext={ updateLink: uLink ,expiresIn: config.PEER_GUID_TIMEOUT/3600 };
 
         const mailOptions = {
-            from: 'MSF-REACH <admin@msf-reach.org>', // sender address
+            from: 'MSF-REACH <admin.reach@hongkong.msf.org>', // sender address
             to: recipient,
             subject: 'Update your MSF-REACH contact details',
             template: 'plain',
@@ -117,7 +117,7 @@ export default ( config, logger ) => ({
                         };
 
                         const mailOptions = {
-                            from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
+                            from: 'MSF-REACH <admin.reach@hongkong.msf.org>', // sender address -
                             to: recipient.userPrincipalName,
                             subject: 'Contact sharing notification',
                             template: 'share',
@@ -180,7 +180,7 @@ export default ( config, logger ) => ({
                         unsubscribeLink: config.BASE_URL+'unsubscribe/index.html#'+id+'+'+data.subscribers[i]
                     };
                     let mailOptions = {
-                        from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
+                        from: 'MSF-REACH <admin.reach@hongkong.msf.org>', // sender address -
                         to: data.subscribers[i],
                         subject: 'Event update notification',
                         template: 'event_update',
@@ -238,7 +238,7 @@ export default ( config, logger ) => ({
                 loginLink: config.BASE_URL+'login'
             };
             let mailOptions = {
-                from: 'MSF-REACH <admin@msf-reach.org>', // sender address -
+                from: 'MSF-REACH <admin.reach@hongkong.msf.org>', // sender address -
                 to: invitee.mail, // @mehrdadgit could use userPrincipalName but best to use mail which is present and may be different and preferred
                 subject: 'Invitation to subscribe to an Event ',
                 template: 'event_invite_subscribe',
