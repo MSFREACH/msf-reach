@@ -1,7 +1,27 @@
 <template>
     <v-layout>
         <div id="map" class="map"></div>
+        <v-layout class="mode-docker">
+            <v-flex xs12 sm6 class="py-2">
+                <p>Map mode</p>
+                <v-btn-toggle v-model="toggle_mode" mandatory>
+                  <v-btn flat value="thematic">
+                    <v-icon>invert_colors</v-icon>
+                  </v-btn>
+                  <v-btn flat value="terrain">
+                    <v-icon>terrain</v-icon>
+                  </v-btn>
+                  <v-btn flat value="satellite">
+                    <v-icon>satellite</v-icon>
+                  </v-btn>
+                  <v-btn flat value="humanitarian">
+                    <v-icon>accessibility_new</v-icon>
+                  </v-btn>
+                </v-btn-toggle>
+              </v-flex>
+          </v-layout>
     </v-layout>
+
 </template>
 <script>
 /*eslint no-console: off*/
@@ -10,7 +30,7 @@
 /*eslint no-debugger: off*/
 
 import { mapGetters } from 'vuex';
-import { TILELAYER_REACH } from '@/common/map-fields';
+import { TILELAYER_REACH, MAPBOX_STYLES } from '@/common/map-fields';
 import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
 
@@ -36,13 +56,15 @@ export default {
             type: Array
         },
         eventId: {
-            type: String
+            type: String,
+            required: false
         }
     },
     data(){
         return{
             eventFeatureCollection:[],
-            recentCoordinates: []
+            recentCoordinates: [],
+            toggle_mode: 1
         };
     },
     mounted(){
@@ -61,6 +83,9 @@ export default {
                 this.initMap();
                 this.loadEventsLayer();
             }
+        },
+        toggle_mode(val){
+            map.setStyle(MAPBOX_STYLES[val]);
         }
     },
     computed: {
@@ -87,7 +112,7 @@ export default {
                 var gotoCoordinates = eventObj[0].geometry.coordinates;
                 this.recentCoordinates = gotoCoordinates;
             }else if(this.recentCoordinates){
-                console.log('------- this.recentCoordinates ', this.recentCoordinates); 
+                console.log('------- this.recentCoordinates ', this.recentCoordinates);
                 var gotoCoordinates = this.recentCoordinates; // to not lose center when refreshing
             }else{
                 var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
@@ -96,7 +121,7 @@ export default {
 
             map = new mapboxgl.Map({
                 container: 'map',
-                style: 'mapbox://styles/usergroup/cjqgq0x5m81vc2soitj9bem5u',
+                style: MAPBOX_STYLES.thematic,
                 center: gotoCoordinates,
                 zoom: 10,
                 minZoom: 4
@@ -237,6 +262,12 @@ export default {
         .leaflet-pane {
             z-index: 10 !important;
         }
+    }
+    .mode-docker{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin: 30px;
     }
 
 </style>

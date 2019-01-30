@@ -28,3 +28,11 @@ export const TILELAYER_REACH = {
         attribution: '© Mapbox © OpenStreetMap © DigitalGlobe'
     }
 };
+
+
+export const MAPBOX_STYLES = {
+    thematic: 'mapbox://styles/usergroup/cjqgq0x5m81vc2soitj9bem5u',
+    terrain: 'mapbox://styles/mapbox/outdoors-v11',
+    satellite: 'mapbox://styles/mapbox/satellite-streets-v11',
+    humanitarian: 'mapbox://styles/mapbox/light-v10'
+};
