@@ -111,13 +111,19 @@
                           <v-layout row wrap>
                               <v-flex xs6 style="display: inline-block;">
                               <label> Description </label>
-                                  <v-textarea auto-grow id="eventDescription" v-model="metadata.description" placeholder="Event description"> </v-textarea>
+                                  <v-textarea auto-grow id="eventDescription" v-model="metadata.description" placeholder="* supports markdown text formatting"> </v-textarea>
                               </v-flex>
                               <v-flex xs6 style="display: inline-block;">
                                   <label>PREVIEW</label>
                                   <div class="markdown-fields" v-html="mdRender(metadata.description)"></div>
                               </v-flex>
                           </v-layout>
+                          <v-expansion-panel expand flat>
+                              <v-expansion-panel-content>
+                                  <label slot="header"> * markdown syntax guide</label>
+                                  <mark-down-explain></mark-down-explain>
+                                </v-expansion-panel-content>
+                          </v-expansion-panel>
                           <hr class="row-divider"/>
 
                           <v-text-field class="sharepoint-input" clearable prepend-icon="link" label="SharePoint Link" v-model="metadata.sharepoint_link" round ></v-text-field>
@@ -156,7 +162,7 @@ import { DEFAULT_EVENT_METADATA } from '@/common/form-fields';
 import { CREATE_EVENT } from '@/store/actions.type';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import MapInput from '@/views/Map/MapInput.vue';
-
+import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
 
 export default {
     name: 'new-event',
@@ -183,10 +189,11 @@ export default {
         timeSelected: false,
         defaultMetadata: DEFAULT_EVENT_METADATA,
         metadata: DEFAULT_EVENT_METADATA,
-        inProgress: false
+        inProgress: false,
+        toggle_format: [0, 1]
     }),
     components:{
-        MapInput
+        MapInput, MarkDownExplain
     },
     computed:{
         ...mapGetters([
@@ -233,6 +240,9 @@ export default {
         },
         addType(){
             this.newType = this.defaultType;
+        },
+        addSyntax(type){
+            var selection = window.getSelection();
         },
         submitType(){
             var tmp = this.newType;
@@ -322,5 +332,8 @@ export default {
     .v-stepper__header{
         box-shadow: none;
         border-bottom: 1px solid lightgray;
+    }
+    .v-expansion-panel{
+        box-shadow: none;
     }
 </style>

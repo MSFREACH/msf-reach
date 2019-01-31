@@ -32,6 +32,12 @@
                             <label>PREVIEW</label>
                             <div class="markdown-fields" v-html="mdRender(editedItem.description)"></div>
                         </v-flex>
+                        <v-expansion-panel expand flat>
+                            <v-expansion-panel-content>
+                                <label slot="header"> * markdown syntax guide</label>
+                                <mark-down-explain></mark-down-explain>
+                              </v-expansion-panel-content>
+                        </v-expansion-panel>
                         <hr class="row-divider">
                         <v-card class="file-attachment" light>
                             <form enctype="multipart/form-data">
@@ -122,6 +128,7 @@ import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/com
 import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
+import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
 
 export default {
     name: 'r-event-notifications',
@@ -153,7 +160,7 @@ export default {
         };
     },
     components: {
-        //TODO: add + edit notification
+        MarkDownExplain
     },
 
     filters: {
