@@ -15,10 +15,13 @@
 /*eslint no-negated-condition: off*/
 /*eslint no-debugger: off*/
 
+import { mapGetters } from 'vuex';
 import L from 'leaflet';
 // import 'leaflet/dist/leaflet.css';
-import { TILELAYER_TERRAIN, TILELAYER_SATELLITE, TILELAYER_HOTOSM, TILELAYER_REACH } from '@/common/map-fields';
+import { MAPBOX_STYLES } from '@/common/map-fields';
+import { FETCH_GEOJSON_POLYGON } from '@/store/actions.type';
 
+var map;
 export default {
     name: 'map-annotation',
     props: {
@@ -31,6 +34,9 @@ export default {
         },
         geocoding: {
             type: Boolean
+        },
+        address:{
+            type: Object
         }
     },
     data(){
@@ -51,27 +57,47 @@ export default {
             }]
         };
     },
+    computed: {
+        ...mapGetters([
+            'geojsonPolygon'
+        ])
+    },
     mounted(){
         this.initMap();
         this.initLayers();
+
+        if(this.address){
+            this.getBoundaries();
+        }
     },
     watch: {
+        address(newVal){
+            this.getBoundaries();
+        },
         coordinates(newVal){
-            this.map.panTo([newVal[1], newVal[0]]);
+            if(newVal) map.jumpTo({center: newVal}); 
+        },
+        geojsonPolygon(newVal){
+            if(newVal) this.addBoundaryLayer();
+        },
+        '$route' (to, from){
+            var oldLayer = this.mapId + from.params.slug;
+            map.removeLayer(oldLayer);
         }
     },
     methods: {
         initMap(){
             var mapID = this.mapId;
-            this.map = L.map(this.mapId, {dragging: !L.Browser.mobile, tap:false});
-            this.tileLayer.reachTiles = L.tileLayer(TILELAYER_REACH.URL);
-            this.tileLayer.reachTiles.addTo(this.map);
-            this.map.scrollWheelZoom.disable();
-            this.map.doubleClickZoom.disable();
-            this.map.setView([this.coordinates[1], this.coordinates[0]], 10);
-            // var eventMarker = L.marker([this.coordinates[0], this.coordinates[1]]).addTo(this.map);
-            var vm = this;
-            setTimeout(function(){ vm.map.invalidateSize(); }, 1000);
+
+            map = new mapboxgl.Map({
+                container: mapID,
+                style: MAPBOX_STYLES.thematic,
+                center: this.coordinates,
+                zoom: 10,
+                minZoom: 4
+            });
+
+
         },
         initLayers(){
             this.layers.forEach((layer) => {
@@ -86,6 +112,33 @@ export default {
                     feature.leafletObject = L.polygon(feature.coords).bindPopup(feature.name);
                 });
             });
+        },
+        addBoundaryLayer(){
+            map.addLayer({
+                'id':this.mapId + this.$route.params.slug,
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'geometry': this.geojsonPolygon.geojson
+                    }
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#0374C7',
+                    'fill-opacity': 0.35
+                }
+            })
+        },
+        getBoundaries(){
+            // TODO: double check for street address entries
+            if(this.address.region){
+                var query = `${this.address.region} ${this.address.country}`
+            }else{
+                var query = this.address.country;
+            }
+            this.$store.dispatch(FETCH_GEOJSON_POLYGON, query);
         },
         layerChanged(layerId, active){
             /* Show or hide the features in the layer */

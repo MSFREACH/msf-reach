@@ -15,7 +15,7 @@
                 </v-stepper-header>
                 <v-stepper-items>
                   <v-stepper-content step="1">
-                    <new-map-entry ref="mapEntry"></new-map-entry>
+                    <map-input ref="mapEntry"></map-input>
                     <v-btn class="right" flat @click="e1 = 2"> Continue</v-btn>
                   </v-stepper-content>
 
@@ -155,7 +155,7 @@ import { EVENT_TYPES,
 import { DEFAULT_EVENT_METADATA } from '@/common/form-fields';
 import { CREATE_EVENT } from '@/store/actions.type';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
-import NewMapEntry from '@/views/Map/NewEntry.vue';
+import MapInput from '@/views/Map/MapInput.vue';
 
 
 export default {
@@ -186,7 +186,7 @@ export default {
         inProgress: false
     }),
     components:{
-        NewMapEntry
+        MapInput
     },
     computed:{
         ...mapGetters([
@@ -208,8 +208,7 @@ export default {
             if(val){
                 var vm = this;
                 setTimeout(function(){
-                    vm.$refs.mapEntry.$refs.mapAnnotation.map.invalidateSize();
-                }, 500);
+                    vm.$refs.mapEntry.resizeMap(); }, 100);
                 this.e1 = 1;
                 this.metadata = this.defaultMetadata;
             }

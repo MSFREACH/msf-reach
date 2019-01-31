@@ -202,7 +202,7 @@
         </div>
 
         <div class="map-annotation">
-            <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates"></map-annotation>
+            <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="eventMetadata.areas[0]"></map-annotation>
         </div>
     </v-container>
 </template>

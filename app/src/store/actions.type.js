@@ -55,3 +55,6 @@ export const FETCH_SITREPS = 'fetchSitreps';
 export const CREATE_SITREP = 'createSitrep';
 export const EDIT_SITREP = 'editSitrep';
 export const DELETE_SITREP = 'deleteSitrep';
+
+export const FETCH_GEOJSON_POLYGON = 'fetchGeojsonPolygon';
+export const FETCH_REVERSE_GEOCODER = 'fetchReverseGeocoder'; 

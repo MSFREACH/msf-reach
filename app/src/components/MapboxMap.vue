@@ -69,9 +69,6 @@ export default {
     },
     mounted(){
         this.fetchEvents();
-        if(this.eventId){
-            // this.zoomToEventCenter();
-        }
     },
     watch: {
         coordinates(newVal){
@@ -108,11 +105,9 @@ export default {
                 var eventObj = eventFeatureCollection.filter(item =>{
                     return item.properties.id == this.eventId;
                 });
-                console.log(' ------- eventObj', eventObj );
                 var gotoCoordinates = eventObj[0].geometry.coordinates;
                 this.recentCoordinates = gotoCoordinates;
             }else if(this.recentCoordinates){
-                console.log('------- this.recentCoordinates ', this.recentCoordinates);
                 var gotoCoordinates = this.recentCoordinates; // to not lose center when refreshing
             }else{
                 var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
@@ -231,8 +226,6 @@ export default {
             var eventObj = this.eventFeatureCollection.filter(item =>{
                 return item.properties.id == this.eventId;
             });
-
-            console.log('eventObj-------- ',eventObj );
 
             map.flyTo({center: [eventObj.geometry.coordinates]});
         }

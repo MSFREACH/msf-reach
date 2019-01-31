@@ -78,7 +78,7 @@ export const EventsService = {
         return ApiService.get('events', slug);
     },
     create (params) {
-        console.log('create (params)-------', params); 
+        console.log('create (params)-------', params);
         return ApiService.post('events', params);
     },
     update (slug, params) {
@@ -197,5 +197,20 @@ export const UtilService = {
                 return data;
             }]
         });
+    },
+    getGeojsonPolygon(params){
+        var url = 'https://nominatim.openstreetmap.org/search.php';
+        return axios.get(url, {
+            params: params,
+            withCredentials: false,
+            transformRequest: [(data, headers) => {
+                delete headers.common.Authorization;
+                return data;
+            }]
+        });
+    },
+    getReverseGeocoder(coors){
+        var url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coors[0]},${coors[1]}.json`;
+        return axios.get(url, {params: {access_token: mapboxgl.accessToken}, withCredentials: false});
     }
 };

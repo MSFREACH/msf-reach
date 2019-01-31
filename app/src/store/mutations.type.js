@@ -31,3 +31,6 @@ export const SET_EVENT_NOTIFICATION = 'setEventNotification';
 export const FETCH_SITREPS_START = 'setSitrepLoading';
 export const FETCH_SITREPS_END = 'fetchSitrepEnd';
 export const SET_SITREP = 'setSitrep';
+
+export const FETCH_GEOJSON_POLYGON_END = 'fetchGeojsonPolygonEnd';
+export const FETCH_REVERSE_GEOCODER_END = 'fetchReverseGeojsonEnd';
