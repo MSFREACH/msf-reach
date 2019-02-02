@@ -217,8 +217,13 @@ textarea{
 .create-new{
     .editTextArea{
         border: 1px solid $bg-space-grey;
+        padding: 10px;
+        .v-text-field>.v-input__control>.v-input__slot:after{
+            border-style: none;
+        }
     }
 }
+
 
 
 .pac-container, .pac-item {

@@ -3,6 +3,7 @@
         <div class="searchHeader">
             <v-text-field v-model='search' label='Search' single-line hide-details xs10></v-text-field>
             <v-select v-model="selectedCategory" :items="allNotificationCategories" label="Category" round clearable></v-select>
+            <markdown-panel v-if="showMarkdown && dialog"></markdown-panel>
             <v-dialog v-model="dialog" max-width="880px" :dark="editIndex != -1">
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                 <v-card :class="editIndex != -1 ? 'editing': 'create-new'">
@@ -32,12 +33,15 @@
                             <label>PREVIEW</label>
                             <div class="markdown-fields" v-html="mdRender(editedItem.description)"></div>
                         </v-flex>
-                        <v-expansion-panel expand flat>
+                        <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
+
+                        <!-- <v-expansion-panel expand flat>
                             <v-expansion-panel-content>
                                 <label slot="header"> * markdown syntax guide</label>
                                 <mark-down-explain></mark-down-explain>
                               </v-expansion-panel-content>
-                        </v-expansion-panel>
+                        </v-expansion-panel> -->
+
                         <hr class="row-divider">
                         <v-card class="file-attachment" light>
                             <form enctype="multipart/form-data">
@@ -128,7 +132,8 @@ import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/com
 import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
-import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
+// import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
+import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 
 export default {
     name: 'r-event-notifications',
@@ -140,6 +145,7 @@ export default {
     data(){
         return {
             dialog: false,
+            showMarkdown: false,
             previewDialog: false,
             editing: false,
             allNotificationCategories: EVENT_NOTIFICATION_CATEGORIES,
@@ -160,7 +166,7 @@ export default {
         };
     },
     components: {
-        MarkDownExplain
+        MarkdownPanel
     },
 
     filters: {
@@ -307,6 +313,7 @@ export default {
         },
         close () {
             this.dialog = false;
+            this.showMarkdown = false;
             setTimeout(() => {
                 this.editedItem = Object.assign({}, this.defaultItem);
                 this.previewFileUrls = [];

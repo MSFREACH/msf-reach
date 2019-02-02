@@ -2,7 +2,8 @@
     <v-container class='eventSubContent SITREP-Container'>
         <div class="searchHeader">
             <v-text-field v-model='search' append-icon='search' label='Search' single-line hide-details xs10></v-text-field>
-            <v-dialog v-model='dialog' max-width='1180px' :dark="editIndex != -1">
+            <markdown-panel v-if="showMarkdown && dialog"></markdown-panel>
+            <v-dialog v-model='dialog' max-width='880px' :dark="editIndex != -1">
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
                 <v-card :class="editIndex != -1 ? 'editing': 'create-new'">
                 <v-flex right>
@@ -19,6 +20,8 @@
                             <label>PREVIEW</label>
                             <div class='markdown-fields' v-html='mdRender(editedSitrep.description)'></div>
                         </v-flex>
+                        <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
+
                         <hr class="row-divider"/>
                         <v-card class='file-attachment' light>
                             <form enctype='multipart/form-data'>
@@ -93,12 +96,14 @@ import marked from 'marked';
 import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, DELETE_SITREP, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { DEFAULT_SITREP_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
+import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 
 export default {
     name: 'r-event-sitrep',
     data(){
         return {
             dialog: false,
+            showMarkdown: false,
             editing: false,
             defaultSitrep: DEFAULT_SITREP_FIELDS,
             editedSitrep: DEFAULT_SITREP_FIELDS,
@@ -113,7 +118,7 @@ export default {
         };
     },
     components: {
-        //TODO: add + edit
+        MarkdownPanel
     },
     mounted(){
         this.fetchSitreps();
@@ -225,6 +230,7 @@ export default {
         },
         close () {
             this.dialog = false;
+            this.showMarkdown = false;
             setTimeout(() => {
                 this.editedSitrep = Object.assign({}, this.defaultSitrep);
                 this.previewFileUrls = [];
@@ -284,6 +290,9 @@ export default {
             .v-picker__body{
                 width: 150px;
             }
+        }
+        .md-sheet{
+            width: 25%;
         }
     }
     .v-date-picker-header .v-btn{

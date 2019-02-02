@@ -1,6 +1,7 @@
 <template>
     <v-layout row>
-        <v-dialog v-model="dialog" persistent max-width="1080px">
+        <markdown-panel class="createNewSidePanel" :elevation="210" v-if="showMarkdown && dialog && e1 == 2"></markdown-panel>
+        <v-dialog v-model="dialog" persistent max-width="880px" hide-overlay>
             <v-btn slot="activator" fab small flat dark :size="40">
                 <v-icon> add </v-icon>
             </v-btn>
@@ -118,12 +119,14 @@
                                   <div class="markdown-fields" v-html="mdRender(metadata.description)"></div>
                               </v-flex>
                           </v-layout>
-                          <v-expansion-panel expand flat>
+                          <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
+
+                          <!-- <v-expansion-panel expand flat>
                               <v-expansion-panel-content>
                                   <label slot="header"> * markdown syntax guide</label>
                                   <mark-down-explain></mark-down-explain>
                                 </v-expansion-panel-content>
-                          </v-expansion-panel>
+                          </v-expansion-panel> -->
                           <hr class="row-divider"/>
 
                           <v-text-field class="sharepoint-input" clearable prepend-icon="link" label="SharePoint Link" v-model="metadata.sharepoint_link" round ></v-text-field>
@@ -137,7 +140,6 @@
                 </v-stepper-items>
               </v-stepper>
             </template>
-
         </v-dialog>
     </v-layout>
 </template>
@@ -162,13 +164,15 @@ import { DEFAULT_EVENT_METADATA } from '@/common/form-fields';
 import { CREATE_EVENT } from '@/store/actions.type';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import MapInput from '@/views/Map/MapInput.vue';
-import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
+// import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
+import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 
 export default {
     name: 'new-event',
     data: () => ({
         e1: 0,
         dialog: false,
+        showMarkdown: false,
         allSeverity: SEVERITY,
         allEventTypes: EVENT_TYPES,
         subTypes: {
@@ -193,7 +197,7 @@ export default {
         toggle_format: [0, 1]
     }),
     components:{
-        MapInput, MarkDownExplain
+        MapInput, MarkdownPanel
     },
     computed:{
         ...mapGetters([
@@ -218,6 +222,8 @@ export default {
                     vm.$refs.mapEntry.resizeMap(); }, 100);
                 this.e1 = 1;
                 this.metadata = this.defaultMetadata;
+            }else{
+                this.showMarkdown = false;
             }
         },
         e1(val){
@@ -228,12 +234,16 @@ export default {
                 delete semanticAddress.longitude;
                 semanticAddress["region"] = semanticAddress.administrative_area_level_1 ? [semanticAddress.locality, semanticAddress.administrative_area_level_1].join(',') : semanticAddress.locality;
                 this.metadata.areas = [semanticAddress];
+                this.extractAddress();
             }
         }
     },
     methods:{
         mdRender(value){
             if(value) return marked(value);
+        },
+        extractAddress(){
+            console.log(this.address);
         },
         deleteType(index){
             this.metadata.types.splice(index, 1);
@@ -336,4 +346,20 @@ export default {
     .v-expansion-panel{
         box-shadow: none;
     }
+    .createNewSidePanel{
+        position: fixed;
+        top: 0 !important;
+        height: 100vh !important;
+        background: #fff;
+        width: 100% !important;
+        z-index: 300 !important;
+        div{
+            display: inline-block !important;
+        }
+
+    }
+    .listHeader .v-toolbar__content div{
+
+    }
+
 </style>

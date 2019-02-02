@@ -68,7 +68,9 @@
                 <sharepoint-link v-if="eventMetadata.sharepoint_link" :link="eventMetadata.sharepoint_link"></sharepoint-link>
             </v-layout>
             <v-layout row wrap v-else>
-
+                <v-flex xs3>
+                    <markdown-panel class="sidePanel" v-if="showMarkdown"></markdown-panel>
+                </v-flex>
                 <div class="top-level primary-text">
                     <div class="one-half">
                         <label>Name</label>
@@ -195,8 +197,8 @@
                         <div class="markdown-fields" v-html="mdRender(eventMetadata.description)"></div>
                     </v-flex>
                 </v-layout>
+                <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
                 <hr class="row-divider"/>
-
                 <v-text-field clearable prepend-icon="link" label="SharePoint Link" v-model="eventMetadata.sharepoint_link" round ></v-text-field>
             </v-layout>
         </div>
@@ -216,6 +218,7 @@ import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import SharepointLink from '@/views/util/Sharepoint.vue';
 import { EDIT_EVENT } from '@/store/actions.type';
 import moment from 'moment';
+import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 
 /*eslint no-console: off*/
 /*eslint no-debugger: off*/
@@ -226,6 +229,7 @@ export default {
     data(){
         return {
             editing: false,
+            showMarkdown: false,
             allSeverity: SEVERITY,
             allEventTypes: EVENT_TYPES,
             subTypes: {
@@ -264,7 +268,7 @@ export default {
     },
     components:{
         //TODO: MAP goes here
-        MapAnnotation, VueGoogleAutocomplete, SharepointLink
+        MapAnnotation, VueGoogleAutocomplete, SharepointLink, MarkdownPanel
     },
     computed: {
         ...mapGetters([
@@ -399,6 +403,7 @@ export default {
             if(val){
                 this._beforeEditStatus = this.eventMetadata.event_status;
             }else{
+                this.showMarkdown = false;
                 this.save();
             }
         },
@@ -426,4 +431,10 @@ export default {
 <style lang="scss">
     @import '@/assets/css/display.scss';
     @import '@/assets/css/edit.scss';
+    .sidePanel{
+        top: 64px !important;
+        height: 100% !important;
+        background: #fff;
+        width: 25% !important;
+    }
 </style>
