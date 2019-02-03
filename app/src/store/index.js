@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import events from './events.module';
 import event from './event.module';
+import response from './response.module';
 import eventNotification from './eventNotification.module';
 import SITREP from './SITREP.module';
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
         profile,
         events,
         event,
+        response,
         eventNotification,
         SITREP,
         report,

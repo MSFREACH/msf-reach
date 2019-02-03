@@ -67,57 +67,74 @@
                         <v-text-field ref="total-budget" label="Total Budget" type="number" v-model="editStatusResource.budget.total"></v-text-field>
                         <v-select :items="allSelections.currencies" v-model="editStatusResource.budget.currency" item-text="currency" item-value="currency">
                         </v-select>
-
+                        <div class="one-half">
+                            <label> Supply Chain Specificities </label>
+                            <v-flex d-flex>
+                                <v-select :items="allSupplyChains" v-model="editStatusResource.supply_chain.type"></v-select>
+                            </v-flex>
+                            <v-textarea solo label="description" v-model="editStatusResource.supply_chain.description" background-color="white" color="secondary"></v-textarea>
+                        </div>
                         <v-text-field ref="institutional-donors" label="Institutional Donors" v-model="editResources.institutional_donors"></v-text-field>
 
                     </v-layout>
                     <v-layout row wrap v-else>
                         <div class="full-width" :class="displayStatusResources.status+'Wrapper'">
-                            <div class="one-half" ref="staff-list">
-                                <label>Staff List</label>
-                                <span v-if="!displayStatusResources.staff.listFileUrl">--</span> {{displayStatusResources.staff.listFileUrl}}
+                            <div class="full-width">
+                                <div class="one-half" ref="staff-list">
+                                    <label>Staff List</label>
+                                    <span v-if="!displayStatusResources.staff.listFileUrl">--</span> {{displayStatusResources.staff.listFileUrl}}
+                                </div>
+                                <v-spacer></v-spacer>
+                                <div class="one-half" ref="expatriates">
+                                    <label>Number of Expatriate</label>
+                                    <span v-if="!displayStatusResources.staff.expatriateCount">--</span> {{displayStatusResources.staff.expatriateCount}}
+                                </div>
+                                <div class="one-half" ref="national-staff">
+                                    <label>Number of National staff</label>
+                                    <span v-if="!displayStatusResources.staff.nationalStaffCount">--</span> {{displayStatusResources.staff.nationalStaffCount}}
+                                </div>
                             </div>
-                            <v-spacer></v-spacer>
-                            <div class="one-half" ref="expatriates">
-                                <label>Number of Expatriate</label>
-                                <span v-if="!displayStatusResources.staff.expatriateCount">--</span> {{displayStatusResources.staff.expatriateCount}}
-                            </div>
-                            <div class="one-half" ref="national-staff">
-                                <label>Number of National staff</label>
-                                <span v-if="!displayStatusResources.staff.nationalStaffCount">--</span> {{displayStatusResources.staff.nationalStaffCount}}
+                            <div class="full-width">
+                                <div class="one-half" ref="supply-chain">
+                                    <label>SUPPLY CHAIN SPECIFITIES</label>
+                                    <span v-if="displayStatusResources.supply_chain">
+                                    {{displayStatusResources.supply_chain.type}} -
+                                    <span class="notes">  {{displayStatusResources.supply_chain.description}} </span>
+                                    </span>
+                                    <span v-else> -- </span>
+                                </div>
+                                <div class="one-half" ref="total-budget">
+                                    <label>Total Budget</label>
+                                    <span v-if="displayStatusResources.budget.total">
+                                        {{displayStatusResources.budget.total.amount}} {{displayStatusResources.budget.currency}} - {{displayStatusResources.budget.total.from_who}}
+                                    </span>
+                                    <span v-else> -- </span>
+                                </div>
                             </div>
                         </div>
                         <hr class="row-divider"/>
+
                         <div ref="visa-requirements">
                             <div class="primary-text">Nationalities that requires Visa</div>
                             <label>Nationalities</label>
-                            <span v-if="!eventResources.visa_requirement">--</span> {{eventResources.visa_requirement.toString()}}
+                            <span v-if="eventResources.visa_requirement.length == 0">--</span> {{eventResources.visa_requirement.toString()}}
                         </div>
                         <hr class="row-divider"/>
                         <div ref="vaccination-requirements">
                             <div class="primary-text">Health and vaccination requirements</div>
                             <label>Required</label>
-                            <span v-if="!eventResources.vaccination_requirement.required">--</span> {{eventResources.vaccination_requirement.required.toString()}}
+                            <span v-if="eventResources.vaccination_requirement.required.length == 0"> -- </span> {{eventResources.vaccination_requirement.required.toString()}}
+
                             <label>Recommended</label>
-                            <span v-if="!eventResources.vaccination_requirement.recommended">--</span> {{eventResources.vaccination_requirement.recommended.toString()}}
+                            <span v-if="eventResources.vaccination_requirement.recommended.length == 0"> -- </span> {{eventResources.vaccination_requirement.recommended.toString()}}
+
                         </div>
                         <hr class="row-divider"/>
-
-
-                        <v-flex xs12 :class="displayStatusResources.status+'Wrapper'">
-                            <div class="one-half" ref="total-budget">
-                                <label>Total Budget</label>
-                                <span v-if="displayStatusResources.budget.total">
-                                    {{displayStatusResources.budget.total.amount}} {{displayStatusResources.budget.currency}} - {{displayStatusResources.budget.total.from_who}}
-                                </span>
-                                <span v-else> -- </span>
-                            </div>
-                            <div class="one-half" ref="institutional-donors">
-                                <label>Institutional Donors</label>
-                                <span v-if="eventResources.institutional_donors.length ==0">--</span>
-                                <span v-else>{{eventResources.institutional_donors}} </span>
-                            </div>
-                        </v-flex>
+                        <div ref="institutional-donors">
+                            <label>Institutional Donors</label>
+                            <span v-if="eventResources.institutional_donors.length ==0">--</span>
+                            <span v-else>{{eventResources.institutional_donors}} </span>
+                        </div>
                     </v-layout>
             </div>
             <div v-else>
@@ -141,6 +158,8 @@ import { mapGetters } from 'vuex';
 import COUNTRIES from '@/common/countries.json';
 import CURRENCIES from '@/common/currency-symbols.json';
 import VACCINATION from '@/common/WHO_vaccinations.json';
+import { SUPPLY_CHAIN_SPECIALITIES } from '@/common/resource-fields';
+
 export default {
     name: 'r-event-resources',
     props: {
@@ -161,6 +180,7 @@ export default {
                 isUpdating: false
             },
             requireVaccinations: [],
+            allSupplyChains: SUPPLY_CHAIN_SPECIALITIES,
             autoVaccinationRequired:{
                 autoUpdate: true,
                 isUpdating: false

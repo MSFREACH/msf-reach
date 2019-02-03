@@ -55,13 +55,13 @@ export const RESPONSE_NCDS_PROGRAMMES = [
     { value: 'diabetes', text: 'Diabetes' },
     { value: 'other_ncds', text: 'Other NCDs' }
 ];
-export const SUPPLY_CHAIN_SPECIALITIES = ['importation', 'regulations', 'storage'];
 
 export const OPERATIONAL_CENTERS = ['OCA', 'OCBA', 'OCG', 'OCB', 'OCP'];
 
 export const DEFAULT_RESPONSE_PROGRAMME = {
     name: null,
     value: null,
-    deployment: null,
-    scale: 1
+    open_date: null,
+    deployment_scale: 1,
+    notes: null
 };

@@ -104,6 +104,21 @@ export const EventsService = {
     }
 };
 
+export const ResponsesService = {
+    query (params) {
+        return ApiService.query('msfResponses', {params});
+    },
+    create (params) {
+        return ApiService.post('msfResponses', params);
+    },
+    update (slug, params) {
+        return ApiService.update('msfResponses', slug, params);
+    },
+    destroy (slug) {
+        return ApiService.delete(`msfResponses/${slug}`);
+    }
+};
+
 export const EventNotificationService = {
     query (params) {
         return ApiService.query('eventNotifications', {params});
@@ -195,7 +210,7 @@ export const UtilService = {
             withCredentials: false,
             transformRequest: [(data, headers) => {
                 delete headers.common.Authorization;
-                console.log(' ---------- signedUpdate ------ ', data); 
+                console.log(' ---------- signedUpdate ------ ', data);
                 return data;
             }]
         });

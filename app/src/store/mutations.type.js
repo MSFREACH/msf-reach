@@ -22,7 +22,9 @@ export const FETCH_UPLOAD_URL_END = 'setRequestData';
 export const UPLOAD_START = 'setUploadInprogress';
 export const UPLOAD_END = 'setUploadDone';
 
-
+export const FETCH_RESPONSES_START = 'setResponsesLoading'; 
+export const FETCH_RESPONSES_END = 'setResponses';
+export const UPDATE_RESPONSE_IN_LIST = 'updateResponseInList';
 
 export const FETCH_EVENT_NOTIFICATIONS_START = 'setEventNotificationLoading';
 export const FETCH_EVENT_NOTIFICATIONS_END = 'fetchEventNotificationsEnd';

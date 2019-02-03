@@ -55,15 +55,17 @@ export const DEFAULT_EVENT_NOTIFICATION_FIELDS = {
     files: []
 };
 
-export const DEFAULT_EVENT_RESPONSE = {
-    timestamp:'',
-    status: '',
+export const DEFAULT_MSF_RESPONSE = {
+    event_id: '',
+    event_status: '',
     project_code: '',
-    start_date: null,
-    end_date: null,
-    response: {
-        type: '',
-        description: ''
+    metadata: {
+        type: null,
+        start_date: null,
+        end_date: null,
+        total_days : null,
+        description: null,
+        sharepoint_link: null
     },
     location: {
         coordinates: [],
@@ -74,15 +76,14 @@ export const DEFAULT_EVENT_RESPONSE = {
             country_code: ''
         }
     },
-    type_of_programmes:[{
-        name: '',
-        deployment: '',
-        notes: ''
-    }],
-    supply_chain: {
-        type: '',
-        description:''
-    }
+    programmes:[{
+        name: null,
+        value: null,
+        open_date: null,
+        deployment_scale: 1,
+        notes: null
+    }]
+
 };
 
 export const EXTERNAL_CAPACITY_FIELDS = {

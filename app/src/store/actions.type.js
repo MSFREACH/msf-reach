@@ -41,6 +41,10 @@ export const DELETE_CONTACT = 'deleteContact';
 export const FETCH_UPLOAD_URL = 'fetchUploadUrl';
 export const PUT_SIGNED_REQUEST = 'putSignedRequest';
 
+export const FETCH_MSF_RESPONSES = 'fetchMSFResponses';
+export const CREATE_MSF_RESPONSE = 'createMSFResponse';
+export const EDIT_MSF_RESPONSE = 'editMSFResponse';
+export const DELETE_MSF_RESPONSE = 'deleteMSFResponse';
 
 export const FETCH_EVENT_NOTIFICATIONS = 'fetchEventNotifications';
 export const CREATE_EVENT_NOTIFICATION = 'createEventNotification';
@@ -57,4 +61,4 @@ export const EDIT_SITREP = 'editSitrep';
 export const DELETE_SITREP = 'deleteSitrep';
 
 export const FETCH_GEOJSON_POLYGON = 'fetchGeojsonPolygon';
-export const FETCH_REVERSE_GEOCODER = 'fetchReverseGeocoder'; 
+export const FETCH_REVERSE_GEOCODER = 'fetchReverseGeocoder';

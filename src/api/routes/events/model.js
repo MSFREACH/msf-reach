@@ -24,7 +24,7 @@ export default (config, db, logger) => ({
         const geom = !!location.lng &&
         !!location.lat && 'POINT(' + location.lng +' '+location.lat +')' || null;
         // Setup query
-        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, responses, ext_capacity as extCapacity, figures, resources, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, ext_capacity as extCapacity, figures, resources, the_geom
 			FROM ${config.TABLE_EVENTS}
             WHERE ($1 is null or status = $1) AND
                 ($4 is null or
@@ -50,7 +50,7 @@ export default (config, db, logger) => ({
     byId: (id) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, responses, ext_capacity as extCapacity, figures, resources, the_geom
+        let query = `SELECT id, status, type, created_at, updated_at, report_key as reportkey, metadata, ext_capacity as extCapacity, figures, resources, the_geom
       FROM ${config.TABLE_EVENTS}
       WHERE id = $1
       ORDER BY created_at DESC`;
@@ -156,26 +156,6 @@ export default (config, db, logger) => ({
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
             //.then((data) => mail(config,logger).emailSubscribers(data,id))
             .then((data) => resolve({ id: String(id), status: body.status, type:data.type, created: data.created, reportkey:data.report_key, metadata:data.metadata, lat: data.lat, lng: data.lng }))
-            .catch((err) => reject(err));
-    }),
-
-
-    updateEventResponses: (id, body) => new Promise((resolve, reject) => {
-
-        // Setup query
-        let query = `UPDATE ${config.TABLE_EVENTS}
-            SET updated_at = now(),
-            responses = responses || $1
-            WHERE id = $2
-            RETURNING responses, updated_at, status`;  // not sure if we need to return all fields here like updateEvent
-
-        // Setup values
-        let values = [ body.status, body.responses, id];
-
-        // Execute
-        logger.debug(query, values);
-        db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id), status: data.status, responses: data.responses}))
             .catch((err) => reject(err));
     }),
 

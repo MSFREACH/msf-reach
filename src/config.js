@@ -35,6 +35,7 @@ export default {
     API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
     API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
+    API_MSF_RESPONSE_TYPES: (process.env.API_MSF_RESPONSE_TYPES || 'direct_activities,remote_activities,coordination,donations').split(','),
     API_EVENT_TYPES: powerSet(types),
     API_REPORT_STATUS_TYPES: (process.env.API_REPORT_STATUS_TYPES || 'unconfirmed,confirmed,ignored').split(','),
     AWS_COGNITO_PEM: (process.env.AWS_COGNITO_PEM || 'public_key').replace(/,/g,'\n'),
@@ -92,6 +93,7 @@ export default {
     TABLE_REPORTS: process.env.TABLE_REPORTS || 'cognicity.reports',
     TABLE_EVENTS: process.env.TABLE_EVENTS || 'cognicity.events',
     TABLE_EVENT_NOTIFICATIONS: process.env.TABLE_EVENT_NOTIFICATIONS || 'cognicity.event_notifications',
+    TABLE_MSF_RESPONSES: process.env.TABLE_MSF_RESPONSES || 'cognicity.msf_responses',
     TABLE_SITREPS: process.env.TABLE_SITREPS || 'cognicity.sitreps',
     TABLE_MISSIONS: process.env.TABLE_MISSIONS || 'cognicity.missions',
     TABLE_CONTACTS: process.env.TABLE_CONTACTS || 'cognicity.contacts',
