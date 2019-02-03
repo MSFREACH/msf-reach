@@ -92,6 +92,7 @@ export const EVENT_NOTIFICATION_CATEGORIES = [
     {text: 'NEEDS', value: 'NEEDS' },
     {text: 'CONTACTS', value: 'CONTACTS' },
     {text: 'SECURITY', value: 'SECURITY' },
+    {text: 'MAP', value: 'MAP' },
     {text: 'EXPLO findings', value: 'EXPLO_FINDINGS' }
 ];
 

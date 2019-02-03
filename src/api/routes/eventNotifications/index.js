@@ -37,7 +37,7 @@ export default ({ config, db, logger }) => {
         validate({
             body: Joi.object().keys({
                 eventId: Joi.number().integer().min(1),
-                category: Joi.string().allow(null),
+                category: Joi.string().allow('', null),
                 created: Joi.date().iso().required(),
                 description: Joi.string().required(),
                 username: Joi.string().allow(null),
@@ -61,7 +61,7 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                category: Joi.string().allow(null),
+                category: Joi.string().allow('', null),
                 username: Joi.string().allow(null),
                 updated: Joi.date().iso().required(),
                 description: Joi.string().required(),

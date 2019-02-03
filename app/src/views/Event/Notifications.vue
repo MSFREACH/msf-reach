@@ -35,13 +35,6 @@
                         </v-flex>
                         <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
 
-                        <!-- <v-expansion-panel expand flat>
-                            <v-expansion-panel-content>
-                                <label slot="header"> * markdown syntax guide</label>
-                                <mark-down-explain></mark-down-explain>
-                              </v-expansion-panel-content>
-                        </v-expansion-panel> -->
-
                         <hr class="row-divider">
                         <v-card class="file-attachment" light>
                             <form enctype="multipart/form-data">
@@ -97,7 +90,8 @@
                         <v-divider light></v-divider>
 
                         <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment" @click="previewDialog = true">
-                             <v-img :src="item" contain></v-img>
+                             <!-- <v-img :src="item" contain></v-img> -->
+                             <embed :src="item" width="100%" height="100%"></embed>
                         </v-card>
                         <v-dialog v-model="previewDialog" justify-center max-width="800px" transition="dialog-transition">
                             <v-carousel hide-controls>
@@ -265,7 +259,8 @@ export default {
         },
         uploadFile(file){
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
-                .then(() => {
+                .then((data) => {
+                    console.log("PUT_SIGNED_REQUEST ----- success------- ", data);
                     this.save();
                 });
         },
@@ -285,6 +280,7 @@ export default {
             var params  = _.extend(this.editedItem, {
                 username: this.currentUser.username
             });
+            params.files = this.signedFileUrls;
 
             if (!!isEdit){
                 params.updated = timeNow;

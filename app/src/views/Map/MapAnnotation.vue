@@ -1,6 +1,5 @@
 <template>
     <v-layout>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
         <div :id="mapId" class="map"></div>
         <v-btn color="white" small class="anchor-nav" fab absolute right>
             <router-link :to="{ name: 'map-main', params:{eventId: $route.params.slug}}">
@@ -16,8 +15,6 @@
 /*eslint no-debugger: off*/
 
 import { mapGetters } from 'vuex';
-import L from 'leaflet';
-// import 'leaflet/dist/leaflet.css';
 import { MAPBOX_STYLES } from '@/common/map-fields';
 import { FETCH_GEOJSON_POLYGON } from '@/store/actions.type';
 
@@ -42,11 +39,6 @@ export default {
     data(){
         return{
             map: null,
-            tileLayer:{
-                terrain: null,
-                satellite: null,
-                HotOSM: null
-            },
             layers: [{
                 id: 0,
                 name: 'areas',
@@ -75,7 +67,7 @@ export default {
             this.getBoundaries();
         },
         coordinates(newVal){
-            if(newVal) map.jumpTo({center: newVal}); 
+            if(newVal) map.jumpTo({center: newVal});
         },
         geojsonPolygon(newVal){
             if(newVal) this.addBoundaryLayer();
@@ -99,20 +91,35 @@ export default {
 
 
         },
-        initLayers(){
-            this.layers.forEach((layer) => {
-                const markerFeatures = layer.features.filter(feature => feature.type === 'marker');
-                const polygonFeatures = layer.features.filter(feature => feature.type === 'polygon');
-
-                markerFeatures.forEach((feature) => {
-                    feature.leafletObject = L.marker(feature.coords).bindPopup(feature.name);
-                });
-
-                polygonFeatures.forEach((feature) => {
-                    feature.leafletObject = L.polygon(feature.coords).bindPopup(feature.name);
-                });
-            });
-        },
+        // TODO:// load layers & TOggle layers in Mapbox
+        // initLayers(){
+        //     this.layers.forEach((layer) => {
+        //         const markerFeatures = layer.features.filter(feature => feature.type === 'marker');
+        //         const polygonFeatures = layer.features.filter(feature => feature.type === 'polygon');
+        //
+        //         markerFeatures.forEach((feature) => {
+        //             feature.leafletObject = L.marker(feature.coords).bindPopup(feature.name);
+        //         });
+        //
+        //         polygonFeatures.forEach((feature) => {
+        //             feature.leafletObject = L.polygon(feature.coords).bindPopup(feature.name);
+        //         });
+        //     });
+        // },
+        // layerChanged(layerId, active){
+        //     /* Show or hide the features in the layer */
+        //     const layer = this.layers.find(layer => layer.id === layerId);
+        //     layer.features.forEach((feature) => {
+        //         /* Show or hide the feature depending on the active argument */
+        //     });
+        //
+        //     /// toggle layer accordingly
+        //     if (active) {
+        //         feature.leafletObject.addTo(this.map);
+        //     } else {
+        //         feature.leafletObject.removeFrom(this.map);
+        //     }
+        // },
         addBoundaryLayer(){
             map.addLayer({
                 'id':this.mapId + this.$route.params.slug,
@@ -139,21 +146,8 @@ export default {
                 var query = this.address.country;
             }
             this.$store.dispatch(FETCH_GEOJSON_POLYGON, query);
-        },
-        layerChanged(layerId, active){
-            /* Show or hide the features in the layer */
-            const layer = this.layers.find(layer => layer.id === layerId);
-            layer.features.forEach((feature) => {
-                /* Show or hide the feature depending on the active argument */
-            });
-
-            /// toggle layer accordingly
-            if (active) {
-                feature.leafletObject.addTo(this.map);
-            } else {
-                feature.leafletObject.removeFrom(this.map);
-            }
         }
+
     }
 
 };
@@ -174,15 +168,6 @@ export default {
         bottom: 0;
         right: 0;
         z-index: 30 !important;
-    }
-
-    .generalContainer{
-        .leaflet-top, .leaflet-bottom {
-            z-index: 5 !important;
-        }
-        .leaflet-pane {
-            z-index: 10 !important;
-        }
     }
 
 </style>

@@ -192,8 +192,10 @@ export const UtilService = {
     },
     signedUpdate(params){
         return axios.put(params.url, [params.file], {
+            withCredentials: false,
             transformRequest: [(data, headers) => {
                 delete headers.common.Authorization;
+                console.log(' ---------- signedUpdate ------ ', data); 
                 return data;
             }]
         });

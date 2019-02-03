@@ -1,8 +1,27 @@
 <template>
     <v-layout>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
         <div id="map" class="map"></div>
+        <v-layout class="mode-docker">
+            <v-flex xs12 sm6 class="py-2">
+                <p>Map mode</p>
+                <v-btn-toggle v-model="toggle_mode" mandatory>
+                  <v-btn flat value="thematic">
+                    <v-icon>invert_colors</v-icon>
+                  </v-btn>
+                  <v-btn flat value="terrain">
+                    <v-icon>terrain</v-icon>
+                  </v-btn>
+                  <v-btn flat value="satellite">
+                    <v-icon>satellite</v-icon>
+                  </v-btn>
+                  <v-btn flat value="humanitarian">
+                    <v-icon>accessibility_new</v-icon>
+                  </v-btn>
+                </v-btn-toggle>
+              </v-flex>
+          </v-layout>
     </v-layout>
+
 </template>
 <script>
 /*eslint no-console: off*/
@@ -10,43 +29,42 @@
 /*eslint no-negated-condition: off*/
 /*eslint no-debugger: off*/
 
-import L from 'leaflet';
 import { mapGetters } from 'vuex';
-// import 'leaflet/dist/leaflet.css';
-import { TILELAYER_REACH } from '@/common/map-fields';
+import { MAPBOX_STYLES } from '@/common/map-fields';
 import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
 
+function getFeatures(topology, key) {
+  return topology.objects[key].geometries.map(function(geom) {
+    return {
+      type: "Feature",
+      id: geom.properties.id,
+      properties: geom.properties || {},
+      geometry: {
+        type: geom.type,
+        coordinates: geom.coordinates
+      }
+    };
+  });
+}
+var map;
+
 export default {
-    name: 'map-annotation',
+    name: 'map-main',
     props: {
         coordinates: {
             type: Array
         },
         eventId: {
-            type: Number
+            type: String,
+            required: false
         }
     },
     data(){
         return{
-            map: null,
-
-            icons: {
-                statuses: STATUS_ICONS
-            },
-            tileLayer:{
-                terrain: null,
-                satellite: null,
-                HotOSM: null
-            },
-            layers: [{
-                id: 0,
-                name: 'areas',
-                active: false,
-                features: [{
-
-                }]
-            }]
+            eventFeatureCollection:[],
+            recentCoordinates: [],
+            toggle_mode: 1
         };
     },
     mounted(){
@@ -54,17 +72,17 @@ export default {
     },
     watch: {
         coordinates(newVal){
-            console.log('newVal ---coordinates-- ', newVal);
             this.map.setView([newVal[0], newVal[1]], 7);
             this.map.invalidateSize();
         },
         eventsGeoJson(val){
             if(val){
-                if(!this.map) this.initMap();
-                // this.initLayers();
+                this.initMap();
                 this.loadEventsLayer();
-
             }
+        },
+        toggle_mode(val){
+            map.setStyle(MAPBOX_STYLES[val]);
         }
     },
     computed: {
@@ -80,71 +98,136 @@ export default {
             this.$store.dispatch(FETCH_EVENTS, {});
         },
         initMap(){
-            var mapID = this.mapId;
-            this.map = L.map('map', {dragging: !L.Browser.mobile, tap:false, minZoom: 4});
-            this.tileLayer.reachTiles = L.tileLayer(TILELAYER_REACH.URL);
-            this.tileLayer.reachTiles.addTo(this.map);  // Defaul use OpenStreetMap_hot
-            var lastCoordinate = this.eventsGeoJson.objects.output.geometries[0].coordinates;
-            this.map.setView([lastCoordinate[1], lastCoordinate[0]], 10);
+            var geojsonEvents = this.eventsGeoJson.objects.output;
+            var eventFeatureCollection = getFeatures(this.eventsGeoJson, 'output');
 
-            // var bbox = this.eventsGeoJson.bbox;
-            // this.map.fitBounds([ [bbox[0], bbox[1]], [bbox[2], bbox[1]]]);
-
-            L.control.scale().addTo(this.map);
-            // event Lat/Lng :: this.eventsGeoJson.objects.output.geometries
-            var eventMarker = L.marker([lastCoordinate[0], lastCoordinate[1]]).addTo(this.map);
-            var vm = this;
-            setTimeout(function(){ vm.map.invalidateSize(); }, 1000); /// returns error
-        },
-        initLayers(){
-            this.layers.forEach((layer) => {
-                const markerFeatures = layer.features.filter(feature => feature.type === 'marker');
-                const polygonFeatures = layer.features.filter(feature => feature.type === 'polygon');
-
-                markerFeatures.forEach((feature) => {
-                    feature.leafletObject = L.marker(feature.coords).bindPopup(feature.name);
+            if(this.eventId){
+                var eventObj = eventFeatureCollection.filter(item =>{
+                    return item.properties.id == this.eventId;
                 });
-
-                polygonFeatures.forEach((feature) => {
-                    feature.leafletObject = L.polygon(feature.coords).bindPopup(feature.name);
-                });
-            });
-        },
-        layerChanged(layerId, active){
-            /* Show or hide the features in the layer */
-            const layer = this.layers.find(layer => layer.id === layerId);
-            layer.features.forEach((feature) => {
-                /* Show or hide the feature depending on the active argument */
-            });
-
-            /// toggle layer accordingly
-            if (active) {
-                feature.leafletObject.addTo(this.map);
-            } else {
-                feature.leafletObject.removeFrom(this.map);
+                var gotoCoordinates = eventObj[0].geometry.coordinates;
+                this.recentCoordinates = gotoCoordinates;
+            }else if(this.recentCoordinates){
+                var gotoCoordinates = this.recentCoordinates; // to not lose center when refreshing
+            }else{
+                var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
             }
+
+
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: MAPBOX_STYLES.thematic,
+                center: gotoCoordinates,
+                zoom: 10,
+                minZoom: 4
+            });
+
+            map.on('load', function () {
+                map.addSource("reach-events", {
+                    type: "geojson",
+                    data: {
+                        "type": "FeatureCollection",
+                        "features": eventFeatureCollection
+                    },
+                    cluster: true,
+                    clusterMaxZoom: 14, // Max zoom to cluster points on
+                    clusterRadius: 50
+                });
+
+                map.addLayer({
+                    id: "event-epicenter",
+                    type: "circle",
+                    source: "reach-events",
+                    paint: {
+                       "circle-color": [
+                           "step",
+                           ["get", "point_count"],
+                           "#A46664", // wine red , less than 100
+                           100,
+                           "#A9272D", // standard red, between 100 and 750
+                           750,
+                           "#EE0000" // bright red, greater than or equal to 750
+                       ],
+                       "circle-radius": [
+                           "step",
+                           ["get", "point_count"],
+                           20,
+                           100,
+                           30,
+                           750,
+                           40
+                       ]
+                    },
+                    "filter": ["==", "$type", "Point"],
+                });
+            });
+
+            // Create a popup, but don't add it to the map yet.
+             var popup = new mapboxgl.Popup({
+                 closeButton: true,
+                 closeOnClick: false
+             });
+
+             map.on('mouseenter', 'event-epicenter', function(e) {
+                 // Change the cursor style as a UI indicator.
+                 map.getCanvas().style.cursor = 'pointer';
+                 var coordinates = e.features[0].geometry.coordinates.slice();
+
+                 var evMeta = JSON.parse(e.features[0].properties.metadata);
+                 var description = evMeta.description; // <<< missing feature.properties, need to convert GeometryCollection to FeatureCollection
+                 var evName = evMeta.name;
+                 // var evType = evMeta.types.join(',');
+                 var evStatus = evMeta.event_status;
+
+                 var cleanAreas = _.compact(evMeta.areas);
+                 var evPlace;
+                 if(!evMeta.areas || _.isEmpty(cleanAreas)){
+                     evPlace = evMeta.country;
+                 }else{
+                     if(cleanAreas[0].region){
+                         evPlace = cleanAreas[0].region + cleanAreas[0].country_code;
+                     }else{
+                         evPlace = cleanAreas[0].country;
+                     }
+                 }
+
+                 var evLastUpdate = e.features[0].properties.updated_at
+
+                 var contentStr = `<a href="#/events/${e.features[0].properties.id}">
+                     <div class="primary-text">${evName}</div>
+                     <div class="secondary-text">${evStatus} - \n ${evPlace} </div>
+                     <label>${evLastUpdate} </label>
+                     </a>
+                 `;
+
+                 // Ensure that if the map is zoomed out such that multiple
+                 // copies of the feature are visible, the popup appears
+                 // over the copy being pointed to.
+                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                 }
+                 // Populate the popup and set its coordinates
+                 // based on the feature found.
+                 popup.setLngLat(coordinates)
+                     .setHTML(contentStr)
+                     .addTo(map);
+             });
+
+             // map.on('mouseleave', 'event-epicenter', function() {
+             //     map.getCanvas().style.cursor = '';
+             //     popup.remove();
+             // });
         },
+
         loadEventsLayer(){
-            var vm = this;
-            var eventsLayer = L.geoJSON(this.eventsGeoJson.objects.output, {
-                pointToLayer: function (feature, latlng) {
-                    var evStatus = feature.geometry.properties.metadata.event_status ? feature.geometry.properties.metadata.event_status.toUpperCase() : 'MONITORING';
-                    var statusIcon = vm.icons.statuses[evStatus];
-                    if(statusIcon) return L.marker(latlng, {icon: L.icon(statusIcon)});
-                },
-                onEachFeature: vm.onEachFeature
+
+        },
+        zoomToEventCenter(){
+            var eventObj = this.eventFeatureCollection.filter(item =>{
+                return item.properties.id == this.eventId;
             });
 
-            eventsLayer.addTo(this.map);
-        },
-        onEachFeature(feature, layer) {
-            console.log('onEachFeature ------ ',feature ); // Todo: feature comes in as one big json and not a list
-
-            var popupContent = '';
-            if (feature.properties && feature.properties.properties) {
-                console.log(feature.properties, feature.properties.properties);
-            }
-            layer.bindPopup(popupContent);
+            map.flyTo({center: [eventObj.geometry.coordinates]});
         }
     }
 
@@ -172,6 +255,12 @@ export default {
         .leaflet-pane {
             z-index: 10 !important;
         }
+    }
+    .mode-docker{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin: 30px;
     }
 
 </style>
