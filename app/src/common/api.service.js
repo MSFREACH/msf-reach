@@ -36,7 +36,6 @@ const ApiService = {
                 throw new Error(`[ApiService] ${error}`);
             });
     },
-
     get (resource, slug = '') {
         return Vue.axios
             .get(`${resource}/${slug}`)
@@ -44,19 +43,15 @@ const ApiService = {
                 throw new Error(`[ApiService] ${error}`);
             });
     },
-
     post (resource, params) {
         return Vue.axios.post(`${resource}`, params);
     },
-
     update (resource, slug, params) {
         return Vue.axios.put(`${resource}/${slug}`, params);
     },
-
     put (resource, params) {
         return Vue.axios.put(`${resource}`, params);
     },
-
     delete (resource) {
         return Vue.axios
             .delete(resource)
@@ -113,6 +108,9 @@ export const ResponsesService = {
     },
     update (slug, params) {
         return ApiService.update('msfResponses', slug, params);
+    },
+    updateArea (slug, params) {
+        return ApiService.update(`msfResponses/${slug}/area`, params);
     },
     destroy (slug) {
         return ApiService.delete(`msfResponses/${slug}`);

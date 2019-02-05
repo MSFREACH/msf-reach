@@ -150,7 +150,7 @@ const getters ={
             return compactTypes.concat(compactSubTypes);
         }
 
-        if(state.eventProperties.type){
+        if(state.eventProperties && state.eventProperties.type){
             var types = state.eventProperties.type.replace(/other:/g, '').split(',');
             var cTypes = _.compact(types);
             _.remove(cTypes, function(t){

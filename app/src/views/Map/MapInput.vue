@@ -32,12 +32,13 @@
 <script>
 
 import { MAPBOX_STYLES } from '@/common/map-fields';
-import { FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER } from '@/store/actions.type';
+import { FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER, SET_RESPONSE_AREA_GEOMETRY } from '@/store/actions.type';
 import { mapGetters } from 'vuex';
-
+import $ from 'jquery';
 /*eslint no-console: off*/
 var map;
 var geocoder;
+var draw;
 
 export default {
     name: 'MapInput',
@@ -48,21 +49,30 @@ export default {
             geocodeCenter: [],
             geocodeResult: {},
             reverseGeoJson: {},
-            showSuggestion: false
+            showSuggestion: false,
+            polygon: {}
         };
     },
     computed: {
         ...mapGetters([
             'geojsonPolygon',
-            'reverseGeojson'
+            'reverseGeojson',
+            'eventCoordinates'
         ])
     },
     mounted(){
         this.initMap();
+        if(this.eventCoordinates) {
+            this.coordinates = this.eventCoordinates;
+            this.addDrawTool();
+        }
     },
     watch:{
         address(newVal){
             if(newVal) this.getBoundaries(newVal);
+        },
+        eventCoordinates(newVal){
+            console.log(newVal);
         },
         coordinates(newVal){
             if(newVal) {
@@ -76,13 +86,16 @@ export default {
             if(newVal) this.addBoundaryLayer();
         },
         reverseGeojson(newVal){
-            if(newVal) this.showSuggestion = true;
+            if(newVal && !this.eventCoordinates){
+                this.showSuggestion = true;
+            }
         }
     },
     methods: {
         initMap(){
             var mapID = this.mapId;
             var vm = this;
+
             map = new mapboxgl.Map({
                 container: 'newMap',
                 style: MAPBOX_STYLES.thematic,
@@ -90,13 +103,15 @@ export default {
                 zoom: 10,
                 minZoom: 4
             });
+
             geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 placeholder: 'Search address/location'
             });
 
-            // map.addControl(geocoder);
-            document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+            if(!$('.mapboxgl-ctrl-geocoder').length){
+                document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+            }
 
             geocoder.on('result', function(payload) {
                 vm.coordinates = payload.result.center;
@@ -150,7 +165,41 @@ export default {
             }
 
         }, 500),
+        addDrawTool(){
+            draw =new MapboxDraw({
+                displayControlsDefault: false,
+                controls: {
+                    polygon: true,
+                    trash: true
+                }
+            });
+            map.addControl(draw);
+            map.on('draw.create', this.updateArea);
+            map.on('draw.delete', this.updateArea);
+            map.on('draw.update', this.updateArea);
+            map.on('draw.modechange', this.drawModeChange);
 
+        },
+        updateArea(e){
+            var data = draw.getAll();
+            if(data.features.length > 0){
+                var area = turf.area(data);
+                var rounded_area = Math.round(area*100)/100;
+                console.log("rounded_area ---- ", rounded_area);
+                console.log("data ---- ---- ", data);
+            }
+        },
+        drawModeChange(e){
+            if(e.mode == "simple_select"){
+                var data = draw.getAll();
+                if(data.features.length > 0){
+                    console.log("data ---- simple_select---- ", this.polygon, data.features[0].geometry);
+                    this.polygon = data.features[0].geometry;
+                    console.log("data ---- polygon assigned---- ", this.polygon);
+                    this.$store.dispatch(SET_RESPONSE_AREA_GEOMETRY, {area: data.features[0].geometry })
+                }
+            }
+        },
         /** deprecated ----
         * When the location found
         * @param {Object} addressData Data of the found location

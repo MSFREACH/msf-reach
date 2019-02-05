@@ -56,9 +56,9 @@ export const DEFAULT_EVENT_NOTIFICATION_FIELDS = {
 };
 
 export const DEFAULT_MSF_RESPONSE = {
-    event_id: '',
-    event_status: '',
-    project_code: '',
+    event_id: null,
+    event_status: null,
+    project_code: null,
     metadata: {
         type: null,
         start_date: null,
@@ -69,18 +69,18 @@ export const DEFAULT_MSF_RESPONSE = {
     },
     location: {
         coordinates: [],
-        type: 'Point',
+        type: null,
         address: {
-            region: '',
-            country: '',
-            country_code: ''
+            region: null,
+            country: null,
+            country_code: null
         }
     },
     programmes:[{
         name: null,
         value: null,
         open_date: null,
-        deployment_scale: 1,
+        deployment_scale: null,
         notes: null
     }]
 

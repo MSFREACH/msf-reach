@@ -1,6 +1,6 @@
 import { Router } from 'express';
 // Import our data model
-import msfResponse from './model';
+import msfResponses from './model';
 // Import any required utility functions
 import { cacheResponse, handleResponse, handleGeoResponse, ensureAuthenticated, ensureAuthenticatedWrite } from '../../../lib/util';
 // Import validation dependencies
@@ -49,9 +49,9 @@ export default ({ config, db, logger }) => {
     api.post('/',ensureAuthenticatedWrite,
         validate({
             body: Joi.object().keys({
-                eventId: Joi.number().integer().min(1),
-                eventStatus: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
-                metadata: Joi.object().required().keys({
+                eventId: Joi.number().integer().min(1).required(),
+                eventStatus: Joi.string().required(),
+                metadata: Joi.object().keys({
                     type: Joi.string().valid(config.API_MSF_RESPONSE_TYPES),
                     start_date: Joi.date().iso(),
                     end_date: Joi.date().iso(),
@@ -59,7 +59,11 @@ export default ({ config, db, logger }) => {
                     description: Joi.string(),
                     sharepoint_link: Joi.string()
                 }),
-                location: Joi.object().required().keys({
+                area: Joi.object().keys({
+                    type: Joi.string(),
+                    coordinates: Joi.array().items(Joi.array())
+                }),
+                location: Joi.object().keys({
                     lat: Joi.number().min(-90).max(90).required(),
                     lng: Joi.number().min(-180).max(180).required()
                 }),

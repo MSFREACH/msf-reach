@@ -12,7 +12,9 @@
         text-decoration: underline;
     }
 }
-
+.editable-map{
+    border: 3px solid #0374C7;
+}
 .edit-wrapper{
     background: #0374C7;
     color: #fff;
@@ -25,6 +27,31 @@
     //     position: absolute;
     //     right: 21px;
     // }
+    .pc{
+        .v-select{
+            width: 50px;
+            display: inline-block;
+        }
+        .v-select__selections{
+            color: inherit;
+        }
+        .v-text-field{
+            padding-top: 0;
+        }
+        input[type="text"]{
+            padding-left: 20px;
+        }
+    }
+
+    .round-borders{
+        border: 2px solid #fff;
+        padding: 4px 21px;
+        border-radius: 20px;
+        height: 40px;
+        input{
+            border-bottom: none;
+        }
+    }
     .inverse::placeholder{
         color: $text-light-grey
     }
@@ -72,6 +99,9 @@
 
     }
     .accent--text{
+        color: #fff !important;
+    }
+    .v-icon{
         color: #fff !important;
     }
 }

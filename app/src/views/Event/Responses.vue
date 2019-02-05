@@ -13,9 +13,12 @@
                 <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
             </v-layout>
             <v-layout row wrap v-if="editing" dark>
-                <div class="quarter-width row-spacing">
+                <div class="row-spacing">
                     <label>Project Code</label>
-                    <input type="text" v-model="editResponse.project_code" placeholder="OCA-###" />
+                    <div class="round-borders pc">
+                        <v-select :items="allOperationalCenters" v-model="editResponse.operational_center" label="OC"></v-select>
+                        <input type="text"  v-model="editResponse.project_code" placeholder="######" />
+                    </div>
                 </div>
                 <div class="full-width row-spacing">
                     <label>Type of programmes</label>
@@ -67,33 +70,28 @@
 
                 <div class="one-half">
                     <div class="dateRange">
-                        <span>
+                        <div class="one-half">
                             <label>Start date</label>
-                            <v-menu ref="startDateSelected" :close-on-content-click="false" v-model="startDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
+                            <v-menu ref="startDateSelected" :close-on-content-click="false" v-model="startDateSelected" lazy transition="scale-transition" offset-y full-width>
                                 <v-text-field slot="activator" v-model="editResponse.metadata.start_date" persistent-hint type="date"></v-text-field>
                                 <v-date-picker v-model="editResponse.metadata.start_date" no-title @input="startDateSelected = false"></v-date-picker>
                             </v-menu>
-                        </span>
-                        <span>
+                        </div>
+                        <div class="one-half">
                             <label>End date</label>
-                            <v-menu ref="endDateSelected" :close-on-content-click="false" v-model="endDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
+                            <v-menu ref="endDateSelected" :close-on-content-click="false" v-model="endDateSelected" lazy transition="scale-transition" offset-y full-width>
                                 <v-text-field slot="activator" v-model="editResponse.metadata.end_date" persistent-hint type="date"></v-text-field>
                                 <v-date-picker v-model="editResponse.metadata.end_date" no-title @input="endDateSelected = false"></v-date-picker>
                             </v-menu>
-                        </span>
+                        </div>
                     </div>
                     <div>
                         <label> Location of MSF Response: </label>
                         <!-- map as input -->
                     </div>
                 </div>
-                <div class="one-half">
-                    <label> Operational Center </label>
-                    <v-radio-group v-model="editResponse.operational_center" :mandatory="true">
-                        <v-radio v-for="oc in allOperationalCenters" :key="oc" :label="oc" :value="oc"></v-radio>
-                    </v-radio-group>
-                </div>
-                <v-text-field class="linkAttachment" xs12 v-model="editResponse.metadata.sharepoint_link" single-line prepend-icon="link" label="link" background-color="white"></v-text-field>
+
+                <v-text-field class="linkAttachment round-borders" xs12 v-model="editResponse.metadata.sharepoint_link" single-line prepend-icon="link" label="Sharepoint link"></v-text-field>
             </v-layout>
             <v-layout v-else-if="displayResponse">
                 <v-layout row wrap>
@@ -157,7 +155,18 @@
         </div>
 
 
-        <div class="map-annotation" v-if="eventStatus.toLowerCase() == 'ongoing' || eventStatus.toLowerCase() == 'intervention'">
+        <div :class="editing ? 'editable-map map-annotation' : 'map-annotation'" v-if="eventStatus.toLowerCase() == 'ongoing' || eventStatus.toLowerCase() == 'intervention'" @click="openMap">
+            <v-layout row justify-center>
+              <v-dialog v-model="mapDialog" max-width="880px">
+                <v-card>
+                    <map-input ref="responseMapEntry" :coordinates="eventCoordinates"></map-input>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" flat @click.native="saveArea()">Save Area</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-layout>
             <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="eventMetadata.areas[0]"></map-annotation>
         </div>
     </v-container>
@@ -169,10 +178,11 @@
 /*eslint no-debugger: off*/
 /*eslint no-console: off*/
 import { mapGetters } from 'vuex';
-// import { EDIT_EVENT } from '@/store/actions.type';
+import { FETCH_MSF_RESPONSES, CREATE_MSF_RESPONSE, EDIT_MSF_RESPONSE, EDIT_MSF_RESPONSE_AREA, DELETE_MSF_RESPONSE} from '@/store/actions.type';
 import { DEFAULT_MSF_RESPONSE } from '@/common/form-fields';
 import { RESPONSE_TYPES, REPONSE_PROGRAMME_TYPES, DEFAULT_RESPONSE_PROGRAMME,  RESPONSE_INFECTIOUS_DISEASE_PROGRAMMES, RESPONSE_NCDS_PROGRAMMES,  OPERATIONAL_CENTERS } from '@/common/response-fields';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
+import MapInput from '@/views/Map/MapInput.vue';
 
 
 export default {
@@ -180,6 +190,7 @@ export default {
     data(){
         return {
             editing: false,
+            mapDialog: false,
             editableIndex: null,
             inEditProgrammeIndex: null,
             _beforeEditingProgrammeCache: {},
@@ -200,15 +211,21 @@ export default {
         };
     },
     components: {
-        MapAnnotation
+        MapAnnotation, MapInput
     },
     methods:{
+        fetchReponses(){
+            this.$store.dispatch(FETCH_MSF_RESPONSES, {eventId: this.$route.params.slug})
+        },
         switchStatus(response){
             this.displayResponse = Object.assign({}, response);
         },
         add(){
             this.editing = true;
             this.editResponse = this.defaultResponse;
+        },
+        openMap(){
+            if(this.editing) this.mapDialog = true;
         },
         // edit(){
         //     this.editing = true;
@@ -224,6 +241,23 @@ export default {
         },
         save(){
             /// tricky to get the response field where status == active status
+        },
+        saveArea(){
+            console.log("saveArea ------ ", this.response.area);
+            var params = {
+                eventId: this.$route.params.slug,
+                eventStatus: this.eventStatus,
+                area : this.response.area
+            };
+            var emptyResponse = Object.values(this.editResponse).some(el => el == undefined);
+
+            if(emptyResponse){
+                this.$store.dispatch(CREATE_MSF_RESPONSE, params);
+            }else{
+                params.id = this.editResponse.id;
+                this.$store.dispatch(EDIT_MSF_RESPONSE_AREA, params)
+            }
+
         },
         addProgram(){
             this.editResponse.programmes.push(this.defaultProgram);
@@ -247,7 +281,7 @@ export default {
         }
     },
     mounted(){
-
+        this.fetchReponses();
     },
     watch: {
         editing(val){
@@ -259,11 +293,20 @@ export default {
                     this.editResponse = this.defaultResponse;
                 }
             }
+        },
+        mapDialog(val){
+            if(val){
+                var vm = this;
+                setTimeout(function(){
+                    vm.$refs.responseMapEntry.resizeMap(); }, 100);
+
+            }
         }
     },
     computed: {
         ...mapGetters([
             'responses',
+            'response',
             'eventStatus',
             'eventMetadata',
             'eventCoordinates'

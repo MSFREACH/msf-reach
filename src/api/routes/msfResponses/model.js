@@ -4,8 +4,6 @@
 
 // Import promise support
 import Promise from 'bluebird';
-import request from 'request';
-import mail from '../../../lib/mailer';
 
 export default (config, db, logger) => ({
 
@@ -13,8 +11,7 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `SELECT id, event_id as eventId, event_status, project_code, operational_center, metadata, programmes, the_geom
 			FROM ${config.TABLE_MSF_RESPONSES}
-            WHERE event_id = $1
-            ORDER BY updated_at DESC`;
+            WHERE event_id = $1`;
         let values = [ eventId ];
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
@@ -53,17 +50,18 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `INSERT INTO ${config.TABLE_MSF_RESPONSES}
             (event_id, event_status, project_code, operational_center, metadata, programmes, the_geom)
-			VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_Point($7,$8),4326))
-            RETURNING id, event_id, event_status, project_code, operational_center, metadata, programmes, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
-
+			VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromGeoJSON($7), 4326))
+            RETURNING id, event_id, event_status, project_code, operational_center, metadata, programmes, the_geom`;
         // Setup values
-        let values = [parseInt(body.event_id), body.event_status, body.project_code, body.operational_center, body.metadata, body.programmes, body.location.coordinates[0], body.location.coordinates[1]];
+        let values = [parseInt(body.eventId), body.eventStatus, body.project_code, body.operational_center, body.metadata, body.programmes, body.area];
+
+        console.log(body.area,  typeof body.area, values);
 
         // Execute
         logger.debug(query, values);
 
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, event_status: data.event_status, project_code: data.project_code, metadata:data.metadata, programmes: data.programmes, lat: data.lat, lng: data.lng}))
+            .then((data) => resolve({ id: data.id, eventStatus: data.eventStatus, project_code: data.project_code, metadata:data.metadata, programmes: data.programmes, the_geom: data.the_geom}))
             .catch((err) => reject(err));
     }),
 

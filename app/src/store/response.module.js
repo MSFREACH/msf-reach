@@ -4,15 +4,18 @@
 
 import _ from 'lodash';
 import { ResponsesService } from '@/common/api.service';
-import { FETCH_MSF_RESPONSES, CREATE_MSF_RESPONSE,  EDIT_MSF_RESPONSE, DELETE_MSF_RESPONSE } from './actions.type';
-import { FETCH_RESPONSES_START, FETCH_RESPONSES_END, UPDATE_RESPONSE_IN_LIST, SET_ERROR, RESET_STATE } from './mutations.type';
+import { FETCH_MSF_RESPONSES, CREATE_MSF_RESPONSE,  EDIT_MSF_RESPONSE, EDIT_MSF_RESPONSE_AREA, DELETE_MSF_RESPONSE, SET_RESPONSE_AREA_GEOMETRY } from './actions.type';
+import { FETCH_RESPONSES_START, FETCH_RESPONSES_END, UPDATE_RESPONSE_IN_LIST, UPDATE_RESPONSE_AREA_GEOMETRY, SET_ERROR, RESET_STATE } from './mutations.type';
 
 const initialState = {
     errors: null,
     responses: [],
     isLoadingResponse: true,
     responsesCount: 0,
-    responsesGeoJson: []
+    responsesGeoJson: [],
+    response: {
+        area: {}
+    }
 };
 
 const state = Object.assign({}, initialState);
@@ -23,6 +26,9 @@ const getters = {
     },
     responses(state){
         return state.responses;
+    },
+    response(state){
+        return state.response;
     },
     responsesGeoJson(state){
         return state.responsesGeoJson;
@@ -56,8 +62,17 @@ const actions = {
         delete params.id;
         return ResponsesService.update(slug, params);
     },
+    [EDIT_MSF_RESPONSE_AREA] (context, params){
+        console.log('[EDIT_MSF_RESPONSE] --- -', params);
+        var slug = params.id;
+        delete params.id;
+        return ResponsesService.updateArea(slug, params);
+    },
     [DELETE_MSF_RESPONSE] (context, slug){
         return ResponsesService.destroy(slug);
+    },
+    [SET_RESPONSE_AREA_GEOMETRY]({ commit }, params){
+        commit(UPDATE_RESPONSE_AREA_GEOMETRY, params);
     }
 };
 
@@ -82,6 +97,9 @@ const mutations = {
             response.metadata = data.metadata;
             return response;
         });
+    },
+    [UPDATE_RESPONSE_AREA_GEOMETRY](state, data){
+        state.response.area = data.area;
     },
     [SET_ERROR] (state, error) {
         state.errors = error;

@@ -34,8 +34,8 @@ import { MAPBOX_STYLES } from '@/common/map-fields';
 import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
 
-function getFeatures(topology, key) {
-  return topology.objects[key].geometries.map(function(geom) {
+function getFeatures(topoJson, key) {
+  return topoJson.objects[key].geometries.map(function(geom) {
     return {
       type: "Feature",
       id: geom.properties.id,

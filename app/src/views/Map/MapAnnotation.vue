@@ -2,7 +2,7 @@
     <v-layout>
         <div :id="mapId" class="map"></div>
         <v-btn color="white" small class="anchor-nav" fab absolute right>
-            <router-link :to="{ name: 'map-main', params:{eventId: $route.params.slug}}">
+            <router-link :to="{ name: 'map-main', params: { eventId: $route.params.slug}}">
                 <v-icon>map</v-icon>
             </router-link>
         </v-btn>
@@ -17,6 +17,7 @@
 import { mapGetters } from 'vuex';
 import { MAPBOX_STYLES } from '@/common/map-fields';
 import { FETCH_GEOJSON_POLYGON } from '@/store/actions.type';
+import { getFeaturesFromArcs } from '@/lib/geojson-util';
 
 var map;
 export default {
@@ -46,21 +47,24 @@ export default {
                 features: [{
 
                 }]
-            }]
+            }],
+            styleLoaded: false
         };
     },
     computed: {
         ...mapGetters([
-            'geojsonPolygon'
+            'geojsonPolygon',
+            'responsesGeoJson',
         ])
     },
     mounted(){
         this.initMap();
-        this.initLayers();
+        // this.initLayers();
 
         if(this.address){
             this.getBoundaries();
         }
+
     },
     watch: {
         address(newVal){
@@ -75,12 +79,15 @@ export default {
         '$route' (to, from){
             var oldLayer = this.mapId + from.params.slug;
             map.removeLayer(oldLayer);
+        },
+        responsesGeoJson(newVal){
+            if(newVal) this.addResponseAreasLayer();
         }
     },
     methods: {
         initMap(){
             var mapID = this.mapId;
-
+            var vm = this;
             map = new mapboxgl.Map({
                 container: mapID,
                 style: MAPBOX_STYLES.thematic,
@@ -89,7 +96,9 @@ export default {
                 minZoom: 4
             });
 
-
+            map.on('style.load', _ => {
+                vm.styleLoaded;
+            });
         },
         // TODO:// load layers & TOggle layers in Mapbox
         // initLayers(){
@@ -146,6 +155,29 @@ export default {
                 var query = this.address.country;
             }
             this.$store.dispatch(FETCH_GEOJSON_POLYGON, query);
+        },
+        addResponseAreasLayer(){
+            console.log(this.responsesGeoJson);
+            var formatedJson = getFeaturesFromArcs(this.responsesGeoJson, 'output');
+            console.log(this.responsesGeoJson, formatedJson, JSON.stringify(formatedJson));
+            map.addSource('event-responses', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'FeatureCollection',
+                    'features': formatedJson
+                }
+            });
+
+            map.addLayer({
+                'id': `responses-boundary`,
+                'type': 'fill',
+                'source': 'event-responses',
+                'paint': {
+                    'fill-color': '#FFB677',
+                    'fill-opacity': 1
+                },
+                'filter': ['==', '$type', 'Polygon']
+            });
         }
 
     }

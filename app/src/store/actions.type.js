@@ -44,13 +44,14 @@ export const PUT_SIGNED_REQUEST = 'putSignedRequest';
 export const FETCH_MSF_RESPONSES = 'fetchMSFResponses';
 export const CREATE_MSF_RESPONSE = 'createMSFResponse';
 export const EDIT_MSF_RESPONSE = 'editMSFResponse';
+export const EDIT_MSF_RESPONSE_AREA = 'editMSFResponseLocation';
 export const DELETE_MSF_RESPONSE = 'deleteMSFResponse';
+
 
 export const FETCH_EVENT_NOTIFICATIONS = 'fetchEventNotifications';
 export const CREATE_EVENT_NOTIFICATION = 'createEventNotification';
 export const EDIT_EVENT_NOTIFICATION = 'editEventNotification';
 export const DELETE_EVENT_NOTIFICATION = 'deleteEventNotification';
-
 
 export const CREATE_NOTIFICATION = 'createNotification';
 export const EDIT_NOTIFICATION = 'editNotification';
@@ -59,6 +60,8 @@ export const FETCH_SITREPS = 'fetchSitreps';
 export const CREATE_SITREP = 'createSitrep';
 export const EDIT_SITREP = 'editSitrep';
 export const DELETE_SITREP = 'deleteSitrep';
+
+export const SET_RESPONSE_AREA_GEOMETRY = 'setResponseAreaGeometry';
 
 export const FETCH_GEOJSON_POLYGON = 'fetchGeojsonPolygon';
 export const FETCH_REVERSE_GEOCODER = 'fetchReverseGeocoder';
