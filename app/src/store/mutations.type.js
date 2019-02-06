@@ -37,4 +37,5 @@ export const SET_SITREP = 'setSitrep';
 export const FETCH_GEOJSON_POLYGON_END = 'fetchGeojsonPolygonEnd';
 export const FETCH_REVERSE_GEOCODER_END = 'fetchReverseGeojsonEnd';
 
-export const UPDATE_RESPONSE_AREA_GEOMETRY = 'updateResponseAreaGeometry'; 
+export const UPDATE_RESPONSE_AREA_GEOMETRY = 'updateResponseAreaGeometry';
+export const UPDATE_RESPONSE_PROGRAMMES = 'updateResponseProgrammes';

@@ -78,11 +78,16 @@ body{
   font-weight: lighter;
   line-height: initial;
 }
-
+.note-text,
 .sub-category-text{
     font-size: 12px;
     font-family: 'OpenSans', sans-serif;
     font-weight: normal;
+}
+.specified-text{
+    font-size: 12px;
+    font-family: 'OpenSans', sans-serif;
+    font-style: italic;
 }
 .small-header{
   font-size: 12px;

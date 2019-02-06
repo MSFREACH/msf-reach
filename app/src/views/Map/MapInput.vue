@@ -32,7 +32,9 @@
 <script>
 
 import { MAPBOX_STYLES } from '@/common/map-fields';
-import { FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER, SET_RESPONSE_AREA_GEOMETRY } from '@/store/actions.type';
+import { FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER } from '@/store/actions.type';
+import { UPDATE_RESPONSE_AREA_GEOMETRY } from '@/store/mutations.type';
+
 import { mapGetters } from 'vuex';
 import $ from 'jquery';
 /*eslint no-console: off*/
@@ -185,18 +187,14 @@ export default {
             if(data.features.length > 0){
                 var area = turf.area(data);
                 var rounded_area = Math.round(area*100)/100;
-                console.log("rounded_area ---- ", rounded_area);
-                console.log("data ---- ---- ", data);
             }
         },
         drawModeChange(e){
             if(e.mode == "simple_select"){
                 var data = draw.getAll();
                 if(data.features.length > 0){
-                    console.log("data ---- simple_select---- ", this.polygon, data.features[0].geometry);
                     this.polygon = data.features[0].geometry;
-                    console.log("data ---- polygon assigned---- ", this.polygon);
-                    this.$store.dispatch(SET_RESPONSE_AREA_GEOMETRY, {area: data.features[0].geometry })
+                    this.$store.dispatch(UPDATE_RESPONSE_AREA_GEOMETRY, {area: data.features[0].geometry })
                 }
             }
         },

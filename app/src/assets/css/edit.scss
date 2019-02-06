@@ -53,14 +53,35 @@ textarea:focus, input:focus{
         display: none;
     }
 }
-
+.note-text{
+    display: inline-block;
+}
 .edit-wrapper{
-    background: #0374C7;
+    background: $color-active;
     color: #fff;
     .inverse{
         input{
             color: $text-dark !important;
         }
+    }
+    .v-menu{
+        .v-input{
+            padding: 0;
+        }
+        input{
+            font-size: 14px;
+        }
+    }
+    .scale-label{
+
+        .v-input--slider{
+            width: 80%;
+            display: inline-block;
+            margin: 0;
+        }
+    }
+    .content-block{
+        display: block;
     }
     // .actions {
     //     position: absolute;
@@ -103,13 +124,17 @@ textarea:focus, input:focus{
             color: rgba(255,255, 255, 0.54);
         }
         .v-list{
-            background: #0374c7;
+            background: $color-active;
             color: #fff;
         }
         .v-list__tile{
             font-size: inherit;
             height: initial;
         }
+    }
+
+    .v-select .v-select__selections{
+        color: #fff;
     }
     .v-select.v-text-field input{
         position: absolute;

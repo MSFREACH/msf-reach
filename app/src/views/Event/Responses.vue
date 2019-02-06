@@ -17,45 +17,7 @@
                         <input type="text"  v-model="editResponse.project_code" placeholder="######" />
                     </div>
                 </div>
-                <div class="full-width row-spacing">
-                    <label>Type of programmes</label>
-                    <v-flex v-for="(program, index) in editResponse.programmes" :key="index" @mouseover="editableIndex = index">
-                        <div v-if="inEditProgrammeIndex < 0">
-                                {{program.name}}
-                                <b> {{program.deployment_scale}} </b> {{program.open_date}}
-                                <span class="notes"> {{program.notes}} </span>
-                                <span v-show="editableIndex == index">
-                                    <a @click="editProgramme(program, index)">edit</a>
-                                    <a @click="deleteProgramme(index)">delete</a>
-                                </span>
-                        </div>
-                        <v-layout row wrap v-else-if="inEditProgrammeIndex == index">
-                            <div class="one-half">
-                                <div class="full-width">
-                                    <v-select class="one-half" v-model="program.value" label="type" :items="allProgrammes" clearable></v-select>
-                                    <v-select class="one-half" label="sub-type" v-if="program.value == ('infectious_diseases' || 'ncds')"
-                                        v-model="program.subProgram"
-                                        :items="subProgrammes[program.value]">
-                                    </v-select>
-                                </div>
-                                <div class="one-half">
-                                    <label>arrival date</label>
-                                    <v-menu ref="programOpenDate" :close-on-content-click="false" v-model="programOpenDate" lazy transition="scale-transition" offset-y full-width width="290px">
-                                        <v-text-field slot="activator" v-model="program.open_date" persistent-hint type="date"></v-text-field>
-                                        <v-date-picker v-model="program.open_date" no-title @input="programOpenDate = false"></v-date-picker>
-                                    </v-menu>
-                                </div>
-                                <v-slider class="one-half" xs6 dark v-model="program.deployment_scale" label="Deployment scale" min="1" max="10"></v-slider>
-                            </div>
-                            <v-textarea xs6 v-model="program.notes" label="specify" solo></v-textarea>
-                            <v-flex class="row-actions" xs12>
-                                <a @click="submitProgramme()">confirm</a>
-                                <a @click="cancelEditProgramme(index)">cancel</a>
-                            </v-flex>
-                        </v-layout>
-                    </v-flex>
-                    <a v-if="!inEditProgrammeIndex" class="form-actions" @click="addProgram()">Add</a>
-                </div>
+                <response-programmes :currentProgrammes="editResponse.programmes"></response-programmes>
                 <hr class="row-divider"/>
                 <div class="one-half">
                     <label>Response</label>
@@ -148,7 +110,6 @@
             </v-layout>
             <v-layout v-else>
                     No response recorded yet
-                    <v-btn v-if="isResponseStatus" @click="add" fab flat> <v-icon>add</v-icon> </v-btn>
                     <new-response></new-response>
             </v-layout>
         </div>
@@ -179,10 +140,11 @@
 import { mapGetters } from 'vuex';
 import { FETCH_MSF_RESPONSES, CREATE_MSF_RESPONSE, EDIT_MSF_RESPONSE, EDIT_MSF_RESPONSE_AREA, DELETE_MSF_RESPONSE} from '@/store/actions.type';
 import { DEFAULT_MSF_RESPONSE } from '@/common/form-fields';
-import { RESPONSE_TYPES, REPONSE_PROGRAMME_TYPES, DEFAULT_RESPONSE_PROGRAMME,  RESPONSE_INFECTIOUS_DISEASE_PROGRAMMES, RESPONSE_NCDS_PROGRAMMES,  OPERATIONAL_CENTERS } from '@/common/response-fields';
+import { RESPONSE_TYPES,  OPERATIONAL_CENTERS } from '@/common/response-fields';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
 import MapInput from '@/views/Map/MapInput.vue';
 import NewResponse from '@/views/New/NewResponse.vue';
+import ResponseProgrammes from '@/components/RowEntries/ResponseProgrammes.vue';
 
 import moment from 'moment';
 
@@ -194,22 +156,13 @@ export default {
             editing: false,
             mapDialog: false,
             editableIndex: null,
-            inEditProgrammeIndex: null,
-            _beforeEditingProgrammeCache: {},
             selectedStatus: null,
             selectedResponseId: {},
             editResponse: null,
             _beforeEditingCache: {},
-            allProgrammes: REPONSE_PROGRAMME_TYPES,
-            defaultProgram: DEFAULT_RESPONSE_PROGRAMME,
             allResponseTypes: RESPONSE_TYPES,
-            subProgrammes: {
-                infectious_diseases: RESPONSE_INFECTIOUS_DISEASE_PROGRAMMES,
-                ncds: RESPONSE_NCDS_PROGRAMMES
-            },
             allOperationalCenters: OPERATIONAL_CENTERS,
             defaultResponse: DEFAULT_MSF_RESPONSE,
-            programOpenDate: false,
             selectedDate:{
                 start: false,
                 startValue: null,
@@ -219,7 +172,7 @@ export default {
         };
     },
     components: {
-        MapAnnotation, MapInput, NewResponse
+        MapAnnotation, MapInput, NewResponse, ResponseProgrammes
     },
     methods:{
         fetchReponses(){
@@ -228,20 +181,9 @@ export default {
         switchStatus(status){
             this.selectedStatus = status;
         },
-        add(){
-            this.editing = true;
-            this.editResponse = this.defaultResponse;
-        },
         openMap(){
             if(this.editing) this.mapDialog = true;
         },
-        // edit(){
-        //     this.editing = true;
-        //     // Keep track of original
-        //     this._beforeEditingCache = Object.assign({}, this.displayResponse);
-        //     // Put object into editing mode
-        //     this.editResponse = this.displayResponse;
-        // },
         cancelEdit(){
             // return fields back to its previous state
             Object.assign(this.displayResponse, this._beforeEditingCache);
@@ -252,12 +194,7 @@ export default {
                 delete this.editResponse.event_id;
                 delete this.editResponse.event_status;
                 this.$store.dispatch(EDIT_MSF_RESPONSE, this.editResponse);
-            }else{
-                this.editResponse.event_id = this.$route.params.slug;
-                this.editResponse.event_status = this.eventStatus;
-                this.$store.dispatch(CREATE_MSF_RESPONSE, this.editResponse);
             }
-
         },
         saveArea(){
             console.log("saveArea ------ ", this.response.area);
@@ -275,26 +212,6 @@ export default {
                 this.$store.dispatch(EDIT_MSF_RESPONSE_AREA, params)
             }
 
-        },
-        addProgram(){
-            this.editResponse.programmes.push(this.defaultProgram);
-            this.inEditProgrammeIndex = this.editResponse.programmes.length -1;
-        },
-        editProgramme(program, index){
-            this._beforeEditingProgrammeCache = program;
-            this.inEditProgrammeIndex = index;
-            console.log(' ------ ', program, index);
-        },
-        deleteProgramme(index){
-            this.editResponse.programmes.splice(index, 1);
-        },
-        submitProgramme(){
-            this.inEditProgrammeIndex = -1;
-            this._beforeEditingProgrammeCache = {};
-        },
-        cancelEditProgramme(index){
-            this.editResponse.programmes[index] = this._beforeEditingProgrammeCache;
-            this.inEditProgrammeIndex = -1;
         }
     },
     mounted(){
@@ -303,15 +220,10 @@ export default {
     watch: {
         editing(val){
             if(val){
-                if(this.displayResponse){
-                    this._beforeEditingCache = Object.assign({}, this.displayResponse);
-                    console.log(" ------- original obj , ", this.displayResponse);
-                    this.editResponse = this.displayResponse;
-                    this.selectedDate.startValue = moment(this.editResponse.metadata.start_date).format('YYYY-MM-DD');
-                    this.selectedDate.endValue = moment(this.editResponse.metadata.end_date).format('YYYY-MM-DD');
-                }else{
-                    this.editResponse = this.defaultResponse;
-                }
+                this._beforeEditingCache = Object.assign({}, this.displayResponse);
+                this.editResponse = this.displayResponse;
+                this.selectedDate.startValue = moment(this.editResponse.metadata.start_date).format('YYYY-MM-DD');
+                this.selectedDate.endValue = moment(this.editResponse.metadata.end_date).format('YYYY-MM-DD');
             }else{
                 this.save();
             }
@@ -362,13 +274,7 @@ export default {
                 return null;
             }
         },
-        subProgramSelections(program){
-            var result = this.allProgrammes.filter(item => {
-                return item.value == program;
-            });
 
-            return result[0].subPrograms;
-        },
         statusHistory(){
             if(!this.responses) return [this.eventStatus];
 
