@@ -49,30 +49,28 @@ export default ({ config, db, logger }) => {
     api.post('/',ensureAuthenticatedWrite,
         validate({
             body: Joi.object().keys({
-                eventId: Joi.number().integer().min(1).required(),
-                eventStatus: Joi.string().required(),
+                event_id: Joi.number().integer().min(1).required(),
+                event_status: Joi.string().required(),
+                project_code: Joi.string(),
+                operational_center: Joi.string().allow(null, ''),
                 metadata: Joi.object().keys({
-                    type: Joi.string().valid(config.API_MSF_RESPONSE_TYPES),
-                    start_date: Joi.date().iso(),
-                    end_date: Joi.date().iso(),
-                    total_days: Joi.number().integer(),
-                    description: Joi.string(),
-                    sharepoint_link: Joi.string()
+                    type: Joi.string().valid(config.API_MSF_RESPONSE_TYPES).allow(null),
+                    start_date: Joi.date().iso().allow(null),
+                    end_date: Joi.date().iso().allow(null),
+                    total_days: Joi.number().integer().allow(null),
+                    description: Joi.string().allow('', null),
+                    sharepoint_link: Joi.string().allow('', null)
                 }),
                 area: Joi.object().keys({
                     type: Joi.string(),
                     coordinates: Joi.array().items(Joi.array())
                 }),
-                location: Joi.object().keys({
-                    lat: Joi.number().min(-90).max(90).required(),
-                    lng: Joi.number().min(-180).max(180).required()
-                }),
                 programmes: Joi.array().items(Joi.object().keys({
-                    name: Joi.string().allow(''),
-                    value: Joi.string().allow(''),
-                    deployment_scale: Joi.number().min(1).max(10),
-                    open_date: Joi.date().iso(),
-                    notes: Joi.string().allow('')
+                    name: Joi.string().allow('', null),
+                    value: Joi.string().allow('', null),
+                    deployment_scale: Joi.number().min(1).max(10).allow(null),
+                    open_date: Joi.date().iso().allow(null),
+                    notes: Joi.string().allow('', null)
                 }))
             })
         }),
@@ -91,23 +89,22 @@ export default ({ config, db, logger }) => {
         validate({
             params: { id: Joi.number().integer().min(1).required() } ,
             body: Joi.object().keys({
-                event_status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).optional(),
                 project_code: Joi.string().allow(null, ''),
                 operational_center: Joi.string().allow(null, ''),
                 metadata: Joi.object().required().keys({
                     type: Joi.string().valid(config.API_MSF_RESPONSE_TYPES),
-                    start_date: Joi.date().iso(),
-                    end_date: Joi.date().iso(),
-                    total_days: Joi.number().integer(),
-                    description: Joi.string(),
-                    sharepoint_link: Joi.string()
+                    start_date: Joi.date().iso().allow(null),
+                    end_date: Joi.date().iso().allow(null),
+                    total_days: Joi.number().integer().allow(null),
+                    description: Joi.string().allow('', null),
+                    sharepoint_link: Joi.string().allow('', null)
                 }),
                 programmes: Joi.array().items(Joi.object().keys({
-                    name: Joi.string().allow(null, ''),
-                    value: Joi.string().allow(null, ''),
-                    deployment_scale: Joi.number().min(1).max(10),
-                    open_date: Joi.date().iso(),
-                    notes: Joi.string().allow(null, '')
+                    name: Joi.string().allow('', null),
+                    value: Joi.string().allow('', null),
+                    deployment_scale: Joi.number().min(1).max(10).allow(null),
+                    open_date: Joi.date().iso().allow(null),
+                    notes: Joi.string().allow('', null)
                 }))
             })
         }),

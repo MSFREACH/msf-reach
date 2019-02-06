@@ -120,15 +120,7 @@
                               </v-flex>
                           </v-layout>
                           <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
-
-                          <!-- <v-expansion-panel expand flat>
-                              <v-expansion-panel-content>
-                                  <label slot="header"> * markdown syntax guide</label>
-                                  <mark-down-explain></mark-down-explain>
-                                </v-expansion-panel-content>
-                          </v-expansion-panel> -->
                           <hr class="row-divider"/>
-
                           <v-text-field class="sharepoint-input" clearable prepend-icon="link" label="SharePoint Link" v-model="metadata.sharepoint_link" round ></v-text-field>
                           </v-text-field>
                       </v-container>

@@ -15,6 +15,45 @@
 .editable-map{
     border: 3px solid #0374C7;
 }
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+.pc{
+    .v-select{
+        width: 50px;
+        display: inline-block;
+    }
+    .v-select__selections{
+        color: inherit;
+    }
+    .v-text-field{
+        padding-top: 0;
+    }
+    input[type="text"]{
+        padding-left: 20px;
+    }
+}
+
+.round-borders{
+    border: 2px solid $bg-space-grey;
+    padding: 4px 21px;
+    border-radius: 20px;
+    height: 40px;
+    input{
+        border-bottom: none;
+    }
+}
+.create-wrapper{
+    .v-text-field > .v-input__control > .v-input__slot:before{
+        display: none;
+    }
+    .v-text-field > .v-input__control > .v-input__slot:after{
+        display: none;
+    }
+}
+
 .edit-wrapper{
     background: #0374C7;
     color: #fff;
@@ -27,30 +66,8 @@
     //     position: absolute;
     //     right: 21px;
     // }
-    .pc{
-        .v-select{
-            width: 50px;
-            display: inline-block;
-        }
-        .v-select__selections{
-            color: inherit;
-        }
-        .v-text-field{
-            padding-top: 0;
-        }
-        input[type="text"]{
-            padding-left: 20px;
-        }
-    }
-
     .round-borders{
         border: 2px solid #fff;
-        padding: 4px 21px;
-        border-radius: 20px;
-        height: 40px;
-        input{
-            border-bottom: none;
-        }
     }
     .inverse::placeholder{
         color: $text-light-grey
@@ -193,9 +210,6 @@ textarea{
 }
 .theme--light.v-label{
     color: inherit;
-}
-.linkAttachment{
-    border-radius: 50%;
 }
 
 .v-text-field>.v-input__control>.v-input__slot:before{

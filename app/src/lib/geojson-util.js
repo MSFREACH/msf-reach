@@ -5,7 +5,7 @@ function getFeaturesFromArcs(topoJson, key){
             properties: geom.properties || {},
             geometry: {
                 type: geom.type,
-                coordinates: topoJson.arcs[index] // **** topoJSON stores polygon points in arcs
+                coordinates: [topoJson.arcs[index]] // **** topoJSON stores polygon points in arcs
             }
         };
     });

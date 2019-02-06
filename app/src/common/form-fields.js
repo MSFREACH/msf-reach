@@ -67,15 +67,6 @@ export const DEFAULT_MSF_RESPONSE = {
         description: null,
         sharepoint_link: null
     },
-    location: {
-        coordinates: [],
-        type: null,
-        address: {
-            region: null,
-            country: null,
-            country_code: null
-        }
-    },
     programmes:[{
         name: null,
         value: null,

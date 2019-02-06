@@ -9,7 +9,7 @@ export default (config, db, logger) => ({
 
     all: (eventId) => new Promise((resolve, reject) => {
         // Setup query
-        let query = `SELECT id, event_id as eventId, event_status, project_code, operational_center, metadata, programmes, the_geom
+        let query = `SELECT id, event_id, event_status, project_code, operational_center, metadata, programmes, the_geom
 			FROM ${config.TABLE_MSF_RESPONSES}
             WHERE event_id = $1`;
         let values = [ eventId ];
@@ -26,7 +26,7 @@ export default (config, db, logger) => ({
     byId: (id) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `SELECT id, event_id as eventId, event_status, project_code, operational_center, metadata, programmes, the_geom
+        let query = `SELECT id, event_id, event_status, project_code, operational_center, metadata, programmes, the_geom
       FROM ${config.TABLE_MSF_RESPONSES}
       WHERE id = $1
       ORDER BY created_at DESC`;
@@ -53,7 +53,7 @@ export default (config, db, logger) => ({
 			VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromGeoJSON($7), 4326))
             RETURNING id, event_id, event_status, project_code, operational_center, metadata, programmes, the_geom`;
         // Setup values
-        let values = [parseInt(body.eventId), body.eventStatus, body.project_code, body.operational_center, body.metadata, body.programmes, body.area];
+        let values = [parseInt(body.event_id), body.event_status, body.project_code, body.operational_center, body.metadata, body.programmes, body.area];
 
         console.log(body.area,  typeof body.area, values);
 
@@ -61,7 +61,7 @@ export default (config, db, logger) => ({
         logger.debug(query, values);
 
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: data.id, eventStatus: data.eventStatus, project_code: data.project_code, metadata:data.metadata, programmes: data.programmes, the_geom: data.the_geom}))
+            .then((data) => resolve({ id: data.id, eventStatus: data.eventStatus, project_code: data.project_code, metadata: data.metadata, programmes: data.programmes, the_geom: data.the_geom}))
             .catch((err) => reject(err));
     }),
 
@@ -74,16 +74,15 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `UPDATE ${config.TABLE_MSF_RESPONSES}
-			SET event_status = event_status || $1,
-            project_code = project_code || $2,
-            operational_center = operational_center || $3,
-			metadata = metadata || $4,
-            programmes = programmes || $5
-			WHERE id = $6
+			SET project_code = project_code || $1,
+            operational_center = operational_center || $2,
+			metadata = metadata || $3,
+            programmes = programmes || $4
+			WHERE id = $5
 			RETURNING id, event_id, event_status, project_code, operational_center, metadata, programmes, ST_X(the_geom) as lng, ST_Y(the_geom) as lat`;
 
         // Setup values
-        let values = [ body.event_status, body.project_code, body.operational_center, body.metadata, body.programmes, id];
+        let values = [body.project_code, body.operational_center, body.metadata, body.programmes, id];
 
         // Execute
         logger.debug(query);

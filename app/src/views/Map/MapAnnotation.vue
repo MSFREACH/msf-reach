@@ -78,7 +78,9 @@ export default {
         },
         '$route' (to, from){
             var oldLayer = this.mapId + from.params.slug;
-            map.removeLayer(oldLayer);
+            if(from.params.slug != to.params.slug){
+                map.removeLayer(oldLayer);
+            }
         },
         responsesGeoJson(newVal){
             if(newVal) this.addResponseAreasLayer();
@@ -98,6 +100,9 @@ export default {
 
             map.on('style.load', _ => {
                 vm.styleLoaded;
+                if(vm.mapId == 'responsesAnnotation'){
+                    vm.addBoundaryLayer(true);
+                }
             });
         },
         // TODO:// load layers & TOggle layers in Mapbox
@@ -129,7 +134,21 @@ export default {
         //         feature.leafletObject.removeFrom(this.map);
         //     }
         // },
-        addBoundaryLayer(){
+        addBoundaryLayer(isResponse){
+            if(isResponse){
+                var fillStyle = {
+                    'fill-outline-color': '#0374c7',
+                    'fill-color': 'transparent',
+                    'fill-opacity': 1
+                }
+
+            }else{
+                var fillStyle = {
+                    'fill-color': '#0374c7',
+                    'fill-opacity': 0.35
+                }
+            }
+
             map.addLayer({
                 'id':this.mapId + this.$route.params.slug,
                 'type': 'fill',
@@ -141,10 +160,7 @@ export default {
                     }
                 },
                 'layout': {},
-                'paint': {
-                    'fill-color': '#0374C7',
-                    'fill-opacity': 0.35
-                }
+                'paint': fillStyle
             })
         },
         getBoundaries(){
@@ -157,9 +173,7 @@ export default {
             this.$store.dispatch(FETCH_GEOJSON_POLYGON, query);
         },
         addResponseAreasLayer(){
-            console.log(this.responsesGeoJson);
             var formatedJson = getFeaturesFromArcs(this.responsesGeoJson, 'output');
-            console.log(this.responsesGeoJson, formatedJson, JSON.stringify(formatedJson));
             map.addSource('event-responses', {
                 'type': 'geojson',
                 'data': {
@@ -174,7 +188,7 @@ export default {
                 'source': 'event-responses',
                 'paint': {
                     'fill-color': '#FFB677',
-                    'fill-opacity': 1
+                    'fill-opacity': .35
                 },
                 'filter': ['==', '$type', 'Polygon']
             });
@@ -189,7 +203,8 @@ export default {
 <style lang='scss'>
     #map,
     #newEventEntry,
-    #generalAnnotation{
+    #generalAnnotation,
+    #responsesAnnotation{
         display: block;
         width: 100%;
         height: 500px; // **height require by leaflet

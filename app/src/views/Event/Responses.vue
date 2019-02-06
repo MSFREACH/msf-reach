@@ -1,14 +1,11 @@
 <template>
     <v-container class="eventSubContent statusToggle responseContainer">
-        <nav v-if="responses && responses.length> 0" class="statusTabWrapper">
-            <v-btn flat small :class="item.event_status.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in responses" :key="index" @click="switchStatus(item)">{{item.event_status}}</v-btn>
-        </nav>
-        <nav v-else class="statusTabWrapper">
-            <v-btn flat small :class="eventStatus+'-wrapper statusTabs'">{{eventStatus}}</v-btn>
+        <nav class="statusTabWrapper">
+            <v-btn flat small :class="item+'-wrapper statusTabs'" v-for="(item, index) in statusHistory" :key="index" @click="switchStatus(item)">{{item}}</v-btn>
         </nav>
 
         <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'" dark>
-            <v-layout class="actions" v-if="displayResponse && (displayResponse.event_status == activeResponse.event_status)">
+            <v-layout class="actions" v-if="allowEdit">
                 <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                 <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
             </v-layout>
@@ -63,7 +60,7 @@
                 <div class="one-half">
                     <label>Response</label>
                     <v-flex d-flex>
-                        <v-select dark :items="allResponseTypes" label="type" :v-model="editResponse.metadata.type"></v-select>
+                        <v-select dark :items="allResponseTypes" label="type" v-model="editResponse.metadata.type"></v-select>
                     </v-flex>
                     <v-textarea solo label="description" v-model="editResponse.metadata.description" auto-grow background-color="white" color="secondary"></v-textarea>
                 </div>
@@ -72,16 +69,16 @@
                     <div class="dateRange">
                         <div class="one-half">
                             <label>Start date</label>
-                            <v-menu ref="startDateSelected" :close-on-content-click="false" v-model="startDateSelected" lazy transition="scale-transition" offset-y full-width>
-                                <v-text-field slot="activator" v-model="editResponse.metadata.start_date" persistent-hint type="date"></v-text-field>
-                                <v-date-picker v-model="editResponse.metadata.start_date" no-title @input="startDateSelected = false"></v-date-picker>
+                            <v-menu ref="startDateSelected" :close-on-content-click="false" v-model="selectedDate.start" lazy transition="scale-transition" offset-y full-width>
+                                <v-text-field slot="activator" v-model="selectedDate.startValue" persistent-hint type="date"></v-text-field>
+                                <v-date-picker v-model="selectedDate.startValue" no-title @input="selectedDate.start = false"></v-date-picker>
                             </v-menu>
                         </div>
                         <div class="one-half">
                             <label>End date</label>
-                            <v-menu ref="endDateSelected" :close-on-content-click="false" v-model="endDateSelected" lazy transition="scale-transition" offset-y full-width>
-                                <v-text-field slot="activator" v-model="editResponse.metadata.end_date" persistent-hint type="date"></v-text-field>
-                                <v-date-picker v-model="editResponse.metadata.end_date" no-title @input="endDateSelected = false"></v-date-picker>
+                            <v-menu ref="endDateSelected" :close-on-content-click="false" v-model="selectedDate.end" lazy transition="scale-transition" offset-y full-width>
+                                <v-text-field slot="activator" v-model="selectedDate.endValue" persistent-hint type="date"></v-text-field>
+                                <v-date-picker v-model="selectedDate.endValue" no-title @input="selectedDate.end = false"></v-date-picker>
                             </v-menu>
                         </div>
                     </div>
@@ -97,8 +94,10 @@
                 <v-layout row wrap>
                     <div class="top-level primary-text">
                         <label>Project Code</label>
-                        {{displayResponse.project_code}}
+                        <v-select :items="activeResponses" v-model="selectedResponseId" item-text="project_code" item-value="id"></v-select>
+                        <new-response></new-response>
                     </div>
+
                     <div class="one-third">
                         <label>updated</label>
                         {{displayResponse.updated | relativeTime}}
@@ -125,14 +124,13 @@
 
                     <div class="one-half">
                         <div class="dateRange">
-                            <span class="start"> <label>Start date</label> 2019 {{displayResponse.metadata.start_date | date}} </span>
-                            <span class="end">  <label>End date</label>  13123898 {{displayResponse.metadata.end_date | date}} </span>
+                            <span class="start"> <label>Start date</label> {{displayResponse.metadata.start_date | date}} </span>
+                            <span class="end">  <label>End date</label> {{displayResponse.metadata.end_date | date}} </span>
                         </div>
                         <div> <label> Location of MSF Response: </label>
-                            {{displayResponse.location}}
+                            <!-- {{displayResponse.location}} -->
                         </div>
                     </div>
-
 
                     <hr class="row-divider"/>
                     <div class="one-half">
@@ -141,7 +139,7 @@
                     </div>
 
                     <hr class="row-divider"/>
-                    <v-btn fab flat small>
+                    <v-btn fab flat small v-if="displayResponse.metadata">
                         <a :href='displayResponse.metadata.sharepoint_link' target="_blank">
                             <v-icon>link</v-icon>
                         </a>
@@ -150,7 +148,8 @@
             </v-layout>
             <v-layout v-else>
                     No response recorded yet
-                    <v-btn v-if="eventStatus.toLowerCase() == 'ongoing' || eventStatus.toLowerCase() == 'intervention'" @click="add" fab flat> <v-icon>add</v-icon> </v-btn>
+                    <v-btn v-if="isResponseStatus" @click="add" fab flat> <v-icon>add</v-icon> </v-btn>
+                    <new-response></new-response>
             </v-layout>
         </div>
 
@@ -167,7 +166,7 @@
                 </v-card>
               </v-dialog>
             </v-layout>
-            <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="eventMetadata.areas[0]"></map-annotation>
+            <map-annotation  mapId="responsesAnnotation" :coordinates="eventCoordinates"></map-annotation>
         </div>
     </v-container>
 
@@ -183,6 +182,9 @@ import { DEFAULT_MSF_RESPONSE } from '@/common/form-fields';
 import { RESPONSE_TYPES, REPONSE_PROGRAMME_TYPES, DEFAULT_RESPONSE_PROGRAMME,  RESPONSE_INFECTIOUS_DISEASE_PROGRAMMES, RESPONSE_NCDS_PROGRAMMES,  OPERATIONAL_CENTERS } from '@/common/response-fields';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
 import MapInput from '@/views/Map/MapInput.vue';
+import NewResponse from '@/views/New/NewResponse.vue';
+
+import moment from 'moment';
 
 
 export default {
@@ -194,6 +196,8 @@ export default {
             editableIndex: null,
             inEditProgrammeIndex: null,
             _beforeEditingProgrammeCache: {},
+            selectedStatus: null,
+            selectedResponseId: {},
             editResponse: null,
             _beforeEditingCache: {},
             allProgrammes: REPONSE_PROGRAMME_TYPES,
@@ -206,19 +210,23 @@ export default {
             allOperationalCenters: OPERATIONAL_CENTERS,
             defaultResponse: DEFAULT_MSF_RESPONSE,
             programOpenDate: false,
-            startDateSelected: false,
-            endDateSelected: false
+            selectedDate:{
+                start: false,
+                startValue: null,
+                end: false,
+                endValue: null
+            }
         };
     },
     components: {
-        MapAnnotation, MapInput
+        MapAnnotation, MapInput, NewResponse
     },
     methods:{
         fetchReponses(){
             this.$store.dispatch(FETCH_MSF_RESPONSES, {eventId: this.$route.params.slug})
         },
-        switchStatus(response){
-            this.displayResponse = Object.assign({}, response);
+        switchStatus(status){
+            this.selectedStatus = status;
         },
         add(){
             this.editing = true;
@@ -240,13 +248,22 @@ export default {
             this.editResponse = this._beforeEditingCache = null;
         },
         save(){
-            /// tricky to get the response field where status == active status
+            if(this.displayResponse){
+                delete this.editResponse.event_id;
+                delete this.editResponse.event_status;
+                this.$store.dispatch(EDIT_MSF_RESPONSE, this.editResponse);
+            }else{
+                this.editResponse.event_id = this.$route.params.slug;
+                this.editResponse.event_status = this.eventStatus;
+                this.$store.dispatch(CREATE_MSF_RESPONSE, this.editResponse);
+            }
+
         },
         saveArea(){
             console.log("saveArea ------ ", this.response.area);
             var params = {
-                eventId: this.$route.params.slug,
-                eventStatus: this.eventStatus,
+                event_id: this.$route.params.slug,
+                event_status: this.eventStatus,
                 area : this.response.area
             };
             var emptyResponse = Object.values(this.editResponse).some(el => el == undefined);
@@ -288,10 +305,15 @@ export default {
             if(val){
                 if(this.displayResponse){
                     this._beforeEditingCache = Object.assign({}, this.displayResponse);
+                    console.log(" ------- original obj , ", this.displayResponse);
                     this.editResponse = this.displayResponse;
+                    this.selectedDate.startValue = moment(this.editResponse.metadata.start_date).format('YYYY-MM-DD');
+                    this.selectedDate.endValue = moment(this.editResponse.metadata.end_date).format('YYYY-MM-DD');
                 }else{
                     this.editResponse = this.defaultResponse;
                 }
+            }else{
+                this.save();
             }
         },
         mapDialog(val){
@@ -299,7 +321,6 @@ export default {
                 var vm = this;
                 setTimeout(function(){
                     vm.$refs.responseMapEntry.resizeMap(); }, 100);
-
             }
         }
     },
@@ -311,19 +332,32 @@ export default {
             'eventMetadata',
             'eventCoordinates'
         ]),
-        activeResponse(){
-            if(!this.responses) return null;
+        isResponseStatus(){
+            var currentStatus = this.eventStatus.toLowerCase();
+            return currentStatus == 'ongoing' || currentStatus == 'intervention';
+        },
+        allowEdit(){
+            if(!this.displayResponse && this.isResponseStatus) return true;
+            if(this.displayResponse && (this.displayResponse.event_status == this.eventStatus)) return true;
+            return false;
 
-            var result = this.responses.filter(item =>{
-                return item.event_status == this.eventStatus;
+        },
+        activeResponses(){
+            if(!this.responses) return null;
+            var currentStatus = this.selectedStatus ? this.selectedStatus : this.eventStatus;
+
+            return this.responses.filter(item => {
+                return item.event_status == currentStatus;
             });
-            return result[0];
         },
         displayResponse(){
-            if(this.eventStatus == 'complete'){
-                return this.responses[this.responses.length-1];
-            }else if(!_.isEmpty(this.activeResponse)){
-                return this.activeResponse;
+            if(!_.isEmpty(this.selectedResponseId)){
+                var filtered = this.responses.filter(item =>{
+                    return item.id == this.selectedResponseId;
+                });
+                return filtered[0];
+            }else if(!_.isEmpty(this.activeResponses)){
+                return this.activeResponses[0];
             }else{
                 return null;
             }
@@ -334,6 +368,12 @@ export default {
             });
 
             return result[0].subPrograms;
+        },
+        statusHistory(){
+            if(!this.responses) return [this.eventStatus];
+
+            var statuses = this.responses.map(item => item.event_status);
+            return _.sortedUniq(statuses);
         }
     }
 };
