@@ -35,6 +35,11 @@ textarea:focus, input:focus{
         padding-left: 20px;
     }
 }
+.programme-rows{
+    .form-actions{
+
+    }
+}
 
 .round-borders{
     border: 2px solid $bg-space-grey;
@@ -44,6 +49,14 @@ textarea:focus, input:focus{
     input{
         border-bottom: none;
     }
+    .v-select-list{
+        width: min-content;
+    }
+}
+.round-borders.highlight{
+    width: 250px;
+    overflow: hidden;
+    border: 2px solid $color-active;
 }
 .create-wrapper{
     .v-text-field > .v-input__control > .v-input__slot:before{
@@ -148,6 +161,12 @@ textarea:focus, input:focus{
     }
 }
 
+.delete-btn{
+    background: $bg-light !important; 
+    .v-icon{
+        color: $warning-red !important;
+    }
+}
 .generalContainer,
 .responseContainer{
     .edit-wrapper{

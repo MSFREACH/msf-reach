@@ -13,7 +13,7 @@
                 <div class="row-spacing">
                     <label>Project Code</label>
                     <div class="round-borders pc">
-                        <v-select :items="allOperationalCenters" v-model="editResponse.operational_center" label="OC"></v-select>
+                        <v-select :items="allOperationalCenters" v-model="editResponse.operational_center" label="OC" ></v-select>
                         <input type="text"  v-model="editResponse.project_code" placeholder="######" />
                     </div>
                 </div>
@@ -49,14 +49,20 @@
                         <!-- map as input -->
                     </div>
                 </div>
-
-                <v-text-field class="linkAttachment round-borders" xs12 v-model="editResponse.metadata.sharepoint_link" single-line prepend-icon="link" label="Sharepoint link"></v-text-field>
+                <v-flex xs8>
+                <v-text-field class="linkAttachment round-borders" v-model="editResponse.metadata.sharepoint_link" single-line prepend-icon="link" label="Sharepoint link"></v-text-field>
+                </v-flex>
+                <v-btn fab flat small class="delete-btn right" @click="deleteResponse">
+                    <v-icon>remove_circle</v-icon>
+                </v-btn>
             </v-layout>
             <v-layout v-else-if="displayResponse">
                 <v-layout row wrap>
                     <div class="top-level primary-text">
                         <label>Project Code</label>
-                        <v-select :items="activeResponses" v-model="selectedResponseId" item-text="project_code" item-value="id"></v-select>
+                        <v-flex>
+                            <v-select class="round-borders highlight" :items="activeResponses" v-model="selectedResponseId" item-text="project_code" item-value="id"></v-select>
+                        </v-flex>
                         <new-response></new-response>
                     </div>
 
@@ -106,6 +112,7 @@
                             <v-icon>link</v-icon>
                         </a>
                     </v-btn>
+
                 </v-layout>
             </v-layout>
             <v-layout v-else>
@@ -212,6 +219,10 @@ export default {
                 this.$store.dispatch(EDIT_MSF_RESPONSE_AREA, params)
             }
 
+        },
+        deleteResponse(){
+            console.log(' delete ---- ', this.editResponse.id);
+            this.$store.dispatch(DELETE_MSF_RESPONSE, parseInt(this.editResponse.id));
         }
     },
     mounted(){

@@ -64,7 +64,7 @@ export default {
     },
     mounted(){
         this.initMap();
-        if(this.eventCoordinates) {
+        if(!_.isEmpty(this.eventCoordinates)) {
             this.coordinates = this.eventCoordinates;
             this.addDrawTool();
         }
@@ -78,6 +78,7 @@ export default {
         },
         coordinates(newVal){
             if(newVal) {
+                console.log(newVal);
                 map.jumpTo({center: newVal});
                 if(!_.isEqual(this.reverseGeoJson.center,  newVal)){
                     this.reverseGeocode();
@@ -124,6 +125,7 @@ export default {
 
         },
         resizeMap(){
+            // console.log('----- resize map ----- ', map.loaded(), map.isStyleLoaded());
             map.resize();
         },
         addBoundaryLayer(){
@@ -194,7 +196,7 @@ export default {
                 var data = draw.getAll();
                 if(data.features.length > 0){
                     this.polygon = data.features[0].geometry;
-                    this.$store.dispatch(UPDATE_RESPONSE_AREA_GEOMETRY, {area: data.features[0].geometry })
+                    this.$store.commit(UPDATE_RESPONSE_AREA_GEOMETRY, {area: data.features[0].geometry })
                 }
             }
         },

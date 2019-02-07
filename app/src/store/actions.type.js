@@ -63,3 +63,8 @@ export const DELETE_SITREP = 'deleteSitrep';
 
 export const FETCH_GEOJSON_POLYGON = 'fetchGeojsonPolygon';
 export const FETCH_REVERSE_GEOCODER = 'fetchReverseGeocoder';
+
+export const FETCH_COUNTRY_DETAILS = 'fetchCountryDetails';
+export const CREATE_COUNTRY_DETAILS = 'createCountryDetails';
+export const EDIT_COUNTRY_DETAILS = 'editCountryDetails';
+export const DELETE_COUNTRY_DETAILS = 'deleteCountryDetails';

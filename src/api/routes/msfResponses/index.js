@@ -66,8 +66,8 @@ export default ({ config, db, logger }) => {
                     coordinates: Joi.array().items(Joi.array())
                 }),
                 programmes: Joi.array().items(Joi.object().keys({
-                    name: Joi.string().allow('', null),
                     value: Joi.string().allow('', null),
+                    sub_program: Joi.string().allow('', null),
                     deployment_scale: Joi.number().min(1).max(10).allow(null),
                     open_date: Joi.date().iso().allow(null),
                     notes: Joi.string().allow('', null)
@@ -100,8 +100,8 @@ export default ({ config, db, logger }) => {
                     sharepoint_link: Joi.string().allow('', null)
                 }),
                 programmes: Joi.array().items(Joi.object().keys({
-                    name: Joi.string().allow('', null),
                     value: Joi.string().allow('', null),
+                    sub_program: Joi.string().allow('', null),
                     deployment_scale: Joi.number().min(1).max(10).allow(null),
                     open_date: Joi.date().iso().allow(null),
                     notes: Joi.string().allow('', null)
@@ -125,7 +125,7 @@ export default ({ config, db, logger }) => {
         }),
         (req, res, next) => {
             msfResponses(config, db, logger).deleteResponse(req.params.id)
-                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'response deleted', id:data.id }))
+                .then((data) => res.status(200).json({ statusCode: 200, time:new Date().toISOString(), result: 'response deleted', id: req.params.id}))
                 .catch((err) => {
                     /* istanbul ignore next */
                     logger.error(err);

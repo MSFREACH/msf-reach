@@ -5,6 +5,9 @@ ul{
     list-style: none;
 }
 
+.create-btn{
+    background: $text-light-grey;
+}
 .eventSubContent{
     padding: 22px;
     display: flex;
@@ -17,8 +20,6 @@ ul{
             padding-top: 0;
         }
     }
-
-
 }
 .action-link{
     padding: 28px;
@@ -26,7 +27,7 @@ ul{
 .edit-wrapper{
     .cancel{
         .v-icon{
-            color: #fff;
+            color: $bg-light;
         }
     }
 }
@@ -40,7 +41,7 @@ ul{
         }
         .v-input__control,
         .v-btn--floating.v-btn--small{
-            background: #fff;
+            background: $bg-light;
             border-radius: 20px;
         }
         .v-input__control{
@@ -71,7 +72,7 @@ ul{
         }
         .v-input{
             height: 40px;
-            background: #fff;
+            background: $bg-light;
             border-radius: 20px;
             padding: 6px 21px;
             display: inline-block;
@@ -86,7 +87,7 @@ ul{
             margin: 0 10px;
         }
         .v-btn--floating.v-btn--small{
-            background: #fff;
+            background: $bg-light;
             display: inline-block;
             margin: 0;
         }
@@ -99,7 +100,7 @@ ul{
 .file-attachment.count{
     background: $bg-space-grey;
     border-radius:5px;
-    color: #fff;
+    color: $bg-light;
     width: 30px;
     height: 30px;
     margin: 0 auto;
@@ -109,8 +110,8 @@ ul{
     position: relative;
     margin: 0;
     border-radius:5px;
-    background: #fff;
-    box-shadow: 1px 5px 10px #707070;
+    background: $bg-light;
+    box-shadow: 1px 5px 10px $text-light-grey;
     padding: 21px;
 }
 .split-text-fields{
@@ -121,8 +122,8 @@ ul{
     width: 68%;
     margin: 0;
     border-radius:5px;
-    background: #fff;
-    box-shadow: 1px 5px 10px #707070;
+    background: $bg-light;
+    box-shadow: 1px 5px 10px $text-light-grey;
     padding: 21px;
     margin-right: 1em;
     vertical-align: top;
@@ -171,7 +172,7 @@ hr.row-divider{
     width: 100%;
     margin: 1em 0;
     height: 1px;
-    color: #ccc;
+    color: $border-gray;
 }
 
 .eventSubContent label{
@@ -179,16 +180,16 @@ hr.row-divider{
 }
 
 table.v-table tbody tr:hover{
-    background: #D0D3DA;
+    background: $bg-space-grey;
 }
 
 tr.v-datatable__expand-row .v-card.expanded-field{
-    background: #D0D3DA;
+    background: $bg-space-grey;
     padding: 40px;
 }
 
 .markdown-fields{
-    background: #D0D3DA;
+    background: $bg-space-grey;
     color: #000;
     overflow-wrap: break-word;
     width: 100%;
@@ -199,8 +200,8 @@ tr.v-datatable__expand-row .v-card.expanded-field{
 }
 
 .v-dialog .v-dialog--active{
-    background: #0374C7;
-    color: #fff;
+    background: $color-active;
+    color: $bg-light;
 }
 
 .eventSubContent.statusToggle{
@@ -217,20 +218,20 @@ tr.v-datatable__expand-row .v-card.expanded-field{
 }
 
 .monitoringTab{
-    background: #95E1D3;
-    border: #95E1D3 2px solid;
+    background: $ev-status-monitoring;
+    border: $ev-status-monitoring 2px solid;
 }
 
 .statusTabs{
     border-bottom: none;
-    color:#fff;
+    color:$bg-light;
     border-radius: 5px 5px 0 0;
     padding: 0 20px;
     margin: 0;
 }
 .statusTabs:first-of-type{
-    background: #fff;
-    color: #707070;
+    background: $bg-light;
+    color: $text-light-grey;
 }
 
 .dateRange{

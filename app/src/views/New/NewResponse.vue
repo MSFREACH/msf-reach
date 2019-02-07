@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
       <v-dialog v-model="dialog" persistent max-width="880px" hide-overlay>
-          <v-btn slot="activator" fab small flat :size="40">
+          <v-btn slot="activator" class="create-btn" fab small flat dark :size="40">
               <v-icon> add </v-icon>
           </v-btn>
           <template>
@@ -28,6 +28,7 @@
                                         <input type="text"  v-model="newResponse.project_code" placeholder="######" />
                                     </div>
                                 </div>
+                                <response-programmes></response-programmes>
                                 <hr class="row-divider"/>
                                 <div class="one-half">
                                     <label>Response</label>
@@ -76,9 +77,9 @@
 import { mapGetters } from 'vuex';
 import { CREATE_MSF_RESPONSE} from '@/store/actions.type';
 import { RESPONSE_TYPES, REPONSE_PROGRAMME_TYPES, DEFAULT_RESPONSE_PROGRAMME,  RESPONSE_INFECTIOUS_DISEASE_PROGRAMMES, RESPONSE_NCDS_PROGRAMMES,  OPERATIONAL_CENTERS } from '@/common/response-fields';
-import MapInput from '@/views/Map/MapInput.vue';
-
 import { DEFAULT_MSF_RESPONSE } from '@/common/form-fields';
+import MapInput from '@/views/Map/MapInput.vue';
+import ResponseProgrammes from '@/components/RowEntries/ResponseProgrammes.vue';
 
 export default {
     name: 'new-response',
@@ -105,7 +106,7 @@ export default {
         inProgress: false
     }),
     components:{
-        MapInput
+        MapInput, ResponseProgrammes
     },
     watch:{
         dialog(val){
@@ -118,23 +119,33 @@ export default {
             }
         },
         r1(val){
+            if(val== 1){
+                this.$refs.responseMapEntry.resizeMap();
+
+            }
         }
     },
     methods:{
 
         save(){
             this.lintDates();
-            this.newResponse.event_id = this.$route.params.slug;
-            this.newResponse.event_status = this.eventStatus;
-            this.newResponse.area = this.response.area;
+            var tmp ={
+                event_id: parseInt(this.$route.params.slug),
+                event_status: this.eventStatus,
+                area: this.response.area,
+                programmes : this.response.programmes
+            };
+
+            var params = _.merge(this.newResponse, tmp);
+
             this.inProgress = true;
             var vm = this;
-            this.$store.dispatch(CREATE_MSF_RESPONSE, this.newResponse).then((payload) => {
+            this.$store.dispatch(CREATE_MSF_RESPONSE, params).then((payload) => {
                 var responseID = payload.data.result.objects.output.geometries[0].properties.id;
                 this.inProgress = false;
                 this.$router.push({
                     name: 'event-responses',
-                    params: { slug:  vm.$router.params.slug}
+                    params: { slug:  vm.$route.params.slug}
                 });
                 setTimeout(() => vm.close(), 1000);
             });

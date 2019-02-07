@@ -99,15 +99,15 @@ export default {
         },
         initMap(){
             var geojsonEvents = this.eventsGeoJson.objects.output;
-            var eventFeatureCollection = getFeatures(this.eventsGeoJson, 'output');
 
+            var eventFeatureCollection = getFeatures(this.eventsGeoJson, 'output');
             if(this.eventId){
                 var eventObj = eventFeatureCollection.filter(item =>{
                     return item.properties.id == this.eventId;
                 });
                 var gotoCoordinates = eventObj[0].geometry.coordinates;
                 this.recentCoordinates = gotoCoordinates;
-            }else if(this.recentCoordinates){
+            }else if(!_.isEmpty(this.recentCoordinates)){
                 var gotoCoordinates = this.recentCoordinates; // to not lose center when refreshing
             }else{
                 var gotoCoordinates = geojsonEvents.geometries[0].coordinates;

@@ -13,7 +13,7 @@ export default {
         return value.replace(/_/g, ' ');
     },
     removeSnakeCase(value){
-        return value.replace(/_/g, ' ').replace(/(?: |\b)(\w)/g, function(key) { return key.toUpperCase()});
+        return value.replace(/_/g, ' ').replace(/(?: |\b)(\w)/g, function(key) { return key.toUpperCase(); });
     },
     toArray(value){
         return value.split(',');

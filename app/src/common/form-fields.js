@@ -68,8 +68,8 @@ export const DEFAULT_MSF_RESPONSE = {
         sharepoint_link: null
     },
     programmes:[{
-        name: null,
         value: null,
+        sub_program: null,
         open_date: null,
         deployment_scale: null,
         notes: null

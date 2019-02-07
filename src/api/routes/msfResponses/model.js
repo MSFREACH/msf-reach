@@ -98,7 +98,7 @@ export default (config, db, logger) => ({
     deleteResponse: (id) => new Promise((resolve, reject) => {
 
         // Setup query
-        let query = `DELETE FROM ${config.TABLE_MSF_RESPONSES} WHERE event_id = $1`;
+        let query = `DELETE FROM ${config.TABLE_MSF_RESPONSES} WHERE id = $1`;
 
         // Setup values
         let values = [ id ];

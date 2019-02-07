@@ -59,8 +59,8 @@ export const RESPONSE_NCDS_PROGRAMMES = [
 export const OPERATIONAL_CENTERS = ['OCA', 'OCBA', 'OCG', 'OCB', 'OCP'];
 
 export const DEFAULT_RESPONSE_PROGRAMME = {
-    name: null,
     value: null,
+    sub_program: null,
     open_date: null,
     deployment_scale: 1,
     notes: null

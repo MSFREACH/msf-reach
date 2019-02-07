@@ -1,8 +1,9 @@
 <template>
     <div class="full-width row-spacing">
         <label class="mb-2">Type of programmes</label>
-        <v-flex v-for="(program, index) in programmes" :key="index" @mouseover="editableIndex = index" @mouseleave="editableIndex = null" class="programme-rows">
-            <div v-if="editIndex < 0">
+
+        <v-layout row wrap  v-if="editIndex < 0">
+            <v-flex xs6 v-for="(program, index) in programmes" :key="index" @mouseover="editableIndex = index" @mouseleave="editableIndex = null" class="mb-2">
                 <div class="note-text">
                     <div class="secondary-text">{{program.value | removeSnakeCase}} </div><span v-if="program.sub_program" class="sub-category-text"> {{program.sub_program | removeSnakeCase}}</span>
                     <span class="specified-text"> {{program.notes}} </span>
@@ -12,38 +13,38 @@
                     <a @click="editProgramme(program, index)">Edit</a><br/>
                     <a @click="deleteProgramme(index)">Delete</a>
                 </span>
-            </div>
-            <v-layout row wrap v-else-if="editIndex == index">
-                <v-flex xs7>
-                    <v-layout row wrap>
-                        <v-flex xs12>
-                            <v-select xs6 v-model="program.value" label="type" :items="allProgrammes"></v-select>
-                            <v-select xs6 label="sub-type" v-if="(program.value == 'infectious_diseases' || program.value == 'ncds')"
-                                v-model="program.sub_program"
-                                :items="subProgrammes[program.value]">
-                            </v-select>
-                        </v-flex>
-                        <v-flex xs6 class="content-block">
-                            <label>Open date</label>
-                            <v-menu ref="arrivalDate" :close-on-content-click="false" v-model="arrivalDate" lazy transition="scale-transition" offset-y full-width width="290px">
-                                <v-text-field slot="activator" v-model="program.open_date" persistent-hint type="date"></v-text-field>
-                                <v-date-picker v-model="program.open_date" no-title @input="arrivalDate = false"></v-date-picker>
-                            </v-menu>
-                        </v-flex>
-                        <v-flex xs6 class="content-block scale-label">
-                            <label>Deployment scale</label>
-                            <v-slider v-model="program.deployment_scale" min="1" max="10" step="1"></v-slider>
-                            <span v-text="program.deployment_scale"></span>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>
-                <v-textarea xs5 v-model="program.notes" placeholder="Specify..." solo></v-textarea>
-                <v-flex class="row-actions" xs12>
-                    <a @click="submitProgramme()">confirm</a>
-                    <a @click="cancelEditProgramme(index)">cancel</a>
-                </v-flex>
-            </v-layout>
-        </v-flex>
+            </v-flex>
+        </v-layout>
+        <v-layout row wrap v-else>
+            <v-flex xs7>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-select xs6 v-model="programmes[editIndex].value" label="type" :items="allProgrammes"></v-select>
+                        <v-select xs6 label="sub-type" v-if="(programmes[editIndex].value == 'infectious_diseases' || programmes[editIndex].value == 'ncds')"
+                            v-model="programmes[editIndex].sub_program"
+                            :items="subProgrammes[programmes[editIndex].value]">
+                        </v-select>
+                    </v-flex>
+                    <v-flex xs6 class="content-block">
+                        <label>Open date</label>
+                        <v-menu ref="arrivalDate" :close-on-content-click="false" v-model="arrivalDate" lazy transition="scale-transition" offset-y full-width width="290px">
+                            <v-text-field slot="activator" v-model="programmes[editIndex].open_date" persistent-hint type="date"></v-text-field>
+                            <v-date-picker v-model="programmes[editIndex].open_date" no-title @input="arrivalDate = false"></v-date-picker>
+                        </v-menu>
+                    </v-flex>
+                    <v-flex xs6 class="content-block scale-label">
+                        <label>Deployment scale</label>
+                        <v-slider v-model="programmes[editIndex].deployment_scale" min="1" max="10" step="1"></v-slider>
+                        <span v-text="programmes[editIndex].deployment_scale"></span>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+            <v-textarea xs5 v-model="programmes[editIndex].notes" placeholder="Specify..." solo></v-textarea>
+            <v-flex class="row-actions" xs12>
+                <a @click="submitProgramme()">confirm</a>
+                <a @click="cancelEditProgramme(index)">cancel</a>
+            </v-flex>
+        </v-layout>
         <a v-if="editIndex < 0" class="form-actions" @click="addProgramme()">Add</a>
     </div>
 </template>
@@ -85,8 +86,9 @@ export default {
     },
     methods: {
         addProgramme(){
-            this.programmes.push(this.defaultProgram);
-            this.editIndex = this.programmes.length -1;
+            var tmp = _.clone(this.defaultProgram);
+            this.programmes.push(tmp);
+            this.editIndex = this.programmes.length - 1;
         },
         editProgramme(program, index){
             this._beforeEditingCache = program;
@@ -124,6 +126,9 @@ export default {
     font-size: 14px;
 }
 .v-list__tile{
-    font-size: 12px;
+    // font-size: 12px;
+}
+.programme-rows{
+    width: 100%;
 }
 </style>
