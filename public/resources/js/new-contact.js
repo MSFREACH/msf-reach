@@ -10,7 +10,7 @@ var autocompleteMap=newContactMap;
 
 //newContactMap.locate({setView: true, maxZoom: 16});
 // Add some base tiles
-var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/acrossthecloud/cj9t3um812mvr2sqnr6fe0h52/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWNyb3NzdGhlY2xvdWQiLCJhIjoiY2lzMWpvOGEzMDd3aTJzbXo4N2FnNmVhYyJ9.RKQohxz22Xpyn4Y8S1BjfQ', {
+var mapboxTerrain = L.tileLayer('https://api.mapbox.com/styles/v1/msfhk/cjqyk9p1c9r6o2rscym6nt90f/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXNmaGsiLCJhIjoiY2pxdnp0N3E2MTBwZDQybWhtMGw2aWljYSJ9.I6nmYZcm6p77JgxlITRfpQ', {
     attribution: '© Mapbox © OpenStreetMap © DigitalGlobe',
     minZoom: 0,
     maxZoom: 18
