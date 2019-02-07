@@ -163,9 +163,6 @@ export const ReportsService = {
     update (slug, params) {
         return ApiService.update('reports', slug, params);
     },
-    archive(slug, params) {
-        return ApiService.update('reports', slug, params); //TODO: // check API endpoints
-    },
     destroy (slug) {
         return ApiService.delete(`reports/${slug}`);
     }
@@ -187,11 +184,24 @@ export const ContactsService = {
     update (slug, params) {
         return ApiService.update('contacts', slug, params);
     },
-    archive(slug, params) {
-        return ApiService.update('contacts', slug, params); //TODO: // check API endpoints
-    },
     destroy (slug) {
         return ApiService.delete(`contacts/${slug}`);
+    }
+};
+
+export const CountryDetailsService = {
+    query (countries) {
+        const params = { countries };
+        return ApiService.query('countryDetails', params);
+    },
+    create (params) {
+        return ApiService.post('countryDetails', params);
+    },
+    update (slug, params) {
+        return ApiService.update('countryDetails', slug, params);
+    },
+    destroy (slug) {
+        return ApiService.delete(`countryDetails/${slug}`);
     }
 };
 

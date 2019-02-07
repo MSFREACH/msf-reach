@@ -4,7 +4,7 @@ import { Router } from 'express';
 import countryDetails from './model';
 
 // Import any required utility functions
-import { cacheResponse, ensureAuthenticated, handleResponse } from '../../../lib/util';
+import { cacheResponse, ensureAuthenticated, ensureAuthenticatedWrite, handleResponse } from '../../../lib/util';
 
 // Import validation dependencies
 import BaseJoi from 'joi';

@@ -12,7 +12,7 @@ export const EVENT_TOP_NAVIGATIONS = [
     { name: 'Event Details', component: 'event-general'},
     { name: 'News Feed', component: 'placeholder'},
     { name: 'Related Contacts', component: 'placeholder'},
-    { name: 'Country Details', component: 'placeholder'},
+    { name: 'Country Details', component: 'country-details'},
     { name: 'Related Response', component: 'placeholder'}
 ];
 

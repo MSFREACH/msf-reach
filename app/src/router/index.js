@@ -85,7 +85,7 @@ export default new Router({
                         props: true
                     }
                 ]
-            }
+            },
             // , {
             //     name: 'newsfeed',
             //     path: ':slug/newsfeed',
@@ -106,8 +106,14 @@ export default new Router({
             //         }
             //     ]
             // }
+            {
+                name: 'country-details',
+                path: ':slug/country-details',
+                component: () => import('@/components/CountryDetails.vue'),
+                props: true
+            }
         ]
-    },  {
+    },{
         name: 'event-edit',
         path: '/editor/:slug?',
         component: () => import('@/views/EventEdit'),

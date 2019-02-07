@@ -15,7 +15,9 @@ const initialState = {
         status: '',
         type: '',
         coordinates: {},
-        metadata: {},
+        metadata: {
+            areas: []
+        },
         properties: {},
         responses: {},
         extCapacity: {},
@@ -117,6 +119,9 @@ const getters ={
     },
     eventStatus(state){
         return state.event.status;
+    },
+    eventAreas(state){
+        return state.event.metadata.areas;
     },
     eventMetadata (state){
         return state.event.metadata;

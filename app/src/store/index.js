@@ -5,6 +5,8 @@ import events from './events.module';
 import event from './event.module';
 import response from './response.module';
 import eventNotification from './eventNotification.module';
+import countryDetails from './countryDetails.module';
+
 import SITREP from './SITREP.module';
 
 import report from './report.module';
@@ -24,6 +26,7 @@ export default new Vuex.Store({
         event,
         response,
         eventNotification,
+        countryDetails,
         SITREP,
         report,
         contact,
