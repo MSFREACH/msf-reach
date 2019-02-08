@@ -11,22 +11,22 @@ The goal of this sub-directory is to address the following concerns:
 
 # Vue Architecture
 
-    > build
-        configuration code for development environments
-    > src
-        assets/ *Stylesheets, icons*
-        common/ *API services*
-        component/ *Features - component*
-        views/ *Features - smaller views*
-        lib/ *Third-party javascripts*
-        router/ *Routing logic*
-        store/ *Data Cacheing Local storage*
-        App.vue
-        Main.js *Root Vue file*
-    > static
-        contains images/assets
-    > dist
-        compiled code for production builds
+> build
+    configuration code for development environments
+> src
+    assets/ *Stylesheets, icons*
+    common/ *API services*
+    component/ *Features - component*
+    views/ *Features - smaller views*
+    lib/ *Third-party javascripts*
+    router/ *Routing logic*
+    store/ *Data Cacheing Local storage*
+    App.vue
+    Main.js *Root Vue file*
+> static
+    contains images/assets
+> dist
+    compiled code for production builds
 
 ## Progress Links
 - [Project demo](https://ux.msf-reach.org/#/)
@@ -41,6 +41,7 @@ The goal of this sub-directory is to address the following concerns:
 
 ## To run
   > dev `npm run start` on localhost port 8001
+  
   > build `npm run build
 
 ## Reference guides
