@@ -4,7 +4,8 @@ The goal of this sub-directory is to address the following concerns:
 1. REACH production site is currently built as **long HTLM pages** under `Public/` directory with backend routing logic. Which leads to slow loading time and hard refreshes of the entire page.
 
 2. Instead of static pages rendering, we expanded on the use of **Vue.js** as a front-end framework to develop a component-based architecture. Where each feature is isolated in its own modular to be interpolated with each other and render onto the dashboard. This allows for quick scaling and incremental migration without breaking the codebase.
-# ![REACH COMPONENT STRUCTURE](./static/MSF REACH STRUCTURE.png)
+
+![REACH COMPONENT STRUCTURE](./static/MSF REACH STRUCTURE.png)
 
 3. Built as a fully fledge frontend application including CRUD operations, authentication, routing, state and data storage. Which alleviate the backend from User Interface logic and routing control. A centralize way of data cacheing in the Vuex Store instead of littering cookies in browser clients.
 
