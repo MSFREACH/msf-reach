@@ -21,6 +21,7 @@ ul{
         }
     }
 }
+
 .action-link{
     padding: 28px;
 }
@@ -129,6 +130,41 @@ ul{
     vertical-align: top;
 }
 
+.relatedContent{
+    margin: 80px 30px;
+    max-width: 100%;
+    iframe{
+        border: solid 3px #0374C7;
+        border-radius: 30px;
+        margin-left: 21px;
+    }
+
+}
+.CD-drawer {
+    .v-list__tile__title{
+        font-weight: normal;
+        font-size: 16px;
+    }
+
+
+    .v-list__group__header .v-list__group__header__prepend-icon{
+        min-width: inherit;
+        padding: 0;
+        width: 10px;
+    }
+    .v-list__group__items--no-action .v-list__tile{
+        padding-left: 32px;
+        height: 25px;
+    }
+    .form-actions{
+        padding-left: 32px;
+    }
+    .v-list .v-list__group--active:after,
+    .v-list .v-list__group--active:before{
+        background: none;
+    }
+}
+
 .map-annotation{
     display: inline-block;
     width: 30%;
@@ -174,7 +210,7 @@ hr.row-divider{
     height: 1px;
     color: $border-gray;
 }
-
+.relatedContent label,
 .eventSubContent label{
     display: block;
 }
@@ -187,7 +223,9 @@ tr.v-datatable__expand-row .v-card.expanded-field{
     background: $bg-space-grey;
     padding: 40px;
 }
-
+.label-blocks{
+    display: inline-block;
+}
 .markdown-fields{
     background: $bg-space-grey;
     color: #000;

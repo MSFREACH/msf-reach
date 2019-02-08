@@ -7,14 +7,14 @@ export default (config, db, logger) => ({
 	 * Return all countryDetail
    * @param {integer} id ID of event to filter countryDetail by
 	 */
-    all: (countries) => new Promise((resolve, reject) => {
+    all: (body) => new Promise((resolve, reject) => {
         // Setup query
         let query = `SELECT *
 			FROM ${config.TABLE_COUNTRY_DETAILS}
-			WHERE country_code = ANY($1)`; // xor
-
+			WHERE country_code = ANY($1::VARCHAR[]) `; // xor
+        let values = [body.countries];
         // Execute
-        db.any(query, countries).timeout(config.PGTIMEOUT)
+        db.any(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))
             .catch((err) => reject(err));
     }),
@@ -26,8 +26,8 @@ export default (config, db, logger) => ({
 
         // Setup query
         let query = `INSERT INTO ${config.TABLE_COUNTRY_DETAILS}
-			(country, country_code, category, type, metadata)
-			VALUES ($1, $2, $3, $4, $5)
+			(country, country_code, category, type, metadata, created)
+			VALUES ($1, $2, $3, $4, $5, now())
 			RETURNING id, country, country_code, category, type, metadata, created`;
 
         // Setup values
@@ -73,7 +73,7 @@ export default (config, db, logger) => ({
         let query = `DELETE FROM ${config.TABLE_COUNTRY_DETAILS} WHERE id = $1`;
         // Setup values
         let values = [ id ];
-        
+
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)

@@ -190,9 +190,8 @@ export const ContactsService = {
 };
 
 export const CountryDetailsService = {
-    query (countries) {
-        const params = { countries };
-        return ApiService.query('countryDetails', params);
+    query (params) {
+        return ApiService.query('countryDetails', {params});
     },
     create (params) {
         return ApiService.post('countryDetails', params);

@@ -24,7 +24,7 @@ export default ({ config, db, logger }) => {
             }
         }),
         // handle off to the database function in model.js:
-        (req, res, next) => countryDetails(config, db, logger).all(req.query.countries)
+        (req, res, next) => countryDetails(config, db, logger).all(req.query)
             .then((data) => handleResponse(data, req, res, next))
             .catch((err) => {
                 /* istanbul ignore next */
@@ -44,7 +44,7 @@ export default ({ config, db, logger }) => {
                 type: Joi.string().valid(config.API_COUNTRY_DETAIL_TYPES),
                 metadata: Joi.object().keys({
                     name: Joi.string().optional(),
-                    operational_center: Joi.string().valid(config.API_OPERATIONAL_CENTERS),
+                    operational_center: Joi.string().valid(config.API_OPERATIONAL_CENTERS).optional(),
                     url: Joi.string().uri({ scheme: ['http', 'https'] }),
                     description: Joi.string().optional()
                 })
