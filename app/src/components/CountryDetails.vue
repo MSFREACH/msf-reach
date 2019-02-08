@@ -31,7 +31,7 @@
 /*eslint no-console: off*/
 
 import { mapGetters } from 'vuex';
-import { FETCH_COUNTRY_DETAILS } from '@/store/actions.type';
+import { FETCH_EVENT, FETCH_COUNTRY_DETAILS } from '@/store/actions.type';
 
 export default {
     name: 'country-details',
@@ -57,8 +57,13 @@ export default {
             return _.sortedUniq(tmp);
         }
     },
+    watch: {
+        eventAreas(val){
+            if(!_.isEmpty(val)) this.fetchCountryDetails();
+        }
+    },
     mounted(){
-        this.fetchCountryDetails();
+
     },
     methods: {
         fetchCountryDetails(){
