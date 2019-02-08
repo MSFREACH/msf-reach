@@ -1,5 +1,7 @@
 # Refactor into Components
 The goal of this sub-directory is to address the following concerns:
+
+
     1. REACH production site is currently built as **long HTLM pages** under `Public/` directory with backend routing logic. Which leads to slow loading time and hard refreshes of the entire page.
 
     2. Instead of static pages rendering, we expanded on the use of **Vue.js** as a front-end framework to develop a component-based architecture. Where each feature is isolated in its own modular to be interpolated with each other and render onto the dashboard. This allows for quick scaling and incremental migration without breaking the codebase.
@@ -12,27 +14,26 @@ The goal of this sub-directory is to address the following concerns:
     > build
         configuration code for development environments
     > src
-        assets/ << Stylesheets, icons
-        common/ << API services
-        component/ << Features - component
-        views/ << Features - smaller views
-        lib/ << Third-party javascripts
-        router/ << Routing logic
-        store/ << Data Cacheing Local storage
+        assets/ *Stylesheets, icons*
+        common/ *API services*
+        component/ *Features - component*
+        views/ *Features - smaller views*
+        lib/ *Third-party javascripts*
+        router/ *Routing logic*
+        store/ *Data Cacheing Local storage*
         App.vue
-        Main.js << Root Vue file
+        Main.js *Root Vue file*
     > static
         contains images/assets
     > dist
         compiled code for production builds
 
+## Links
+[Project demo](https://ux.msf-reach.org/#/)
+[API SERVICE](https://github.com/MSFREACH/msf-reach/blob/ux/navigation/app/src/common/api.service.js)
+[UI | UX Workplan tracking](https://github.com/MSFREACH/msf-reach/projects/1)
 
-Project demo is available at https://ux.msf-reach.org/#/
-
-Project tracking is here
-[UI | UX Workplan](https://github.com/MSFREACH/msf-reach/projects/1) repo.
-
-## Getting started
+## Reference guides
 
 1. [RealWorld guidelines](https://github.com/gothinkster/realworld/tree/master/spec) for implementing a new framework,
 2. [RealWorld frontend instructions](https://github.com/gothinkster/realworld-starter-kit/blob/master/FRONTEND_INSTRUCTIONS.md)
