@@ -9,24 +9,29 @@ The goal of this sub-directory is to address the following concerns:
 
 3. Built as a fully fledge frontend application including CRUD operations, authentication, routing, state and data storage. Which alleviate the backend from User Interface logic and routing control. A centralize way of data cacheing in the Vuex Store instead of littering cookies in browser clients.
 
-# Vue Architecture
+# Visual Identity & Styleguide 
 
-> build
-    configuration code for development environments
-> src
-    assets/ *Stylesheets, icons*
-    common/ *API services*
-    component/ *Features - component*
-    views/ *Features - smaller views*
-    lib/ *Third-party javascripts*
-    router/ *Routing logic*
-    store/ *Data Cacheing Local storage*
-    App.vue
-    Main.js *Root Vue file*
-> static
-    contains images/assets
-> dist
-    compiled code for production builds
+For slick UI we use [Vuetify](https://vuetifyjs.com/en/) as a semantic UI library built off of Material Design Component Framework for Vue.Js. On top of which we customize further [stylesheets](https://github.com/MSFREACH/msf-reach/tree/ux/navigation/app/src/assets/css) for REACH identity visual protocols.
+
+
+# Folder structure
+
+    > build
+        configuration code for development environments
+    > src
+        assets/ [Stylesheets, icons]
+        common/ [API services]
+        component/ [Features - component]
+        views/ [Features - smaller views]
+        lib/ [Third-party javascripts]
+        router/ [Routing logic]
+        store/ [Data Cacheing Local storage]
+        App.vue
+        Main.js [Root Vue file]
+    > static
+        contains images/assets
+    > dist
+        compiled code for production builds
 
 ## Progress Links
 - [Project demo](https://ux.msf-reach.org/#/)
