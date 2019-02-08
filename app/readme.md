@@ -37,13 +37,11 @@ The goal of this sub-directory is to address the following concerns:
 ## To know
 - Vuex modules for store
 - Vue-axios for ajax requests
+- Vue Router is replacing server side routing under `app/src/router/index.js`
 
 ## To run
-    dev > `node app/build/dev-server.js` on port 8080
-    build > node build/build.js
-    also 'npm run start' on port 8001
-    *Note*: Vue Router is replacing server side routing in
-        `app/src/router/index.js`
+  > dev `npm run start` on localhost port 8001
+  > build `npm run build
 
 ## Reference guides
 
