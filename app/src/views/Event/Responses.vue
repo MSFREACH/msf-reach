@@ -245,6 +245,9 @@ export default {
                 setTimeout(function(){
                     vm.$refs.responseMapEntry.resizeMap(); }, 100);
             }
+        },
+        responses(val){
+            if(val) this.selectedResponseId = this.responses[0].id;
         }
     },
     computed: {
