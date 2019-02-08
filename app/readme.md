@@ -1,13 +1,12 @@
 # Refactor into Components
 The goal of this sub-directory is to address the following concerns:
 
+1. REACH production site is currently built as **long HTLM pages** under `Public/` directory with backend routing logic. Which leads to slow loading time and hard refreshes of the entire page.
 
-    1. REACH production site is currently built as **long HTLM pages** under `Public/` directory with backend routing logic. Which leads to slow loading time and hard refreshes of the entire page.
+2. Instead of static pages rendering, we expanded on the use of **Vue.js** as a front-end framework to develop a component-based architecture. Where each feature is isolated in its own modular to be interpolated with each other and render onto the dashboard. This allows for quick scaling and incremental migration without breaking the codebase.
+# ![REACH COMPONENT STRUCTURE](./static/MSF REACH STRUCTURE.png)
 
-    2. Instead of static pages rendering, we expanded on the use of **Vue.js** as a front-end framework to develop a component-based architecture. Where each feature is isolated in its own modular to be interpolated with each other and render onto the dashboard. This allows for quick scaling and incremental migration without breaking the codebase.
-    # ![REACH COMPONENT STRUCTURE](./static/MSF REACH STRUCTURE.png)
-
-    3. Built as a fully fledge frontend application including CRUD operations, authentication, routing, state and data storage. Which alleviate the backend from User Interface logic and routing control. A centralize way of data cacheing in the Vuex Store instead of littering cookies in browser clients.
+3. Built as a fully fledge frontend application including CRUD operations, authentication, routing, state and data storage. Which alleviate the backend from User Interface logic and routing control. A centralize way of data cacheing in the Vuex Store instead of littering cookies in browser clients.
 
 # Vue Architecture
 
@@ -29,9 +28,21 @@ The goal of this sub-directory is to address the following concerns:
         compiled code for production builds
 
 ## Links
-[Project demo](https://ux.msf-reach.org/#/)
-[API SERVICE](https://github.com/MSFREACH/msf-reach/blob/ux/navigation/app/src/common/api.service.js)
-[UI | UX Workplan tracking](https://github.com/MSFREACH/msf-reach/projects/1)
+- [Project demo](https://ux.msf-reach.org/#/)
+- [API SERVICE](https://github.com/MSFREACH/msf-reach/blob/ux/navigation/app/src/common/api.service.js)
+- [UI | UX Workplan tracking](https://github.com/MSFREACH/msf-reach/projects/1)
+
+
+## To know
+- Vuex modules for store
+- Vue-axios for ajax requests
+
+## To run
+    dev > `node app/build/dev-server.js` on port 8080
+    build > node build/build.js
+    also 'npm run start' on port 8001
+    *Note*: Vue Router is replacing server side routing in
+        `app/src/router/index.js`
 
 ## Reference guides
 
@@ -55,14 +66,3 @@ npm run build
 # run unit tests
 npm run test
 ```
-
-# To know
-- Vuex modules for store
-- Vue-axios for ajax requests
-
-# To run
-dev > `node app/build/dev-server.js` on port 8080
-build > node build/build.js
-also 'npm run start' on port 8001
-*Note*: Vue Router is replacing server side routing in
-    `app/src/router/index.js`
