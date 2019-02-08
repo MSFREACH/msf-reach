@@ -54,9 +54,6 @@ export default (config, db, logger) => ({
             RETURNING id, event_id, event_status, project_code, operational_center, metadata, programmes, the_geom`;
         // Setup values
         let values = [parseInt(body.event_id), body.event_status, body.project_code, body.operational_center, body.metadata, body.programmes, body.area];
-
-        console.log(body.area,  typeof body.area, values);
-
         // Execute
         logger.debug(query, values);
 

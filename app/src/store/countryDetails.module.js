@@ -17,6 +17,7 @@ const state = Object.assign({}, initialState);
 const actions = {
     [FETCH_COUNTRY_DETAILS]({ commit }, params){
         commit(FETCH_COUNTRY_DETAILS_START);
+        console.log(' -----FETCH_COUNTRY_DETAILS ----  ', params ); 
         return CountryDetailsService.query(params)
             .then(({ data }) => {
                 commit(FETCH_COUNTRY_DETAILS_END, data.result);
@@ -28,7 +29,7 @@ const actions = {
     [CREATE_COUNTRY_DETAILS](context, payload){
         return CountryDetailsService.create(payload);
     },
-    [EDIT_COUNTRY_DETAILS]({state}, payload){
+    [EDIT_COUNTRY_DETAILS](payload){
         var id = payload.id;
         delete payload.id;
         return CountryDetailsService.update(id, payload);
