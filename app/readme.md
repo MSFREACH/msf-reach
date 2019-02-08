@@ -5,7 +5,7 @@ The goal of this sub-directory is to address the following concerns:
 
 2. Instead of static pages rendering, we expanded on the use of **Vue.js** as a front-end framework to develop a component-based architecture. Where each feature is isolated in its own modular to be interpolated with each other and render onto the dashboard. This allows for quick scaling and incremental migration without breaking the codebase.
 
-![REACH COMPONENT STRUCTURE](./static/MSF REACH STRUCTURE.png)
+![REACH Components architecture](/static/MSFREACHSTRUCTURE.png)
 
 3. Built as a fully fledge frontend application including CRUD operations, authentication, routing, state and data storage. Which alleviate the backend from User Interface logic and routing control. A centralize way of data cacheing in the Vuex Store instead of littering cookies in browser clients.
 
@@ -28,11 +28,11 @@ The goal of this sub-directory is to address the following concerns:
     > dist
         compiled code for production builds
 
-## Links
+## Progress Links
 - [Project demo](https://ux.msf-reach.org/#/)
 - [API SERVICE](https://github.com/MSFREACH/msf-reach/blob/ux/navigation/app/src/common/api.service.js)
 - [UI | UX Workplan tracking](https://github.com/MSFREACH/msf-reach/projects/1)
-
+- [Commit history](https://github.com/MSFREACH/msf-reach/commits/ux/navigation)
 
 ## To know
 - Vuex modules for store
