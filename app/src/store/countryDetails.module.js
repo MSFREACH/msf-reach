@@ -17,7 +17,7 @@ const state = Object.assign({}, initialState);
 const actions = {
     [FETCH_COUNTRY_DETAILS]({ commit }, params){
         commit(FETCH_COUNTRY_DETAILS_START);
-        console.log(' -----FETCH_COUNTRY_DETAILS ----  ', params );
+        console.log(' -----FETCH_COUNTRY_DETAILS ----  ', params ); 
         return CountryDetailsService.query(params)
             .then(({ data }) => {
                 commit(FETCH_COUNTRY_DETAILS_END, data.result);
