@@ -1,0 +1,1257 @@
+{
+    "AF": {
+      "ISO": "AF",
+      "ENTITY": "Afghanistan",
+      "GEC": "AF"
+    },
+    "-": {
+      "ISO": "-",
+      "ENTITY": "Zaire",
+      "GEC": "-"
+    },
+    "AL": {
+      "ISO": "AL",
+      "ENTITY": "Albania",
+      "GEC": "AL"
+    },
+    "DZ": {
+      "ISO": "DZ",
+      "ENTITY": "Algeria",
+      "GEC": "AG"
+    },
+    "AS": {
+      "ISO": "AS",
+      "ENTITY": "American Samoa",
+      "GEC": "AQ"
+    },
+    "AD": {
+      "ISO": "AD",
+      "ENTITY": "Andorra",
+      "GEC": "AN"
+    },
+    "AO": {
+      "ISO": "AO",
+      "ENTITY": "Angola",
+      "GEC": "AO"
+    },
+    "AI": {
+      "ISO": "AI",
+      "ENTITY": "Anguilla",
+      "GEC": "AV"
+    },
+    "AQ": {
+      "ISO": "AQ",
+      "ENTITY": "Antarctica",
+      "GEC": "AY"
+    },
+    "AG": {
+      "ISO": "AG",
+      "ENTITY": "Antigua and Barbuda",
+      "GEC": "AC"
+    },
+    "AR": {
+      "ISO": "AR",
+      "ENTITY": "Argentina",
+      "GEC": "AR"
+    },
+    "AM": {
+      "ISO": "AM",
+      "ENTITY": "Armenia",
+      "GEC": "AM"
+    },
+    "AW": {
+      "ISO": "AW",
+      "ENTITY": "Aruba",
+      "GEC": "AA"
+    },
+    "AU": {
+      "ISO": "AU",
+      "ENTITY": "Australia",
+      "GEC": "AS"
+    },
+    "AT": {
+      "ISO": "AT",
+      "ENTITY": "Austria",
+      "GEC": "AU"
+    },
+    "AZ": {
+      "ISO": "AZ",
+      "ENTITY": "Azerbaijan",
+      "GEC": "AJ"
+    },
+    "BS": {
+      "ISO": "BS",
+      "ENTITY": "Bahamas, The",
+      "GEC": "BF"
+    },
+    "BH": {
+      "ISO": "BH",
+      "ENTITY": "Bahrain",
+      "GEC": "BA"
+    },
+    "BD": {
+      "ISO": "BD",
+      "ENTITY": "Bangladesh",
+      "GEC": "BG"
+    },
+    "BB": {
+      "ISO": "BB",
+      "ENTITY": "Barbados",
+      "GEC": "BB"
+    },
+    "BY": {
+      "ISO": "BY",
+      "ENTITY": "Belarus",
+      "GEC": "BO"
+    },
+    "BE": {
+      "ISO": "BE",
+      "ENTITY": "Belgium",
+      "GEC": "BE"
+    },
+    "BZ": {
+      "ISO": "BZ",
+      "ENTITY": "Belize",
+      "GEC": "BH"
+    },
+    "BJ": {
+      "ISO": "BJ",
+      "ENTITY": "Benin",
+      "GEC": "BN"
+    },
+    "BM": {
+      "ISO": "BM",
+      "ENTITY": "Bermuda",
+      "GEC": "BD"
+    },
+    "BT": {
+      "ISO": "BT",
+      "ENTITY": "Bhutan",
+      "GEC": "BT"
+    },
+    "BO": {
+      "ISO": "BO",
+      "ENTITY": "Bolivia",
+      "GEC": "BL"
+    },
+    "BA": {
+      "ISO": "BA",
+      "ENTITY": "Bosnia and Herzegovina",
+      "GEC": "BK"
+    },
+    "BW": {
+      "ISO": "BW",
+      "ENTITY": "Botswana",
+      "GEC": "BC"
+    },
+    "BV": {
+      "ISO": "BV",
+      "ENTITY": "Bouvet Island",
+      "GEC": "BV"
+    },
+    "BR": {
+      "ISO": "BR",
+      "ENTITY": "Brazil",
+      "GEC": "BR"
+    },
+    "IO": {
+      "ISO": "IO",
+      "ENTITY": "British Indian Ocean Territory",
+      "GEC": "IO"
+    },
+    "VG": {
+      "ISO": "VG",
+      "ENTITY": "British Virgin Islands",
+      "GEC": "VI"
+    },
+    "BN": {
+      "ISO": "BN",
+      "ENTITY": "Brunei",
+      "GEC": "BX"
+    },
+    "BG": {
+      "ISO": "BG",
+      "ENTITY": "Bulgaria",
+      "GEC": "BU"
+    },
+    "BF": {
+      "ISO": "BF",
+      "ENTITY": "Burkina Faso",
+      "GEC": "UV"
+    },
+    "MM": {
+      "ISO": "MM",
+      "ENTITY": "Burma",
+      "GEC": "BM"
+    },
+    "BI": {
+      "ISO": "BI",
+      "ENTITY": "Burundi",
+      "GEC": "BY"
+    },
+    "CV": {
+      "ISO": "CV",
+      "ENTITY": "Cabo Verde",
+      "GEC": "CV"
+    },
+    "KH": {
+      "ISO": "KH",
+      "ENTITY": "Cambodia",
+      "GEC": "CB"
+    },
+    "CM": {
+      "ISO": "CM",
+      "ENTITY": "Cameroon",
+      "GEC": "CM"
+    },
+    "CA": {
+      "ISO": "CA",
+      "ENTITY": "Canada",
+      "GEC": "CA"
+    },
+    "KY": {
+      "ISO": "KY",
+      "ENTITY": "Cayman Islands",
+      "GEC": "CJ"
+    },
+    "CF": {
+      "ISO": "CF",
+      "ENTITY": "Central African Republic",
+      "GEC": "CT"
+    },
+    "TD": {
+      "ISO": "TD",
+      "ENTITY": "Chad",
+      "GEC": "CD"
+    },
+    "CL": {
+      "ISO": "CL",
+      "ENTITY": "Chile",
+      "GEC": "CI"
+    },
+    "CN": {
+      "ISO": "CN",
+      "ENTITY": "China",
+      "GEC": "CH"
+    },
+    "CX": {
+      "ISO": "CX",
+      "ENTITY": "Christmas Island",
+      "GEC": "KT"
+    },
+    "CC": {
+      "ISO": "CC",
+      "ENTITY": "Cocos (Keeling) Islands",
+      "GEC": "CK"
+    },
+    "CO": {
+      "ISO": "CO",
+      "ENTITY": "Colombia",
+      "GEC": "CO"
+    },
+    "KM": {
+      "ISO": "KM",
+      "ENTITY": "Comoros",
+      "GEC": "CN"
+    },
+    "CD": {
+      "ISO": "CD",
+      "ENTITY": "Congo, Democratic Republic of the",
+      "GEC": "CG"
+    },
+    "CG": {
+      "ISO": "CG",
+      "ENTITY": "Congo, Republic of the",
+      "GEC": "CF"
+    },
+    "CK": {
+      "ISO": "CK",
+      "ENTITY": "Cook Islands",
+      "GEC": "CW"
+    },
+    "CR": {
+      "ISO": "CR",
+      "ENTITY": "Costa Rica",
+      "GEC": "CS"
+    },
+    "CI": {
+      "ISO": "CI",
+      "ENTITY": "Cote d'Ivoire",
+      "GEC": "IV"
+    },
+    "HR": {
+      "ISO": "HR",
+      "ENTITY": "Croatia",
+      "GEC": "HR"
+    },
+    "CU": {
+      "ISO": "CU",
+      "ENTITY": "Cuba",
+      "GEC": "CU"
+    },
+    "CW": {
+      "ISO": "CW",
+      "ENTITY": "Curacao",
+      "GEC": "UC"
+    },
+    "CY": {
+      "ISO": "CY",
+      "ENTITY": "Cyprus",
+      "GEC": "CY"
+    },
+    "CZ": {
+      "ISO": "CZ",
+      "ENTITY": "Czechia",
+      "GEC": "EZ"
+    },
+    "DK": {
+      "ISO": "DK",
+      "ENTITY": "Denmark",
+      "GEC": "DA"
+    },
+    "DJ": {
+      "ISO": "DJ",
+      "ENTITY": "Djibouti",
+      "GEC": "DJ"
+    },
+    "DM": {
+      "ISO": "DM",
+      "ENTITY": "Dominica",
+      "GEC": "DO"
+    },
+    "DO": {
+      "ISO": "DO",
+      "ENTITY": "Dominican Republic",
+      "GEC": "DR"
+    },
+    "EC": {
+      "ISO": "EC",
+      "ENTITY": "Ecuador",
+      "GEC": "EC"
+    },
+    "EG": {
+      "ISO": "EG",
+      "ENTITY": "Egypt",
+      "GEC": "EG"
+    },
+    "SV": {
+      "ISO": "SV",
+      "ENTITY": "El Salvador",
+      "GEC": "ES"
+    },
+    "GQ": {
+      "ISO": "GQ",
+      "ENTITY": "Equatorial Guinea",
+      "GEC": "EK"
+    },
+    "ER": {
+      "ISO": "ER",
+      "ENTITY": "Eritrea",
+      "GEC": "ER"
+    },
+    "EE": {
+      "ISO": "EE",
+      "ENTITY": "Estonia",
+      "GEC": "EN"
+    },
+    "SZ": {
+      "ISO": "SZ",
+      "ENTITY": "Eswatini",
+      "GEC": "WZ"
+    },
+    "ET": {
+      "ISO": "ET",
+      "ENTITY": "Ethiopia",
+      "GEC": "ET"
+    },
+    "FK": {
+      "ISO": "FK",
+      "ENTITY": "Falkland Islands (Islas Malvinas)",
+      "GEC": "FK"
+    },
+    "FO": {
+      "ISO": "FO",
+      "ENTITY": "Faroe Islands",
+      "GEC": "FO"
+    },
+    "FJ": {
+      "ISO": "FJ",
+      "ENTITY": "Fiji",
+      "GEC": "FJ"
+    },
+    "FI": {
+      "ISO": "FI",
+      "ENTITY": "Finland",
+      "GEC": "FI"
+    },
+    "FR": {
+      "ISO": "FR",
+      "ENTITY": "France",
+      "GEC": "FR"
+    },
+    "FX": {
+      "ISO": "FX",
+      "ENTITY": "France, Metropolitan",
+      "GEC": "-"
+    },
+    "GF": {
+      "ISO": "GF",
+      "ENTITY": "French Guiana",
+      "GEC": "FG"
+    },
+    "PF": {
+      "ISO": "PF",
+      "ENTITY": "French Polynesia",
+      "GEC": "FP"
+    },
+    "TF": {
+      "ISO": "TF",
+      "ENTITY": "French Southern and Antarctic Lands",
+      "GEC": "FS"
+    },
+    "GA": {
+      "ISO": "GA",
+      "ENTITY": "Gabon",
+      "GEC": "GB"
+    },
+    "GM": {
+      "ISO": "GM",
+      "ENTITY": "Gambia, The",
+      "GEC": "GA"
+    },
+    "PS": {
+      "ISO": "PS",
+      "ENTITY": "West Bank",
+      "GEC": "WE"
+    },
+    "GE": {
+      "ISO": "GE",
+      "ENTITY": "Georgia",
+      "GEC": "GG"
+    },
+    "DE": {
+      "ISO": "DE",
+      "ENTITY": "Germany",
+      "GEC": "GM"
+    },
+    "GH": {
+      "ISO": "GH",
+      "ENTITY": "Ghana",
+      "GEC": "GH"
+    },
+    "GI": {
+      "ISO": "GI",
+      "ENTITY": "Gibraltar",
+      "GEC": "GI"
+    },
+    "GR": {
+      "ISO": "GR",
+      "ENTITY": "Greece",
+      "GEC": "GR"
+    },
+    "GL": {
+      "ISO": "GL",
+      "ENTITY": "Greenland",
+      "GEC": "GL"
+    },
+    "GD": {
+      "ISO": "GD",
+      "ENTITY": "Grenada",
+      "GEC": "GJ"
+    },
+    "GP": {
+      "ISO": "GP",
+      "ENTITY": "Guadeloupe",
+      "GEC": "GP"
+    },
+    "GU": {
+      "ISO": "GU",
+      "ENTITY": "Guam",
+      "GEC": "GQ"
+    },
+    "GT": {
+      "ISO": "GT",
+      "ENTITY": "Guatemala",
+      "GEC": "GT"
+    },
+    "GG": {
+      "ISO": "GG",
+      "ENTITY": "Guernsey",
+      "GEC": "GK"
+    },
+    "GN": {
+      "ISO": "GN",
+      "ENTITY": "Guinea",
+      "GEC": "GV"
+    },
+    "GW": {
+      "ISO": "GW",
+      "ENTITY": "Guinea-Bissau",
+      "GEC": "PU"
+    },
+    "GY": {
+      "ISO": "GY",
+      "ENTITY": "Guyana",
+      "GEC": "GY"
+    },
+    "HT": {
+      "ISO": "HT",
+      "ENTITY": "Haiti",
+      "GEC": "HA"
+    },
+    "HM": {
+      "ISO": "HM",
+      "ENTITY": "Heard Island and McDonald Islands",
+      "GEC": "HM"
+    },
+    "VA": {
+      "ISO": "VA",
+      "ENTITY": "Holy See (Vatican City)",
+      "GEC": "VT"
+    },
+    "HN": {
+      "ISO": "HN",
+      "ENTITY": "Honduras",
+      "GEC": "HO"
+    },
+    "HK": {
+      "ISO": "HK",
+      "ENTITY": "Hong Kong",
+      "GEC": "HK"
+    },
+    "HU": {
+      "ISO": "HU",
+      "ENTITY": "Hungary",
+      "GEC": "HU"
+    },
+    "IS": {
+      "ISO": "IS",
+      "ENTITY": "Iceland",
+      "GEC": "IC"
+    },
+    "IN": {
+      "ISO": "IN",
+      "ENTITY": "India",
+      "GEC": "IN"
+    },
+    "ID": {
+      "ISO": "ID",
+      "ENTITY": "Indonesia",
+      "GEC": "ID"
+    },
+    "IR": {
+      "ISO": "IR",
+      "ENTITY": "Iran",
+      "GEC": "IR"
+    },
+    "IQ": {
+      "ISO": "IQ",
+      "ENTITY": "Iraq",
+      "GEC": "IZ"
+    },
+    "IE": {
+      "ISO": "IE",
+      "ENTITY": "Ireland",
+      "GEC": "EI"
+    },
+    "IM": {
+      "ISO": "IM",
+      "ENTITY": "Isle of Man",
+      "GEC": "IM"
+    },
+    "IL": {
+      "ISO": "IL",
+      "ENTITY": "Israel",
+      "GEC": "IS"
+    },
+    "IT": {
+      "ISO": "IT",
+      "ENTITY": "Italy",
+      "GEC": "IT"
+    },
+    "JM": {
+      "ISO": "JM",
+      "ENTITY": "Jamaica",
+      "GEC": "JM"
+    },
+    "JP": {
+      "ISO": "JP",
+      "ENTITY": "Japan",
+      "GEC": "JA"
+    },
+    "JE": {
+      "ISO": "JE",
+      "ENTITY": "Jersey",
+      "GEC": "JE"
+    },
+    "JO": {
+      "ISO": "JO",
+      "ENTITY": "Jordan",
+      "GEC": "JO"
+    },
+    "KZ": {
+      "ISO": "KZ",
+      "ENTITY": "Kazakhstan",
+      "GEC": "KZ"
+    },
+    "KE": {
+      "ISO": "KE",
+      "ENTITY": "Kenya",
+      "GEC": "KE"
+    },
+    "KI": {
+      "ISO": "KI",
+      "ENTITY": "Kiribati",
+      "GEC": "KR"
+    },
+    "KP": {
+      "ISO": "KP",
+      "ENTITY": "Korea, North",
+      "GEC": "KN"
+    },
+    "KR": {
+      "ISO": "KR",
+      "ENTITY": "Korea, South",
+      "GEC": "KS"
+    },
+    "XK": {
+      "ISO": "XK",
+      "ENTITY": "Kosovo",
+      "GEC": "KV"
+    },
+    "KW": {
+      "ISO": "KW",
+      "ENTITY": "Kuwait",
+      "GEC": "KU"
+    },
+    "KG": {
+      "ISO": "KG",
+      "ENTITY": "Kyrgyzstan",
+      "GEC": "KG"
+    },
+    "LA": {
+      "ISO": "LA",
+      "ENTITY": "Laos",
+      "GEC": "LA"
+    },
+    "LV": {
+      "ISO": "LV",
+      "ENTITY": "Latvia",
+      "GEC": "LG"
+    },
+    "LB": {
+      "ISO": "LB",
+      "ENTITY": "Lebanon",
+      "GEC": "LE"
+    },
+    "LS": {
+      "ISO": "LS",
+      "ENTITY": "Lesotho",
+      "GEC": "LT"
+    },
+    "LR": {
+      "ISO": "LR",
+      "ENTITY": "Liberia",
+      "GEC": "LI"
+    },
+    "LY": {
+      "ISO": "LY",
+      "ENTITY": "Libya",
+      "GEC": "LY"
+    },
+    "LI": {
+      "ISO": "LI",
+      "ENTITY": "Liechtenstein",
+      "GEC": "LS"
+    },
+    "LT": {
+      "ISO": "LT",
+      "ENTITY": "Lithuania",
+      "GEC": "LH"
+    },
+    "LU": {
+      "ISO": "LU",
+      "ENTITY": "Luxembourg",
+      "GEC": "LU"
+    },
+    "MO": {
+      "ISO": "MO",
+      "ENTITY": "Macau",
+      "GEC": "MC"
+    },
+    "MK": {
+      "ISO": "MK",
+      "ENTITY": "Macedonia",
+      "GEC": "MK"
+    },
+    "MG": {
+      "ISO": "MG",
+      "ENTITY": "Madagascar",
+      "GEC": "MA"
+    },
+    "MW": {
+      "ISO": "MW",
+      "ENTITY": "Malawi",
+      "GEC": "MI"
+    },
+    "MY": {
+      "ISO": "MY",
+      "ENTITY": "Malaysia",
+      "GEC": "MY"
+    },
+    "MV": {
+      "ISO": "MV",
+      "ENTITY": "Maldives",
+      "GEC": "MV"
+    },
+    "ML": {
+      "ISO": "ML",
+      "ENTITY": "Mali",
+      "GEC": "ML"
+    },
+    "MT": {
+      "ISO": "MT",
+      "ENTITY": "Malta",
+      "GEC": "MT"
+    },
+    "MH": {
+      "ISO": "MH",
+      "ENTITY": "Marshall Islands",
+      "GEC": "RM"
+    },
+    "MQ": {
+      "ISO": "MQ",
+      "ENTITY": "Martinique",
+      "GEC": "MB"
+    },
+    "MR": {
+      "ISO": "MR",
+      "ENTITY": "Mauritania",
+      "GEC": "MR"
+    },
+    "MU": {
+      "ISO": "MU",
+      "ENTITY": "Mauritius",
+      "GEC": "MP"
+    },
+    "YT": {
+      "ISO": "YT",
+      "ENTITY": "Mayotte",
+      "GEC": "MF"
+    },
+    "MX": {
+      "ISO": "MX",
+      "ENTITY": "Mexico",
+      "GEC": "MX"
+    },
+    "FM": {
+      "ISO": "FM",
+      "ENTITY": "Micronesia, Federated States of",
+      "GEC": "FM"
+    },
+    "MD": {
+      "ISO": "MD",
+      "ENTITY": "Moldova",
+      "GEC": "MD"
+    },
+    "MC": {
+      "ISO": "MC",
+      "ENTITY": "Monaco",
+      "GEC": "MN"
+    },
+    "MN": {
+      "ISO": "MN",
+      "ENTITY": "Mongolia",
+      "GEC": "MG"
+    },
+    "ME": {
+      "ISO": "ME",
+      "ENTITY": "Montenegro",
+      "GEC": "MJ"
+    },
+    "MS": {
+      "ISO": "MS",
+      "ENTITY": "Montserrat",
+      "GEC": "MH"
+    },
+    "MA": {
+      "ISO": "MA",
+      "ENTITY": "Morocco",
+      "GEC": "MO"
+    },
+    "MZ": {
+      "ISO": "MZ",
+      "ENTITY": "Mozambique",
+      "GEC": "MZ"
+    },
+    "NA": {
+      "ISO": "NA",
+      "ENTITY": "Namibia",
+      "GEC": "WA"
+    },
+    "NR": {
+      "ISO": "NR",
+      "ENTITY": "Nauru",
+      "GEC": "NR"
+    },
+    "NP": {
+      "ISO": "NP",
+      "ENTITY": "Nepal",
+      "GEC": "NP"
+    },
+    "NL": {
+      "ISO": "NL",
+      "ENTITY": "Netherlands",
+      "GEC": "NL"
+    },
+    "": {
+      "ISO": "",
+      "ENTITY": "Netherlands Antilles",
+      "GEC": "NT"
+    },
+    "NC": {
+      "ISO": "NC",
+      "ENTITY": "New Caledonia",
+      "GEC": "NC"
+    },
+    "NZ": {
+      "ISO": "NZ",
+      "ENTITY": "New Zealand",
+      "GEC": "NZ"
+    },
+    "NI": {
+      "ISO": "NI",
+      "ENTITY": "Nicaragua",
+      "GEC": "NU"
+    },
+    "NE": {
+      "ISO": "NE",
+      "ENTITY": "Niger",
+      "GEC": "NG"
+    },
+    "NG": {
+      "ISO": "NG",
+      "ENTITY": "Nigeria",
+      "GEC": "NI"
+    },
+    "NU": {
+      "ISO": "NU",
+      "ENTITY": "Niue",
+      "GEC": "NE"
+    },
+    "NF": {
+      "ISO": "NF",
+      "ENTITY": "Norfolk Island",
+      "GEC": "NF"
+    },
+    "MP": {
+      "ISO": "MP",
+      "ENTITY": "Northern Mariana Islands",
+      "GEC": "CQ"
+    },
+    "NO": {
+      "ISO": "NO",
+      "ENTITY": "Norway",
+      "GEC": "NO"
+    },
+    "OM": {
+      "ISO": "OM",
+      "ENTITY": "Oman",
+      "GEC": "MU"
+    },
+    "PK": {
+      "ISO": "PK",
+      "ENTITY": "Pakistan",
+      "GEC": "PK"
+    },
+    "PW": {
+      "ISO": "PW",
+      "ENTITY": "Palau",
+      "GEC": "PS"
+    },
+    "PA": {
+      "ISO": "PA",
+      "ENTITY": "Panama",
+      "GEC": "PM"
+    },
+    "PG": {
+      "ISO": "PG",
+      "ENTITY": "Papua New Guinea",
+      "GEC": "PP"
+    },
+    "PY": {
+      "ISO": "PY",
+      "ENTITY": "Paraguay",
+      "GEC": "PA"
+    },
+    "PE": {
+      "ISO": "PE",
+      "ENTITY": "Peru",
+      "GEC": "PE"
+    },
+    "PH": {
+      "ISO": "PH",
+      "ENTITY": "Philippines",
+      "GEC": "RP"
+    },
+    "PN": {
+      "ISO": "PN",
+      "ENTITY": "Pitcairn Islands",
+      "GEC": "PC"
+    },
+    "PL": {
+      "ISO": "PL",
+      "ENTITY": "Poland",
+      "GEC": "PL"
+    },
+    "PT": {
+      "ISO": "PT",
+      "ENTITY": "Portugal",
+      "GEC": "PO"
+    },
+    "PR": {
+      "ISO": "PR",
+      "ENTITY": "Puerto Rico",
+      "GEC": "RQ"
+    },
+    "QA": {
+      "ISO": "QA",
+      "ENTITY": "Qatar",
+      "GEC": "QA"
+    },
+    "RE": {
+      "ISO": "RE",
+      "ENTITY": "Reunion",
+      "GEC": "RE"
+    },
+    "RO": {
+      "ISO": "RO",
+      "ENTITY": "Romania",
+      "GEC": "RO"
+    },
+    "RU": {
+      "ISO": "RU",
+      "ENTITY": "Russia",
+      "GEC": "RS"
+    },
+    "RW": {
+      "ISO": "RW",
+      "ENTITY": "Rwanda",
+      "GEC": "RW"
+    },
+    "BL": {
+      "ISO": "BL",
+      "ENTITY": "Saint Barthelemy",
+      "GEC": "TB"
+    },
+    "SH": {
+      "ISO": "SH",
+      "ENTITY": "Saint Helena, Ascension, and Tristan da Cunha",
+      "GEC": "SH"
+    },
+    "KN": {
+      "ISO": "KN",
+      "ENTITY": "Saint Kitts and Nevis",
+      "GEC": "SC"
+    },
+    "LC": {
+      "ISO": "LC",
+      "ENTITY": "Saint Lucia",
+      "GEC": "ST"
+    },
+    "MF": {
+      "ISO": "MF",
+      "ENTITY": "Saint Martin",
+      "GEC": "RN"
+    },
+    "PM": {
+      "ISO": "PM",
+      "ENTITY": "Saint Pierre and Miquelon",
+      "GEC": "SB"
+    },
+    "VC": {
+      "ISO": "VC",
+      "ENTITY": "Saint Vincent and the Grenadines",
+      "GEC": "VC"
+    },
+    "WS": {
+      "ISO": "WS",
+      "ENTITY": "Samoa",
+      "GEC": "WS"
+    },
+    "SM": {
+      "ISO": "SM",
+      "ENTITY": "San Marino",
+      "GEC": "SM"
+    },
+    "ST": {
+      "ISO": "ST",
+      "ENTITY": "Sao Tome and Principe",
+      "GEC": "TP"
+    },
+    "SA": {
+      "ISO": "SA",
+      "ENTITY": "Saudi Arabia",
+      "GEC": "SA"
+    },
+    "SN": {
+      "ISO": "SN",
+      "ENTITY": "Senegal",
+      "GEC": "SG"
+    },
+    "RS": {
+      "ISO": "RS",
+      "ENTITY": "Serbia",
+      "GEC": "RI"
+    },
+    "SC": {
+      "ISO": "SC",
+      "ENTITY": "Seychelles",
+      "GEC": "SE"
+    },
+    "SL": {
+      "ISO": "SL",
+      "ENTITY": "Sierra Leone",
+      "GEC": "SL"
+    },
+    "SG": {
+      "ISO": "SG",
+      "ENTITY": "Singapore",
+      "GEC": "SN"
+    },
+    "SX": {
+      "ISO": "SX",
+      "ENTITY": "Sint Maarten",
+      "GEC": "NN"
+    },
+    "SK": {
+      "ISO": "SK",
+      "ENTITY": "Slovakia",
+      "GEC": "LO"
+    },
+    "SI": {
+      "ISO": "SI",
+      "ENTITY": "Slovenia",
+      "GEC": "SI"
+    },
+    "SB": {
+      "ISO": "SB",
+      "ENTITY": "Solomon Islands",
+      "GEC": "BP"
+    },
+    "SO": {
+      "ISO": "SO",
+      "ENTITY": "Somalia",
+      "GEC": "SO"
+    },
+    "ZA": {
+      "ISO": "ZA",
+      "ENTITY": "South Africa",
+      "GEC": "SF"
+    },
+    "GS": {
+      "ISO": "GS",
+      "ENTITY": "South Georgia and the Islands",
+      "GEC": "SX"
+    },
+    "SS": {
+      "ISO": "SS",
+      "ENTITY": "South Sudan",
+      "GEC": "OD"
+    },
+    "ES": {
+      "ISO": "ES",
+      "ENTITY": "Spain",
+      "GEC": "SP"
+    },
+    "LK": {
+      "ISO": "LK",
+      "ENTITY": "Sri Lanka",
+      "GEC": "CE"
+    },
+    "SD": {
+      "ISO": "SD",
+      "ENTITY": "Sudan",
+      "GEC": "SU"
+    },
+    "SR": {
+      "ISO": "SR",
+      "ENTITY": "Suriname",
+      "GEC": "NS"
+    },
+    "SJ": {
+      "ISO": "SJ",
+      "ENTITY": "Svalbard",
+      "GEC": "SV"
+    },
+    "SE": {
+      "ISO": "SE",
+      "ENTITY": "Sweden",
+      "GEC": "SW"
+    },
+    "CH": {
+      "ISO": "CH",
+      "ENTITY": "Switzerland",
+      "GEC": "SZ"
+    },
+    "SY": {
+      "ISO": "SY",
+      "ENTITY": "Syria",
+      "GEC": "SY"
+    },
+    "TW": {
+      "ISO": "TW",
+      "ENTITY": "Taiwan",
+      "GEC": "TW"
+    },
+    "TJ": {
+      "ISO": "TJ",
+      "ENTITY": "Tajikistan",
+      "GEC": "TI"
+    },
+    "TZ": {
+      "ISO": "TZ",
+      "ENTITY": "Tanzania",
+      "GEC": "TZ"
+    },
+    "TH": {
+      "ISO": "TH",
+      "ENTITY": "Thailand",
+      "GEC": "TH"
+    },
+    "TL": {
+      "ISO": "TL",
+      "ENTITY": "Timor-Leste",
+      "GEC": "TT"
+    },
+    "TG": {
+      "ISO": "TG",
+      "ENTITY": "Togo",
+      "GEC": "TO"
+    },
+    "TK": {
+      "ISO": "TK",
+      "ENTITY": "Tokelau",
+      "GEC": "TL"
+    },
+    "TO": {
+      "ISO": "TO",
+      "ENTITY": "Tonga",
+      "GEC": "TN"
+    },
+    "TT": {
+      "ISO": "TT",
+      "ENTITY": "Trinidad and Tobago",
+      "GEC": "TD"
+    },
+    "TN": {
+      "ISO": "TN",
+      "ENTITY": "Tunisia",
+      "GEC": "TS"
+    },
+    "TR": {
+      "ISO": "TR",
+      "ENTITY": "Turkey",
+      "GEC": "TU"
+    },
+    "TM": {
+      "ISO": "TM",
+      "ENTITY": "Turkmenistan",
+      "GEC": "TX"
+    },
+    "TC": {
+      "ISO": "TC",
+      "ENTITY": "Turks and Caicos Islands",
+      "GEC": "TK"
+    },
+    "TV": {
+      "ISO": "TV",
+      "ENTITY": "Tuvalu",
+      "GEC": "TV"
+    },
+    "UG": {
+      "ISO": "UG",
+      "ENTITY": "Uganda",
+      "GEC": "UG"
+    },
+    "UA": {
+      "ISO": "UA",
+      "ENTITY": "Ukraine",
+      "GEC": "UP"
+    },
+    "AE": {
+      "ISO": "AE",
+      "ENTITY": "United Arab Emirates",
+      "GEC": "AE"
+    },
+    "GB": {
+      "ISO": "GB",
+      "ENTITY": "United Kingdom",
+      "GEC": "UK"
+    },
+    "US": {
+      "ISO": "US",
+      "ENTITY": "United States",
+      "GEC": "US"
+    },
+    "UM": {
+      "ISO": "UM",
+      "ENTITY": "United States Minor Outlying Islands",
+      "GEC": "-"
+    },
+    "UY": {
+      "ISO": "UY",
+      "ENTITY": "Uruguay",
+      "GEC": "UY"
+    },
+    "UZ": {
+      "ISO": "UZ",
+      "ENTITY": "Uzbekistan",
+      "GEC": "UZ"
+    },
+    "VU": {
+      "ISO": "VU",
+      "ENTITY": "Vanuatu",
+      "GEC": "NH"
+    },
+    "VE": {
+      "ISO": "VE",
+      "ENTITY": "Venezuela",
+      "GEC": "VE"
+    },
+    "VN": {
+      "ISO": "VN",
+      "ENTITY": "Vietnam",
+      "GEC": "VM"
+    },
+    "VI": {
+      "ISO": "VI",
+      "ENTITY": "Virgin Islands",
+      "GEC": "VQ"
+    },
+    "WF": {
+      "ISO": "WF",
+      "ENTITY": "Wallis and Futuna",
+      "GEC": "WF"
+    },
+    "EH": {
+      "ISO": "EH",
+      "ENTITY": "Western Sahara",
+      "GEC": "WI"
+    },
+    "YE": {
+      "ISO": "YE",
+      "ENTITY": "Yemen",
+      "GEC": "YM"
+    },
+    "ZM": {
+      "ISO": "ZM",
+      "ENTITY": "Zambia",
+      "GEC": "ZA"
+    },
+    "ZW": {
+      "ISO": "ZW",
+      "ENTITY": "Zimbabwe",
+      "GEC": "ZI"
+    }
+}

@@ -6,21 +6,19 @@
                     <v-list-tile class="round-borders">
                         <v-select :items="countries" v-model="selectedCountry" label="Country" item-text="country" item-value="country_code"></v-select>
                     </v-list-tile>
-                    <v-list-tile avatar>
+                    <v-list-tile avatar @click="selectedView = defaultView">
                         General
                     </v-list-tile>
-                    <v-list-group no-action sub-group value="true" prepend-icon="remove">
+                    <v-list-group no-action sub-group prepend-icon="remove" v-for="(category, index) in sectionFields" :key="index">
                         <v-list-tile slot="activator">
-                            <v-list-tile-title><label>Country Strategic Papers</label> </v-list-tile-title>
+                            <v-list-tile-title><label>{{category.text}}</label> </v-list-tile-title>
                         </v-list-tile>
-                        <v-list-tile v-for="(item, i) in documents.strategy" :key="i" @click="goTo(item.metadata.url)">
-                            <v-list-tile-title v-text="item.metadata.operational_center"></v-list-tile-title>
+                        <v-list-tile v-for="(item, i) in documents[category.value]" :key="i+'i'">
+                            <v-list-tile-title v-if="item.type=='link'" v-text="item.metadata.operational_center"  @click="goTo(item.metadata.url)"></v-list-tile-title>
+                            <v-list-tile-title v-if="item.type=='file'" v-text="item.metadata.name"  @click="showFile(item)"></v-list-tile-title>
                         </v-list-tile>
-                        <v-list-tile-action>
-                            <a class="form-actions" @click="openDetailsModal('link', 'strategy')">add link</a>
-                        </v-list-tile-action>
-                        <v-list-tile-action>
-                            <a class="form-actions" @click="openDetailsModal('file', 'strategy')">upload file</a>
+                        <v-list-tile-action v-for="(type, i2) in category.inputs" :key="i2+'ii'">
+                            <a class="form-actions" @click="openDetailsModal(type, category.value)">{{inputTypes[type]}}</a>
                         </v-list-tile-action>
                     </v-list-group>
                 </v-list>
@@ -62,9 +60,16 @@
                         <v-btn color="active" @click="submit">add</v-btn>
                     </v-card-actions>
                 </v-card>
-
             </v-dialog>
-            <iframe style="height:78vh; width:calc(100% - 221px);" :src="CIAWorldFactbookUrl"></iframe>
+            <v-layout row wrap>
+                <v-flex xs12 v-if="selectedView == defaultView">
+                    <iframe style="height:78vh; width:100%" :src="CIAWorldFactbookUrl"></iframe>
+                </v-flex>
+                <v-flex xs12 v-else>
+                    <h1>{{displayFile.metadata.name}}</h1>
+                    <embed :src="displayFile.metadata.url" width="100%" height="100%"></embed>
+                </v-flex>
+            </v-layout>
         </v-layout>
     </v-container>
 </template>
@@ -77,7 +82,10 @@ import $ from 'jquery';
 import { mapGetters } from 'vuex';
 import { FETCH_EVENT, FETCH_COUNTRY_DETAILS, CREATE_COUNTRY_DETAILS, EDIT_COUNTRY_DETAILS, DELETE_COUNTRY_DETAILS, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
 import { OPERATIONAL_CENTERS } from '@/common/response-fields';
-import { DEFAULT_COUNTRY_DETAILS_ROW } from '@/common/country-details-fields';
+import { DEFAULT_COUNTRY_DETAILS_ROW, CD_DEFAULT_VIEW, CD_DETAILS_TYPES, CD_DETAILS_CATEGORIES } from '@/common/country-details-fields';
+import ISO2GEC from '@/common/iso2gec_countryCodes.json';
+
+
 export default {
     name: 'country-details',
     data(){
@@ -85,6 +93,11 @@ export default {
             dialog: false,
             allOCs: OPERATIONAL_CENTERS,
             selectedCountry: null,
+            sectionFields: CD_DETAILS_CATEGORIES,
+            selectedFiles: [],
+            selectedView: CD_DEFAULT_VIEW,
+            defaultView: CD_DEFAULT_VIEW,
+            inputTypes: CD_DETAILS_TYPES,
             admins: [
                 ['Management', 'people_outline'],
                 ['Settings', 'settings']
@@ -97,11 +110,12 @@ export default {
                 toolbox: [],
                 document_repo: []
             },
-
+            iso2gecCodes: ISO2GEC,
             defaultDetails: DEFAULT_COUNTRY_DETAILS_ROW,
             details: DEFAULT_COUNTRY_DETAILS_ROW,
             readyToUpload: false,
-            previewFileUrl: null
+            previewFileUrl: null,
+            displayFile: {}
         }
     },
     computed: {
@@ -119,8 +133,9 @@ export default {
             return _.sortedUniq(tmp);
         },
         CIAWorldFactbookUrl(){
-            var cc = this.selectedCountry ? this.selectedCountry.toLowerCase() : this.eventAreas[0].country_code.toLowerCase();
-            var url = `https://www.cia.gov/library/publications/the-world-factbook/geos/${cc}.html`;
+            var isoCC = this.selectedCountry ? this.selectedCountry : this.eventAreas[0].country_code;
+            var gecCode = this.iso2gecCodes[isoCC].GEC;
+            var url = `https://www.cia.gov/library/publications/the-world-factbook/geos/${gecCode.toLowerCase()}.html`;
             console.log(url);
             return url
         }
@@ -160,7 +175,7 @@ export default {
             this.$refs.mymyUpload.click();
         },
         onFilePicked(e){
-            const files = e.target.files;
+            const files = this.selectedFiles = e.target.files;
             const fr = new FileReader();
             fr.readAsDataURL(files[0]);
             fr.addEventListener('load', () => {
@@ -171,7 +186,7 @@ export default {
         },
         processFiles(){
             var vm = this;
-            var files = this.$refs.mymyUpload.files;
+            var files = this.selectedFiles;
             // name, size, type;
             var fileName = files[0].name;
             var fileType = files[0].type;
@@ -182,6 +197,7 @@ export default {
                 .then((payload) => {
                     if(payload){
                         var fileLink = payload.url;
+                        vm.details.metadata.name = fileName;
                         vm.details.metadata.url = fileLink;
                         this.uploadFile(file);
                     }
@@ -200,7 +216,7 @@ export default {
         },
         submit(){
             if(this.details.type == "file"){
-                this.processFiles(files);
+                this.processFiles();
             }else{
                 this.save();
             }
@@ -226,6 +242,10 @@ export default {
                 this.details = _.cloneDeep(this.defaultDetails);
                 this.previewFileUrl = null
             }, 300);
+        },
+        showFile(file){
+            this.displayFile = file;
+            this.selectedView = 'fileView';
         }
     }
 
