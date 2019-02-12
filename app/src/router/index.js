@@ -105,11 +105,18 @@ export default new Router({
             //             component: () => import('@/views/Reports/EventRelated')
             //         }
             //     ]
-            // }
+            // },
+
             {
                 name: 'country-details',
-                path: ':slug/country-details',
+                path: ':slug/country-details/',
                 component: () => import('@/components/CountryDetails.vue'),
+                props: true
+            },
+            {
+                name: 'related-events',
+                path: ':slug/related-events/',
+                component: () => import('@/components/RelatedEvents.vue'),
                 props: true
             }
         ]

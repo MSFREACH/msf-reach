@@ -17,6 +17,7 @@ export default ({ config, db, logger }) => {
     const schemaGetAll = Joi.object().keys(
         {
             search: Joi.string().min(1),
+            types: Joi.array().items(Joi.string()),
             geoformat: Joi.any().valid(config.GEO_FORMATS).default(config.GEO_FORMAT_DEFAULT),
             status: Joi.any().valid(config.API_EVENT_STATUS_TYPES),
             country: Joi.string(),
@@ -35,7 +36,8 @@ export default ({ config, db, logger }) => {
                 lng: req.query.lng,
                 lat: req.query.lat
             };
-            events(config, db, logger).all(req.query.status, req.query.country, location, req.query.search)
+
+            events(config, db, logger).all(req.query.status, req.query.country, location, req.query.types, req.query.search)
                 .then((data) => handleGeoResponse(data, req, res, next))
                 .catch((err) => {
                 /* istanbul ignore next */

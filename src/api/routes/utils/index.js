@@ -24,7 +24,6 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
             signatureVersion: 'v4',
             region: config.AWS_S3_REGION
         });
-
     // get a signed s3 upload url
     api.get('/uploadurl', cacheResponse('1 minute'), validate({
         query: {

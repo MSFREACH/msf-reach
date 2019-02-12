@@ -26,7 +26,6 @@ export default {
     data () {
         return {
             active: null,
-            contents: ['Event Details', 'News Feed', 'Related Contacts', 'Country Details', 'Related Response'],
             crossTabs : EVENT_TOP_NAVIGATIONS
         };
     },
@@ -40,5 +39,5 @@ export default {
 </script>
 <style lang='scss'>
     @import '@/assets/css/util/typography.scss';
-    @import '@/assets/css/event.scss'; 
+    @import '@/assets/css/event.scss';
 </style>

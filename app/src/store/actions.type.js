@@ -15,6 +15,9 @@ export const CREATE_EVENT = 'createEvent';
 export const EDIT_EVENT = 'editEvent';
 export const BOOKMARK_EVENT = 'bookmarkEvent';
 
+export const FETCH_RELATED_EVENTS = 'fetchRelatedEvents';
+
+
 export const EDIT_EVENT_RESPONSES = 'editEventResponses';
 export const EDIT_EVENT_EXT_CAPACITY = 'editEventExtCapacity';
 export const EDIT_EVENT_FIGURES = 'editEventFigures';

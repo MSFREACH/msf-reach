@@ -8,6 +8,9 @@ export const FETCH_EVENTS_END = 'setEvents';
 export const SET_EVENT = 'setEvent';
 export const UPDATE_EVENT_IN_LIST = 'updateEventInList';
 export const RESET_STATE  = 'resetModuleState';
+export const FETCH_RELATED_EVENT_START = 'setRelatedEventsLoading';
+export const FETCH_RELATED_EVENTS_END = 'setRelatedEvents';
+
 
 export const FETCH_REPORTS_START = 'setReportLoading';
 export const FETCH_REPORTS_END = 'setReports';

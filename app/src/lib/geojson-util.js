@@ -1,3 +1,19 @@
+
+function getFeatures(topoJson, key) {
+    return topoJson.objects[key].geometries.map(function(geom) {
+        return {
+            type: 'Feature',
+            id: geom.properties.id,
+            properties: geom.properties || {},
+            geometry: {
+                type: geom.type,
+                coordinates: geom.coordinates
+            }
+        };
+    });
+}
+
+
 function getFeaturesFromArcs(topoJson, key){
     return topoJson.objects[key].geometries.map(function(geom, index) {
         return {
@@ -13,5 +29,5 @@ function getFeaturesFromArcs(topoJson, key){
 
 
 module.exports = {
-    getFeaturesFromArcs
+    getFeatures, getFeaturesFromArcs
 };

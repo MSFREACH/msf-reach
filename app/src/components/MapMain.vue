@@ -33,20 +33,8 @@ import { mapGetters } from 'vuex';
 import { MAPBOX_STYLES } from '@/common/map-fields';
 import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
+import { getFeatures } from '@/lib/geojson-util';
 
-function getFeatures(topoJson, key) {
-  return topoJson.objects[key].geometries.map(function(geom) {
-    return {
-      type: "Feature",
-      id: geom.properties.id,
-      properties: geom.properties || {},
-      geometry: {
-        type: geom.type,
-        coordinates: geom.coordinates
-      }
-    };
-  });
-}
 var map;
 
 export default {

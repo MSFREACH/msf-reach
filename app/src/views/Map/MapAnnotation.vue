@@ -17,7 +17,7 @@
 import { mapGetters } from 'vuex';
 import { MAPBOX_STYLES } from '@/common/map-fields';
 import { FETCH_GEOJSON_POLYGON } from '@/store/actions.type';
-import { getFeaturesFromArcs } from '@/lib/geojson-util';
+import { getFeatures, getFeaturesFromArcs } from '@/lib/geojson-util';
 
 var map;
 export default {
@@ -55,6 +55,7 @@ export default {
         ...mapGetters([
             'geojsonPolygon',
             'responsesGeoJson',
+            'relatedEventsGeoJson'
         ])
     },
     mounted(){
@@ -84,6 +85,9 @@ export default {
         },
         responsesGeoJson(newVal){
             if(newVal) this.addResponseAreasLayer();
+        },
+        relatedEventsGeoJson(val){
+            if(val) this.addRelatedEventsLayer();
         }
     },
     methods: {
@@ -192,8 +196,114 @@ export default {
                 },
                 'filter': ['==', '$type', 'Polygon']
             });
-        }
+        },
+        addRelatedEventsLayer(){
+            var geojsonEvents = this.relatedEventsGeoJson.objects.output;
 
+            var relatedEventFeatureCollection = getFeatures(this.relatedEventsGeoJson, 'output');
+            if(!_.isEmpty(this.recentCoordinates)){
+                var gotoCoordinates = this.recentCoordinates; // to not lose center when refreshing
+            }else{
+                var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
+            }
+            console.log(' ------- [addRelatedEventsLayer] ------ ', relatedEventFeatureCollection);
+
+            map.on('load', function () {
+                map.addSource("related-events", {
+                    type: "geojson",
+                    data: {
+                        "type": "FeatureCollection",
+                        "features": relatedEventFeatureCollection
+                    },
+                    cluster: true,
+                    clusterMaxZoom: 14, // Max zoom to cluster points on
+                    clusterRadius: 50
+                });
+
+                map.addLayer({
+                    id: "related-event-epicenter",
+                    type: "circle",
+                    source: "related-events",
+                    paint: {
+                       "circle-color": [
+                           "step",
+                           ["get", "point_count"],
+                           "#A46664", // wine red , less than 100
+                           100,
+                           "#A9272D", // standard red, between 100 and 750
+                           750,
+                           "#EE0000" // bright red, greater than or equal to 750
+                       ],
+                       "circle-radius": [
+                           "step",
+                           ["get", "point_count"],
+                           20,
+                           100,
+                           30,
+                           750,
+                           40
+                       ]
+                    },
+                    "filter": ["==", "$type", "Point"],
+                });
+            });
+
+            // Create a popup, but don't add it to the map yet.
+             var popup = new mapboxgl.Popup({
+                 closeButton: true,
+                 closeOnClick: false
+             });
+
+             map.on('mouseenter', 'related-event-epicenter', function(e) {
+                 // Change the cursor style as a UI indicator.
+                 map.getCanvas().style.cursor = 'pointer';
+                 var coordinates = e.features[0].geometry.coordinates.slice();
+
+                 var evMeta = JSON.parse(e.features[0].properties.metadata);
+                 var description = evMeta.description; // <<< missing feature.properties, need to convert GeometryCollection to FeatureCollection
+                 var evName = evMeta.name;
+                 // var evType = evMeta.types.join(',');
+                 var evStatus = evMeta.event_status;
+
+                 var cleanAreas = _.compact(evMeta.areas);
+                 var evPlace;
+                 if(!evMeta.areas || _.isEmpty(cleanAreas)){
+                     evPlace = evMeta.country;
+                 }else{
+                     if(cleanAreas[0].region){
+                         evPlace = cleanAreas[0].region + cleanAreas[0].country_code;
+                     }else{
+                         evPlace = cleanAreas[0].country;
+                     }
+                 }
+
+                 var evLastUpdate = e.features[0].properties.updated_at
+
+                 var contentStr = `<a href="#/events/${e.features[0].properties.id}">
+                     <div class="primary-text">${evName}</div>
+                     <div class="secondary-text">${evStatus} - \n ${evPlace} </div>
+                     <label>${evLastUpdate} </label>
+                     </a>
+                 `;
+
+                 // Ensure that if the map is zoomed out such that multiple
+                 // copies of the feature are visible, the popup appears
+                 // over the copy being pointed to.
+                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                 }
+                 // Populate the popup and set its coordinates
+                 // based on the feature found.
+                 popup.setLngLat(coordinates)
+                     .setHTML(contentStr)
+                     .addTo(map);
+             });
+
+             // map.on('mouseleave', 'event-epicenter', function() {
+             //     map.getCanvas().style.cursor = '';
+             //     popup.remove();
+             // });
+        }
     }
 
 };
@@ -204,12 +314,15 @@ export default {
     #map,
     #newEventEntry,
     #generalAnnotation,
-    #responsesAnnotation{
+    #responsesAnnotation,
+    #relatedEventsAnnotation{
         display: block;
         width: 100%;
         height: 500px; // **height require by leaflet
     }
-
+    #relatedEventsAnnotation{
+        height: 70vh;
+    }
     .anchor-nav{
         position: absolute;
         bottom: 0;

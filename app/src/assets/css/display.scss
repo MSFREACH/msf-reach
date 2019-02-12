@@ -58,6 +58,32 @@ ul{
         margin-left: 5em;
     }
 }
+.relatedContent{
+    .searchHeader{
+        display: flex;
+        width: 400px;
+        .v-text-field{
+            padding-top: 0px;
+        }
+        .v-input__control,
+        .v-btn{
+            background: $bg-light;
+            border-radius: 20px;
+            height: 40px;
+        }
+        .v-input__control{
+            padding: 4px 21px;
+        }
+    }
+    .v-picker{
+        box-shadow: none;
+    }
+
+    .v-expansion-panel{
+        box-shadow: none;
+        margin-left: 5em;
+    }
+}
 .capacity-rows,
 .notification-rows{
     // width: 75%;
@@ -132,7 +158,8 @@ ul{
 
 .relatedContent{
     margin: 80px 30px;
-    max-width: 100%;
+    padding: 0; 
+    // max-width: 100%;
     iframe{
         border: solid 3px #0374C7;
         border-radius: 30px;
