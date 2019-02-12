@@ -206,9 +206,13 @@ export default {
             }else{
                 var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
             }
-            console.log(' ------- [addRelatedEventsLayer] ------ ', relatedEventFeatureCollection);
 
             map.on('load', function () {
+                map.loadImage("/resources/new_icons/event_open.png", function(error, image){
+                    if(error) throw error;
+                    map.addImage('event-marker', image);
+                });
+
                 map.addSource("related-events", {
                     type: "geojson",
                     data: {
@@ -222,27 +226,11 @@ export default {
 
                 map.addLayer({
                     id: "related-event-epicenter",
-                    type: "circle",
+                    type: "symbol",
                     source: "related-events",
-                    paint: {
-                       "circle-color": [
-                           "step",
-                           ["get", "point_count"],
-                           "#A46664", // wine red , less than 100
-                           100,
-                           "#A9272D", // standard red, between 100 and 750
-                           750,
-                           "#EE0000" // bright red, greater than or equal to 750
-                       ],
-                       "circle-radius": [
-                           "step",
-                           ["get", "point_count"],
-                           20,
-                           100,
-                           30,
-                           750,
-                           40
-                       ]
+                    layout: {
+                        "icon-image": "event-marker"
+                        // "icon-size": 1
                     },
                     "filter": ["==", "$type", "Point"],
                 });

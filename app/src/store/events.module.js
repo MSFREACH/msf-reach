@@ -67,7 +67,6 @@ const actions = {
         commit(FETCH_RELATED_EVENT_START);
         return EventsService.query({params})
             .then(({ data }) => {
-                console.log(' ----- hey here ----- ', data);
                 commit(FETCH_RELATED_EVENTS_END, data.result);
             })
             .catch((error) => {

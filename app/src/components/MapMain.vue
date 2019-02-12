@@ -111,6 +111,11 @@ export default {
             });
 
             map.on('load', function () {
+                map.loadImage("/resources/new_icons/event_open.png", function(error, image){
+                    if(error) throw error;
+                    map.addImage('event-marker', image);
+                });
+
                 map.addSource("reach-events", {
                     type: "geojson",
                     data: {
@@ -121,40 +126,142 @@ export default {
                     clusterMaxZoom: 14, // Max zoom to cluster points on
                     clusterRadius: 50
                 });
+                map.addLayer({
+                    "id": "reach-events-heat",
+                    "type": "heatmap",
+                    "source": "reach-events",
+                    "maxzoom": 9,
+                    "paint": {
+                        // Increase the heatmap weight based on frequency and property magnitude
+                        "heatmap-weight": [
+                            "interpolate",
+                            ["linear"],
+                            ["get", "point_count"],
+                            0, 0,
+                            10, 1
+                        ],
+                        // Increase the heatmap color weight weight by zoom level
+                        // heatmap-intensity is a multiplier on top of heatmap-weight
+                        "heatmap-intensity": [
+                            "interpolate",
+                            ["linear"],
+                            ["zoom"],
+                            0, 1,
+                            9, 3
+                        ],
+                        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+                        // Begin color ramp at 0-stop with a 0-transparancy color
+                        // to create a blur-like effect.
+                        "heatmap-color": [
+                            "interpolate",
+                            ["linear"],
+                            ["heatmap-density"],
+                            0, "rgba(33,102,172,0)",
+                            0.2, "rgba(255,0,0, .2)",
+                            0.4, "rgba(255,0,0, .4)",
+                            0.6, "rgba(255,0,0, .6)",
+                            0.8, "rgba(255,0,0, .8)",
+                            1, "rgba(255,0,0, 1)"
+                        ],
+                        // Adjust the heatmap radius by zoom level
+                        "heatmap-radius": [
+                            "interpolate",
+                            ["linear"],
+                            ["zoom"],
+                            0, 2,
+                            2, 76 // ADJUST FOR: blur radius
+                        ],
+                        // Transition from heatmap to circle layer by zoom level
+                        "heatmap-opacity": [
+                            "interpolate",
+                            ["linear"],
+                            ["zoom"],
+                            7, 1,
+                            9, 0
+                        ],
+                    }
+                });
 
                 map.addLayer({
                     id: "event-epicenter",
                     type: "circle",
                     source: "reach-events",
+                    minzoom: 7,
                     paint: {
                        "circle-color": [
                            "step",
                            ["get", "point_count"],
-                           "#A46664", // wine red , less than 100
-                           100,
-                           "#A9272D", // standard red, between 100 and 750
-                           750,
-                           "#EE0000" // bright red, greater than or equal to 750
+                           "rgba(255, 0, 0, .5)", // wine red , less than 5
+                           5,
+                           "rgba(255, 0, 0, .5)", // standard red, between 5 and 10
+                           10,
+                           "rgba(255, 0, 0, .5)" // bright red, greater than or equal to 10
                        ],
                        "circle-radius": [
                            "step",
                            ["get", "point_count"],
+                           20,  // size, less than 5
+                           5,
+                           30,  // size between 5 and 10
                            20,
-                           100,
-                           30,
-                           750,
-                           40
+                           50  // size greater than or equal to 10
                        ]
                     },
                     "filter": ["==", "$type", "Point"],
                 });
+                map.addLayer({
+                    id: "event-epicenter-icons",
+                    type: "symbol",
+                    source: "reach-events",
+                    minzoom: 10,
+                    layout: {
+                        "icon-image": "event-marker"
+                        // "icon-size": 1
+                    },
+                    "filter": ["==", "$type", "Point"],
+                });
+
+                map.addLayer({
+                    id: "cluster-count",
+                    type: "symbol",
+                    minzoom: 6,
+                    source: "reach-events",
+                    filter: ["has", "point_count"],
+                    layout: {
+                    "text-field": "{point_count_abbreviated}",
+                    "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                    "text-size": 12
+                    }
+                });
+
+                map.addLayer({
+                    id: "unclustered-point",
+                    type: "circle",
+                    source: "reach-events",
+                    minzoom: 7,
+                    maxzoom: 10,
+                    filter: ["!", ["has", "point_count"]],
+                    paint: {
+                        "circle-color": "rgba(255, 0, 0, .5)",
+                        "circle-radius": 10,
+                        "circle-stroke-width": 1,
+                        "circle-stroke-color": "rgba(255, 0, 0, .5)"
+                    }
+                });
+
             });
+
+
 
             // Create a popup, but don't add it to the map yet.
              var popup = new mapboxgl.Popup({
                  closeButton: true,
                  closeOnClick: false
              });
+
+             map.on('zoom', function(e){
+                console.log(map.getZoom());
+            });
 
              map.on('mouseenter', 'event-epicenter', function(e) {
                  // Change the cursor style as a UI indicator.

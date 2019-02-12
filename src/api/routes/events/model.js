@@ -40,7 +40,6 @@ export default (config, db, logger) => ({
                 ($3 is null or ST_DWITHIN(ST_TRANSFORM(the_geom,3857),ST_TRANSFORM(ST_GEOMFROMTEXT($3,4326),3857),${config.DEFAULT_EVENT_SEARCH_DISTANCE}))
             ORDER BY updated_at DESC`;
         let values = [ status, country, geom, (search ? '%'+search+'%' : null), types];
-        console.log('value --------- ', values);
         // Execute
         db.any(query, values).timeout(config.PGTIMEOUT)
             .then((data) => resolve(data))
