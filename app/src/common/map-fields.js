@@ -31,3 +31,16 @@ export const MAP_FILTERS = [
         {label: 'Watch', value: 'watch'}
     ]}
 ];
+
+export const MAP_LAYERS_ID = {
+    EVENTS: {
+        HEATMAP: 'events-heat',
+        EPICENTER: 'events-epicenter',
+        EPICENTER_ICON: 'events-epicenter-icons',
+        CLUSTER_COUNT: 'events-cluster-count',
+        UNCLUSTER_POINTS: 'events-unclustered-point'
+    },
+    REPORTS: {
+        ACCESS: 'reports_access'
+    }
+};

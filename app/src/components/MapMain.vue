@@ -1,8 +1,8 @@
 <template>
     <v-layout row wrap app>
-        <v-btn id="filterMenu"><v-icon>menu</v-icon></v-btn>
+        <v-btn id="filterMenu" @click.stop="drawer = !drawer"><v-icon>menu</v-icon></v-btn>
         <v-card class="d-inline-block elevation-12">
-            <v-navigation-drawer floating fixed app id="filterBar">
+            <v-navigation-drawer v-model="drawer" floating app id="filterBar">
                 <v-list>
                     <v-list-group v-for="(item, i) in filterItems" append-icon="add" :key="i" no-action>
                         <v-list-tile slot="activator">
@@ -12,7 +12,6 @@
                             <v-list-tile-content>
                                 <v-list-tile-title>{{ item.label }}</v-list-tile-title>
                             </v-list-tile-content>
-                            <!-- @click="filterSubcategory(item.value, subItem.value) -->
                             <v-list-tile-action>
                                 <v-checkbox v-model="checkedSections[item.value]"></v-checkbox>
                             </v-list-tile-action>
@@ -64,6 +63,8 @@ import { MAPBOX_STYLES, MAP_FILTERS } from '@/common/map-fields';
 import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
 import { getFeatures } from '@/lib/geojson-util';
+import { EVENT_STATUSES } from '@/common/common';
+
 var map;
 
 export default {
@@ -79,17 +80,20 @@ export default {
     },
     data(){
         return{
+            drawer: null,
             eventFeatureCollection:[],
             recentCoordinates: [],
             toggle_mode: 1,
             selectedFilters: null,
             filterItems: MAP_FILTERS,
+            layerIds: [],
+            allStatuses: EVENT_STATUSES,
             checkedSections:{
                 events: null,
                 reports: null,
                 contacts: null,
                 rssFeeds: null
-            }, 
+            },
             checkedFilters: {
                 events: [],
                 reports: [],
@@ -114,6 +118,9 @@ export default {
         },
         toggle_mode(val){
             map.setStyle(MAPBOX_STYLES[val]);
+        },
+        checkedSections(val){
+            console.log(" ------ [checked sections] ::: ", val);
         }
     },
     computed: {
@@ -130,8 +137,9 @@ export default {
         },
         initMap(){
             var geojsonEvents = this.eventsGeoJson.objects.output;
-
+            console.log('this.eventsGeoJson ----- ', this.eventsGeoJson)
             var eventFeatureCollection = getFeatures(this.eventsGeoJson, 'output');
+
             if(this.eventId){
                 var eventObj = eventFeatureCollection.filter(item =>{
                     return item.properties.id == this.eventId;
@@ -144,7 +152,6 @@ export default {
                 var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
             }
 
-
             map = new mapboxgl.Map({
                 container: 'map',
                 style: MAPBOX_STYLES.thematic,
@@ -153,212 +160,251 @@ export default {
                 minZoom: 4
             });
 
-            map.on('load', function () {
-                map.loadImage("/resources/new_icons/event_open.png", function(error, image){
-                    if(error) throw error;
-                    map.addImage('event-marker', image);
-                });
-
-                map.addSource("reach-events", {
-                    type: "geojson",
-                    data: {
-                        "type": "FeatureCollection",
-                        "features": eventFeatureCollection
-                    },
-                    cluster: true,
-                    clusterMaxZoom: 14, // Max zoom to cluster points on
-                    clusterRadius: 50
-                });
-                map.addLayer({
-                    "id": "reach-events-heat",
-                    "type": "heatmap",
-                    "source": "reach-events",
-                    "maxzoom": 9,
-                    "paint": {
-                        // Increase the heatmap weight based on frequency and property magnitude
-                        "heatmap-weight": [
-                            "interpolate",
-                            ["linear"],
-                            ["get", "point_count"],
-                            0, 0,
-                            10, 1
-                        ],
-                        // Increase the heatmap color weight weight by zoom level
-                        // heatmap-intensity is a multiplier on top of heatmap-weight
-                        "heatmap-intensity": [
-                            "interpolate",
-                            ["linear"],
-                            ["zoom"],
-                            0, 1,
-                            9, 3
-                        ],
-                        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-                        // Begin color ramp at 0-stop with a 0-transparancy color
-                        // to create a blur-like effect.
-                        "heatmap-color": [
-                            "interpolate",
-                            ["linear"],
-                            ["heatmap-density"],
-                            0, "rgba(33,102,172,0)",
-                            0.2, "rgba(255,0,0, .2)",
-                            0.4, "rgba(255,0,0, .4)",
-                            0.6, "rgba(255,0,0, .6)",
-                            0.8, "rgba(255,0,0, .8)",
-                            1, "rgba(255,0,0, 1)"
-                        ],
-                        // Adjust the heatmap radius by zoom level
-                        "heatmap-radius": [
-                            "interpolate",
-                            ["linear"],
-                            ["zoom"],
-                            0, 2,
-                            2, 76 // ADJUST FOR: blur radius
-                        ],
-                        // Transition from heatmap to circle layer by zoom level
-                        "heatmap-opacity": [
-                            "interpolate",
-                            ["linear"],
-                            ["zoom"],
-                            7, 1,
-                            9, 0
-                        ],
-                    }
-                });
-
-                map.addLayer({
-                    id: "event-epicenter",
-                    type: "circle",
-                    source: "reach-events",
-                    minzoom: 7,
-                    paint: {
-                       "circle-color": [
-                           "step",
-                           ["get", "point_count"],
-                           "rgba(255, 0, 0, .5)", // wine red , less than 5
-                           5,
-                           "rgba(255, 0, 0, .5)", // standard red, between 5 and 10
-                           10,
-                           "rgba(255, 0, 0, .5)" // bright red, greater than or equal to 10
-                       ],
-                       "circle-radius": [
-                           "step",
-                           ["get", "point_count"],
-                           20,  // size, less than 5
-                           5,
-                           30,  // size between 5 and 10
-                           20,
-                           50  // size greater than or equal to 10
-                       ]
-                    },
-                    "filter": ["==", "$type", "Point"],
-                });
-                map.addLayer({
-                    id: "event-epicenter-icons",
-                    type: "symbol",
-                    source: "reach-events",
-                    minzoom: 10,
-                    layout: {
-                        "icon-image": "event-marker"
-                        // "icon-size": 1
-                    },
-                    "filter": ["==", "$type", "Point"],
-                });
-
-                map.addLayer({
-                    id: "cluster-count",
-                    type: "symbol",
-                    minzoom: 6,
-                    source: "reach-events",
-                    filter: ["has", "point_count"],
-                    layout: {
-                    "text-field": "{point_count_abbreviated}",
-                    "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-                    "text-size": 12
-                    }
-                });
-
-                map.addLayer({
-                    id: "unclustered-point",
-                    type: "circle",
-                    source: "reach-events",
-                    minzoom: 7,
-                    maxzoom: 10,
-                    filter: ["!", ["has", "point_count"]],
-                    paint: {
-                        "circle-color": "rgba(255, 0, 0, .5)",
-                        "circle-radius": 10,
-                        "circle-stroke-width": 1,
-                        "circle-stroke-color": "rgba(255, 0, 0, .5)"
-                    }
-                });
-
-            });
-
-
-
-            // Create a popup, but don't add it to the map yet.
-             var popup = new mapboxgl.Popup({
-                 closeButton: true,
-                 closeOnClick: false
-             });
-
-             map.on('zoom', function(e){
+            this.loadEventsLayer(eventFeatureCollection);
+            this.appendEventsTooltip();
+            map.on('zoom', function(e){
                 console.log(map.getZoom());
             });
+        },
 
-             map.on('mouseenter', 'event-epicenter', function(e) {
-                 // Change the cursor style as a UI indicator.
-                 map.getCanvas().style.cursor = 'pointer';
-                 var coordinates = e.features[0].geometry.coordinates.slice();
+        loadEventsLayer(){
+            var vm = this;
+            var featureCollection = getFeatures(this.eventsGeoJson, 'output');
 
-                 var evMeta = JSON.parse(e.features[0].properties.metadata);
-                 var description = evMeta.description; // <<< missing feature.properties, need to convert GeometryCollection to FeatureCollection
-                 var evName = evMeta.name;
-                 // var evType = evMeta.types.join(',');
-                 var evStatus = evMeta.event_status;
+            map.on('load', function () {
+                vm.allStatuses.forEach(function(item){
+                    var imageId = 'event-'+item.value;
+                    var imageKey = `/resources/new_icons/event_${item.value}.png`;
 
-                 var cleanAreas = _.compact(evMeta.areas);
-                 var evPlace;
-                 if(!evMeta.areas || _.isEmpty(cleanAreas)){
-                     evPlace = evMeta.country;
-                 }else{
-                     if(cleanAreas[0].region){
-                         evPlace = cleanAreas[0].region + cleanAreas[0].country_code;
-                     }else{
-                         evPlace = cleanAreas[0].country;
-                     }
-                 }
+                    map.loadImage(imageKey, function(error, image){
+                        console.log(' -------- ', imageId, imageKey, map.hasImage(imageId));
 
-                 var evLastUpdate = e.features[0].properties.updated_at
+                        if(!map.hasImage(imageId)){
+                            if(error) throw error;
+                            map.addImage(imageId, image);
+                        }
+                    });
+                })
+                if(!map.getSource("reach-events")){
+                    map.addSource("reach-events", {
+                        type: "geojson",
+                        data: {
+                            "type": "FeatureCollection",
+                            "features": featureCollection
+                        },
+                        cluster: true,
+                        clusterMaxZoom: 14, // Max zoom to cluster points on
+                        clusterRadius: 50
+                    });
+                }
+                if(!map.getLayer("events-heat")){
+                    map.addLayer({
+                        "id": "events-heat",
+                        "type": "heatmap",
+                        "source": "reach-events",
+                        "maxzoom": 9,
+                        "paint": {
+                            // Increase the heatmap weight based on frequency and property magnitude
+                            "heatmap-weight": [
+                                "interpolate",
+                                ["linear"],
+                                ["get", "point_count"],
+                                0, 0,
+                                10, 1
+                            ],
+                            // Increase the heatmap color weight weight by zoom level
+                            // heatmap-intensity is a multiplier on top of heatmap-weight
+                            "heatmap-intensity": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                0, 1,
+                                9, 3
+                            ],
+                            // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+                            // Begin color ramp at 0-stop with a 0-transparancy color
+                            // to create a blur-like effect.
+                            "heatmap-color": [
+                                "interpolate",
+                                ["linear"],
+                                ["heatmap-density"],
+                                0, "rgba(33,102,172,0)",
+                                0.2, "rgba(255,0,0, .2)",
+                                0.4, "rgba(255,0,0, .4)",
+                                0.6, "rgba(255,0,0, .6)",
+                                0.8, "rgba(255,0,0, .8)",
+                                1, "rgba(255,0,0, 1)"
+                            ],
+                            // Adjust the heatmap radius by zoom level
+                            "heatmap-radius": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                0, 2,
+                                2, 76 // ADJUST FOR: blur radius
+                            ],
+                            // Transition from heatmap to circle layer by zoom level
+                            "heatmap-opacity": [
+                                "interpolate",
+                                ["linear"],
+                                ["zoom"],
+                                7, 1,
+                                9, 0
+                            ],
+                        }
+                    });
+                }
+                if(!map.getLayer("events-epicenter")){
+                    map.addLayer({
+                        id: "events-epicenter",
+                        type: "circle",
+                        source: "reach-events",
+                        minzoom: 7,
+                        paint: {
+                           "circle-color": [
+                               "step",
+                               ["get", "point_count"],
+                               "rgba(255, 0, 0, .5)", // wine red , less than 5
+                               5,
+                               "rgba(255, 0, 0, .5)", // standard red, between 5 and 10
+                               10,
+                               "rgba(255, 0, 0, .5)" // bright red, greater than or equal to 10
+                           ],
+                           "circle-radius": [
+                               "step",
+                               ["get", "point_count"],
+                               20,  // size, less than 5
+                               5,
+                               30,  // size between 5 and 10
+                               20,
+                               50  // size greater than or equal to 10
+                           ]
+                        },
+                        "filter": ["==", "$type", "Point"],
+                    });
+                }
+                console.log(featureCollection);
+                featureCollection.forEach(function(feature){
+                    var status = feature.properties.metadata.event_status.toLowerCase();
+                    if(status=='assessment'){
+                        var iconImage = 'event-ongoing';
+                    }else{
+                        var iconImage = "event-"+status;
+                    }
+                    var layerId = 'events_'+status;
+                    if(!map.getLayer(layerId)){
+                        map.addLayer({
+                            id: layerId,
+                            type: "symbol",
+                            source: "reach-events",
+                            minzoom: 10,
+                            layout: {
+                                "icon-image": iconImage,
+                                "icon-allow-overlap": true
+                            },
+                            filter: ["==", "event_status", status]
+                        });
 
-                 var contentStr = `<a href="#/events/${e.features[0].properties.id}">
-                     <div class="primary-text">${evName}</div>
-                     <div class="secondary-text">${evStatus} - \n ${evPlace} </div>
-                     <label>${evLastUpdate} </label>
-                     </a>
-                 `;
+                        vm.layerIds.push(layerId);
+                    }
+                });
+                if(!map.getLayer("events-cluster-count")){
+                    map.addLayer({
+                        id: "events-cluster-count",
+                        type: "symbol",
+                        minzoom: 6,
+                        source: "reach-events",
+                        filter: ["has", "point_count"],
+                        layout: {
+                        "text-field": "{point_count_abbreviated}",
+                        "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                        "text-size": 12
+                        }
+                    });
+                }
 
-                 // Ensure that if the map is zoomed out such that multiple
-                 // copies of the feature are visible, the popup appears
-                 // over the copy being pointed to.
-                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                 }
-                 // Populate the popup and set its coordinates
-                 // based on the feature found.
-                 popup.setLngLat(coordinates)
-                     .setHTML(contentStr)
-                     .addTo(map);
-             });
+                if(!map.getLayer("events-unclustered-point")){
+                    map.addLayer({
+                        id: "events-unclustered-point",
+                        type: "circle",
+                        source: "reach-events",
+                        minzoom: 7,
+                        maxzoom: 10,
+                        filter: ["!", ["has", "point_count"]],
+                        paint: {
+                            "circle-color": "rgba(255, 0, 0, .5)",
+                            "circle-radius": 10,
+                            "circle-stroke-width": 1,
+                            "circle-stroke-color": "rgba(255, 0, 0, .5)"
+                        }
+                    });
+                }
+                // vm.layerIds.push("events-heat", "events-epicenter", )
+            });
+        },
+        appendEventsTooltip(){
+            // Create a popup, but don't add it to the map yet.
+            var popup = new mapboxgl.Popup({
+                closeButton: true,
+                closeOnClick: false
+            });
 
-             // map.on('mouseleave', 'event-epicenter', function() {
+            map.on('mouseenter', 'events-epicenter', function(e) {
+                // Change the cursor style as a UI indicator.
+                map.getCanvas().style.cursor = 'pointer';
+                var coordinates = e.features[0].geometry.coordinates.slice();
+
+                var evMeta = JSON.parse(e.features[0].properties.metadata);
+                var description = evMeta.description; // <<< missing feature.properties, need to convert GeometryCollection to FeatureCollection
+                var evName = evMeta.name;
+                // var evType = evMeta.types.join(',');
+                var evStatus = evMeta.event_status;
+
+                var cleanAreas = _.compact(evMeta.areas);
+                var evPlace;
+                if(!evMeta.areas || _.isEmpty(cleanAreas)){
+                    evPlace = evMeta.country;
+                }else{
+                    if(cleanAreas[0].region){
+                        evPlace = cleanAreas[0].region + cleanAreas[0].country_code;
+                    }else{
+                        evPlace = cleanAreas[0].country;
+                    }
+                }
+
+                var evLastUpdate = e.features[0].properties.updated_at
+
+                var contentStr = `<a href="#/events/${e.features[0].properties.id}">
+                    <div class="primary-text">${evName}</div>
+                    <div class="secondary-text">${evStatus} - \n ${evPlace} </div>
+                    <label>${evLastUpdate} </label>
+                    </a> `;
+
+                // Ensure that if the map is zoomed out such that multiple
+                // copies of the feature are visible, the popup appears
+                // over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+                // Populate the popup and set its coordinates
+                // based on the feature found.
+                popup.setLngLat(coordinates)
+                    .setHTML(contentStr)
+                    .addTo(map);
+            });
+
+             // map.on('mouseleave', 'events-epicenter', function() {
              //     map.getCanvas().style.cursor = '';
              //     popup.remove();
              // });
         },
+        filterSections(){
 
-        loadEventsLayer(){
-
+        },
+        filterSubcategory(main, sub){
+            // **** expression for MAPBOX match filter ****
+            // ['match', ['get', property], inputValue, outputValue if match, outputValue if not a match]
+            console.log(main, sub);
         },
         zoomToEventCenter(){
             var eventObj = this.eventFeatureCollection.filter(item =>{
@@ -366,10 +412,8 @@ export default {
             });
 
             map.flyTo({center: [eventObj.geometry.coordinates]});
-        },
-        filterSubcategory(main, sub){
-            console.log(main, sub);
         }
+
     }
 
 };
@@ -408,14 +452,18 @@ export default {
     #filterMenu{
         top: 90px;
         z-index: 8;
-        left: 13px;
+        min-width: 40px;
+        padding: 0;
     }
     #filterBar{
         height: inherit !important;
         top: 140px;
-        left: 21px;
+        margin: 6px 8px;
         padding: 12px;
         background: #EEEEEE;
         border-radius: 5px;
+        // .v-list__group__items--no-action .v-list__tile {
+        //     padding-left: 36px;
+        // }
     }
 </style>

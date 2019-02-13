@@ -1,13 +1,15 @@
 
 function getFeatures(topoJson, key) {
     return topoJson.objects[key].geometries.map(function(geom) {
+        geom.properties.event_status = geom.properties.metadata.event_status.toLowerCase();
         return {
             type: 'Feature',
             id: geom.properties.id,
             properties: geom.properties || {},
             geometry: {
                 type: geom.type,
-                coordinates: geom.coordinates
+                coordinates: geom.coordinates,
+                event_status:  geom.properties.metadata.event_status
             }
         };
     });
