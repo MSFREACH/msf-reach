@@ -232,7 +232,6 @@ export default {
 </script>
 
 <style lang='scss'>
-    #map,
     #newMap,
     #generalAnnotation{
         display: block;

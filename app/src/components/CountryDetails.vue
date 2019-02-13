@@ -9,7 +9,7 @@
                     <v-list-tile avatar @click="selectedView = defaultView">
                         General
                     </v-list-tile>
-                    <v-list-group no-action sub-group prepend-icon="remove" v-for="(category, index) in sectionFields" :key="index">
+                    <v-list-group no-action append-icon="remove" v-for="(category, index) in sectionFields" :key="index">
                         <v-list-tile slot="activator">
                             <v-list-tile-title><label>{{category.text}}</label> </v-list-tile-title>
                         </v-list-tile>

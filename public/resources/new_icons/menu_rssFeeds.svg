@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35.992" height="39.996" viewBox="0 0 35.992 39.996">
+  <g id="Group_293" data-name="Group 293" transform="translate(-118.898 -386.855)">
+    <line id="Line_260" data-name="Line 260" x2="15.725" transform="translate(120.898 408.647)" fill="none" stroke="#231f20" stroke-linecap="round" stroke-width="4"/>
+    <line id="Line_261" data-name="Line 261" x2="5.422" y2="5.422" transform="translate(131.2 403.225)" fill="none" stroke="#231f20" stroke-linecap="round" stroke-width="4"/>
+    <line id="Line_262" data-name="Line 262" y1="5.422" x2="5.422" transform="translate(131.2 408.647)" fill="none" stroke="#231f20" stroke-linecap="round" stroke-width="4"/>
+    <path id="Subtraction_6" data-name="Subtraction 6" d="M3.836,3.836h0L0,0H7.669L3.837,3.835Z" transform="translate(130.347 423.016)" fill="#231f20"/>
+    <g id="Rectangle_1635" data-name="Rectangle 1635" transform="translate(119 393.194)" fill="none" stroke="#231f20" stroke-width="4">
+      <rect width="29.823" height="29.823" stroke="none"/>
+      <rect x="2" y="2" width="25.823" height="25.823" fill="none"/>
+    </g>
+    <line id="Line_263" data-name="Line 263" y1="7.049" transform="translate(125.778 388.584)" fill="none" stroke="#231f20" stroke-width="4"/>
+    <line id="Line_264" data-name="Line 264" x2="29.823" transform="translate(124.422 388.856)" fill="none" stroke="#231f20" stroke-width="4"/>
+    <line id="Line_265" data-name="Line 265" x2="7.049" transform="translate(147.196 415.968)" fill="none" stroke="#231f20" stroke-width="4"/>
+    <line id="Line_266" data-name="Line 266" y1="29.281" transform="translate(152.89 387.5)" fill="none" stroke="#231f20" stroke-width="4"/>
+  </g>
+</svg>

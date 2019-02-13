@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="45.47" height="50.377" viewBox="0 0 45.47 50.377">
+  <g id="Group_301" data-name="Group 301" transform="translate(-697 -399)">
+    <g id="Group_214" data-name="Group 214" transform="translate(697 399)">
+      <g id="Ellipse_290" data-name="Ellipse 290" fill="none" stroke="#95e1d3" stroke-width="4">
+        <circle cx="22.735" cy="22.735" r="22.735" stroke="none"/>
+        <circle cx="22.735" cy="22.735" r="20.735" fill="none"/>
+      </g>
+      <line id="Line_249" data-name="Line 249" x2="23.096" transform="translate(5.362 12.785)" fill="none" stroke="#95e1d3" stroke-linecap="round" stroke-width="4"/>
+      <line id="Line_250" data-name="Line 250" x2="30.52" transform="translate(2.887 20.209)" fill="none" stroke="#95e1d3" stroke-linecap="round" stroke-width="4"/>
+      <line id="Line_251" data-name="Line 251" x2="23.096" transform="translate(5.362 27.633)" fill="none" stroke="#95e1d3" stroke-linecap="round" stroke-width="4"/>
+      <line id="Line_252" data-name="Line 252" x2="16.497" transform="translate(7.836 35.057)" fill="none" stroke="#95e1d3" stroke-linecap="round" stroke-width="4"/>
+    </g>
+    <path id="Subtraction_5" data-name="Subtraction 5" d="M5.836,5.836v0L0,0H11.666L5.836,5.833Z" transform="translate(714.262 443.541)" fill="#95e1d3"/>
+  </g>
+</svg>

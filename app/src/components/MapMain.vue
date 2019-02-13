@@ -1,5 +1,36 @@
 <template>
-    <v-layout>
+    <v-layout row wrap app>
+        <v-btn id="filterMenu"><v-icon>menu</v-icon></v-btn>
+        <v-card class="d-inline-block elevation-12">
+            <v-navigation-drawer floating fixed app id="filterBar">
+                <v-list>
+                    <v-list-group v-for="(item, i) in filterItems" append-icon="add" :key="i" no-action>
+                        <v-list-tile slot="activator">
+                            <v-list-tile-action>
+                                <img class="menu-icon" :src="'/resources/new_icons/menu_'+item.value+'.svg'">
+                            </v-list-tile-action>
+                            <v-list-tile-content>
+                                <v-list-tile-title>{{ item.label }}</v-list-tile-title>
+                            </v-list-tile-content>
+                            <!-- @click="filterSubcategory(item.value, subItem.value) -->
+                            <v-list-tile-action>
+                                <v-checkbox v-model="checkedSections[item.value]"></v-checkbox>
+                            </v-list-tile-action>
+                        </v-list-tile>
+                        <v-list-tile v-for="(subItem, i) in item.subItems" :key="i+'i'">
+                            <v-list-tile-action>
+                                <img class="menu-icon" :src="'/resources/new_icons/menu_'+item.value+'_'+subItem.value+'.svg'">
+                            </v-list-tile-action>
+                            <v-list-tile-title v-text="subItem.label"></v-list-tile-title>
+                            <v-list-tile-action>
+                                <v-checkbox v-model="checkedFilters[item.value][i]" :value="subItem.value"></v-checkbox>
+                            </v-list-tile-action>
+                        </v-list-tile>
+
+                    </v-list-group>
+                </v-list>
+            </v-navigation-drawer>
+        </v-card>
         <div id="map" class="map"></div>
         <v-layout class="mode-docker">
             <v-flex xs12 sm6 class="py-2">
@@ -21,7 +52,6 @@
               </v-flex>
           </v-layout>
     </v-layout>
-
 </template>
 <script>
 /*eslint no-console: off*/
@@ -30,11 +60,10 @@
 /*eslint no-debugger: off*/
 
 import { mapGetters } from 'vuex';
-import { MAPBOX_STYLES } from '@/common/map-fields';
+import { MAPBOX_STYLES, MAP_FILTERS } from '@/common/map-fields';
 import { STATUS_ICONS } from '@/common/map-icons';
 import { FETCH_EVENTS } from '@/store/actions.type';
 import { getFeatures } from '@/lib/geojson-util';
-
 var map;
 
 export default {
@@ -52,7 +81,21 @@ export default {
         return{
             eventFeatureCollection:[],
             recentCoordinates: [],
-            toggle_mode: 1
+            toggle_mode: 1,
+            selectedFilters: null,
+            filterItems: MAP_FILTERS,
+            checkedSections:{
+                events: null,
+                reports: null,
+                contacts: null,
+                rssFeeds: null
+            }, 
+            checkedFilters: {
+                events: [],
+                reports: [],
+                contacts: [],
+                rssFeeds: []
+            }
         };
     },
     mounted(){
@@ -323,6 +366,9 @@ export default {
             });
 
             map.flyTo({center: [eventObj.geometry.coordinates]});
+        },
+        filterSubcategory(main, sub){
+            console.log(main, sub);
         }
     }
 
@@ -334,7 +380,6 @@ export default {
     #map{
         display: block;
         width: 100%;
-        top: 64px;
         height: calc(100vh - 64px); // **height require by leaflet
     }
 
@@ -351,11 +396,26 @@ export default {
             z-index: 10 !important;
         }
     }
+    .menu-icon{
+        height: 30px;
+    }
     .mode-docker{
         position: absolute;
         bottom: 0;
         left: 0;
         margin: 30px;
     }
-
+    #filterMenu{
+        top: 90px;
+        z-index: 8;
+        left: 13px;
+    }
+    #filterBar{
+        height: inherit !important;
+        top: 140px;
+        left: 21px;
+        padding: 12px;
+        background: #EEEEEE;
+        border-radius: 5px;
+    }
 </style>

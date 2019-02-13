@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35.246" height="39.049" viewBox="0 0 35.246 39.049">
+  <g id="Group_290" data-name="Group 290" transform="translate(-772 -623)">
+    <g id="Group_212" data-name="Group 212" transform="translate(772 623)">
+      <g id="Ellipse_290" data-name="Ellipse 290" fill="none" stroke="#231f20" stroke-width="5">
+        <circle cx="17.623" cy="17.623" r="17.623" stroke="none"/>
+        <circle cx="17.623" cy="17.623" r="15.123" fill="none"/>
+      </g>
+      <circle id="Ellipse_291" data-name="Ellipse 291" cx="4.795" cy="4.795" r="4.795" transform="translate(12.788 8.312)" fill="#231f20"/>
+      <ellipse id="Ellipse_292" data-name="Ellipse 292" cx="7.992" cy="7.673" rx="7.992" ry="7.673" transform="translate(9.591 19.821)" fill="#231f20"/>
+    </g>
+    <rect id="Rectangle_1612" data-name="Rectangle 1612" width="6.394" height="6.394" transform="translate(789.903 653.006) rotate(45)" fill="#231f20"/>
+    <g id="Group_288" data-name="Group 288" transform="translate(772 623)">
+      <g id="Ellipse_290-2" data-name="Ellipse 290" fill="none" stroke="#231f20" stroke-width="5">
+        <circle cx="17.623" cy="17.623" r="17.623" stroke="none"/>
+        <circle cx="17.623" cy="17.623" r="15.123" fill="none"/>
+      </g>
+      <circle id="Ellipse_291-2" data-name="Ellipse 291" cx="4.795" cy="4.795" r="4.795" transform="translate(12.788 8.312)" fill="#231f20"/>
+      <ellipse id="Ellipse_292-2" data-name="Ellipse 292" cx="7.992" cy="7.673" rx="7.992" ry="7.673" transform="translate(9.591 19.821)" fill="#231f20"/>
+    </g>
+  </g>
+</svg>
