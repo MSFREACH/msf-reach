@@ -137,7 +137,6 @@ export default {
         },
         initMap(){
             var geojsonEvents = this.eventsGeoJson.objects.output;
-            console.log('this.eventsGeoJson ----- ', this.eventsGeoJson)
             var eventFeatureCollection = getFeatures(this.eventsGeoJson, 'output');
 
             if(this.eventId){
@@ -177,8 +176,6 @@ export default {
                     var imageKey = `/resources/new_icons/event_${item.value}.png`;
 
                     map.loadImage(imageKey, function(error, image){
-                        console.log(' -------- ', imageId, imageKey, map.hasImage(imageId));
-
                         if(!map.hasImage(imageId)){
                             if(error) throw error;
                             map.addImage(imageId, image);
@@ -283,7 +280,6 @@ export default {
                         "filter": ["==", "$type", "Point"],
                     });
                 }
-                console.log(featureCollection);
                 featureCollection.forEach(function(feature){
                     var status = feature.properties.metadata.event_status.toLowerCase();
                     if(status=='assessment'){

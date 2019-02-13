@@ -299,7 +299,6 @@ export default {
 </script>
 
 <style lang='scss'>
-    #map,
     #newEventEntry,
     #generalAnnotation,
     #responsesAnnotation,
