@@ -3,9 +3,9 @@
         <div class="searchHeader">
             <v-text-field v-model='search' label='Search' single-line hide-details xs10></v-text-field>
             <v-select v-model="selectedType" :items="allCapacityTypes" label="Capacity" round clearable></v-select>
-            <v-dialog v-model="dialog" max-width="880px" dark>
+            <v-dialog v-model="dialog" max-width="880px">
                 <v-btn slot='activator' class='mb-2' small fab flat><v-icon>add</v-icon></v-btn>
-                <v-card class="editing">
+                <v-card class="create-wrapper">
                     <v-flex right>
                         <v-icon class="action-link" @click="close">close</v-icon>
                     </v-flex>
@@ -13,26 +13,27 @@
                     <v-container grid-list-md>
                       <v-layout wrap>
                         <v-flex xs6>
-                          <v-text-field label="Organization" v-model="createItem.name"></v-text-field>
+                          <v-text-field label="Organization" v-model="newItem.name"></v-text-field>
                         </v-flex>
                         <v-flex xs6>
-                          <v-select :items="allCapacityTypes" v-model="createItem.type" label="Capacity"></v-select>
+                          <v-select :items="allCapacityTypes" v-model="newItem.type" label="Capacity"></v-select>
                         </v-flex>
                         <v-flex xs6>
                             <v-menu ref="createDateSelected" :close-on-content-click="false" v-model="createDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
-                                <v-text-field slot="activator" v-model="createItem.arrival_date" persistent-hint type="date"></v-text-field>
-                                <v-date-picker v-model="createItem.arrival_date" no-title @input="createDateSelected = false"></v-date-picker>
+                                <v-text-field slot="activator" v-model="newItem.arrival_date" persistent-hint type="date"></v-text-field>
+                                <v-date-picker v-model="newItem.arrival_date" no-title @input="createDateSelected = false"></v-date-picker>
                             </v-menu>
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>Deployment</label>
-                            <v-textarea class="editTextArea" solo label="description" value="" auto-grow background-color="white" color="secondary" v-model="createItem.deployment"></v-textarea>
+                            <v-textarea class="editTextArea" solo label="description" value="" auto-grow background-color="white" color="secondary" v-model="newItem.deployment"></v-textarea>
                         </v-flex>
                       </v-layout>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn label='add' @click='add'></v-btn>
+                      <v-spacer></v-spacer>
+                    <v-btn @click='add' color="grey"> add </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -46,7 +47,7 @@
                 <v-data-table :headers="headers" :items="displayCapacities" :class="editing ? 'edit-wrapper':''" item-key="arrivalDate" :search="search" hide-actions>
                     <template slot="items" slot-scope="props">
                         <v-hover>
-                            <tr :key="props.index"
+                            <tr :key="props.index" class="editableRow"
                                 v-show="editMode.offset != props.index"
                                 slot-scope="{ hover }">
                                 <td><span v-if="!props.item.name"> -- </span> {{ props.item.name }}</td>
@@ -61,14 +62,14 @@
                                 </td>
                             </tr>
                         </v-hover>
-                        <tr :key="props.index"
+                        <tr :key="props.index" class="editableRow"
                             v-show="editMode.offset == props.index">
                             <td><v-text-field v-model="editedItem.name" label="name"></v-text-field></td>
                             <td><v-select :items="allCapacityTypes" v-model="editedItem.type" label="Capacity"></v-select></td>
                             <td>
-                                <v-menu ref="editMode.dateSelected" :close-on-content-click="false" v-model="editMode.dateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
+                                <v-menu ref="editDateSelected" :close-on-content-click="false" v-model="editDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
                                     <v-text-field slot="activator" v-model="editedItem.arrival_date" persistent-hint type="date"></v-text-field>
-                                    <v-date-picker v-model="editedItem.arrival_date" no-title @input="editMode.dateSelected = false"></v-date-picker>
+                                    <v-date-picker v-model="editedItem.arrival_date" no-title @input="editDateSelected = false"></v-date-picker>
                                 </v-menu>
                             </td>
                             <td><v-textarea solo label="description" v-model="editedItem.deployment" background-color="white" color="secondary"></v-textarea></td>
@@ -79,7 +80,6 @@
                         </tr>
                     </template>
                 </v-data-table>
-                <a v-if="editing" @click="add()">add</a>
             </div>
             <v-layout v-else row wrap>
                 <div class="no-data-available">
@@ -98,7 +98,8 @@ import { mapGetters } from 'vuex';
 // import { EDIT_EVENT } from '@/store/actions.type';
 import { DEFAULT_EXT_CAPACITY_HEADERS } from '@/common/common';
 import { EXTERNAL_CAPACITY_FIELDS, EXTERNAL_CAPACITY_TYPES } from '@/common/form-fields';
-import { EDIT_EVENT } from '@/store/actions.type';
+import { EDIT_EVENT_EXT_CAPACITY } from '@/store/actions.type';
+import { ADD_EVENT_EXT_CAPACITY, UPDATE_EVENT_EXT_CAPACITY } from '@/store/mutations.type';
 export default {
     name: 'r-event-extCapacity',
     data(){
@@ -112,10 +113,10 @@ export default {
             allCapacityTypes: EXTERNAL_CAPACITY_TYPES,
             editMode:{
                 offset: -1,
-                dateSelected: false
             },
             createDateSelected: false,
-            createItem: EXTERNAL_CAPACITY_FIELDS,
+            editDateSelected: false,
+            newItem: EXTERNAL_CAPACITY_FIELDS,
             editedItem: EXTERNAL_CAPACITY_FIELDS,
             defaultItem: EXTERNAL_CAPACITY_FIELDS,
             headers: DEFAULT_EXT_CAPACITY_HEADERS
@@ -126,7 +127,7 @@ export default {
     },
     mounted(){
         // Not the best place to call this inside mounted
-        this.displayCapacities = this.$store.getters.eventExtCapacity.sort(function(a, b){
+        this.displayCapacities = this.eventExtCapacity.sort(function(a, b){
             return b.arrival_date - a.arrival_date;
         });
     },
@@ -157,14 +158,12 @@ export default {
     methods:{
 
         add(type){
-            console.log('add Entry clicked ---- ', type);
-            var newInstance = this.defaultItem;
-            this.displayCapacities.push(newInstance);
-            this.editedItem = Object.assign({}, newInstance);
-            this.editMode.offset = this.displayCapacities.length - 1; // the latest one
+            this.$store.commit(ADD_EVENT_EXT_CAPACITY, this.newItem);
+            this.newItem = Object.assign({}, this.defaultItem);
+            this.dialog = false;
+            this.updateCapacity();
         },
         edit(item, index){
-            console.log(' edit --- ', item, index);
             this.editedItem = Object.assign({}, item);
             this.editMode.offset = index;
         },
@@ -175,7 +174,7 @@ export default {
         },
         clearEdit(){
             this.editMode.offset = -1;
-            this.editedItem = this.defaultItem;
+            this.editedItem = Object.assign({}, this.defaultItem);
         },
 
         delete(item){
@@ -183,18 +182,23 @@ export default {
             confirm('Are you sure you want to delete this item?') && this.eventExtCapacity.splice(index, 1);
         },
         localSave(){
-            this.eventExtCapacity[this.editMode.offset] = this.editedItem;
+            var payload = {
+                index:  this.editMode.offset,
+                item: this.editedItem
+            }
+            this.$store.commit(UPDATE_EVENT_EXT_CAPACITY, payload);
             this.clearEdit();
+            this.updateCapacity();
         },
         updateCapacity(){
-            this.$store.dispatch(EDIT_EVENT).then((data) =>{
-                console.log('---- ', data);
+            this.$store.dispatch(EDIT_EVENT_EXT_CAPACITY).then((data) =>{
+                // TODO:// refresh or reload state
             });
         },
         close(){
             this.dialog = false;
             setTimeout(() => {
-                this.createItem = Object.assign({}, this.defaultItem);
+                this.newItem = Object.assign({}, this.defaultItem);
             }, 300);
         }
     }
@@ -204,4 +208,7 @@ export default {
 <style lang="scss">
     @import '@/assets/css/display.scss';
     @import '@/assets/css/edit.scss';
+    tr.editableRow:hover{
+        background: rgba(255, 255, 255, .25) !important;
+    }
 </style>

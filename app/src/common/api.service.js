@@ -49,6 +49,11 @@ const ApiService = {
     update (resource, slug, params) {
         return Vue.axios.put(`${resource}/${slug}`, params);
     },
+    updateSection (resource, params) {
+        console.log(' ---updateSection - ', params);
+
+        return Vue.axios.put(`${resource}`, params);
+    },
     put (resource, params) {
         return Vue.axios.put(`${resource}`, params);
     },
@@ -83,7 +88,9 @@ export const EventsService = {
         return ApiService.update(`events/${slug}/responses`, params);
     },
     updateExtCapacity (slug, params) {
-        return ApiService.update(`events/${slug}/extCapacity`, params);
+        console.log(' ---updateExtCapacity - ', params);
+
+        return ApiService.updateSection(`events/${slug}/extCapacity`, params);
     },
     updateFigures (slug, params) {
         return ApiService.update(`events/${slug}/figures`, params);

@@ -45,3 +45,6 @@ export const UPDATE_RESPONSE_PROGRAMMES = 'updateResponseProgrammes';
 
 export const FETCH_COUNTRY_DETAILS_START = 'fetchCountryDetailsLoading';
 export const FETCH_COUNTRY_DETAILS_END = 'fetchCountryDetailEnd';
+
+export const ADD_EVENT_EXT_CAPACITY = 'addEventExtCapacity';
+export const UPDATE_EVENT_EXT_CAPACITY = 'updateEventExtCapacity';

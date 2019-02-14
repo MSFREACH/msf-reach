@@ -163,17 +163,15 @@ export default (config, db, logger) => ({
     }),
 
     updateEventExtCapacity: (id, body) => new Promise((resolve, reject) => {
-
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
             SET updated_at = now(),
-            ext_capacity = ext_capacity || $1
+            ext_capacity = $1::jsonb
             WHERE id = $2
             RETURNING ext_capacity, updated_at, status`;
 
         // Setup values
-        let values = [ body.extCapacity, id];
-
+        let values = [ JSON.stringify(body.extCapacity), id];
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)

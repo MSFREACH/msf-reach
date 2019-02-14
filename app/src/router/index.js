@@ -128,12 +128,12 @@ export default new Router({
     },{
         name: 'contacts',
         path: '/contacts',
-        component: () => import('@/components/ContactList'),
+        component: () => import('@/components/Placeholder'),
         props: true
     },{
         name: 'reports',
         path: '/reports',
-        component: () => import('@/components/ReportList'),
+        component: () => import('@/components/Placeholder'),
         props: true
     },{
         name: 'placeholder',

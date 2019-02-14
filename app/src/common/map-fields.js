@@ -23,13 +23,13 @@ export const MAP_FILTERS = [
     {label: 'Contacts', value: 'contacts', subItems: [
         {label: 'MSF Staff', value: 'internal'},
         {label: 'External', value: 'external'}
-    ]},
-    {label: 'RSS Feeds', value: 'rssFeeds', subItems: [
-        {label: 'Advisory', value: 'advisory'},
-        {label: 'Information', value: 'information'},
-        {label: 'Warning', value: 'warning'},
-        {label: 'Watch', value: 'watch'}
     ]}
+    // {label: 'RSS Feeds', value: 'rssFeeds', subItems: [
+    //     {label: 'Advisory', value: 'advisory'},
+    //     {label: 'Information', value: 'information'},
+    //     {label: 'Warning', value: 'warning'},
+    //     {label: 'Watch', value: 'watch'}
+    // ]}
 ];
 
 export const MAP_LAYERS_ID = {

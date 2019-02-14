@@ -107,14 +107,13 @@ textarea#sharepoint{
 .statusWrapper{
     border: 2px solid $bg-space-grey;
     background: $bg-space-grey;
-    width: 60%;
     border-radius: 22px;
     padding: 0 10px;
     align-items: center;
     label{
         // margin-right: 10px;
     }
-}
 
+}
 
 @import "msfStatus.scss"; // style cascade, this should come after statusWrapper;

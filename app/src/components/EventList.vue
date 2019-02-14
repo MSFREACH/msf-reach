@@ -42,8 +42,9 @@
                             <v-list-tile-title v-if="props.item.metadata.event_status" :class="props.item.metadata.event_status.toLowerCase()">
                                 <span class="title-text"> {{props.item.metadata.name}} </span>
                                 <span class="list-actions">
-                                    <v-icon color="grey lighten-1">exit_to_app</v-icon>
-                                    <v-icon color="grey lighten-1">bookmark</v-icon>
+                                    <!-- FOR LATER -->
+                                    <!-- <v-icon color="grey lighten-1">exit_to_app</v-icon>
+                                    <v-icon color="grey lighten-1">bookmark</v-icon> -->
                                     <router-link :to="{ name: 'map-main', params:{eventId: props.item.id}}">
                                         <v-icon color="grey lighten-1">map</v-icon>
                                     </router-link>
@@ -250,6 +251,9 @@ export default {
       }
       .v-select__selections div{
           display: block;
+      }
+      .v-menu__content .menuable__content__active{
+          min-width: 200px !important;
       }
     }
     .v-menu{

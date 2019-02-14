@@ -142,8 +142,8 @@ ul{
     padding: 21px;
 }
 .split-text-fields{
-    max-height: calc(100vh - 200px);
-    overflow: scroll;
+    // max-height: calc(100vh - 200px);
+    // overflow: scroll;
     position: relative;
     display: inline-block;
     width: 68%;
@@ -158,7 +158,7 @@ ul{
 
 .relatedContent{
     margin: 80px 30px;
-    padding: 0; 
+    padding: 0;
     // max-width: 100%;
     iframe{
         border: solid 3px #0374C7;
