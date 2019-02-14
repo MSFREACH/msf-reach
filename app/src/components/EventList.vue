@@ -13,7 +13,7 @@
             hide-actions
             wrap row>
                 <v-toolbar class="listHeader" slot="header" flat>
-                    <div class="full-width align-baseline">
+                    <div class="full-width">
                         <v-text-field v-model="search" label="Search" single-line hide-details xs11></v-text-field>
                         <new-event></new-event>
                     </div>
@@ -240,6 +240,13 @@ export default {
       .v-toolbar__content{
         height: 128px;
         display: block;
+        padding: 0;
+        margin: 0 auto;
+        width: 95%;
+        align-items: center;
+        .v-text-field{
+            width: 100%;
+        }
       }
 
       .v-toolbar__content div{
@@ -252,8 +259,8 @@ export default {
       .v-select__selections div{
           display: block;
       }
-      .v-menu__content .menuable__content__active{
-          min-width: 200px !important;
+      .v-menu__content{
+          min-width: 280px !important;
       }
     }
     .v-menu{
