@@ -348,7 +348,6 @@ export default {
         div{
             display: inline-block !important;
         }
-
     }
     .listHeader .v-toolbar__content div{
 

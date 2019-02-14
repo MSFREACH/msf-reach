@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap class="eventSubContent statusToggle responseContainer">
         <nav class="statusTabWrapper">
-            <v-btn flat small :class="item+'-wrapper statusTabs'" v-for="(item, index) in statusHistory" :key="index" @click="switchStatus(item)">{{item}}</v-btn>
+            <v-btn flat small :class="item.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in statusHistory" :key="index" @click="switchStatus(item)">{{item}}</v-btn>
         </nav>
         <v-flex xs8>
             <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'" :dark="editing">

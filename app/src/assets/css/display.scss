@@ -274,6 +274,15 @@ tr.v-datatable__expand-row .v-card.expanded-field{
     // display: inherit;
 }
 
+.statusToggle{
+    .statusTabWrapper{
+        position: absolute;
+    }
+    .full-text-fields{
+        margin-top: 48px;
+    }
+}
+
 .v-date-picker-table--date td{
     width: 5px;
 }

@@ -252,7 +252,10 @@ export default {
       .v-toolbar__content div{
         display: inline-flex;
       }
-
+      .v-list,
+      .v-select-list{
+          width: 100%;
+      }
       .v-select.v-select--chips .v-select__selections{
           min-height: inherit;
       }
@@ -260,6 +263,7 @@ export default {
           display: block;
       }
       .v-menu__content{
+          max-height: unset !important;
           min-width: 280px !important;
       }
     }
