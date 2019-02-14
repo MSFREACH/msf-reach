@@ -1,128 +1,133 @@
 <template>
-    <v-container class="eventSubContent statusToggle responseContainer">
+    <v-layout row wrap class="eventSubContent statusToggle responseContainer">
         <nav class="statusTabWrapper">
             <v-btn flat small :class="item+'-wrapper statusTabs'" v-for="(item, index) in statusHistory" :key="index" @click="switchStatus(item)">{{item}}</v-btn>
         </nav>
-
-        <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'" dark>
-            <v-layout class="actions" v-if="allowEdit">
-                <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
-            </v-layout>
-            <v-layout row wrap v-if="editing" dark>
-                <div class="row-spacing">
-                    <label>Project Code</label>
-                    <div class="round-borders pc">
-                        <v-select :items="allOperationalCenters" v-model="editResponse.operational_center" label="OC" ></v-select>
-                        <input type="text"  v-model="editResponse.project_code" placeholder="######" />
-                    </div>
-                </div>
-                <response-programmes :currentProgrammes="editResponse.programmes"></response-programmes>
-                <hr class="row-divider"/>
-                <div class="one-half">
-                    <label>Response</label>
-                    <v-flex d-flex>
-                        <v-select dark :items="allResponseTypes" label="type" v-model="editResponse.metadata.type"></v-select>
-                    </v-flex>
-                    <v-textarea solo label="description" v-model="editResponse.metadata.description" auto-grow background-color="white" color="secondary"></v-textarea>
-                </div>
-
-                <div class="one-half">
-                    <div class="dateRange">
-                        <div class="one-half">
-                            <label>Start date</label>
-                            <v-menu ref="startDateSelected" :close-on-content-click="false" v-model="selectedDate.start" lazy transition="scale-transition" offset-y full-width>
-                                <v-text-field slot="activator" v-model="selectedDate.startValue" persistent-hint type="date"></v-text-field>
-                                <v-date-picker v-model="selectedDate.startValue" no-title @input="selectedDate.start = false"></v-date-picker>
-                            </v-menu>
-                        </div>
-                        <div class="one-half">
-                            <label>End date</label>
-                            <v-menu ref="endDateSelected" :close-on-content-click="false" v-model="selectedDate.end" lazy transition="scale-transition" offset-y full-width>
-                                <v-text-field slot="activator" v-model="selectedDate.endValue" persistent-hint type="date"></v-text-field>
-                                <v-date-picker v-model="selectedDate.endValue" no-title @input="selectedDate.end = false"></v-date-picker>
-                            </v-menu>
-                        </div>
-                    </div>
-                    <div>
-                        <label> Location of MSF Response: </label>
-                        <!-- map as input -->
-                    </div>
-                </div>
-                <v-flex xs8>
-                <v-text-field class="linkAttachment round-borders" v-model="editResponse.metadata.sharepoint_link" single-line prepend-icon="link" label="Sharepoint link"></v-text-field>
-                </v-flex>
-                <v-btn fab flat small class="delete-btn right" @click="deleteResponse">
-                    <v-icon>remove_circle</v-icon>
-                </v-btn>
-            </v-layout>
-            <v-layout v-else-if="displayResponse">
-                <v-layout row wrap>
-                    <div class="top-level primary-text">
+        <v-flex xs8>
+            <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'" :dark="editing">
+                <v-layout class="actions" v-if="allowEdit">
+                    <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
+                    <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
+                </v-layout>
+                <v-layout row wrap v-if="editing" dark>
+                    <div class="row-spacing">
                         <label>Project Code</label>
-                        <v-flex>
-                            <v-select class="round-borders highlight" :items="activeResponses" v-model="selectedResponseId" item-text="project_code" item-value="id"></v-select>
-                        </v-flex>
-                        <new-response></new-response>
-                    </div>
-
-                    <div class="one-third">
-                        <label>updated</label>
-                        {{displayResponse.updated | relativeTime}}
-                    </div>
-                    <div class="one-third">
-                        <label>status</label>
-                        {{displayResponse.event_status}}
-                    </div>
-                    <div class="full-width">
-                        <label>Type of programmes: </label>
-                        <div v-if="item" v-for="item in displayResponse.programmes">
-                                {{item.name}}
-                                <b> {{item.scale}} </b>
-                                <span class="notes"> {{item.deployment_scale}} </span>
+                        <div class="round-borders pc">
+                            <v-select :items="allOperationalCenters" v-model="editResponse.operational_center" label="OC" ></v-select>
+                            <input type="text"  v-model="editResponse.project_code" placeholder="######" />
                         </div>
                     </div>
-
+                    <response-programmes :currentProgrammes="editResponse.programmes"></response-programmes>
                     <hr class="row-divider"/>
                     <div class="one-half">
                         <label>Response</label>
-                        {{displayResponse.metadata.type}} -
-                        <span class="notes"> {{displayResponse.metadata.description}} </span>
+                        <v-flex d-flex>
+                            <v-select dark :items="allResponseTypes" label="type" v-model="editResponse.metadata.type"></v-select>
+                        </v-flex>
+                        <v-textarea solo label="description" v-model="editResponse.metadata.description" auto-grow background-color="white" color="secondary"></v-textarea>
                     </div>
 
                     <div class="one-half">
                         <div class="dateRange">
-                            <span class="start"> <label>Start date</label> {{displayResponse.metadata.start_date | date}} </span>
-                            <span class="end">  <label>End date</label> {{displayResponse.metadata.end_date | date}} </span>
+                            <div class="one-half">
+                                <label>Start date</label>
+                                <v-menu ref="startDateSelected" :close-on-content-click="false" v-model="selectedDate.start" lazy transition="scale-transition" offset-y full-width>
+                                    <v-text-field slot="activator" v-model="selectedDate.startValue" persistent-hint type="date"></v-text-field>
+                                    <v-date-picker v-model="selectedDate.startValue" no-title @input="selectedDate.start = false"></v-date-picker>
+                                </v-menu>
+                            </div>
+                            <div class="one-half">
+                                <label>End date</label>
+                                <v-menu ref="endDateSelected" :close-on-content-click="false" v-model="selectedDate.end" lazy transition="scale-transition" offset-y full-width>
+                                    <v-text-field slot="activator" v-model="selectedDate.endValue" persistent-hint type="date"></v-text-field>
+                                    <v-date-picker v-model="selectedDate.endValue" no-title @input="selectedDate.end = false"></v-date-picker>
+                                </v-menu>
+                            </div>
                         </div>
-                        <div> <label> Location of MSF Response: </label>
-                            <!-- {{displayResponse.location}} -->
+                        <div>
+                            <label> Location of MSF Response: </label>
+                            <!-- map as input -->
                         </div>
                     </div>
-
-                    <hr class="row-divider"/>
-                    <div class="one-half">
-                        <label>OPERATIONAL CENTRE</label>
-                        {{displayResponse.operational_center}}
-                    </div>
-
-                    <hr class="row-divider"/>
-                    <v-btn fab flat small v-if="displayResponse.metadata">
-                        <a :href='displayResponse.metadata.sharepoint_link' target="_blank">
-                            <v-icon>link</v-icon>
-                        </a>
+                    <v-flex xs8>
+                    <v-text-field class="linkAttachment round-borders" v-model="editResponse.metadata.sharepoint_link" single-line prepend-icon="link" label="Sharepoint link"></v-text-field>
+                    </v-flex>
+                    <v-btn fab flat small class="delete-btn right" @click="deleteResponse">
+                        <v-icon>remove_circle</v-icon>
                     </v-btn>
-
                 </v-layout>
-            </v-layout>
-            <v-layout v-else>
-                    No response recorded yet
-                    <new-response></new-response>
-            </v-layout>
-        </div>
+                <v-layout v-else-if="displayResponse">
+                    <v-layout row wrap>
+                        <div class="top-level primary-text">
+                            <label>Project Code</label>
+                            <v-flex>
+                                <v-select class="round-borders highlight" :items="activeResponses" v-model="selectedResponseId" item-text="project_code" item-value="id"></v-select>
+                            </v-flex>
+                            <new-response></new-response>
+                        </div>
 
+                        <div class="one-third">
+                            <label>updated</label>
+                            {{displayResponse.updated | relativeTime}}
+                        </div>
+                        <div class="one-third">
+                            <label>status</label>
+                            {{displayResponse.event_status}}
+                        </div>
+                        <div class="full-width">
+                            <label>Type of programmes: </label>
+                            <div v-if="item" v-for="item in displayResponse.programmes">
+                                    {{item.name}}
+                                    <b> {{item.scale}} </b>
+                                    <span class="notes"> {{item.deployment_scale}} </span>
+                            </div>
+                        </div>
 
-        <div :class="editing ? 'editable-map map-annotation' : 'map-annotation'" v-if="eventStatus.toLowerCase() == 'ongoing' || eventStatus.toLowerCase() == 'intervention'" @click="openMap">
+                        <hr class="row-divider"/>
+                        <div class="one-half">
+                            <label>Response</label>
+                            {{displayResponse.metadata.type}} -
+                            <span class="notes"> {{displayResponse.metadata.description}} </span>
+                        </div>
+
+                        <div class="one-half">
+                            <div class="dateRange">
+                                <span class="start"> <label>Start date</label> {{displayResponse.metadata.start_date | date}} </span>
+                                <span class="end">  <label>End date</label> {{displayResponse.metadata.end_date | date}} </span>
+                            </div>
+                            <div> <label> Location of MSF Response: </label>
+                                <!-- {{displayResponse.location}} -->
+                            </div>
+                        </div>
+
+                        <hr class="row-divider"/>
+                        <div class="one-half">
+                            <label>OPERATIONAL CENTRE</label>
+                            {{displayResponse.operational_center}}
+                        </div>
+
+                        <hr class="row-divider"/>
+                        <v-btn fab flat small v-if="displayResponse.metadata">
+                            <a :href='displayResponse.metadata.sharepoint_link' target="_blank">
+                                <v-icon>link</v-icon>
+                            </a>
+                        </v-btn>
+
+                    </v-layout>
+                </v-layout>
+                <v-layout row wrap v-else>
+                        <div> No response recorded yet </div>
+                        <v-flex v-if="isResponseStatus">
+                            <new-response></new-response>
+                        </v-flex>
+                        <div v-else>
+                            ...
+                            Please update event status to allow editing for response
+                        </div>
+                </v-layout>
+            </div>
+        </v-flex>
+        <v-flex xs4 :class="editing ? 'editable-map map-annotation' : 'map-annotation'" v-if="eventStatus.toLowerCase() == 'ongoing' || eventStatus.toLowerCase() == 'intervention'" @click="openMap">
             <v-layout row justify-center>
               <v-dialog v-model="mapDialog" max-width="880px">
                 <v-card>
@@ -135,8 +140,8 @@
               </v-dialog>
             </v-layout>
             <map-annotation  mapId="responsesAnnotation" :coordinates="eventCoordinates"></map-annotation>
-        </div>
-    </v-container>
+        </v-flex>
+    </v-layout>
 
 </template>
 
@@ -303,4 +308,13 @@ export default {
 <style lang="scss">
     @import '@/assets/css/display.scss';
     @import '@/assets/css/edit.scss';
+    .responseContainer{
+        .statusTabWrapper{
+            position: absolute;
+        }
+        .map-annotation,
+        .full-text-fields{
+            margin-top: 48px;
+        }
+    }
 </style>

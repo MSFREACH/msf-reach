@@ -113,7 +113,7 @@ export default {
             if(val){
                 var vm = this;
                 setTimeout(function(){
-                    vm.$refs.responseMapEntry.resizeMap(); }, 100);
+                    vm.$refs.responseMapEntry.resizeMap(); }, 300);
                 this.e1 = 1;
                 this.newResponse = this.defaultResponse;
             }

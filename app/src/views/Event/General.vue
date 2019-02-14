@@ -1,212 +1,215 @@
 <template>
-    <v-container class="eventSubContent generalContainer" v-if="eventMetadata">
-        <div :class="editing ? 'edit-wrapper split-text-fields':'split-text-fields'">
-            <div class="actions">
-                <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
-            </div>
-             <v-layout row wrap v-if="!editing">
-                <div class="top-level primary-text">
-                    <div class="one-half">
-                        <label>Name</label>
-                        {{eventMetadata.name}}
-                    </div>
-
-                    <div class="quarter-width">
-                        <label>Operator</label>
-                        --
-                    </div>
+    <v-layout class="eventSubContent generalContainer" v-if="eventMetadata" row wrap>
+        <v-flex xs8>
+            <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'">
+                <div class="actions">
+                    <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
+                    <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
                 </div>
-                <div class="quarter-width">
-                  <label>Type(s)</label>
-                  <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
-                  <!-- TODO: add pairing icon + clickable taglink -->
-                </div>
-                <div class="quarter-width">
-                  <label>Status</label>
-                  <span :class="eventMetadata.event_status.toLowerCase() + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
-                </div>
-                <div class="one-half">
-                    <label>Areas</label>
-                    <v-flex v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" :key="index">
-                        <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
-                        <span v-else>{{area.country}}</span>
-                        <div class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
-                            <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
-                            <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
+                 <v-layout row wrap v-if="!editing">
+                    <div class="top-level primary-text">
+                        <div class="one-half">
+                            <label>Name</label>
+                            {{eventMetadata.name}}
                         </div>
-                    </v-flex>
-                    <div v-if="!eventMetadata.severity_measures" class="sub-tag">
-                        <span v-if="eventMetadata.severity_scale" :class="allSeverity[eventMetadata.severity_scale-1].text +'Severity'">{{allSeverity[eventMetadata.severity_scale-1].text}} severity</span>
-                        <span class="notes"><br/> {{ eventMetadata.severity }} </span>
-                    </div>
-                </div>
-                <hr class="row-divider"/>
-                <!-- Temporal row -->
 
-                <div class="one-third">
-                    <label>OPEN DATE</label>
-                    {{ eventCreatedAt | relativeTime }}
-                </div>
-                <div class="one-third">
-                    <label>Local Date/Time</label>
-                    {{eventMetadata.event_local_time | fullDate }}
-                </div>
-                <div class="one-third">
-                    <label>Mission Contact Person</label>
-                    <div v-if="eventMetadata.incharge_name"> {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
-                    <div v-else> -- </div>
-                </div>
-
-                <hr class="row-divider"/>
-                <div class="full-width">
-                    <label>Description</label>
-                    {{eventMetadata.description }}
-                </div>
-                <hr class="row-divider"/>
-
-                <sharepoint-link v-if="eventMetadata.sharepoint_link" :link="eventMetadata.sharepoint_link"></sharepoint-link>
-            </v-layout>
-            <v-layout row wrap v-else>
-                <v-flex xs3>
-                    <markdown-panel class="sidePanel" v-if="showMarkdown"></markdown-panel>
-                </v-flex>
-                <div class="top-level primary-text">
-                    <div class="one-half">
-                        <label>Name</label>
-                        <input class="full-width" type="text" v-model="eventMetadata.name" placeholder="Event name" />
-                    </div>
-
-                    <div class="quarter-width">
-                        <label>REACH Operator</label>
-                        {{ eventProperties.operator }}
-                    </div>
-                </div>
-
-                <!-- meta tags -->
-                <div class="one-third">
-                    <label> Type(s) </label>
-
-                    <v-flex v-for="(item, index) in eventTypes" :key="index"  @mouseover="editable.typeIndex = index" @mouseleave="editable.typeIndex = null">
-                        <div>
-                            {{item}}
-                            <span class="row-actions" v-show="editable.typeIndex == index">
-                                <a @click="deleteType(index)">delete</a>
-                            </span>
+                        <div class="quarter-width">
+                            <label>Operator</label>
+                            --
                         </div>
-                    </v-flex>
-                    <div v-if="newType">
-                        <v-flex>
-                            <v-select class="one-half" v-model="newType.type" label="type" :items="allEventTypes"></v-select>
-                            <v-select class="one-half" label="sub-type" v-if="subTypeSelect"
-                                v-model="newType.subtype"
-                                :items="subTypes[newType.type]">
-                            </v-select>
-                        </v-flex>
-                        <v-text-field class="inverse" solo v-if="newType.type == 'other' || (subTypeSelect && newType.subtype == 'other') " placeholder="specify" v-model="newType.specify"></v-text-field>
                     </div>
-                    <a v-if="!newType" class="form-actions" @click="addType()">Add type</a>
-                    <div v-else>
-                        <v-flex class="row-actions" xs12>
-                            <a @click="submitType()">confirm</a>
-                            <a @click="clearType()">cancel</a>
-                        </v-flex>
+                    <div class="quarter-width">
+                      <label>Type(s)</label>
+                      <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
+                      <!-- TODO: add pairing icon + clickable taglink -->
                     </div>
-                </div>
-                <div class="one-third">
-                    <label> Status </label>
-                    <v-select v-model="eventMetadata.event_status" :items="statuses">
-                        <template slot="selection" slot-scope="data">
-                            <span :class="data.item.value">{{data.item.text}}</span>
-                        </template>
-                        <template slot="item" slot-scope="data">
-                            <span :class="data.item.value">{{data.item.text}}</span>
-                        </template>
-                    </v-select>
-                </div>
-
-                <div class="one-third" id="eventAreas">
-                    <label> Area(s) </label>
-                    <div v-if="inEditArea">
-                        <v-text-field v-if="inEditArea.address" v-model="inEditArea.address" disabled></v-text-field>
-                        <vue-google-autocomplete  v-else ref="address" id="areaMap" types="" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
-                        <label>Severity </label>
-                        <v-slider v-model="inEditArea.severity.scale" :tick-labels="severityLabels" :min="1" :max="3" step="1" ticks="always" tick-size="1" ></v-slider>
-                        <v-textarea solo label="analysis" class="inverse" v-model="inEditArea.severity.description"></v-textarea>
-                        <span class="row-actions">
-                            <a @click="submitArea()">confirm</a>
-                            <a @click="clearArea()">cancel</a>
-                        </span>
+                    <div class="quarter-width">
+                      <label>Status</label>
+                      <span :class="eventMetadata.event_status.toLowerCase() + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
                     </div>
-                    <div v-else-if="!inEditArea && eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas" @mouseover="editable.areaIndex = index" @mouseleave="editable.areaIndex = null">
-                        <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
-                        <span v-else> {{area.country}} </span>
-
-                        <span class="severity-wrapper">
-                            <span class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
-                                <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{ allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
+                    <div class="one-half">
+                        <label>Areas</label>
+                        <v-flex v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" :key="index">
+                            <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
+                            <span v-else>{{area.country}}</span>
+                            <div class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
+                                <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
                                 <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
-                            </span>
-                        </span>
+                            </div>
+                        </v-flex>
+                        <div v-if="!eventMetadata.severity_measures" class="sub-tag">
+                            <span v-if="eventMetadata.severity_scale" :class="allSeverity[eventMetadata.severity_scale-1].text +'Severity'">{{allSeverity[eventMetadata.severity_scale-1].text}} severity</span>
+                            <span class="notes"><br/> {{ eventMetadata.severity }} </span>
+                        </div>
+                    </div>
+                    <hr class="row-divider"/>
+                    <!-- Temporal row -->
 
-                        <span class="row-actions" v-show="editable.areaIndex == index">
-                            <a @click="editArea(area, eventMetadata.severity_measures[index], index)">edit</a>
-                            <a @click="deleteArea(index)">delete</a>
-                        </span>
+                    <div class="one-third">
+                        <label>OPEN DATE</label>
+                        {{ eventCreatedAt | relativeTime }}
+                    </div>
+                    <div class="one-third">
+                        <label>Local Date/Time</label>
+                        {{eventMetadata.event_local_time | fullDate }}
+                    </div>
+                    <div class="one-third">
+                        <label>Mission Contact Person</label>
+                        <div v-if="eventMetadata.incharge_name"> {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
+                        <div v-else> -- </div>
                     </div>
 
-                    <a v-if="!inEditArea" class="form-actions" @click="addArea()">Add area</a>
-                    <!-- <new-map-entry></new-map-entry> -->
-                </div>
-                <hr class="row-divider"/>
-                <div class="not-editable one-third">
-                    <label> OPEN DATE  </label>
-                    {{ eventCreatedAt | fullDate }}
-                </div>
-
-                <div class="one-third">
-                    <label>Local Date/Time </label>
-
-                    <div class="datepicker-container">
-                        <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                            <v-text-field slot="activator" v-model="eventDate" persistent-hint type="date"></v-text-field>
-                            <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
-                        </v-menu>
+                    <hr class="row-divider"/>
+                    <div class="full-width">
+                        <label>Description</label>
+                        {{eventMetadata.description }}
                     </div>
-                    <div class="timepicker-container">
-                        <v-menu ref="menu" :close-on-content-click="false" v-model="timeSelected" :nudge-right="40" :return-value.sync="eventTime" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                            <v-text-field slot="activator" time v-model="eventTime" type="time"></v-text-field>
-                            <v-time-picker v-if="timeSelected" v-model="eventTime" event-color="black" color="grey lighten-1" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
-                        </v-menu>
-                    </div>
-                </div>
+                    <hr class="row-divider"/>
 
-                <div class="one-third">
-                    <label> Mission Contact Person  </label>
-                    <v-text-field v-model="eventMetadata.incharge_name" placeholder="Name" />
-                    <v-text-field v-model="eventMetadata.incharge_position" placeholder="Position" />
-                </div>
-                <hr class="row-divider"/>
-                <v-layout row wrap>
-                    <v-flex xs6 style="display: inline-block;">
-                    <label> Description </label>
-                        <v-textarea solo auto-grow id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
-                    </v-flex>
-                    <v-flex xs6 style="display: inline-block;">
-                        <label>PREVIEW</label>
-                        <div class="markdown-fields" v-html="mdRender(eventMetadata.description)"></div>
-                    </v-flex>
+                    <sharepoint-link v-if="eventMetadata.sharepoint_link" :link="eventMetadata.sharepoint_link"></sharepoint-link>
                 </v-layout>
-                <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
-                <hr class="row-divider"/>
-                <v-text-field clearable prepend-icon="link" label="SharePoint Link" v-model="eventMetadata.sharepoint_link" round ></v-text-field>
-            </v-layout>
-        </div>
+                <v-layout row wrap v-else>
+                    <v-flex xs3>
+                        <markdown-panel class="sidePanel" v-if="showMarkdown"></markdown-panel>
+                    </v-flex>
+                    <div class="top-level primary-text">
+                        <div class="one-half">
+                            <label>Name</label>
+                            <input class="full-width" type="text" v-model="eventMetadata.name" placeholder="Event name" />
+                        </div>
 
-        <div class="map-annotation">
-            <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="eventMetadata.areas[0]"></map-annotation>
-        </div>
-    </v-container>
+                        <div class="quarter-width">
+                            <label>REACH Operator</label>
+                            {{ eventProperties.operator }}
+                        </div>
+                    </div>
+
+                    <!-- meta tags -->
+                    <div class="one-third">
+                        <label> Type(s) </label>
+
+                        <v-flex v-for="(item, index) in eventTypes" :key="index"  @mouseover="editable.typeIndex = index" @mouseleave="editable.typeIndex = null">
+                            <div>
+                                {{item}}
+                                <span class="row-actions" v-show="editable.typeIndex == index">
+                                    <a @click="deleteType(index)">delete</a>
+                                </span>
+                            </div>
+                        </v-flex>
+                        <div v-if="newType">
+                            <v-flex>
+                                <v-select class="one-half" v-model="newType.type" label="type" :items="allEventTypes"></v-select>
+                                <v-select class="one-half" label="sub-type" v-if="subTypeSelect"
+                                    v-model="newType.subtype"
+                                    :items="subTypes[newType.type]">
+                                </v-select>
+                            </v-flex>
+                            <v-text-field class="inverse" solo v-if="newType.type == 'other' || (subTypeSelect && newType.subtype == 'other') " placeholder="specify" v-model="newType.specify"></v-text-field>
+                        </div>
+                        <a v-if="!newType" class="form-actions" @click="addType()">Add type</a>
+                        <div v-else>
+                            <v-flex class="row-actions" xs12>
+                                <a @click="submitType()">confirm</a>
+                                <a @click="clearType()">cancel</a>
+                            </v-flex>
+                        </div>
+                    </div>
+                    <div class="one-third">
+                        <label> Status </label>
+                        <v-select v-model="eventMetadata.event_status" :items="statuses">
+                            <template slot="selection" slot-scope="data">
+                                <span :class="data.item.value">{{data.item.text}}</span>
+                            </template>
+                            <template slot="item" slot-scope="data">
+                                <span :class="data.item.value">{{data.item.text}}</span>
+                            </template>
+                        </v-select>
+                    </div>
+
+                    <div class="one-third" id="eventAreas">
+                        <label> Area(s) </label>
+                        <div v-if="inEditArea">
+                            <v-text-field v-if="inEditArea.address" v-model="inEditArea.address" disabled></v-text-field>
+                            <vue-google-autocomplete  v-else ref="address" id="areaMap" types="" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
+                            <label>Severity </label>
+                            <v-slider v-model="inEditArea.severity.scale" :tick-labels="severityLabels" :min="1" :max="3" step="1" ticks="always" tick-size="1" ></v-slider>
+                            <v-textarea solo label="analysis" class="inverse" v-model="inEditArea.severity.description"></v-textarea>
+                            <span class="row-actions">
+                                <a @click="submitArea()">confirm</a>
+                                <a @click="clearArea()">cancel</a>
+                            </span>
+                        </div>
+                        <div v-else-if="!inEditArea && eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas" @mouseover="editable.areaIndex = index" @mouseleave="editable.areaIndex = null">
+                            <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
+                            <span v-else> {{area.country}} </span>
+
+                            <span class="severity-wrapper">
+                                <span class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
+                                    <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{ allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
+                                    <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
+                                </span>
+                            </span>
+
+                            <span class="row-actions" v-show="editable.areaIndex == index">
+                                <a @click="editArea(area, eventMetadata.severity_measures[index], index)">edit</a>
+                                <a @click="deleteArea(index)">delete</a>
+                            </span>
+                        </div>
+
+                        <a v-if="!inEditArea" class="form-actions" @click="addArea()">Add area</a>
+                        <!-- <new-map-entry></new-map-entry> -->
+                    </div>
+                    <hr class="row-divider"/>
+                    <div class="not-editable one-third">
+                        <label> OPEN DATE  </label>
+                        {{ eventCreatedAt | fullDate }}
+                    </div>
+
+                    <div class="one-third">
+                        <label>Local Date/Time </label>
+
+                        <div class="datepicker-container">
+                            <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                <v-text-field slot="activator" v-model="eventDate" persistent-hint type="date"></v-text-field>
+                                <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
+                            </v-menu>
+                        </div>
+                        <div class="timepicker-container">
+                            <v-menu ref="menu" :close-on-content-click="false" v-model="timeSelected" :nudge-right="40" :return-value.sync="eventTime" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                <v-text-field slot="activator" time v-model="eventTime" type="time"></v-text-field>
+                                <v-time-picker v-if="timeSelected" v-model="eventTime" event-color="black" color="grey lighten-1" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
+                            </v-menu>
+                        </div>
+                    </div>
+
+                    <div class="one-third">
+                        <label> Mission Contact Person  </label>
+                        <v-text-field v-model="eventMetadata.incharge_name" placeholder="Name" />
+                        <v-text-field v-model="eventMetadata.incharge_position" placeholder="Position" />
+                    </div>
+                    <hr class="row-divider"/>
+                    <v-layout row wrap>
+                        <v-flex xs6 style="display: inline-block;">
+                        <label> Description </label>
+                            <v-textarea solo auto-grow id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
+                        </v-flex>
+                        <v-flex xs6 style="display: inline-block;">
+                            <label>PREVIEW</label>
+                            <div class="markdown-fields" v-html="mdRender(eventMetadata.description)"></div>
+                        </v-flex>
+                    </v-layout>
+                    <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
+                    <hr class="row-divider"/>
+                    <v-text-field clearable prepend-icon="link" label="SharePoint Link" v-model="eventMetadata.sharepoint_link" round ></v-text-field>
+                </v-layout>
+            </div>
+        </v-flex>
+        <v-flex xs4>
+            <div class="map-annotation">
+                <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="eventMetadata.areas[0]"></map-annotation>
+            </div>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>

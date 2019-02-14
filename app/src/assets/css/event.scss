@@ -13,6 +13,34 @@ textarea#sharepoint{
     top: 40px;
     padding: 0;
 }
+@media only screen and (min-width: 960px){
+    .event-page.container {
+        max-width: 780px;
+    }
+}
+@media only screen and (min-width: 1264px){
+    .event-page.container {
+        max-width: 955px;
+    }
+}
+
+@media only screen and (min-width: 1360px){
+    .event-page.container {
+        max-width: 1035px;
+    }
+}
+
+@media only screen and (min-width: 1600px){
+    .event-page.container {
+        max-width: 1205px;
+    }
+}
+
+@media only screen and(min-width: 1920px){
+    .event-page.container{
+        max-width: 1435px;
+    }
+}
 .detail-section{
     background: $bg-space-grey;
 }
