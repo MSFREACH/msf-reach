@@ -219,6 +219,12 @@ export const UtilService = {
         };
         return ApiService.query('utils/uploadurl', {params: params});
     },
+    getDownload(url){
+        const params = {
+            url: url
+        };
+        return ApiService.query('utils/downloadurl', {params: params});
+    },
     signedUpdate(params){
         return axios.put(params.url, [params.file], {
             withCredentials: false,

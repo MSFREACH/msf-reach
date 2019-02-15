@@ -56,6 +56,32 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         });
 
     });
+    // get a sign s3 download url
+    api.get('/downloadurl', cacheResponse('1 minute'), validate({
+        query: {
+            url: Joi.string().required()
+        }
+    }), (req, res, next) => {
+        var tmpKey = req.query.url.split('amazonaws.com/')[1];
+        let s3params = {
+            Bucket: config.AWS_S3_BUCKETNAME,
+            Key: tmpKey,
+            Expires: 300
+        };
+        s3.getSignedUrl('getObject', s3params, (err, data) => {
+            if (err){
+                logger.error('could not get signed url from S3');
+                logger.error(err);
+                next(err);
+            } else {
+                var returnData = {
+                    url : data
+                };
+                res.send(returnData);
+            }
+        });
+
+    });
 
     // update report with AI image labels
     api.post('/updateimagelabels',(req,res,next)=>{

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { UtilService } from '@/common/api.service';
-import { FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER } from './actions.type';
-import { FETCH_URL_START, FETCH_UPLOAD_URL_END, UPLOAD_START, UPLOAD_END, FETCH_GEOJSON_POLYGON_END, FETCH_REVERSE_GEOCODER_END} from './mutations.type';
+import { FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL, FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER } from './actions.type';
+import { FETCH_URL_START, FETCH_UPLOAD_URL_END, FETCH_DOWNLOAD_URL_END,  UPLOAD_START, UPLOAD_END, FETCH_GEOJSON_POLYGON_END, FETCH_REVERSE_GEOCODER_END} from './mutations.type';
 
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
@@ -12,7 +12,8 @@ const state = {
     isRequestingSignedUrl: false,
     isUploadingImage: false,
     geoPolygon: {},
-    reverseGeojson: {}
+    reverseGeojson: {},
+    downloadUrl: null
 };
 
 const getters = {
@@ -46,6 +47,14 @@ const actions = {
         return UtilService.signedUpdate(params)
             .then(({ data }) =>{
                 commit(UPLOAD_END, data);
+                return data;
+            });
+    },
+    [FETCH_DOWNLOAD_URL]({commit}, params){
+        commit(FETCH_URL_START);
+        return UtilService.getDownload(params)
+            .then(({ data }) =>{
+                commit(FETCH_DOWNLOAD_URL_END, data);
                 return data;
             });
     },
@@ -85,6 +94,9 @@ const mutations = {
     [FETCH_UPLOAD_URL_END] (state, result){
         state.isRequestingSignedUrl = false;
         state.requestData = result;
+    },
+    [FETCH_DOWNLOAD_URL_END](state, result){
+        state.downloadUrl = result;
     },
     [FETCH_GEOJSON_POLYGON_END] (state, result){
         var polygon = _.find(result, function(o) { return (o.geojson.type == 'Polygon' || ( o.geojson.type =='MultiPolygon') ); });

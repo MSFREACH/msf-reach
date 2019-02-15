@@ -226,7 +226,6 @@ export default {
 
         },
         deleteResponse(){
-            console.log(' delete ---- ', this.editResponse.id);
             this.$store.dispatch(DELETE_MSF_RESPONSE, parseInt(this.editResponse.id));
         }
     },

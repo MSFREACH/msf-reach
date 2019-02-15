@@ -67,7 +67,7 @@
                 </v-flex>
                 <v-flex xs12 v-else>
                     <h1>{{displayFile.metadata.name}}</h1>
-                    <embed :src="displayFile.metadata.url" width="100%" height="100%"></embed>
+                    <img :src="downloadUrl" width="100%" height="100%" ></img>
                 </v-flex>
             </v-layout>
         </v-layout>
@@ -80,7 +80,7 @@
 
 import $ from 'jquery';
 import { mapGetters } from 'vuex';
-import { FETCH_EVENT, FETCH_COUNTRY_DETAILS, CREATE_COUNTRY_DETAILS, EDIT_COUNTRY_DETAILS, DELETE_COUNTRY_DETAILS, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { FETCH_EVENT, FETCH_COUNTRY_DETAILS, CREATE_COUNTRY_DETAILS, EDIT_COUNTRY_DETAILS, DELETE_COUNTRY_DETAILS, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL, DOWNLOAD_OBJECT } from '@/store/actions.type';
 import { OPERATIONAL_CENTERS } from '@/common/response-fields';
 import { DEFAULT_COUNTRY_DETAILS_ROW, CD_DEFAULT_VIEW, CD_DETAILS_TYPES, CD_DETAILS_CATEGORIES } from '@/common/country-details-fields';
 import ISO2GEC from '@/common/iso2gec_countryCodes.json';
@@ -115,7 +115,8 @@ export default {
             details: DEFAULT_COUNTRY_DETAILS_ROW,
             readyToUpload: false,
             previewFileUrl: null,
-            displayFile: {}
+            displayFile: {},
+            downloadUrl: null
         }
     },
     computed: {
@@ -244,8 +245,12 @@ export default {
             }, 300);
         },
         showFile(file){
-            this.displayFile = file;
-            this.selectedView = 'fileView';
+            this.$store.dispatch(FETCH_DOWNLOAD_URL, file.metadata.url).then((data) => {
+                this.displayFile = file;
+                this.downloadUrl =  data.url;
+                this.selectedView = 'fileView';
+            });
+
         }
     }
 
