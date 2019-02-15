@@ -21,7 +21,17 @@ ul{
         }
     }
 }
+.activeText{
+    color: $color-active !important;
+}
 
+.activeBtn{
+    color: #fff !important;
+    background: $color-active !important;
+}
+.clickable{
+    cursor: pointer;
+}
 .action-link{
     padding: 28px;
 }
@@ -160,12 +170,21 @@ ul{
     margin: 80px 30px;
     padding: 0;
     // max-width: 100%;
+    embed,
+    img,
     iframe{
         border: solid 3px #0374C7;
         border-radius: 30px;
-        margin-left: 21px;
     }
-
+    img{
+        width: 80%;
+        height: 100%;
+        margin: auto;
+    }
+    .fileHeader{
+        color: $color-active;
+        font-size: 30px;
+    }
 }
 .CD-drawer {
     .v-list__tile__title{

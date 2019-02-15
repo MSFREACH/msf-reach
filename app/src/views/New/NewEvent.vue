@@ -113,6 +113,19 @@
                               <v-flex xs6 style="display: inline-block;">
                               <label> Description </label>
                                   <v-textarea auto-grow id="eventDescription" v-model="metadata.description" placeholder="* supports markdown text formatting"> </v-textarea>
+                                  <v-flex xs12 sm6 class="py-2">
+                                      <v-btn-toggle v-model="toggle_text_format">
+                                          <v-btn flat>
+                                              <v-icon @click="formatText('bold')" value="bold">format_bold</v-icon>
+                                          </v-btn>
+                                          <v-btn flat>
+                                              <v-icon @click="formatText('italic')" value="italic">format_italic</v-icon>
+                                          </v-btn>
+                                          <v-btn flat>
+                                              <v-icon  @click="formatText('size')" value="title">format_size</v-icon>
+                                          </v-btn>
+                                      </v-btn-toggle>
+                                  </v-flex>
                               </v-flex>
                               <v-flex xs6 style="display: inline-block;">
                                   <label>PREVIEW</label>
@@ -144,6 +157,7 @@
 /*eslint no-console: off*/
 import marked from 'marked';
 import { mapGetters } from 'vuex';
+import $ from 'jquery';
 import { EVENT_TYPES,
     DEFAULT_EVENT_TYPE,
     DISEASE_OUTBREAK_TYPES,
@@ -186,7 +200,8 @@ export default {
         defaultMetadata: DEFAULT_EVENT_METADATA,
         metadata: DEFAULT_EVENT_METADATA,
         inProgress: false,
-        toggle_format: [0, 1]
+        toggle_format: [0, 1],
+        toggle_text_format: null
     }),
     components:{
         MapInput, MarkdownPanel
@@ -313,9 +328,45 @@ export default {
             if (!date) return null;
             const [month, day, year] = date.split('/');
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        },
+        formatText(type){
+            var cursorStart = getCursorPosStart();
+            var cursorEnd = getCursorPosEnd();
+            var v = this.metadata.description;
+            var txtBefore = v.substring(0,  cursorStart);
+            var txtCenter = v.substring(cursorStart,  cursorEnd);
+            if(txtCenter.length == 0){
+                txtCenter = type;
+            }
+            var txtAfter = v.substring(cursorEnd, v.length);
+            var combine;
+            switch (type) {
+                case 'bold':
+                    combine = txtBefore+' **'+txtCenter+'** '+txtAfter;
+                    break;
+                case 'italic':
+                    combine = txtBefore+' *'+txtCenter+'* '+txtAfter;
+                    break;
+                case 'size':
+                    combine = txtBefore+' \n\r# '+txtCenter+'\n\r'+txtAfter;
+                    break;
+                default:
+                    combine = v;
+                    break;
+            }
+
+            this.metadata.description = combine;
+
         }
     }
 };
+
+function getCursorPosStart(){
+    return $('#eventDescription')[0].selectionStart;
+}
+function getCursorPosEnd(){
+    return $('#eventDescription')[0].selectionEnd;
+}
 </script>
 
 <style lang="scss">

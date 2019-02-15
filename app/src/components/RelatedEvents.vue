@@ -6,12 +6,10 @@
               v-model="filterByType"
               label="Similar type of events"
             ></v-select>
-            <v-btn rounded flat @click="searchInProximity">Regional Proximity</v-btn>
+            <v-btn rounded flat @click="searchInProximity" :class="showMap ? 'activeBtn': ''">Regional Proximity</v-btn>
         </div>
         <v-layout row wrap v-if="showMap">
-            <!-- {{relatedEventsGeoJson}} -->
             <v-card class="mapSection">
-
                 <map-annotation  mapId="relatedEventsAnnotation" :coordinates="eventCoordinates"></map-annotation>
             </v-card>
         </v-layout>

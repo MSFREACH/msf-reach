@@ -27,7 +27,31 @@
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>Notification</label>
-                            <v-textarea class="editTextArea" :solo="editIndex != -1" label="description" value="" auto-grow background-color="white" color="secondary" v-model="editedItem.description"></v-textarea>
+                            <v-textarea class="editTextArea"
+                                id="descriptionField" ref="descriptionField"
+                                :solo="editIndex != -1" label="description"
+                                v-model="editedItem.description"
+                                auto-grow background-color="white" color="secondary"></v-textarea>
+                                <!-- :value.prop="editedItem.description" -->
+                            <v-flex xs12 sm6 class="py-2">
+                                <v-btn-toggle v-model="toggle_format">
+                                    <v-btn flat>
+                                        <v-icon @click="formatText('bold')" value="bold">format_bold</v-icon>
+                                    </v-btn>
+                                    <v-btn flat>
+                                        <v-icon @click="formatText('italic')" value="italic">format_italic</v-icon>
+                                    </v-btn>
+                                    <v-btn flat>
+                                        <v-icon  @click="formatText('size')" value="title">format_size</v-icon>
+                                    </v-btn>
+                                    <!-- <v-btn flat>
+                                        <v-icon  @click="formatText('unordered list')" value="unordered_list">format_list_bulleted</v-icon>
+                                    </v-btn>
+                                    <v-btn flat>
+                                        <v-icon  @click="formatText('order list')" value="ordered_list">format_list_numbered</v-icon>
+                                    </v-btn> -->
+                                </v-btn-toggle>
+                            </v-flex>
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>PREVIEW</label>
@@ -156,7 +180,8 @@ export default {
             ],
             request: REQUEST_STATUSES,
             previewFileUrls: [],
-            signedFileUrls: []
+            signedFileUrls: [],
+            toggle_format: null
         };
     },
     components: {
@@ -316,10 +341,45 @@ export default {
                 this.signedFileUrls = [];
                 this.editIndex = -1;
             }, 300);
+        },
+        formatText(type){
+            var cursorStart = getCursorPosStart();
+            var cursorEnd = getCursorPosEnd();
+            var v = this.editedItem.description;
+            var txtBefore = v.substring(0,  cursorStart);
+            var txtCenter = v.substring(cursorStart,  cursorEnd);
+            if(txtCenter.length == 0){
+                txtCenter = type;
+            }
+            var txtAfter = v.substring(cursorEnd, v.length);
+            var combine;
+            switch (type) {
+                case 'bold':
+                    combine = txtBefore+' **'+txtCenter+'** '+txtAfter;
+                    break;
+                case 'italic':
+                    combine = txtBefore+' *'+txtCenter+'* '+txtAfter;
+                    break;
+                case 'size':
+                    combine = txtBefore+' \n\r# '+txtCenter+'\n\r'+txtAfter;
+                    break;
+                default:
+                    combine = v;
+                    break;
+            }
+
+            this.editedItem.description = combine;
+
         }
     }
 };
 
+function getCursorPosStart(){
+    return $('#descriptionField')[0].selectionStart;
+}
+function getCursorPosEnd(){
+    return $('#descriptionField')[0].selectionEnd;
+}
 </script>
 <style lang="scss">
     @import '@/assets/css/display.scss';

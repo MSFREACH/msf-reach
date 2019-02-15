@@ -1,12 +1,15 @@
 <template>
     <v-container class="relatedContent full-text-fields" app>
         <v-layout row wrap>
-            <v-navigation-drawer class="CD-drawer" width="200">
+            <v-navigation-drawer class="mt-5 CD-drawer" width="200">
                 <v-list>
+                    <label class="ml-2">Country</label>
                     <v-list-tile class="round-borders">
-                        <v-select :items="countries" v-model="selectedCountry" label="Country" item-text="country" item-value="country_code"></v-select>
+                        <v-select :items="countries" v-model="selectedCountry" item-text="country" item-value="country_code"></v-select>
                     </v-list-tile>
-                    <v-list-tile avatar @click="selectedView = defaultView">
+                    <v-list-tile>
+                    </v-list-tile>
+                    <v-list-tile class="activeText" @click="selectedView = defaultView">
                         General
                     </v-list-tile>
                     <v-list-group no-action append-icon="remove" v-for="(category, index) in sectionFields" :key="index">
@@ -14,8 +17,8 @@
                             <v-list-tile-title><label>{{category.text}}</label> </v-list-tile-title>
                         </v-list-tile>
                         <v-list-tile v-for="(item, i) in documents[category.value]" :key="i+'i'">
-                            <v-list-tile-title v-if="item.type=='link'" v-text="item.metadata.operational_center"  @click="goTo(item.metadata.url)"></v-list-tile-title>
-                            <v-list-tile-title v-if="item.type=='file'" v-text="item.metadata.name"  @click="showFile(item)"></v-list-tile-title>
+                            <v-list-tile-title class="clickable" v-if="item.type=='link'" v-text="item.metadata.operational_center"  @click="goTo(item.metadata.url)"></v-list-tile-title>
+                            <v-list-tile-title class="clickable" v-if="item.type=='file'" v-text="item.metadata.name"  @click="showFile(item)"></v-list-tile-title>
                         </v-list-tile>
                         <v-list-tile-action v-for="(type, i2) in category.inputs" :key="i2+'ii'">
                             <a class="form-actions" @click="openDetailsModal(type, category.value)">{{inputTypes[type]}}</a>
@@ -62,13 +65,19 @@
                 </v-card>
             </v-dialog>
             <v-layout row wrap>
-                <v-flex xs12 v-if="selectedView == defaultView">
+                <v-flex xs12 v-if="selectedView == defaultView" class="previewContent">
                     <iframe style="height:78vh; width:100%" :src="CIAWorldFactbookUrl"></iframe>
                 </v-flex>
-                <v-flex xs12 v-else>
-                    <h1>{{displayFile.metadata.name}}</h1>
-                    <img :src="downloadUrl" width="100%" height="100%" ></img>
-                </v-flex>
+                <v-layout class="previewContent" row wrap v-else>
+                    <v-flex xs12>
+                        <img :src="downloadUrl"></img>
+                        <v-btn id="downloadBtn" color="grey" small fab flat outline><a :href="downloadUrl" target="_blank"><v-icon>save_alt</v-icon></a></v-btn>
+                    </v-flex>
+                    <v-flex xs6>
+                        <div class="fileHeader">{{displayFile.metadata.name}}</div>
+                    </v-flex>
+                </v-layout row wrap>
+
             </v-layout>
         </v-layout>
     </v-container>
@@ -207,7 +216,6 @@ export default {
         uploadFile(file){
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
                 .then((data) => {
-                    console.log("PUT_SIGNED_REQUEST ----- success------- ", data);
                     this.save();
                 });
         },
@@ -260,4 +268,13 @@ export default {
 <style lang="scss">
     @import '@/assets/css/display.scss';
     @import '@/assets/css/edit.scss';
+    #downloadBtn{
+        position: absolute;
+        right: 2em;
+        bottom: 2em;
+    }
+    .previewContent{
+        padding: 20px;
+    }
+
 </style>
