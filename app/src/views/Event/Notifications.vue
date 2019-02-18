@@ -91,7 +91,7 @@
             <v-btn @click="addExploFindings" class="exploration" right flat v-if="showExploFindings"> add Explo findings </v-btn>
         </div>
         <v-layout v-if="displayNotifications.length > 0" row wrap>
-            <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions>
+            <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions expand>
                 <template slot="items" slot-scope="props">
                     <tr @click="props.expanded = !props.expanded" :key="props.index">
                         <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
@@ -147,7 +147,7 @@ import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import marked from 'marked';
 import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/common/common';
-import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_BUCKET_URLS } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
 // import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
@@ -181,7 +181,8 @@ export default {
             request: REQUEST_STATUSES,
             previewFileUrls: [],
             signedFileUrls: [],
-            toggle_format: null
+            toggle_format: null,
+            downloadUrls: []
         };
     },
     components: {
@@ -195,7 +196,8 @@ export default {
             'currentUser',
             'currentEventId',
             'oldEventNotifications',
-            'eventNotifications'
+            'eventNotifications',
+            'bucketUrls'
         ]),
         showExploFindings(){
             if(this.reviewFields) return this.reviewFields.indexOf('explo-findings') != -1;
@@ -219,6 +221,9 @@ export default {
         },
         eventNotifications(newVal){
             this.displayNotifications = _.map(newVal, _.clone);
+        },
+        bucketUrls(val){
+            console.log('watch value ---bucketUrls--- ', val);
         }
     },
     mounted(){
@@ -235,6 +240,7 @@ export default {
         },
         fetchEventNotifications(){
             this.$store.dispatch(FETCH_EVENT_NOTIFICATIONS, {eventId: parseInt(this.currentEventId)});
+            this.$store.dispatch(FETCH_BUCKET_URLS, `event/${this.currentEventId}/notifications/`);
         },
         mdRender(value){
             if(value) return marked(value);
@@ -265,7 +271,6 @@ export default {
         },
         processFiles(files){
             var vm = this;
-            // name, size, type;
             for(var f=0; f< files.length; f++){
                 var fileName = files[f].name;
                 var fileType = files[f].type;
@@ -285,12 +290,12 @@ export default {
         uploadFile(file){
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
                 .then((data) => {
-                    console.log("PUT_SIGNED_REQUEST ----- success------- ", data);
                     this.save();
                 });
         },
         submit(){
             var files = this.$refs.myUpload.files;
+
             if(files.length > 0 ){
                 this.processFiles(files);
             }else{

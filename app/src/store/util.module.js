@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { UtilService } from '@/common/api.service';
-import { FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL, FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER } from './actions.type';
-import { FETCH_URL_START, FETCH_UPLOAD_URL_END, FETCH_DOWNLOAD_URL_END,  UPLOAD_START, UPLOAD_END, FETCH_GEOJSON_POLYGON_END, FETCH_REVERSE_GEOCODER_END} from './mutations.type';
+import { FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL, FETCH_GEOJSON_POLYGON, FETCH_REVERSE_GEOCODER, FETCH_BUCKET_URLS } from './actions.type';
+import { FETCH_URL_START, FETCH_UPLOAD_URL_END, FETCH_DOWNLOAD_URL_END,  UPLOAD_START, UPLOAD_END, FETCH_BUCKET_URLS_START, FETCH_BUCKET_URLS_END, FETCH_GEOJSON_POLYGON_END, FETCH_REVERSE_GEOCODER_END} from './mutations.type';
 
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
@@ -11,9 +11,11 @@ const state = {
     requestData: null,
     isRequestingSignedUrl: false,
     isUploadingImage: false,
+    isRequestingBucketUrls: false,
     geoPolygon: {},
     reverseGeojson: {},
-    downloadUrl: null
+    downloadUrl: null,
+    bucketUrls: []
 };
 
 const getters = {
@@ -25,6 +27,9 @@ const getters = {
     },
     reverseGeojson(state){
         return state.reverseGeojson;
+    },
+    bucketUrls(state){
+        return state.bucketUrls;
     }
 };
 
@@ -58,6 +63,14 @@ const actions = {
                 return data;
             });
     },
+    [FETCH_BUCKET_URLS]({commit}, params){
+        commit(FETCH_BUCKET_URLS_START);
+        return UtilService.getBucketFiles(params)
+            .then(({ data }) =>{
+                commit(FETCH_BUCKET_URLS_END, data);
+                return data;
+            });
+    },
     [FETCH_GEOJSON_POLYGON]({commit}, query){
         const params = {
             q: query,
@@ -72,7 +85,6 @@ const actions = {
     },
 
     [FETCH_REVERSE_GEOCODER]({commit}, coordinate){
-
         return UtilService.getReverseGeocoder(coordinate)
             .then(({ data }) =>{
                 commit(FETCH_REVERSE_GEOCODER_END, data);
@@ -94,6 +106,13 @@ const mutations = {
     [FETCH_UPLOAD_URL_END] (state, result){
         state.isRequestingSignedUrl = false;
         state.requestData = result;
+    },
+    [FETCH_BUCKET_URLS_START](state){
+        state.isRequestingBucketUrls = true;
+    },
+    [FETCH_BUCKET_URLS_END] (state, result){
+        state.isRequestingBucketUrls = false;
+        state.bucketUrls = result;
     },
     [FETCH_DOWNLOAD_URL_END](state, result){
         state.downloadUrl = result;

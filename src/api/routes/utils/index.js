@@ -83,6 +83,38 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
     });
 
+    // get a sign s3 folder files download url
+    api.get('/bucketFiles', cacheResponse('1 minute'), validate({
+        query: {
+            folderKey: Joi.string().required()
+        }
+    }), (req, res, next) => {
+        // expects events/265/notifcations/
+        let s3params = {
+            Bucket: config.AWS_S3_BUCKETNAME,
+            Delimiter: '/',
+            Prefix: req.query.folderKey
+        };
+
+        s3.listObjects(s3params, function(err, data){
+    		if(err){
+                logger.error('could not list bucket objects from S3');
+                logger.error(err);
+                next(err);
+    		}else{
+    			var dataList = data.Contents
+    			var urlFromDataList = dataList.map((item, index) => {
+    				if(item.Size == 0) return;
+    				var params = { Key : item.Key }
+    				return s3.getSignedUrl('getObject', params)
+    			})
+                var returnData = {
+                    urls: urlFromDataList
+                };
+    			res.send(returnData)
+    		}
+    	});
+    });
     // update report with AI image labels
     api.post('/updateimagelabels',(req,res,next)=>{
 
