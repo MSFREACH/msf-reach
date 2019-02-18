@@ -63,10 +63,41 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         }
     }), (req, res, next) => {
         var tmpKey = req.query.url.split('amazonaws.com/')[1];
+        var tmpArr  = tmpKey.split('.');
+        var extension = tmpArr[tmpArr.length-1];
+        var contentTyp;
+        switch (extension) {
+            case 'doc':
+                contentTyp ='application/msword';
+                break;
+            case 'png':
+                contentTyp = 'image/png';
+                break;
+            case 'pdf':
+                contentTyp = 'application/pdf';
+                break;
+            case 'jpg':
+            case 'jpeg':
+                contentTyp = 'image/jpeg';
+                break;
+            case 'txt':
+                contentTyp = 'text/plain';
+                break;
+            case 'xls':
+            case 'xml':
+            case 'xlsx':
+                contentTyp = 'text/xml';
+                break;
+            default:
+                contentTyp = 'text/plain';
+                break;
+        }
+
         let s3params = {
             Bucket: config.AWS_S3_BUCKETNAME,
             Key: tmpKey,
-            Expires: 300
+            Expires: 300,
+            ResponseContentType: contentTyp
         };
         s3.getSignedUrl('getObject', s3params, (err, data) => {
             if (err){
@@ -75,7 +106,8 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
                 next(err);
             } else {
                 var returnData = {
-                    url : data
+                    url : data,
+                    contentType: contentTyp
                 };
                 res.send(returnData);
             }
