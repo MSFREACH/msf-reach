@@ -70,7 +70,11 @@
                 </v-flex>
                 <v-layout class="previewContent" row wrap v-else>
                     <v-flex xs12>
-                        <img :src="downloadUrl"></img>
+                        <img v-if="fileType.indexOf('image') != -1" :src="downloadUrl"></img>
+                        <object v-else :data="downloadUrl" :type="fileType" width="100%" height="100%">
+                            <embed :src="downloadUrl" width="100%" height="100%"></embed>
+                        </object>
+
                         <v-btn id="downloadBtn" color="grey" small fab flat outline><a :href="downloadUrl" target="_blank"><v-icon>save_alt</v-icon></a></v-btn>
                     </v-flex>
                     <v-flex xs6>
@@ -125,7 +129,8 @@ export default {
             readyToUpload: false,
             previewFileUrl: null,
             displayFile: {},
-            downloadUrl: null
+            downloadUrl: null,
+            fileType: null,
         }
     },
     computed: {
@@ -256,9 +261,9 @@ export default {
             this.$store.dispatch(FETCH_DOWNLOAD_URL, file.metadata.url).then((data) => {
                 this.displayFile = file;
                 this.downloadUrl =  data.url;
+                this.fileType = data.contentType;
                 this.selectedView = 'fileView';
             });
-
         }
     }
 

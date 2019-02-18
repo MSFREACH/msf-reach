@@ -93,7 +93,7 @@
         <v-layout v-if="displayNotifications.length > 0" row wrap>
             <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions>
                 <template slot="items" slot-scope="props">
-                    <tr @click="props.expanded = !props.expanded" :key="props.index">
+                    <tr @click="showFiles(props)" :key="props.index">
                         <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
                         <td>{{ props.item.created | relativeTime  }}</td>
                         <td><span v-if="!props.item.category"> -- </span>
@@ -113,13 +113,16 @@
                         <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
                         <v-divider light></v-divider>
 
-                        <v-card v-for="(item, index) in props.item.files" :key="index" class="file-attachment" @click="previewDialog = true">
-                             <!-- <v-img :src="item" contain></v-img> -->
-                             <embed :src="item" width="100%" height="100%"></embed>
+
+                        <v-card v-for="(item, index) in props.item.signedFiles" :key="index" class="file-attachment" @click="previewDialog = true">
+                            <img v-if="item.contentType.indexOf('image') != -1" :src="item.url" width="100%" height="100%">
+                            <object v-else :data="item.url" :type="item.contentType" width="100%" height="100%">
+                                <embed :src="item.url" width="100%" height="100%"></embed>
+                            </object>
                         </v-card>
                         <v-dialog v-model="previewDialog" justify-center max-width="800px" transition="dialog-transition">
                             <v-carousel hide-controls>
-                                <v-carousel-item v-for="(item, i) in props.item.files" :key="i" :src="item"></v-carousel-item>
+                                <v-carousel-item  v-for="(item, i) in props.item.signedFiles" :key="i" :src="item.url"></v-carousel-item>
                             </v-carousel>
                         </v-dialog>
                         <v-card-actions class="text-xs-right list-actions">
@@ -147,7 +150,7 @@ import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import marked from 'marked';
 import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/common/common';
-import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
 // import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
@@ -181,7 +184,8 @@ export default {
             request: REQUEST_STATUSES,
             previewFileUrls: [],
             signedFileUrls: [],
-            toggle_format: null
+            toggle_format: null,
+            downloadUrls: []
         };
     },
     components: {
@@ -195,7 +199,8 @@ export default {
             'currentUser',
             'currentEventId',
             'oldEventNotifications',
-            'eventNotifications'
+            'eventNotifications',
+            'bucketUrls'
         ]),
         showExploFindings(){
             if(this.reviewFields) return this.reviewFields.indexOf('explo-findings') != -1;
@@ -265,7 +270,6 @@ export default {
         },
         processFiles(files){
             var vm = this;
-            // name, size, type;
             for(var f=0; f< files.length; f++){
                 var fileName = files[f].name;
                 var fileType = files[f].type;
@@ -285,12 +289,12 @@ export default {
         uploadFile(file){
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
                 .then((data) => {
-                    console.log("PUT_SIGNED_REQUEST ----- success------- ", data);
                     this.save();
                 });
         },
         submit(){
             var files = this.$refs.myUpload.files;
+
             if(files.length > 0 ){
                 this.processFiles(files);
             }else{
@@ -369,6 +373,22 @@ export default {
             }
 
             this.editedItem.description = combine;
+
+        },
+        showFiles(props){
+            var vm = this;
+            props.expanded = !props.expanded;
+            if(props.item.signedFiles) return;
+            console.log("show file ----- ",  props)
+            var signedUrls =[];
+            props.item.files.forEach(function(file){
+                console.log(' inside forEAc ---- ', file);
+                vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
+                    signedUrls.push(data);
+                    console.log(signedUrls);
+                    props.item.signedFiles = signedUrls;
+                });
+            });
 
         }
     }

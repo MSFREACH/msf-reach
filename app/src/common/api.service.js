@@ -3,6 +3,8 @@
 
 import Vue from 'vue';
 import axios from 'axios';
+import $ from 'jquery';
+
 import VueAxios from 'vue-axios';
 import JwtService from '@/common/jwt.service';
 import { API_URL } from '@/common/config';
@@ -215,7 +217,7 @@ export const UtilService = {
     getUpload(payload){
         const params = {
             key: payload.key,
-            filename: payload.filename
+            filename: payload.filename.replace(/ /g,"_")
         };
         return ApiService.query('utils/uploadurl', {params: params});
     },
@@ -225,15 +227,38 @@ export const UtilService = {
         };
         return ApiService.query('utils/downloadurl', {params: params});
     },
+    getBucketFiles(key){
+        const params = {
+            folderKey: key
+        };
+        return ApiService.query('utils/bucketFiles', {params: params});
+    },
     signedUpdate(params){
-        return axios.put(params.url, [params.file], {
-            withCredentials: false,
-            transformRequest: [(data, headers) => {
-                delete headers.common.Authorization;
-                console.log(' ---------- signedUpdate ------ ', data);
+        return $.ajax({
+            url : params.url,
+            type : 'PUT',
+            data : params.file,
+            dataType : 'text',
+            cache : false,
+            processData : false,
+            success: function(data) {
                 return data;
-            }]
+            }
         });
+
+        // return axios.put(params.url, {data: params.file}, { // CORRUPTION, axios PUT doesn't upload the file properly
+        //     dataType : 'text',
+        //     processData : false,
+        //     contentType: false,
+        //     withCredentials: false,
+        //     cache : false,
+        //     timeout: 10000,
+        //     transformRequest: [(data, headers) => {
+        //         delete headers.common.Authorization;
+        //         console.log(' ---------- signedUpdate ------ ', data);
+        //         return data;
+        //     }]
+        // });
     },
     getGeojsonPolygon(params){
         var url = 'https://nominatim.openstreetmap.org/search.php';

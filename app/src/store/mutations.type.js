@@ -24,7 +24,11 @@ export const FETCH_URL_START = 'setURLRequestLoading';
 export const FETCH_UPLOAD_URL_END = 'setRequestData';
 export const UPLOAD_START = 'setUploadInprogress';
 export const UPLOAD_END = 'setUploadDone';
-export const FETCH_DOWNLOAD_URL_END = 'setDownloadURL'; 
+export const FETCH_DOWNLOAD_URL_END = 'setDownloadURL';
+
+export const FETCH_BUCKET_URLS_START = 'setBucketUrlRequestsLoading';
+export const FETCH_BUCKET_URLS_END = 'setBucketUrlRequestData';
+
 
 export const FETCH_RESPONSES_START = 'setResponsesLoading';
 export const FETCH_RESPONSES_END = 'setResponses';

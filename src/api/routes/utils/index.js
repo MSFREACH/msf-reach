@@ -63,10 +63,42 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         }
     }), (req, res, next) => {
         var tmpKey = req.query.url.split('amazonaws.com/')[1];
+        var tmpArr  = tmpKey.split('.');
+        var extension = tmpArr[tmpArr.length-1];
+        var contentTyp;
+        switch (extension) {
+            case 'doc':
+            case 'docx':
+                contentTyp ='application/msword';
+                break;
+            case 'png':
+                contentTyp = 'image/png';
+                break;
+            case 'pdf':
+                contentTyp = 'application/pdf';
+                break;
+            case 'jpg':
+            case 'jpeg':
+                contentTyp = 'image/jpeg';
+                break;
+            case 'txt':
+                contentTyp = 'text/plain';
+                break;
+            case 'xls':
+            case 'xml':
+            case 'xlsx':
+                contentTyp = 'text/xml';
+                break;
+            default:
+                contentTyp = 'text/plain';
+                break;
+        }
+
         let s3params = {
             Bucket: config.AWS_S3_BUCKETNAME,
             Key: tmpKey,
-            Expires: 300
+            Expires: 300,
+            ResponseContentType: contentTyp
         };
         s3.getSignedUrl('getObject', s3params, (err, data) => {
             if (err){
@@ -75,7 +107,8 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
                 next(err);
             } else {
                 var returnData = {
-                    url : data
+                    url : data,
+                    contentType: contentTyp
                 };
                 res.send(returnData);
             }
@@ -83,6 +116,38 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
 
     });
 
+    // get a sign s3 folder files download url
+    api.get('/bucketFiles', cacheResponse('1 minute'), validate({
+        query: {
+            folderKey: Joi.string().required()
+        }
+    }), (req, res, next) => {
+        // expects events/265/notifcations/
+        let s3params = {
+            Bucket: config.AWS_S3_BUCKETNAME,
+            Delimiter: '/',
+            Prefix: req.query.folderKey
+        };
+
+        s3.listObjects(s3params, function(err, data){
+    		if(err){
+                logger.error('could not list bucket objects from S3');
+                logger.error(err);
+                next(err);
+    		}else{
+    			var dataList = data.Contents
+    			var urlFromDataList = dataList.map((item, index) => {
+    				if(item.Size == 0) return;
+    				var params = { Key : item.Key }
+    				return s3.getSignedUrl('getObject', params)
+    			})
+                var returnData = {
+                    urls: urlFromDataList
+                };
+    			res.send(returnData)
+    		}
+    	});
+    });
     // update report with AI image labels
     api.post('/updateimagelabels',(req,res,next)=>{
 
