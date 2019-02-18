@@ -239,7 +239,6 @@ export default {
                 var semanticAddress = _(address).omit(_.isUndefined).omit(_.isNull).value();
                 delete semanticAddress.latitude;
                 delete semanticAddress.longitude;
-                semanticAddress["region"] = semanticAddress.administrative_area_level_1 ? [semanticAddress.locality, semanticAddress.administrative_area_level_1].join(',') : semanticAddress.locality;
                 this.metadata.areas = [semanticAddress];
                 this.extractAddress();
             }

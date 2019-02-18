@@ -78,7 +78,6 @@ export default {
         },
         coordinates(newVal){
             if(newVal) {
-                console.log(newVal);
                 map.jumpTo({center: newVal});
                 if(!_.isEqual(this.reverseGeoJson.center,  newVal)){
                     this.reverseGeocode();
@@ -121,6 +120,18 @@ export default {
                 vm.geocodeResult = payload.result;
                 vm.geocodeCenter = payload.result.center;
                 vm.address = payload.result.place_name;
+                var tmp = payload.result;
+                var tmpObj = {};
+                var context = payload.result.context;
+                context.map(function(item){
+                    var id = item.id.split('.')[0];
+                    if(id == 'country') tmpObj.country_code = item.short_code;
+                    return tmpObj[id] = item.text;
+                });
+                vm.addressData = Object.assign({
+                    latitude: tmp.geometry.coordinates[1],
+                    longitude: tmp.geometry.coordinates[0]
+                }, tmpObj);
             });
 
         },
