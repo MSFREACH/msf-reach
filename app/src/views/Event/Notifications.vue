@@ -64,7 +64,7 @@
                             <form enctype="multipart/form-data">
                               <input id="fileUpload" style="display: none" ref="myUpload" type="file" accept="*/*" multiple @change="onFilePicked"/>
                               <v-icon @click='pickFile' class="file-icon"> attach_file </v-icon>
-                              <v-btn v-if="readyToUpload" label="upload" @click="processFiles" ></v-btn>
+                              <!-- <v-btn v-if="readyToUpload" label="upload" @click="processFiles" ></v-btn> -->
                             </form>
                         </v-card>
                         <v-card class="file-attachment" v-for="(item, index) in previewFileUrls" :key="index">
@@ -84,7 +84,6 @@
                     <v-progress-circular v-if="request.inProgress" :size="50" color="primary" indeterminate></v-progress-circular>
                     <v-switch v-if='editIndex != -1' label='save' @click='submit'></v-switch>
                     <v-btn v-else @click='submit' flat> add </v-btn>
-
                   </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -112,8 +111,12 @@
                     <v-card class="expanded-field" flat :key="props.index" :id="props.index">
                         <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
                         <v-divider light></v-divider>
-
-
+                        <v-card v-for="(item, index) in signFiles(props.item.files)" :key="index" class="file-attachment" @click="previewDialog = true">
+                            <img v-if="item.contentType.indexOf('image') != -1" :src="item.url" width="100%" height="100%">
+                            <object v-else :data="item.url" :type="item.contentType" width="100%" height="100%">
+                                <embed :src="item.url" width="100%" height="100%"></embed>
+                            </object>
+                        </v-card>
                         <v-card v-for="(item, index) in props.item.signedFiles" :key="index" class="file-attachment" @click="previewDialog = true">
                             <img v-if="item.contentType.indexOf('image') != -1" :src="item.url" width="100%" height="100%">
                             <object v-else :data="item.url" :type="item.contentType" width="100%" height="100%">
@@ -184,8 +187,10 @@ export default {
             request: REQUEST_STATUSES,
             previewFileUrls: [],
             signedFileUrls: [],
+            files: [],
             toggle_format: null,
-            downloadUrls: []
+            downloadUrls: [],
+            signedStatus: {}
         };
     },
     components: {
@@ -200,7 +205,8 @@ export default {
             'currentEventId',
             'oldEventNotifications',
             'eventNotifications',
-            'bucketUrls'
+            'bucketUrls',
+            'uploadingFile'
         ]),
         showExploFindings(){
             if(this.reviewFields) return this.reviewFields.indexOf('explo-findings') != -1;
@@ -270,31 +276,30 @@ export default {
         },
         processFiles(files){
             var vm = this;
-            for(var f=0; f< files.length; f++){
-                var fileName = files[f].name;
-                var fileType = files[f].type;
-                var fileSize = files[f].size;
-                var file = files[f];
-                var params = {key: ('event/'+this.currentEventId+'/notifications'), filename: fileName};
-                this.$store.dispatch(FETCH_UPLOAD_URL, params)
+            Object.keys(files).forEach(function(key){
+                var file = files[key];
+                var fileName = file.name;
+                var params = {key: ('event/'+vm.currentEventId+'/notifications'), filename: fileName};
+                vm.$store.dispatch(FETCH_UPLOAD_URL, params)
                     .then((payload) => {
                         if(payload){
                             var fileLink = payload.url;
                             vm.signedFileUrls.push(fileLink);
-                            this.uploadFile(file);
+                            vm.uploadFile(file, key);
+
                         }
                     });
-            }
+            });
         },
-        uploadFile(file){
+        uploadFile(file, index){
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
                 .then((data) => {
-                    this.save();
+                    if(index == (this.signedFileUrls.length -1)) this.save();
                 });
         },
         submit(){
+            this.request.inProgress = true;
             var files = this.$refs.myUpload.files;
-
             if(files.length > 0 ){
                 this.processFiles(files);
             }else{
@@ -302,6 +307,7 @@ export default {
             }
         },
         save(){
+
             var timeNow = new Date();
             var isEdit = (this.editIndex > -1) && this.editedItem.id;
             var action = (!!isEdit) ? EDIT_EVENT_NOTIFICATION : CREATE_EVENT_NOTIFICATION;
@@ -325,18 +331,16 @@ export default {
                 .then((payload) =>{
                     this.request.inProgress = false;
                     if(payload.status == 200){
-                        this.request.success = true;
                         this.$router.push({
                             name: 'event-notifications',
                             params: { slug: this.currentEventId}
                         });
                         setTimeout(() => this.close(), 1000);
-                    }else{
-                        this.request.failure = true;
                     }
                 });
         },
         close () {
+            this.fetchEventNotifications();
             this.dialog = false;
             this.showMarkdown = false;
             setTimeout(() => {
@@ -375,6 +379,18 @@ export default {
             this.editedItem.description = combine;
 
         },
+        signFiles(files){
+            var vm = this;
+            var signedUrls =[];
+            files.forEach(function(file){
+                console.log(' inside forEAc ---- ', file);
+                vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
+                    signedUrls.push(data);
+                    console.log(signedUrls);
+                });
+            });
+            return signedUrls;
+        }, 
         showFiles(props){
             var vm = this;
             props.expanded = !props.expanded;

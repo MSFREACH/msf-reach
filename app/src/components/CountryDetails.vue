@@ -60,6 +60,7 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
+                        <v-progress-circular v-if="uploadingFile" :indeterminate="true"></v-progress-circular>
                         <v-btn color="active" @click="submit">add</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -136,7 +137,8 @@ export default {
     computed: {
         ...mapGetters([
             'eventAreas',
-            'countryDetails'
+            'countryDetails',
+            'uploadingFile'
         ]),
         countryCodes(){
             var tmp = this.eventAreas.map(item => item.country_code);

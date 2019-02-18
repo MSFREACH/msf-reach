@@ -18,6 +18,7 @@ import { mapGetters } from 'vuex';
 import { MAPBOX_STYLES } from '@/common/map-fields';
 import { FETCH_GEOJSON_POLYGON } from '@/store/actions.type';
 import { getFeatures, getFeaturesFromArcs } from '@/lib/geojson-util';
+import { EVENT_STATUSES } from '@/common/common';
 
 var map;
 export default {
@@ -40,6 +41,7 @@ export default {
     data(){
         return{
             map: null,
+            allStatuses: EVENT_STATUSES,
             layers: [{
                 id: 0,
                 name: 'areas',
@@ -206,28 +208,32 @@ export default {
             }else{
                 var gotoCoordinates = geojsonEvents.geometries[0].coordinates;
             }
-
+            var vm = this;
             map.on('load', function () {
-                map.loadImage("/resources/new_icons/event_open.png", function(error, image){
-                    if(error) throw error;
-                    map.addImage('event-marker', image);
+                var imageId = 'event-marker';
+                var imageKey = "/resources/new_icons/event_open.png"
+                map.loadImage(imageKey, function(error, image){
+                    if(!map.hasImage(imageId)){
+                        if(error) throw error;
+                        map.addImage(imageId, image);
+                    }
                 });
 
-                map.addSource("related-events", {
-                    type: "geojson",
-                    data: {
-                        "type": "FeatureCollection",
-                        "features": relatedEventFeatureCollection
-                    },
-                    cluster: true,
-                    clusterMaxZoom: 14, // Max zoom to cluster points on
-                    clusterRadius: 50
-                });
+                var sourceId = `related-events-${vm.$route.params.slug}`;
+                if(!map.getSource(sourceId)){
+                    map.addSource(sourceId, {
+                        type: "geojson",
+                        data: {
+                            "type": "FeatureCollection",
+                            "features": relatedEventFeatureCollection
+                        }
+                    });
+                }
 
                 map.addLayer({
                     id: "related-event-epicenter",
                     type: "symbol",
-                    source: "related-events",
+                    source: sourceId,
                     layout: {
                         "icon-image": "event-marker"
                         // "icon-size": 1

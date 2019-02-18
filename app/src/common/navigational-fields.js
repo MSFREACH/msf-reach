@@ -13,7 +13,7 @@ export const EVENT_TOP_NAVIGATIONS = [
     { name: 'News Feed', component: 'placeholder'},
     { name: 'Related Contacts', component: 'placeholder'},
     { name: 'Country Details', component: 'country-details'},
-    { name: 'Related Response', component: 'related-events'}
+    { name: 'Related Events', component: 'related-events'}
 ];
 
 export const STATUS_CHANGE_STEPPERS = {

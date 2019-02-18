@@ -15,32 +15,34 @@
         </v-layout>
         <v-layout row wrap v-else>
             <v-flex  xs12 md6 v-for="(item, i) in relatedEvents" :key="i">
-                <v-card class="relatedEventCards">
-                    <div class="full-width">
-                        <label>Event</label>
-                        {{item.metadata.name}}
-                    </div>
-                    <div class="one-half">
-                        <label>OPEN</label>
-                        {{item.created_at}}
-                    </div>
-                    <div class="one-half">
-                        <label>Type</label>
-                        {{item.metadata.type}} {{item.metadata.sub_type}}
-                    </div>
-                    <div class="one-half">
-                        <label>UPDATED</label>
-                        {{item.updated_at | relativeTime }}
-                    </div>
-                    <div class="one-half">
-                        <label>Status</label>
-                        {{item.metadata.event_status}}
-                    </div>
-                    <div class="full-width">
-                        <label>Description</label>
-                        {{item.metadata.description}}
-                    </div>
-                </v-card>
+                <router-link :to="{ name: 'event-general', params:{ slug:item.id}}">
+                    <v-card class="relatedEventCards">
+                        <div class="full-width">
+                            <label>Event</label>
+                            {{item.metadata.name}}
+                        </div>
+                        <div class="one-half">
+                            <label>OPEN</label>
+                            {{item.created_at}}
+                        </div>
+                        <div class="one-half">
+                            <label>Type</label>
+                            {{item.metadata.type}} {{item.metadata.sub_type}}
+                        </div>
+                        <div class="one-half">
+                            <label>UPDATED</label>
+                            {{item.updated_at | relativeTime }}
+                        </div>
+                        <div class="one-half">
+                            <label>Status</label>
+                            {{item.metadata.event_status}}
+                        </div>
+                        <div class="full-width">
+                            <label>Description</label>
+                            {{item.metadata.description}}
+                        </div>
+                    </v-card>
+                </router-link>
             </v-flex>
         </v-layout>
 

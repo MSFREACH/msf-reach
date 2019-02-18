@@ -10,7 +10,7 @@ import { FETCH_URL_START, FETCH_UPLOAD_URL_END, FETCH_DOWNLOAD_URL_END,  UPLOAD_
 const state = {
     requestData: null,
     isRequestingSignedUrl: false,
-    isUploadingImage: false,
+    isUploadingFile: false,
     isRequestingBucketUrls: false,
     geoPolygon: {},
     reverseGeojson: {},
@@ -30,6 +30,9 @@ const getters = {
     },
     bucketUrls(state){
         return state.bucketUrls;
+    },
+    uploadingFile(state){
+        return state.isUploadingFile; 
     }
 };
 
@@ -95,10 +98,10 @@ const actions = {
 
 const mutations = {
     [UPLOAD_START](state){
-        state.isUploadingImage = true;
+        state.isUploadingFile = true;
     },
     [UPLOAD_END](state){
-        state.isUploadingImage = false;
+        state.isUploadingFile = false;
     },
     [FETCH_URL_START](state){
         state.isRequestingSignedUrl = true;

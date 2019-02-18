@@ -217,7 +217,8 @@ export const UtilService = {
     getUpload(payload){
         const params = {
             key: payload.key,
-            filename: payload.filename.replace(/ /g,'_')
+            filename: payload.filename.replace(/ /g,'_'),
+            index: payload.index
         };
         return ApiService.query('utils/uploadurl', {params: params});
     },
