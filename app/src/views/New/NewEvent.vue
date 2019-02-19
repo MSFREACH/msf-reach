@@ -33,17 +33,17 @@
                           <hr class="row-divider"/>
                           <div class="top-align">
                               <div class="one-third">
-                                  <label class="mb-4"> Type(s) </label>
+                                  <label> Type(s) </label>
 
                                   <v-flex v-for="(item, index) in metadata.types" :key="index"  @mouseover="editable.typeIndex = index" @mouseleave="editable.typeIndex = null">
-                                      <div>
+                                      <div class="mb-2">
                                           {{item}}
                                           <span class="row-actions" v-show="editable.typeIndex == index">
                                               <a @click="deleteType(index)">delete</a>
                                           </span>
                                       </div>
                                   </v-flex>
-                                  <div v-if="newType" class="newType">
+                                  <div v-if="newType" class="newType mt-4">
                                       <v-flex>
                                           <v-select class="one-half" v-model="newType.type" label="type" :items="allEventTypes"></v-select>
                                           <v-select class="one-half" label="sub-type" v-if="subTypeSelect"
@@ -442,7 +442,7 @@ function getCursorPosEnd(){
             font-size: 14px;
         }
         .one-half{
-            padding: 0; 
+            padding: 0;
         }
     }
 
