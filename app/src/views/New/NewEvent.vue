@@ -36,14 +36,14 @@
                                   <label> Type(s) </label>
 
                                   <v-flex v-for="(item, index) in metadata.types" :key="index"  @mouseover="editable.typeIndex = index" @mouseleave="editable.typeIndex = null">
-                                      <div>
+                                      <div class="mb-2">
                                           {{item}}
                                           <span class="row-actions" v-show="editable.typeIndex == index">
                                               <a @click="deleteType(index)">delete</a>
                                           </span>
                                       </div>
                                   </v-flex>
-                                  <div v-if="newType">
+                                  <div v-if="newType" class="newType mt-4">
                                       <v-flex>
                                           <v-select class="one-half" v-model="newType.type" label="type" :items="allEventTypes"></v-select>
                                           <v-select class="one-half" label="sub-type" v-if="subTypeSelect"
@@ -94,7 +94,7 @@
                                   {{ eventCreatedAt | date }}
                               </div>
                                <div class="one-third">
-                                   <label>Local Date/Time </label>
+                                   <label>DATES/HOURS OF DISASTER </label>
                                    <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                        <v-text-field slot="activator" v-model="eventDate"  persistent-hint type="date"></v-text-field>
                                        <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
@@ -432,6 +432,18 @@ function getCursorPosEnd(){
     }
     .listHeader .v-toolbar__content div{
 
+    }
+
+    .newType{
+        .v-input__control{
+            height: 25px;
+        }
+        .v-select__selection{
+            font-size: 14px;
+        }
+        .one-half{
+            padding: 0;
+        }
     }
 
 </style>

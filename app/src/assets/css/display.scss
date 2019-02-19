@@ -22,7 +22,7 @@ ul{
     }
 }
 .offsetTime{
-    color: $warning-red; 
+    color: $warning-red;
 }
 .activeText{
     color: $color-active !important;
@@ -31,6 +31,9 @@ ul{
 .activeBtn{
     color: #fff !important;
     background: $color-active !important;
+}
+.sub-tag{
+  margin-left: 8px;
 }
 .clickable{
     cursor: pointer;
@@ -253,6 +256,7 @@ ul{
 
 .quarter-width{
     width: 25%;
+    padding-top: 10px;
 }
 
 .one-third{

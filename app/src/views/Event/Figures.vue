@@ -13,7 +13,7 @@
             <div v-if="eventFigures">
                 <v-layout class="actions" v-if="allowEdit">
                     <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                    <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
+                    <span class="cancel" v-if="editing" @click="editing = false"><v-icon>close</v-icon></span>
                 </v-layout>
                 <v-layout row wrap v-if="editing" dark>
                     <label>KEY FIGURES</label>
@@ -66,31 +66,48 @@
                         {{totalServices}}
                     </div>
                     <hr class="row-divider">
-                    <v-flex xs3>
+                    <v-flex xs6>
                         <v-text-field label="Country Population" type="number" v-model="editFigures.population.total"></v-text-field>
-                    </v-flex>
-                    <v-flex xs3>
                         <v-text-field label="Affected Population" type="number" v-model="editFigures.population.impacted"></v-text-field>
                     </v-flex>
-
-                    <v-flex xs3>
-                        <v-text-field type="number" label="MORTALITY Rate" v-model="editFigures.population.mortality.rate"></v-text-field>
-                        <v-select label="Population at risk" v-model="editFigures.population.mortality.population" :items="allSelections.population"></v-select>
-                        <v-text-field v-if="editFigures.population.mortality.population == 'other'" v-model="editFigures.population.mortality.population"></v-text-field>
-                        <v-select label="Speficied Time period" v-model="editFigures.population.mortality.peroid" :items="allSelections.period"></v-select>
-                        <v-text-field v-if="editFigures.population.mortality.peroid == 'other'" v-model="editFigures.population.mortality.peroid"></v-text-field>
+                    <v-flex xs6>
                     </v-flex>
-                    <v-flex xs3>
-                        <v-text-field type="number" label="MORBIDITY Rate" v-model="editFigures.population.morbidity.rate"></v-text-field>
-                        <v-select label="Population at risk" v-model="editFigures.population.morbidity.population" :items="allSelections.population"></v-select>
-                        <v-text-field v-if="editFigures.population.morbidity.population == 'other'" v-model="editFigures.population.morbidity.population"></v-text-field>
-                        <v-select label="Speficied Time period" v-model="editFigures.population.morbidity.peroid" :items="allSelections.period"></v-select>
-                        <v-text-field v-if="editFigures.population.morbidity.peroid == 'other'" v-model="editFigures.population.morbidity.peroid"></v-text-field>
+
+                    <v-flex xs6>
+                        <div class="one-third">
+                            <label> MORTALITY Rate </label>
+                            <v-text-field type="number" v-model="editFigures.population.mortality.rate"></v-text-field>
+                        </div>
+                        <div class="one-third">
+                            <label> Population at risk </label>
+                            <v-select v-model="editFigures.population.mortality.population" :items="allSelections.population"></v-select>
+                            <v-text-field v-if="editFigures.population.mortality.population == 'other'" v-model="editFigures.population.mortality.population"></v-text-field>
+                        </div>
+                        <div class="one-third">
+                            <label> Speficied Time period </label>
+                            <v-select v-model="editFigures.population.mortality.peroid" :items="allSelections.period"></v-select>
+                            <v-text-field v-if="editFigures.population.mortality.peroid == 'other'" v-model="editFigures.population.mortality.peroid"></v-text-field>
+                        </div>
+                    </v-flex>
+                    <v-flex xs6>
+                        <div class="one-third">
+                            <label> MORBIDITY Rate </label>
+                            <v-text-field type="number" v-model="editFigures.population.morbidity.rate"></v-text-field>
+                        </div>
+                        <div class="one-third">
+                            <label> Population at risk </label>
+                            <v-select v-model="editFigures.population.morbidity.population" :items="allSelections.population"></v-select>
+                            <v-text-field v-if="editFigures.population.morbidity.population == 'other'" v-model="editFigures.population.morbidity.population"></v-text-field>
+                        </div>
+                        <div class="one-third">
+                            <label> Speficied Time period </label>
+                            <v-select v-model="editFigures.population.morbidity.peroid" :items="allSelections.period"></v-select>
+                            <v-text-field v-if="editFigures.population.morbidity.peroid == 'other'" v-model="editFigures.population.morbidity.peroid"></v-text-field>
+                        </div>
                     </v-flex>
                     <hr class="row-divider">
                     <v-flex xs8>
                         <v-select label="Collection" v-model="editFigures.satistics.collection" :items="allSelections.collectionMeans"></v-select>
-                        <v-spacer></v-spacer>
                         <v-select label="Source" v-model="editFigures.satistics.source" :items="allSelections.sources"></v-select>
                         <v-text-field v-if="editFigures.satistics.source == 'other'" v-model="editFigures.satistics.source"></v-text-field>
                     </v-flex>
@@ -243,21 +260,26 @@ export default {
         addEventFigures(){
             this.editFigures = this.defaultFigures;
         },
-        editEventFigures(){
-            this._beforeEditingCache = Object.assign({}, this.displayFigures);
-            this.editFigures = this.displayFigures;
-        },
-        cancelEdit(){
-            // return fields back to its previous state
-            Object.assign(this.displayFigures, this._beforeEditingCache);
-            this.editFigures = this._beforeEditingCache = null;
-        },
+
         save(){
             /// tricky to get the response field where status == active status
         }
     },
     watch: {
         editing(val){
+            if(val){
+                if(this.displayFigures){
+                    this._beforeEditingCache = Object.assign({}, this.displayFigures);
+                    this.editFigures = this.displayFigures;
+                }else{
+                    this._beforeEditingCache = Object.assign({}, this.defaultFigures);
+                    this.editFigures = this.defaultFigures;
+                }
+            }else{
+                Object.assign(this.displayFigures, this._beforeEditingCache);
+                this.editFigures = this._beforeEditingCache = null;
+            }
+
             if(this.reviewFields){
                 if(val) {
                     var vm = this;
@@ -299,11 +321,11 @@ export default {
         },
         totalBeneficiaries(){
             // TODO calculate total value
-            return 100;
+            return '--';
         },
         totalServices(){
             // TODO calculate cases
-            return 100;
+            return '--';
         },
         allKeyFigSubSelection(){
             var selectedCategory = this.editKeyFigure.category;

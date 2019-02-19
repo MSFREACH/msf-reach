@@ -67,31 +67,31 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         var extension = tmpArr[tmpArr.length-1];
         var contentTyp;
         switch (extension) {
-            case 'doc':
-            case 'docx':
-                contentTyp ='application/msword';
-                break;
-            case 'png':
-                contentTyp = 'image/png';
-                break;
-            case 'pdf':
-                contentTyp = 'application/pdf';
-                break;
-            case 'jpg':
-            case 'jpeg':
-                contentTyp = 'image/jpeg';
-                break;
-            case 'txt':
-                contentTyp = 'text/plain';
-                break;
-            case 'xls':
-            case 'xml':
-            case 'xlsx':
-                contentTyp = 'text/xml';
-                break;
-            default:
-                contentTyp = 'text/plain';
-                break;
+        case 'doc':
+        case 'docx':
+            contentTyp ='application/msword';
+            break;
+        case 'png':
+            contentTyp = 'image/png';
+            break;
+        case 'pdf':
+            contentTyp = 'application/pdf';
+            break;
+        case 'jpg':
+        case 'jpeg':
+            contentTyp = 'image/jpeg';
+            break;
+        case 'txt':
+            contentTyp = 'text/plain';
+            break;
+        case 'xls':
+        case 'xml':
+        case 'xlsx':
+            contentTyp = 'text/xml';
+            break;
+        default:
+            contentTyp = 'text/plain';
+            break;
         }
 
         let s3params = {
@@ -130,23 +130,23 @@ export default ({ config, db, logger }) => { // eslint-disable-line no-unused-va
         };
 
         s3.listObjects(s3params, function(err, data){
-    		if(err){
+            if(err){
                 logger.error('could not list bucket objects from S3');
                 logger.error(err);
                 next(err);
-    		}else{
-    			var dataList = data.Contents
-    			var urlFromDataList = dataList.map((item, index) => {
-    				if(item.Size == 0) return;
-    				var params = { Key : item.Key }
-    				return s3.getSignedUrl('getObject', params)
-    			})
+            }else{
+                var dataList = data.Contents;
+                var urlFromDataList = dataList.map((item) => {
+                    if(item.Size == 0) return;
+                    var params = { Key : item.Key };
+                    return s3.getSignedUrl('getObject', params);
+                });
                 var returnData = {
                     urls: urlFromDataList
                 };
-    			res.send(returnData)
-    		}
-    	});
+                res.send(returnData);
+            }
+        });
     });
     // update report with AI image labels
     api.post('/updateimagelabels',(req,res,next)=>{

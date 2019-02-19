@@ -124,12 +124,12 @@ export const POPULATION_RANGES = [
     {'value': 1000, 'text': '1,000'},
     {'value': 10000, 'text': '10,000'},
     {'value': 100000, 'text': '100,000'},
-    {'value': 'other', 'text': 'other (please specify)'},
+    {'value': 'other', 'text': 'other'},
 ];
 
 export const RISK_PERIOD = [
     {'value':'day', 'text': 'day'},
     {'value':'month', 'text': 'month'},
     {'value':'year', 'text': 'year'},
-    {'value':'other', 'text': 'other (please specify)'}
+    {'value':'other', 'text': 'other'}
 ];

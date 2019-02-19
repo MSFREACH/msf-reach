@@ -260,11 +260,11 @@ export default {
                            "circle-color": [
                                "step",
                                ["get", "point_count"],
-                               "rgba(255, 0, 0, .5)", // wine red , less than 5
+                               "rgba(3, 116, 199, .5)", // wine red , less than 5
                                5,
-                               "rgba(255, 0, 0, .5)", // standard red, between 5 and 10
+                               "rgba(3, 116, 199, .5)", // standard red, between 5 and 10
                                10,
-                               "rgba(255, 0, 0, .5)" // bright red, greater than or equal to 10
+                               "rgba(3, 116, 199, .5)" // bright red, greater than or equal to 10
                            ],
                            "circle-radius": [
                                "step",
@@ -327,10 +327,10 @@ export default {
                         maxzoom: 10,
                         filter: ["!", ["has", "point_count"]],
                         paint: {
-                            "circle-color": "rgba(255, 0, 0, .5)",
+                            "circle-color": "rgba(3, 116, 199, .5)",
                             "circle-radius": 10,
                             "circle-stroke-width": 1,
-                            "circle-stroke-color": "rgba(255, 0, 0, .5)"
+                            "circle-stroke-color": "rgba(3, 116, 199, .5)"
                         }
                     });
                 }
