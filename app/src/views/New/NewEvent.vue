@@ -343,7 +343,7 @@ export default {
         lintDateTime(){
             this.metadata.event_datetime = new Date().toISOString();
 
-            var tempDateTime = new Date(this.eventDate +' '+this.eventTime);
+            var tmpDateTime = new Date(this.eventDate +' '+this.eventTime);
             this.eventMetadata.event_local_time = tmpDateTime;
             this.eventMetadata.event_local_timezone = this.selectedTimezone;
             this.eventMetadata.event_local_timezone_abbr = this.timeZoneAbbr;

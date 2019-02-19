@@ -6,7 +6,7 @@ import Vue from 'vue';
 import { EventsService} from '@/common/api.service';
 import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT, RESET_EVENT_STATE,
     EDIT_EVENT_RESPONSES, EDIT_EVENT_EXT_CAPACITY, EDIT_EVENT_FIGURES, EDIT_EVENT_RESOURCES } from './actions.type';
-import { RESET_STATE, SET_EVENT, ADD_EVENT_EXT_CAPACITY, UPDATE_EVENT_EXT_CAPACITY } from './mutations.type';
+import { RESET_STATE, SET_EVENT, ADD_EVENT_EXT_CAPACITY, UPDATE_EVENT_EXT_CAPACITY, UPDATE_EVENT_FIGURES, UPDATE_EVENT_RESOURCES } from './mutations.type';
 
 const initialState = {
     eventId: null,
@@ -112,9 +112,14 @@ const mutations = {
             state.event.extCapacity.push(data);
         }
     },
-
     [UPDATE_EVENT_EXT_CAPACITY](state, data){
         state.event.extCapacity[data.index] = data.item;
+    },
+    [UPDATE_EVENT_FIGURES](state, data){
+        state.event.figures = data;
+    },
+    [UPDATE_EVENT_RESOURCES](state, data){
+        state.event.resources = data;
     }
 };
 

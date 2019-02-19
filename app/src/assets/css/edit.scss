@@ -162,7 +162,7 @@ textarea:focus, input:focus{
 }
 
 .delete-btn{
-    background: $bg-light !important; 
+    background: $bg-light !important;
     .v-icon{
         color: $warning-red !important;
     }
@@ -271,10 +271,17 @@ textarea{
 
 .autocomplete-fields{
     margin-top: 22px !important;
+    input{
+        position: relative !important;
+    }
     .v-select__slot{
         height: 40px;
     }
+    .v-input__control{
+        width: 100%;
+    }
     .v-input__control>.v-input__slot{
+
         background: inherit !important;
         :hover{
             background: inherit !important;

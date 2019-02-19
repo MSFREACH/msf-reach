@@ -64,9 +64,11 @@
                             </v-autocomplete>
                         </div>
                         <hr class="row-divider"/>
-                        <v-text-field ref="total-budget" label="Total Budget" type="number" v-model="editStatusResource.budget.total"></v-text-field>
-                        <v-select :items="allSelections.currencies" v-model="editStatusResource.budget.currency" item-text="currency" item-value="currency">
-                        </v-select>
+                        <div class="one-half">
+                            <v-text-field ref="total-budget" label="Total Budget" type="number" v-model="editStatusResource.budget.total"></v-text-field>
+                            <v-select :items="allSelections.currencies" v-model="editStatusResource.budget.currency" item-text="currency" item-value="currency">
+                            </v-select>
+                        </div>
                         <div class="one-half">
                             <label> Supply Chain Specificities </label>
                             <v-flex d-flex>
@@ -74,7 +76,9 @@
                             </v-flex>
                             <v-textarea solo label="description" v-model="editStatusResource.supply_chain.description" background-color="white" color="secondary"></v-textarea>
                         </div>
-                        <v-text-field ref="institutional-donors" label="Institutional Donors" v-model="editResources.institutional_donors"></v-text-field>
+                        <v-flex xs12>
+                            <v-text-field ref="institutional-donors" label="Institutional Donors" v-model="editResources.institutional_donors"></v-text-field>
+                        </v-flex>
 
                     </v-layout>
                     <v-layout row wrap v-else>
@@ -154,7 +158,8 @@
 /*eslint no-unused-vars: off*/
 /*eslint no-debugger: off*/
 import { mapGetters } from 'vuex';
-// import { EDIT_EVENT } from '@/store/actions.type';
+import { EDIT_EVENT_RESOURCES } from '@/store/actions.type';
+import { UPDATE_EVENT_RESOURCES } from '@/store/mutations.type';
 import COUNTRIES from '@/common/countries.json';
 import CURRENCIES from '@/common/currency-symbols.json';
 import VACCINATION from '@/common/WHO_vaccinations.json';
@@ -174,6 +179,7 @@ export default {
             _beforeEditPerStatusCache: {},
             editResources: {},
             editStatusResource: {},
+            activeStatusIndex: null,
             requiredNationalities: [],
             autoNationality:{
                 autoUpdate: true,
@@ -228,7 +234,14 @@ export default {
             this.editing = false;
         },
         save(){
+            this.editResources.perStatus[this.activeStatusIndex] = this.editStatusResource;
+
+            this.$store.commit(UPDATE_EVENT_RESOURCES, this.editResources);
             /// tricky to get the response field where status == active status
+            this.$store.dispatch(EDIT_EVENT_RESOURCES).then((data) =>{
+                // TODO:// refresh or reload state
+            });
+
         },
         removeNationality (item) {
             const index = this.editResources.visa_requirement.indexOf(item.nationality);
@@ -278,6 +291,7 @@ export default {
             var result = this.eventResources.perStatus.filter(item =>{
                 return item.status == this.eventStatus;
             });
+            this.activeStatusIndex = this.eventResources.perStatus.indexOf(result[0]);
             return result[0];
         },
         displayStatusResources(){
