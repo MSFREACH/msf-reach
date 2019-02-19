@@ -21,6 +21,15 @@ ul{
         }
     }
 }
+
+.searchHeader{
+    .v-select__slot{
+      label{
+          top: 7px;
+      }
+    }
+}
+
 .offsetTime{
     color: $warning-red;
 }

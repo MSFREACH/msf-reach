@@ -248,6 +248,11 @@ export default {
       label{
           text-transform: capitalize;
       }
+      .v-select__slot{
+        label{
+            top: 7px;
+        }
+      }
       .v-toolbar__content{
         height: 128px;
         display: block;
