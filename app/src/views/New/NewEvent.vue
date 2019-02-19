@@ -344,9 +344,9 @@ export default {
             this.metadata.event_datetime = new Date().toISOString();
 
             var tmpDateTime = new Date(this.eventDate +' '+this.eventTime);
-            this.eventMetadata.event_local_time = tmpDateTime;
-            this.eventMetadata.event_local_timezone = this.selectedTimezone;
-            this.eventMetadata.event_local_timezone_abbr = this.timeZoneAbbr;
+            this.metadata.event_local_time = tmpDateTime;
+            this.metadata.event_local_timezone = this.selectedTimezone;
+            this.metadata.event_local_timezone_abbr = this.timeZoneAbbr;
         },
         lintStatus(){
             var timestamp = new Date();
