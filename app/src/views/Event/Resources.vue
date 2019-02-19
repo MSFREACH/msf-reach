@@ -225,6 +225,7 @@ export default {
 
             this.editResources = this._beforeEditingCache = null;
             this.editStatusResource = this._beforeEditPerStatusCache = null;
+            this.editing = false;
         },
         save(){
             /// tricky to get the response field where status == active status
