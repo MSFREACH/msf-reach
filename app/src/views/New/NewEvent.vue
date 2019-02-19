@@ -94,7 +94,7 @@
                                   {{ eventCreatedAt | date }}
                               </div>
                                <div class="one-third">
-                                   <label>Local Date/Time </label>
+                                   <label>DATES/HOURS OF DISASTER </label>
                                    <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
                                        <v-text-field slot="activator" v-model="eventDate"  persistent-hint type="date"></v-text-field>
                                        <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>

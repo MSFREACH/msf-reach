@@ -50,7 +50,7 @@
                         {{ eventCreatedAt | relativeTime }}
                     </div>
                     <div class="one-third">
-                        <label>Local Date/Time</label>
+                        <label>DATES/HOURS OF DISASTER</label>
                         {{eventMetadata.event_local_time | dateTime}}
                         <div class="specified-text"> {{eventMetadata.event_local_timezone }} ({{eventMetadata.event_local_timezone_abbr}}) <span class="offsetTime">{{timezoneOffSet}} hours</span></div>
                     </div>
@@ -167,7 +167,7 @@
                     </div>
 
                     <div class="one-third">
-                        <label>Local Date/Time </label>
+                        <label>DATES/HOURS OF DISASTER </label>
 
                         <div class="datepicker-container">
                             <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
