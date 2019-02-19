@@ -52,7 +52,7 @@
                     <div class="one-third">
                         <label>DATES/HOURS OF DISASTER</label>
                         {{eventMetadata.event_local_time | dateTime}}
-                        <div class="specified-text"> {{eventMetadata.event_local_timezone }} ({{eventMetadata.event_local_timezone_abbr}}) <span class="offsetTime">{{timezoneOffSet}} hours</span></div>
+                        <div class="specified-text" v-if="eventMetadata.event_local_time"> {{eventMetadata.event_local_timezone }} ({{eventMetadata.event_local_timezone_abbr}}) <span class="offsetTime">{{timezoneOffSet}} hours</span></div>
                     </div>
                     <div class="one-third">
                         <label>Mission Contact Person</label>
