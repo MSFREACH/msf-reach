@@ -90,16 +90,24 @@
                           <hr class="row-divider"/>
                           <div class="top-align">
                               <div class="one-third">
-                                  <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                      <v-text-field slot="activator" v-model="eventDate" label="Event Date" hint="MM/DD/YYYY format" persistent-hint type="date"></v-text-field>
-                                      <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
-                                  </v-menu>
+                                  <label> OPEN DATE  </label>
+                                  {{ eventCreatedAt | date }}
                               </div>
-                              <div class="one-third">
+                               <div class="one-third">
+                                   <label>Local Date/Time </label>
+                                   <v-menu ref="dateSelected" :close-on-content-click="false" v-model="dateSelected" :nudge-right="40" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
+                                       <v-text-field slot="activator" v-model="eventDate"  persistent-hint type="date"></v-text-field>
+                                       <v-date-picker v-model="eventDate" no-title @input="dateSelected = false"></v-date-picker>
+                                   </v-menu>
                                   <v-menu ref="menu" :close-on-content-click="false" v-model="timeSelected" :nudge-right="40" :return-value.sync="eventTime" lazy transition="scale-transition" offset-y full-width max-width="290px" min-width="290px">
-                                      <v-text-field slot="activator" time v-model="eventTime" label="Local event time" type="time"></v-text-field>
+                                      <v-text-field slot="activator" time v-model="eventTime"  type="time"></v-text-field>
                                       <v-time-picker v-if="timeSelected" v-model="eventTime" event-color="black" color="grey lighten-1" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
                                   </v-menu>
+
+                                  <div class="timezonepicker-container" id="timezonePicker">
+                                      <v-select  :items="timezones" v-model="selectedTimezone" label="Timezone"></v-select>
+                                  </div>
+                                  {{timeZoneAbbr}}
                               </div>
                               <div class="one-third">
                                   <label> Mission Contact Person </label>
@@ -170,7 +178,7 @@ import { DEFAULT_EVENT_METADATA } from '@/common/form-fields';
 import { CREATE_EVENT } from '@/store/actions.type';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import MapInput from '@/views/Map/MapInput.vue';
-// import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
+import moment from 'moment-timezone';
 import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 
 export default {
@@ -197,6 +205,8 @@ export default {
         eventTime: null,
         dateSelected: false,
         timeSelected: false,
+        selectedTimezone: null,
+        timeZoneAbbr: null,
         defaultMetadata: DEFAULT_EVENT_METADATA,
         metadata: DEFAULT_EVENT_METADATA,
         inProgress: false,
@@ -218,6 +228,18 @@ export default {
         },
         subTypeSelect(){
             return this.newType.type == 'disease_outbreak' || this.newType.type == 'natural_disaster';
+        },
+        timezones(){
+            return moment.tz.names();
+        },
+        timezoneOffSet(){
+            var m = moment.tz(this.eventMetadata.event_local_time, this.eventMetadata.event_local_timezone);
+            var mm = m.format();
+            var testString = mm.substring(19, 22);
+            return testString;
+        },
+        eventCreatedAt(){
+            return new Date();
         }
     },
 
@@ -229,6 +251,7 @@ export default {
                     vm.$refs.mapEntry.resizeMap(); }, 100);
                 this.e1 = 1;
                 this.metadata = this.defaultMetadata;
+                if(!this.selectedTimezone) this.selectedTimezone = moment.tz.guess();
             }else{
                 this.showMarkdown = false;
             }
@@ -242,6 +265,10 @@ export default {
                 this.metadata.areas = [semanticAddress];
                 this.extractAddress();
             }
+        },
+        selectedTimezone(val){
+            var zoneObj = moment.tz.zone(val);
+            this.timeZoneAbbr = zoneObj.abbr(new Date());
         }
     },
     methods:{
@@ -314,8 +341,12 @@ export default {
                 });
         },
         lintDateTime(){
+            this.metadata.event_datetime = new Date().toISOString();
+
             var tempDateTime = new Date(this.eventDate +' '+this.eventTime);
-            this.metadata.event_datetime = tempDateTime.toISOString();
+            this.eventMetadata.event_local_time = tmpDateTime;
+            this.eventMetadata.event_local_timezone = this.selectedTimezone;
+            this.eventMetadata.event_local_timezone_abbr = this.timeZoneAbbr;
         },
         lintStatus(){
             var timestamp = new Date();

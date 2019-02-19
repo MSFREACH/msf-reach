@@ -18,11 +18,16 @@ export default {
             return 'N/A';
         }
     },
+    localTimezone(value){
+        if(value){
+            return moment(value).format('YYYY-MM-DD HH:mm ZZ');
+        }
+    },
     dayMonth(value){
         if(value){
             return moment(value).format('DD MMM');
         }
-    }, 
+    },
     relativeTime(value){
         return moment(value).fromNow();
     }

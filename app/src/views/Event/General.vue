@@ -51,7 +51,8 @@
                     </div>
                     <div class="one-third">
                         <label>Local Date/Time</label>
-                        {{eventMetadata.event_local_time | fullDate }}
+                        {{eventMetadata.event_local_time | dateTime}}
+                        <div class="specified-text"> {{eventMetadata.event_local_timezone }} ({{eventMetadata.event_local_timezone_abbr}}) <span class="offsetTime">{{timezoneOffSet}} hours</span></div>
                     </div>
                     <div class="one-third">
                         <label>Mission Contact Person</label>
@@ -180,6 +181,10 @@
                                 <v-time-picker v-if="timeSelected" v-model="eventTime" event-color="black" color="grey lighten-1" format="24hr" @change="$refs.menu.save(eventTime)" ></v-time-picker>
                             </v-menu>
                         </div>
+                        <div class="timezonepicker-container" id="timezonePicker">
+                            <v-select  :items="timezones" v-model="selectedTimezone" label="Timezone"></v-select>
+                        </div>
+                        {{timeZoneAbbr}}
                     </div>
 
                     <div class="one-third">
@@ -220,7 +225,7 @@ import marked from 'marked';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import SharepointLink from '@/views/util/Sharepoint.vue';
 import { EDIT_EVENT } from '@/store/actions.type';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 
 /*eslint no-console: off*/
@@ -266,7 +271,8 @@ export default {
             eventTime: null,
             dateSelected: false,
             timeSelected: false,
-
+            selectedTimezone: null,
+            timeZoneAbbr: null
         };
     },
     components:{
@@ -284,6 +290,15 @@ export default {
         ]),
         subTypeSelect(){
             return this.newType.type == 'disease_outbreak' || this.newType.type == 'natural_disaster';
+        },
+        timezones(){
+            return moment.tz.names();
+        },
+        timezoneOffSet(){
+            var m = moment.tz(this.eventMetadata.event_local_time, this.eventMetadata.event_local_timezone);
+            var mm = m.format();
+            var testString = mm.substring(19, 22);
+            return testString;
         }
     },
 
@@ -308,8 +323,12 @@ export default {
             this._beforeEditingCache = null;
         },
         lintDateTime(){
-            var tempDateTime = new Date(this.eventDate +' '+this.eventTime);
-            this.eventMetadata.event_local_time = tempDateTime.toISOString();
+            var tmpDateTime = new Date(this.eventDate +' '+this.eventTime);
+
+            this.eventMetadata.event_local_time = tmpDateTime;
+            this.eventMetadata.event_local_timezone = this.selectedTimezone;
+            this.eventMetadata.event_local_timezone_abbr = this.timeZoneAbbr;
+
         },
         lintStatus(){
             // check if status changed
@@ -322,6 +341,7 @@ export default {
         save(){
             this.lintStatus();
             this.lintDateTime();
+
             this.eventMetadata.types = _.compact(this.eventMetadata.types);
             this.eventMetadata.incharge_contact.operator.name = this.currentUser.username;
             this.inProgress = true;
@@ -405,6 +425,7 @@ export default {
         editing(val){
             if(val){
                 this._beforeEditStatus = this.eventMetadata.event_status;
+                this.selectedTimezone = moment.tz.guess();
             }else{
                 this.showMarkdown = false;
                 this.save();
@@ -425,6 +446,11 @@ export default {
                 this.eventDate = moment(localDT).format("YYYY-MM-DD");
                 this.eventTime = moment(localDT).format("HH:mm");
             }
+
+        },
+        selectedTimezone(val){
+            var zoneObj = moment.tz.zone(val);
+            this.timeZoneAbbr = zoneObj.abbr(new Date());
         }
     }
 };
@@ -439,5 +465,9 @@ export default {
         height: 100% !important;
         background: #fff;
         width: 25% !important;
+    }
+    #timezonePicker{
+        width: 80%;
+        display: inline-block;
     }
 </style>

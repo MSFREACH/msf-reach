@@ -21,6 +21,9 @@ ul{
         }
     }
 }
+.offsetTime{
+    color: $warning-red; 
+}
 .activeText{
     color: $color-active !important;
 }
@@ -40,6 +43,14 @@ ul{
         .v-icon{
             color: $bg-light;
         }
+    }
+}
+.searchHeader{
+    label{
+        text-transform: capitalize;
+    }
+    .v-input__slot{
+        height: inherit;
     }
 }
 .SITREP-Container{

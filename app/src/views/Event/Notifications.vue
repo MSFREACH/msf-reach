@@ -383,22 +383,18 @@ export default {
             var vm = this;
             var signedUrls =[];
             files.forEach(function(file){
-                console.log(' inside forEAc ---- ', file);
                 vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
                     signedUrls.push(data);
-                    console.log(signedUrls);
                 });
             });
             return signedUrls;
-        }, 
+        },
         showFiles(props){
             var vm = this;
             props.expanded = !props.expanded;
             if(props.item.signedFiles) return;
-            console.log("show file ----- ",  props)
             var signedUrls =[];
             props.item.files.forEach(function(file){
-                console.log(' inside forEAc ---- ', file);
                 vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
                     signedUrls.push(data);
                     console.log(signedUrls);

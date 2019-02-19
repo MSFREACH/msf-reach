@@ -233,10 +233,21 @@ export default {
     }
     .eventListPanel{
         background: $bg-milk-grey;
+        .v-input__slot{
+            height: inherit;
+        }
+        .v-list__tile__sub-title{
+            label{
+                line-height: 22px;
+                margin-right: 12px;
+            }
+        }
     }
     .listHeader{
       height: 128px;
-
+      label{
+          text-transform: capitalize;
+      }
       .v-toolbar__content{
         height: 128px;
         display: block;

@@ -225,12 +225,11 @@ export default {
                                 "interpolate",
                                 ["linear"],
                                 ["heatmap-density"],
-                                0, "rgba(33,102,172,0)",
-                                0.2, "rgba(255,0,0, .2)",
-                                0.4, "rgba(255,0,0, .4)",
-                                0.6, "rgba(255,0,0, .6)",
-                                0.8, "rgba(255,0,0, .8)",
-                                1, "rgba(255,0,0, 1)"
+                                0, "rgba(207,210,218,.2)",
+                                0.25, "rgba(154,186,213,.4)",
+                                0.5, "rgba(104,163,208,.6)",
+                                0.75, "rgba(56,140,204,.8)",
+                                1, "rgba(3,116,199, 1)"
                             ],
                             // Adjust the heatmap radius by zoom level
                             "heatmap-radius": [
