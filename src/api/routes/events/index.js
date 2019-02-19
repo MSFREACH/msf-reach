@@ -171,6 +171,10 @@ export default ({ config, db, logger }) => {
                         timestamp: Joi.date().iso()
                     })),
                     event_datetime: Joi.string().allow(''),
+                    event_local_time: Joi.string().allow('', null),
+                    event_local_timezone: Joi.string().allow('', null),
+                    event_local_timezone_abbr: Joi.string().allow('', null),
+
                     event_status: Joi.string(),
                     incharge_contact: Joi.object().keys({
                         local: Joi.object().keys({
