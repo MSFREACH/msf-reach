@@ -65,11 +65,11 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-layout row wrap>
-                <v-flex xs12 v-if="selectedView == defaultView" class="previewContent">
+            <v-layout row wrap class="previewContent">
+                <v-flex xs12 v-if="selectedView == defaultView">
                     <iframe style="height:78vh; width:100%" :src="CIAWorldFactbookUrl"></iframe>
                 </v-flex>
-                <v-layout class="previewContent" row wrap v-else>
+                <v-layout row wrap v-else>
                     <v-flex xs12 class="previewWindow">
                         <img v-if="fileType.indexOf('image') != -1" :src="downloadUrl"></img>
                         <object v-else :data="downloadUrl" :type="fileType" width="100%" height="100%">
@@ -171,12 +171,14 @@ export default {
         }
     },
     mounted(){
-        this.$store.dispatch(FETCH_EVENT, this.$route.params.slug),
-        this.sortNavigation();
+        this.$store.dispatch(FETCH_EVENT, this.$route.params.slug);
+
     },
     methods: {
         fetchCountryDetails(){
-            this.$store.dispatch(FETCH_COUNTRY_DETAILS, {countries: this.countryCodes});
+            this.$store.dispatch(FETCH_COUNTRY_DETAILS, {countries: this.countryCodes}).then(() =>{
+                this.sortNavigation();
+            });
         },
         sortNavigation(){
             var vm = this;
@@ -287,6 +289,7 @@ export default {
     }
     .previewContent{
         padding: 20px;
+        width: calc(100% - 200px);
     }
     .previewWindow{
         height: 70vh;
