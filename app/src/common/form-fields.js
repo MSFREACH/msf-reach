@@ -106,7 +106,7 @@ export const DEFAULT_EVENT_FIGURES = {
             period: null
         }
     },
-    satistics:{
+    statistics:{
         collection: null,
         source: null
     }

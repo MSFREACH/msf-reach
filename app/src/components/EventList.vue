@@ -242,6 +242,11 @@ export default {
                 margin-right: 12px;
             }
         }
+        .v-data-iterator{
+            width: 100%;
+            overflow: auto;
+            height: 100vh;
+        }   
     }
     .listHeader{
       height: 128px;
@@ -288,11 +293,8 @@ export default {
             display: block !important;
         }
     }
-    .v-data-iterator{
-        width: 100%;
-        overflow: auto;
-        height: 100vh;
-    }
+
+
     .v-list__tile{
         padding: 8px 12px;
         border-radius: 5px;

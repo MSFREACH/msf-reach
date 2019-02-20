@@ -175,7 +175,7 @@ export default ({ config, db, logger }) => {
                     event_local_timezone: Joi.string().allow('', null),
                     event_local_timezone_abbr: Joi.string().allow('', null),
 
-                    event_status: Joi.string(),
+                    event_status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
                     incharge_contact: Joi.object().keys({
                         local: Joi.object().keys({
                             name: Joi.string().allow(''),
@@ -285,7 +285,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 figures: Joi.object().keys({
                     keyFigures: Joi.array().items(Joi.object().keys({
-                        status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+                        status: Joi.string().valid(config.API_EVENT_STATUSES).required(),
                         figures: Joi.array().items(Joi.object())
                     })),
                     population: Joi.object().allow(null),

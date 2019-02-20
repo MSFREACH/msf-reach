@@ -35,6 +35,7 @@ export default {
     API_REPORTS_TIME_WINDOW_MAX: process.env.API_REPORTS_TIME_WINDOW_MAX || 604800, // 1w
     // API_EVENTS_LIMIT: process.env.API_EVENTS_LIMIT,
     API_EVENT_STATUS_TYPES: (process.env.API_EVENT_STATUS_TYPES || 'active,inactive').split(','),
+    API_EVENT_STATUSES: (process.env.API_EVENT_STATUSES || 'monitoring,exploration,ongoing,intervention,complete').split(','),
     API_MSF_RESPONSE_TYPES: (process.env.API_MSF_RESPONSE_TYPES || 'direct_activities,remote_activities,coordination,donations').split(','),
     API_EVENT_TYPES: powerSet(types),
     API_OPERATIONAL_CENTERS:  (process.env.API_OPERATIONAL_CENTERS || 'OCA,OCB,OCBA,OCG,OCP').split(','),

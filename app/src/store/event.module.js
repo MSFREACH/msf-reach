@@ -6,7 +6,7 @@ import Vue from 'vue';
 import { EventsService} from '@/common/api.service';
 import { FETCH_EVENT, CREATE_EVENT, EDIT_EVENT, DELETE_EVENT, ARCHIVE_EVENT, RESET_EVENT_STATE,
     EDIT_EVENT_RESPONSES, EDIT_EVENT_EXT_CAPACITY, EDIT_EVENT_FIGURES, EDIT_EVENT_RESOURCES } from './actions.type';
-import { RESET_STATE, SET_EVENT, ADD_EVENT_EXT_CAPACITY, UPDATE_EVENT_EXT_CAPACITY, UPDATE_EVENT_FIGURES, UPDATE_EVENT_RESOURCES } from './mutations.type';
+import { RESET_STATE, SET_EVENT, ADD_EVENT_EXT_CAPACITY, UPDATE_EVENT_EXT_CAPACITY, UPDATE_EVENT_FIGURES, UPDATE_EVENT_RESOURCES, UPDATE_KEY_FIGURES } from './mutations.type';
 
 const initialState = {
     eventId: null,
@@ -23,7 +23,8 @@ const initialState = {
         extCapacity: [],
         figures: {},
         resources: {}
-    }
+    },
+    keyFigures: []
 };
 
 const state = Object.assign({}, initialState);
@@ -62,9 +63,23 @@ const actions = {
         return EventsService.updateExtCapacity(state.eventId, payload);
     },
     [EDIT_EVENT_FIGURES]({state}){
+        var currentKeyFigures = state.event.figures.keyFigures.filter(item => {
+            return item.status == state.event.status;
+        });
+        var kfIndex = state.event.figures.keyFigures.indexOf(currentKeyFigures);
+        if(!_.isEmpty(state.keyFigures)) {
+            if(kfIndex < 0) kfIndex = 0;
+            state.event.figures.keyFigures[kfIndex] = {
+                status: state.event.status,
+                figures: state.keyFigures
+            };
+        }
+
+        debugger;
         var payload = {
             figures: state.event.figures
         };
+
         return EventsService.updateFigures(state.eventId, payload);
     },
     [EDIT_EVENT_RESOURCES]({state}){
@@ -120,6 +135,9 @@ const mutations = {
     },
     [UPDATE_EVENT_RESOURCES](state, data){
         state.event.resources = data;
+    },
+    [UPDATE_KEY_FIGURES](state, data){
+        state.keyFigures = data.keyFigures;
     }
 };
 
@@ -296,7 +314,7 @@ const getters ={
                         period:null
                     }
                 },
-                satistics: {
+                statistics: {
                     collection: null,
                     source: null
                 }
@@ -361,6 +379,9 @@ const getters ={
     },
     eventCreatedAt(state){
         return state.event.metadata.event_datetime? state.event.metadata.event_datetime : state.event.created_at;
+    },
+    entryRowKeyFigures(state){
+        return state.keyFigures;
     }
 };
 

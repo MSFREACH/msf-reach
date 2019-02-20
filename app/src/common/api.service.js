@@ -94,11 +94,13 @@ export const EventsService = {
 
         return ApiService.updateSection(`events/${slug}/extCapacity`, params);
     },
-    updateFigures (slug, params) {
-        return ApiService.update(`events/${slug}/figures`, params);
+    updateFigures(slug, params) {
+        console.log(' ---updateFigures - ', params);
+
+        return ApiService.updateSection(`events/${slug}/figures`, params);
     },
     updateResources (slug, params) {
-        return ApiService.update(`events/${slug}/resources`, params);
+        return ApiService.updateSection(`events/${slug}/resources`, params);
     },
     archive(slug, params) {
         return ApiService.update('events', slug, params); //TODO: // check API endpoints

@@ -185,17 +185,17 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
             SET updated_at = now(),
-            figures = figures || $1
+            figures = $1::jsonb
             WHERE id = $2
             RETURNING figures, updated_at`;
 
         // Setup values
         let values = [ body.figures, id];
-
+        console.log(' ---- modeljs. -------- ', body.figures, id);
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
-            .then((data) => resolve({ id: String(id), status: data.status, figures: data.figures }))
+            .then((data) => resolve({ id: String(id),  figures: data.figures, updated: data.updated_at}))
             .catch((err) => reject(err));
     }),
 

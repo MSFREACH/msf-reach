@@ -4,7 +4,9 @@
 ul{
     list-style: none;
 }
-
+.theme--dark.v-list{
+    background: transparent; 
+}
 .create-btn{
     background: $text-light-grey;
 }
