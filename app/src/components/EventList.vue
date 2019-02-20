@@ -157,7 +157,7 @@ export default {
                     item.place = item.metadata.country;
                 }else{
                     if(cleanAreas[0].region){
-                        item.place = cleanAreas[0].region + cleanAreas[0].country_code;
+                        item.place = cleanAreas[0].region + " "+cleanAreas[0].country_code;
                     }else{
                         item.place = cleanAreas[0].country;
                     }
@@ -246,7 +246,7 @@ export default {
             width: 100%;
             overflow: auto;
             height: 100vh;
-        }   
+        }
     }
     .listHeader{
       height: 128px;

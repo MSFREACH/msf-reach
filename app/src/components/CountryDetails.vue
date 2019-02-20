@@ -4,7 +4,7 @@
             <v-navigation-drawer class="mt-5 CD-drawer" width="200">
                 <v-list>
                     <label class="ml-2">Country</label>
-                    <v-list-tile class="round-borders">
+                    <v-list-tile class="round-borders selectText">
                         <v-select :items="countries" v-model="selectedCountry" item-text="country" item-value="country_code"></v-select>
                     </v-list-tile>
                     <v-list-tile>
@@ -70,7 +70,7 @@
                     <iframe style="height:78vh; width:100%" :src="CIAWorldFactbookUrl"></iframe>
                 </v-flex>
                 <v-layout class="previewContent" row wrap v-else>
-                    <v-flex xs12>
+                    <v-flex xs12 class="previewWindow">
                         <img v-if="fileType.indexOf('image') != -1" :src="downloadUrl"></img>
                         <object v-else :data="downloadUrl" :type="fileType" width="100%" height="100%">
                             <embed :src="downloadUrl" width="100%" height="100%"></embed>
@@ -141,15 +141,18 @@ export default {
             'uploadingFile'
         ]),
         countryCodes(){
+            if (!this.eventAreas.length > 0) return;
             var tmp = this.eventAreas.map(item => item.country_code);
             return _.sortedUniq(tmp);
         },
         countries(){
+            if (!this.eventAreas.length > 0) return;
             var tmp = this.eventAreas.map(item => ({country: item.country, country_code: item.country_code}));
             this.selectedCountry = tmp[0].country_code;
             return _.sortedUniq(tmp);
         },
         CIAWorldFactbookUrl(){
+            if (!this.eventAreas.length > 0) return;
             var isoCC = this.selectedCountry ? this.selectedCountry : this.eventAreas[0].country_code;
             var gecCode = this.iso2gecCodes[isoCC].GEC;
             var url = `https://www.cia.gov/library/publications/the-world-factbook/geos/${gecCode.toLowerCase()}.html`;
@@ -168,6 +171,7 @@ export default {
         }
     },
     mounted(){
+        this.$store.dispatch(FETCH_EVENT, this.$route.params.slug),
         this.sortNavigation();
     },
     methods: {
@@ -257,6 +261,7 @@ export default {
             setTimeout(() => {
                 this.details = _.cloneDeep(this.defaultDetails);
                 this.previewFileUrl = null
+                this.$router.go()
             }, 300);
         },
         showFile(file){
@@ -283,5 +288,14 @@ export default {
     .previewContent{
         padding: 20px;
     }
-
+    .previewWindow{
+        height: 70vh;
+        overflow: scroll;
+    }
+    .selectText{
+        .v-select{
+            white-space: pre;
+            padding-top: 0;
+        }
+    }
 </style>

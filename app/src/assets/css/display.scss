@@ -5,7 +5,7 @@ ul{
     list-style: none;
 }
 .theme--dark.v-list{
-    background: transparent; 
+    background: transparent;
 }
 .create-btn{
     background: $text-light-grey;
@@ -203,7 +203,7 @@ ul{
     }
     img{
         width: 80%;
-        height: 100%;
+        height: auto;
         margin: auto;
     }
     .fileHeader{
