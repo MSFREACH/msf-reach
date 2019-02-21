@@ -31,7 +31,9 @@
                         </v-card>
                         <v-card class='file-attachment' v-for='(item, index) in previewFileUrls' :key='index'>
                             <v-icon @click='removeFile(index)' class="remove-file-icon"> close </v-icon>
-                            <embed :src='item' width='100%' height='100%'></embed>
+                            <object :data="item" width='100%' height='100%'>
+                                <embed :src='item' width='100%' height='100%'></embed>
+                            </object>
                         </v-card>
                       </v-layout>
                     </v-container>
@@ -61,18 +63,32 @@
                     <v-flex xs6><span v-if='!item.description'> -- </span>{{ item.description | snippetNoMarkdown }}</v-flex>
                     <v-flex xs3><span class='file-attachment count'>{{ item.files.length }}</span></v-flex>
                 </v-layout>
-                <v-card class="grey lighten-3">
-                    <v-card-text v-html="mdRender(item.description)">
-                    </v-card-text>
-                    <hr class="row-divider"/>
-                    <v-card v-for="(item, index) in item.files" :key="index" class="file-attachment">
-                         <v-img :src="item" contain></v-img>
-                    </v-card>
-                    <v-card-actions class="text-xs-right list-actions">
-                        <v-switch label='edit' @click="editSitrep(item)"></v-switch>
-                        <v-icon small @click="deleteSitrep(item)"> delete </v-icon>
-                    </v-card-actions>
-                </v-card>
+                <v-layout class="innerText" row wrap>
+                    <v-flex class="pa-3" v-html="mdRender(item.description)" xs12>
+                    </v-flex>
+                    <v-divider></v-divider>
+                    <v-flex xs10>
+                        <v-card v-for="(item, index) in item.signedFiles" :key="index" class="file-attachment" @click="previewDialog = true">
+                            <img v-if="item.contentType.indexOf('image') != -1" :src="item.url" width="100%" height="100%">
+                            <object v-else :data="item.url" :type="item.contentType" width="100%" height="100%">
+                                <embed :src="item.url" width="100%" height="100%"></embed>
+                            </object>
+                        </v-card>
+                    </v-flex>
+                    <v-flex xs2>
+                        <v-card-actions class="text-xs-right list-actions">
+                            <v-switch label='edit' @click="editSitrep(item)"></v-switch>
+                            <v-icon small @click="deleteSitrep(item)"> delete </v-icon>
+                        </v-card-actions>
+                    </v-flex>
+
+                    <v-dialog v-model="previewDialog" justify-center max-width="800px" transition="dialog-transition">
+                        <v-carousel hide-controls>
+                            <v-carousel-item  v-for="(item, i) in item.signedFiles" :key="i" :src="item.url"></v-carousel-item>
+                        </v-carousel>
+                    </v-dialog>
+
+                </v-layout>
               </v-expansion-panel-content>
             </v-expansion-panel>
 
@@ -93,7 +109,8 @@
 import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import marked from 'marked';
-import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, DELETE_SITREP, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST } from '@/store/actions.type';
+import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, DELETE_SITREP, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL } from '@/store/actions.type';
+import { UPDATE_SITREP_SIGNEDURLS } from '@/store/mutations.type';
 import { DEFAULT_SITREP_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
 import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
@@ -103,6 +120,7 @@ export default {
     data(){
         return {
             dialog: false,
+            previewDialog: false,
             showMarkdown: false,
             editing: false,
             defaultSitrep: DEFAULT_SITREP_FIELDS,
@@ -113,8 +131,7 @@ export default {
             date1: new Date().toISOString().substr(0, 10),
             arrayEvents: null,
             search: '',
-            request: REQUEST_STATUSES,
-            displaySITREPs:[]
+            request: REQUEST_STATUSES
         };
     },
     components: {
@@ -137,7 +154,10 @@ export default {
         editSitrep(item){
             this.dialog = true;
             this.editIndex = _.findIndex(this.sitreps, item);
-            this.editedSitrep = Object.assign({}, item);
+            this.editedSitrep = _.clone(item);
+            this.previewFileUrls = item.signedFiles.map(item =>{
+                return item.url;
+            })
         },
         deleteSitrep(item){
             const itemIndex = _.findIndex(this.sitreps, item);
@@ -160,31 +180,24 @@ export default {
         },
         processFiles(files){
             var vm = this;
-            for(var f=0; f< files.length; f++){
-                var fileName = files[f].name;
-                var fileType = files[f].type;
-                var fileSize = files[f].size;
-                var file = files[f];
-                var params = {key: ('event/'+this.currentEventId+'/sitreps'), filename: fileName};
-                this.$store.dispatch(FETCH_UPLOAD_URL, params)
+            Object.keys(files).forEach(function(key){
+                var file = files[key];
+                var fileName = file.name;
+                var params = {key: ('event/'+vm.currentEventId+'/sitreps'), filename: fileName};
+                vm.$store.dispatch(FETCH_UPLOAD_URL, params)
                     .then((payload) => {
                         if(payload){
                             var fileLink = payload.url;
                             vm.signedFileUrls.push(fileLink);
-                            console.log('1111 ---- dispatch.then ---- ', fileLink);
-                            this.uploadFile(file);
-                            return;
+                            vm.uploadFile(file, key);
                         }
                     });
-            }
+            });
         },
-        uploadFile(file){
-            console.log('222 ----uploadFile', file);
-
+        uploadFile(file, index){
             this.$store.dispatch(PUT_SIGNED_REQUEST,  file)
-                .then(() => {
-                    console.log('444 ----uploadFile', file);
-                    this.save();
+                .then((data) => {
+                    if(index == (this.signedFileUrls.length -1)) this.save();
                 });
         },
         submit(){
@@ -203,36 +216,33 @@ export default {
             var params = _.extend(this.editedSitrep, {
                 username: this.currentUser.username,
             });
+            params.files = this.signedFileUrls;
 
             if (!!isEdit){
                 params.updated = timeNow;
                 delete params.created;
                 delete params.eventid;
+                delete params.signedFiles;
             }else{
                 params.created = timeNow;
                 params.eventId = this.currentEventId;
                 delete params.updated;
             }
+
             this.$store.dispatch(action, params)
                 .then((payload) =>{
-                    this.request.inProgress = false;
                     if(payload.status == 200){
-                        this.request.success = true;
-                        this.$router.push({
-                            name: 'event-sitrep',
-                            params: { slug: this.currentEventId}
-                        });
-                        setTimeout(() => this.close(), 1000);
-                    }else{
-                        this.request.failure = true;
+                        this.close();
                     }
                 });
         },
         close () {
+            this.fetchSitreps();
             this.dialog = false;
             this.showMarkdown = false;
+            this.request.inProgress = false;
             setTimeout(() => {
-                this.editedSitrep = Object.assign({}, this.defaultSitrep);
+                this.editedSitrep = _.clone(this.defaultSitrep);
                 this.previewFileUrls = [];
                 this.signedFileUrls = [];
                 this.editIndex = -1;
@@ -255,7 +265,17 @@ export default {
             }
         },
         sitreps(val){
-            this.displaySITREPs = _.map(this.sitreps, _.clone);
+            var vm = this;
+            val.map((item, index) => {
+                var signedUrls = [];
+                item.files.forEach(function(file){
+                    vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
+                        signedUrls.push(data);
+                        item.signedFiles = signedUrls;
+                    });
+                });
+                vm.$store.commit(UPDATE_SITREP_SIGNEDURLS, {index, signedUrls});
+            });
 
             this.arrayEvents = this.sitreps.map(item => {
                 return item.created.substr(0, 10);
@@ -277,6 +297,9 @@ export default {
         ]),
         formTitle () {
             return this.editIndex == -1 ? 'Create new' : 'Edit SITREP';
+        },
+        displaySITREPs(){
+            return _.map(this.sitreps, _.clone);
         }
     }
 };
@@ -307,5 +330,7 @@ export default {
         margin-left: 4em;
     }
 
-
+    .innerText{
+        background: $bg-space-grey;
+    }
 </style>

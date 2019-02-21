@@ -262,8 +262,8 @@ export default {
             this.dialog = false;
             setTimeout(() => {
                 this.details = _.cloneDeep(this.defaultDetails);
-                this.previewFileUrl = null
-                this.$router.go()
+                this.previewFileUrl = null; 
+                this.$router.go();
             }, 300);
         },
         showFile(file){

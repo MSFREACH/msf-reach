@@ -175,7 +175,7 @@ export default ({ config, db, logger }) => {
                     event_local_timezone: Joi.string().allow('', null),
                     event_local_timezone_abbr: Joi.string().allow('', null),
 
-                    event_status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+                    event_status: Joi.string().valid(config.API_EVENT_STATUSES).required(),
                     incharge_contact: Joi.object().keys({
                         local: Joi.object().keys({
                             name: Joi.string().allow(''),

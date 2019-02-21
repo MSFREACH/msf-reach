@@ -92,7 +92,7 @@
         <v-layout v-if="displayNotifications.length > 0" row wrap>
             <v-data-table :headers="headers" :items="displayNotifications" :search="search" item-key="id" class="elevation-1" hide-actions>
                 <template slot="items" slot-scope="props">
-                    <tr @click="showFiles(props)" :key="props.index">
+                    <tr @click="props.expanded = !props.expanded" :key="props.index">
                         <td><span v-if="!props.item.username"> -- </span> {{ props.item.username }}</td>
                         <td>{{ props.item.created | relativeTime  }}</td>
                         <td><span v-if="!props.item.category"> -- </span>
@@ -111,13 +111,7 @@
                     <v-card class="expanded-field" flat :key="props.index" :id="props.index">
                         <v-card-text v-html="mdRender(props.item.description)"></v-card-text>
                         <v-divider light></v-divider>
-                        <v-card v-for="(item, index) in signFiles(props.item.files)" :key="index" class="file-attachment" @click="previewDialog = true">
-                            <img v-if="item.contentType.indexOf('image') != -1" :src="item.url" width="100%" height="100%">
-                            <object v-else :data="item.url" :type="item.contentType" width="100%" height="100%">
-                                <embed :src="item.url" width="100%" height="100%"></embed>
-                            </object>
-                        </v-card>
-                        <v-card v-for="(item, index) in props.item.signedFiles" :key="index" class="file-attachment" @click="previewDialog = true">
+                        <v-card v-for="(item, index) in props.item.signedFiles" :key="index" class="file-attachment justone" @click="previewDialog = true">
                             <img v-if="item.contentType.indexOf('image') != -1" :src="item.url" width="100%" height="100%">
                             <object v-else :data="item.url" :type="item.contentType" width="100%" height="100%">
                                 <embed :src="item.url" width="100%" height="100%"></embed>
@@ -158,6 +152,7 @@ import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
 import { REQUEST_STATUSES } from '@/common/network-handler';
 // import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
 import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
+import { UPDATE_EVENTNOTIFICATIONS_SIGNEDURLS } from '@/store/mutations.type';
 
 export default {
     name: 'r-event-notifications',
@@ -174,7 +169,6 @@ export default {
             editing: false,
             allNotificationCategories: EVENT_NOTIFICATION_CATEGORIES,
             selectedCategory: '',
-            displayNotifications: [],
             headers: EVENT_NOTIFICATION_HEADERS,
             defaultItem: DEFAULT_EVENT_NOTIFICATION_FIELDS,
             editedItem: DEFAULT_EVENT_NOTIFICATION_FIELDS,
@@ -210,6 +204,13 @@ export default {
         ]),
         showExploFindings(){
             if(this.reviewFields) return this.reviewFields.indexOf('explo-findings') != -1;
+        },
+        displayNotifications(){
+            var vm = this;
+            return this.eventNotifications.filter(item => {
+                if(vm.selectedCategory) return item.category == vm.selectedCategory;
+                return item;
+            });
         }
     },
     watch: {
@@ -222,14 +223,19 @@ export default {
                 this.close();
             }
         },
-        selectedCategory(val){
-            this.displayNotifications = this.eventNotifications.filter(item => {
-                if(val) return item.category == val;
-                return item;
+        eventNotifications(val){
+            var vm = this;
+            val.map((item, index) => {
+                var signedUrls = [];
+                item.files.forEach(function(file){
+                    vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
+                        signedUrls.push(data);
+                        item.signedFiles = signedUrls;
+                    });
+                });
+                vm.$store.commit(UPDATE_EVENTNOTIFICATIONS_SIGNEDURLS, {index, signedUrls});
             });
-        },
-        eventNotifications(newVal){
-            this.displayNotifications = _.map(newVal, _.clone);
+
         }
     },
     mounted(){
@@ -329,13 +335,8 @@ export default {
 
             this.$store.dispatch(action, params)
                 .then((payload) =>{
-                    this.request.inProgress = false;
                     if(payload.status == 200){
-                        this.$router.push({
-                            name: 'event-notifications',
-                            params: { slug: this.currentEventId}
-                        });
-                        setTimeout(() => this.close(), 1000);
+                        this.close();
                     }
                 });
         },
@@ -343,8 +344,9 @@ export default {
             this.fetchEventNotifications();
             this.dialog = false;
             this.showMarkdown = false;
+            this.request.inProgress = false;
             setTimeout(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
+                this.editedItem = _.clone(this.defaultItem);
                 this.previewFileUrls = [];
                 this.signedFileUrls = [];
                 this.editIndex = -1;
@@ -377,30 +379,6 @@ export default {
             }
 
             this.editedItem.description = combine;
-
-        },
-        signFiles(files){
-            var vm = this;
-            var signedUrls =[];
-            files.forEach(function(file){
-                vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
-                    signedUrls.push(data);
-                });
-            });
-            return signedUrls;
-        },
-        showFiles(props){
-            var vm = this;
-            props.expanded = !props.expanded;
-            if(props.item.signedFiles) return;
-            var signedUrls =[];
-            props.item.files.forEach(function(file){
-                vm.$store.dispatch(FETCH_DOWNLOAD_URL, file).then((data) => {
-                    signedUrls.push(data);
-                    console.log(signedUrls);
-                    props.item.signedFiles = signedUrls;
-                });
-            });
 
         }
     }

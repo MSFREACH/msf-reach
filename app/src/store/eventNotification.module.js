@@ -4,7 +4,7 @@
 import Vue from 'vue';
 import { EventNotificationService } from '@/common/api.service';
 import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION } from './actions.type';
-import { FETCH_EVENT_NOTIFICATIONS_START, FETCH_EVENT_NOTIFICATIONS_END, SET_ERROR, RESET_STATE, SET_EVENT_NOTIFICATION } from './mutations.type';
+import { FETCH_EVENT_NOTIFICATIONS_START, FETCH_EVENT_NOTIFICATIONS_END, SET_ERROR, RESET_STATE, SET_EVENT_NOTIFICATION, UPDATE_EVENTNOTIFICATIONS_SIGNEDURLS } from './mutations.type';
 
 const initialState = {
     error: null,
@@ -85,6 +85,9 @@ const mutations = {
         for (let f in state){
             Vue.set(state, f, initialState[f]);
         }
+    },
+    [UPDATE_EVENTNOTIFICATIONS_SIGNEDURLS](state, data){
+        state.eventNotifications[data.index].signedFiles = data.signedUrls;
     }
 };
 

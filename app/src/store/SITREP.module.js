@@ -7,7 +7,7 @@ import Vue from 'vue';
 import { SITREPService } from '@/common/api.service';
 
 import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, DELETE_SITREP } from './actions.type';
-import { FETCH_SITREPS_START, FETCH_SITREPS_END, SET_ERROR, RESET_STATE } from './mutations.type';
+import { FETCH_SITREPS_START, FETCH_SITREPS_END, SET_ERROR, RESET_STATE, UPDATE_SITREP_SIGNEDURLS } from './mutations.type';
 
 const initialState = {
     error: null,
@@ -88,6 +88,9 @@ const mutations = {
         for(let f in state){
             Vue.set(state, f, initialState[f]);
         }
+    },
+    [UPDATE_SITREP_SIGNEDURLS](state, data){
+        state.sitreps[data.index].signedFiles = data.signedUrls;
     }
 };
 

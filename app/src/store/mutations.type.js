@@ -37,9 +37,11 @@ export const UPDATE_RESPONSE_IN_LIST = 'updateResponseInList';
 export const FETCH_EVENT_NOTIFICATIONS_START = 'setEventNotificationLoading';
 export const FETCH_EVENT_NOTIFICATIONS_END = 'fetchEventNotificationsEnd';
 export const SET_EVENT_NOTIFICATION = 'setEventNotification';
+export const UPDATE_EVENTNOTIFICATIONS_SIGNEDURLS = 'setEventNotificationsSignedUrls'; 
 
 export const FETCH_SITREPS_START = 'setSitrepLoading';
 export const FETCH_SITREPS_END = 'fetchSitrepEnd';
+export const UPDATE_SITREP_SIGNEDURLS = 'setSitrepSignedUrls';
 export const SET_SITREP = 'setSitrep';
 
 export const FETCH_GEOJSON_POLYGON_END = 'fetchGeojsonPolygonEnd';

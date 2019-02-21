@@ -123,11 +123,18 @@ export default {
                 var tmp = payload.result;
                 var tmpObj = {};
                 var context = payload.result.context;
-                context.map(function(item){
-                    var id = item.id.split('.')[0];
-                    if(id == 'country') tmpObj.country_code = item.short_code;
-                    return tmpObj[id] = item.text;
-                });
+                
+                if(!context){
+                    var id = payload.result.place_type[0];
+                    tmpObj[id] = payload.result.place_name;
+                }else{
+                    context.map(function(item){
+                        var id = item.id.split('.')[0];
+                        if(id == 'country') tmpObj.country_code = item.short_code;
+                        return tmpObj[id] = item.text;
+                    });
+                }
+
                 vm.addressData = Object.assign({
                     latitude: tmp.geometry.coordinates[1],
                     longitude: tmp.geometry.coordinates[0]
