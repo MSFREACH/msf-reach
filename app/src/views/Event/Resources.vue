@@ -163,7 +163,7 @@ import { UPDATE_EVENT_RESOURCES } from '@/store/mutations.type';
 import COUNTRIES from '@/common/countries.json';
 import CURRENCIES from '@/common/currency-symbols.json';
 import VACCINATION from '@/common/WHO_vaccinations.json';
-import { SUPPLY_CHAIN_SPECIALITIES } from '@/common/resource-fields';
+import { DEFAULT_RESOURCES_FIELDS, SUPPLY_CHAIN_SPECIALITIES } from '@/common/resource-fields';
 
 export default {
     name: 'r-event-resources',

@@ -250,7 +250,7 @@ export default {
                 setTimeout(function(){
                     vm.$refs.mapEntry.resizeMap(); }, 100);
                 this.e1 = 1;
-                this.metadata = this.defaultMetadata;
+                this.metadata = _.clone(this.defaultMetadata);
                 if(!this.selectedTimezone) this.selectedTimezone = moment.tz.guess();
             }else{
                 this.showMarkdown = false;
@@ -282,13 +282,14 @@ export default {
             this.metadata.types.splice(index, 1);
         },
         addType(){
-            this.newType = this.defaultType;
+            this.newType = _.clone(this.defaultType);
         },
         addSyntax(type){
             var selection = window.getSelection();
         },
         submitType(){
             var tmp = this.newType;
+            // if(!this.metadata.types) this.metadata.types = []; 
             if(this.subTypeSelect){
                 tmp.subtype == 'other' ? this.metadata.types.push(tmp.specify) : this.metadata.types.push(tmp.subtype);
             }else if(tmp.type == 'other'){
