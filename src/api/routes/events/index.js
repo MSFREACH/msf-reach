@@ -163,7 +163,6 @@ export default ({ config, db, logger }) => {
                     project_code: Joi.string().allow(''),
                     description: Joi.string().allow(''),
                     sub_type: Joi.string().allow(''), // TODO: change to array later
-
                     types: Joi.array().items(Joi.string()),
                     sub_types: Joi.array().items(Joi.string()),
                     status_updates: Joi.array().items(Joi.object().keys({
@@ -174,8 +173,7 @@ export default ({ config, db, logger }) => {
                     event_local_time: Joi.string().allow('', null),
                     event_local_timezone: Joi.string().allow('', null),
                     event_local_timezone_abbr: Joi.string().allow('', null),
-
-                    event_status: Joi.string().valid(config.API_EVENT_STATUSES).required(),
+                    event_status: Joi.string().valid(config.API_EVENT_STATUSES),
                     incharge_contact: Joi.object().keys({
                         local: Joi.object().keys({
                             name: Joi.string().allow(''),
@@ -285,7 +283,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 figures: Joi.object().keys({
                     keyFigures: Joi.array().items(Joi.object().keys({
-                        status: Joi.string().valid(config.API_EVENT_STATUSES).required(),
+                        status: Joi.string().valid(config.API_EVENT_STATUSES),
                         figures: Joi.array().items(Joi.object())
                     })),
                     population: Joi.object().allow(null),
@@ -308,7 +306,7 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 resources: Joi.object().keys({
                     perStatus: Joi.array().items(Joi.object().keys({
-                        status: Joi.string().valid(config.API_EVENT_STATUSES).required(),
+                        status: Joi.string().valid(config.API_EVENT_STATUSES),
                         staff: Joi.object(),
                         budget: Joi.object(),
                         supply_chain: Joi.object()
