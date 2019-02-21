@@ -1,10 +1,10 @@
 <template>
     <v-container class="eventSubContent statusToggle">
-        <nav v-if="eventResources.perStatus && eventResources.perStatus.length> 0" class="statusTabWrapper">
+        <nav v-if="displayResource.perStatus && displayResource.perStatus.length> 0" class="statusTabWrapper">
             <v-btn flat small :class="item.status.toLowerCase()+'-wrapper statusTabs'" v-for="(item, index) in eventResources.perStatus" :key="index" @click="switchStatus(item)">{{item.status}}</v-btn>
         </nav>
         <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'" dark>
-            <div v-if="eventResources">
+            <div v-if="displayResource">
                     <v-layout row wrap class="actions" v-if="allowEdit">
                         <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
                         <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
@@ -12,15 +12,15 @@
 
                     <v-layout row wrap v-if="editing" dark>
                         <v-flex xs8 ref="staff-list">
-                            <v-text-field label="Staff List" v-model="editStatusResource.listFileUrl"></v-text-field>
+                            <v-text-field label="Staff List" v-model="editStatusResource.staff.listFileUrl"></v-text-field>
                         </v-flex>
                         <v-flex xs4></v-flex>
                         <v-flex xs3 ref="expatriates">
-                            <v-text-field class="no-border" label="Number of Expatriate" v-model="editStatusResource.expatriateCount"></v-text-field>
+                            <v-text-field class="no-border" label="Number of Expatriate" v-model="editStatusResource.staff.expatriateCount"></v-text-field>
                         </v-flex>
                         <v-spacer></v-spacer>
                         <v-flex xs3 ref="national-staff">
-                            <v-text-field class="no-border" label="Number of National Staff" v-model="editStatusResource.nationalStaffCount"></v-text-field>
+                            <v-text-field class="no-border" label="Number of National Staff" v-model="editStatusResource.staff.nationalStaffCount"></v-text-field>
                         </v-flex>
                         <v-flex xs4></v-flex>
                         <hr class="row-divider"/>
@@ -77,7 +77,9 @@
                             <v-textarea solo label="description" v-model="editStatusResource.supply_chain.description" background-color="white" color="secondary"></v-textarea>
                         </div>
                         <v-flex xs12>
-                            <v-text-field ref="institutional-donors" label="Institutional Donors" v-model="editResources.institutional_donors"></v-text-field>
+                            <label> Institutional Donors </label>
+                            <v-text-field ref="institutional-donors" label="From who" v-model="editResources.institutional_donors[0].amount"></v-text-field>
+                            <v-text-field ref="institutional-donors" label="Amount" v-model="editResources.institutional_donors[0].from_who"></v-text-field>
                         </v-flex>
 
                     </v-layout>
@@ -121,23 +123,23 @@
                         <div ref="visa-requirements">
                             <div class="primary-text">Nationalities that requires Visa</div>
                             <label>Nationalities</label>
-                            <span v-if="eventResources.visa_requirement.length == 0">--</span> {{eventResources.visa_requirement.toString()}}
+                            <span v-if="displayResource.visa_requirement.length == 0">--</span> {{displayResource.visa_requirement.toString()}}
                         </div>
                         <hr class="row-divider"/>
                         <div ref="vaccination-requirements">
                             <div class="primary-text">Health and vaccination requirements</div>
                             <label>Required</label>
-                            <span v-if="eventResources.vaccination_requirement.required.length == 0"> -- </span> {{eventResources.vaccination_requirement.required.toString()}}
+                            <span v-if="displayResource.vaccination_requirement.required.length == 0"> -- </span> {{displayResource.vaccination_requirement.required.toString()}}
 
                             <label>Recommended</label>
-                            <span v-if="eventResources.vaccination_requirement.recommended.length == 0"> -- </span> {{eventResources.vaccination_requirement.recommended.toString()}}
+                            <span v-if="displayResource.vaccination_requirement.recommended.length == 0"> -- </span> {{displayResource.vaccination_requirement.recommended.toString()}}
 
                         </div>
                         <hr class="row-divider"/>
                         <div ref="institutional-donors">
                             <label>Institutional Donors</label>
-                            <span v-if="eventResources.institutional_donors.length ==0">--</span>
-                            <span v-else>{{eventResources.institutional_donors}} </span>
+                            <span v-if="displayResource.institutional_donors.length ==0">--</span>
+                            <span v-else v-for="(item, i) in displayResource.institutional_donors" :key="i">{{item.from_who}} : {{item.amount}}</span>
                         </div>
                     </v-layout>
             </div>
@@ -163,7 +165,7 @@ import { UPDATE_EVENT_RESOURCES } from '@/store/mutations.type';
 import COUNTRIES from '@/common/countries.json';
 import CURRENCIES from '@/common/currency-symbols.json';
 import VACCINATION from '@/common/WHO_vaccinations.json';
-import { DEFAULT_RESOURCES_FIELDS, SUPPLY_CHAIN_SPECIALITIES } from '@/common/resource-fields';
+import { DEFAULT_RESOURCES_FIELDS, SUPPLY_CHAIN_SPECIALITIES, DEFAULT_STATUS_RESOURCES_FIELDS } from '@/common/resource-fields';
 
 export default {
     name: 'r-event-resources',
@@ -175,11 +177,13 @@ export default {
     data(){
         return {
             editing: false,
-            _beforeEditingCache: {},
-            _beforeEditPerStatusCache: {},
-            editResources: {},
-            editStatusResource: {},
-            activeStatusIndex: null,
+            _beforeEditingCache: DEFAULT_RESOURCES_FIELDS,
+            _beforeEditPerStatusCache: DEFAULT_STATUS_RESOURCES_FIELDS,
+            defaultResources: DEFAULT_RESOURCES_FIELDS,
+            editResources: DEFAULT_RESOURCES_FIELDS,
+            editStatusResource: DEFAULT_STATUS_RESOURCES_FIELDS,
+            defaultStatusResource: DEFAULT_STATUS_RESOURCES_FIELDS,
+            activeStatusIndex: 0,
             requiredNationalities: [],
             autoNationality:{
                 autoUpdate: true,
@@ -227,19 +231,17 @@ export default {
         },
         cancelEdit(){
             Object.assign(this.eventResources, this._beforeEditingCache);
-            Object.assign(this.activeStatusResources, this._beforeEditPerStatusCache);
+            Object.assign(this.displayStatusResources, this._beforeEditPerStatusCache);
 
-            this.editResources = this._beforeEditingCache = null;
-            this.editStatusResource = this._beforeEditPerStatusCache = null;
+            this.editResources = this._beforeEditingCache = _.clone(this.defaultResources);
+            this.editStatusResource = this._beforeEditPerStatusCache = _.clone(this.defaultStatusResource);
             this.editing = false;
         },
         save(){
+            this.editStatusResource.status = this.eventStatus; 
             this.editResources.perStatus[this.activeStatusIndex] = this.editStatusResource;
-
             this.$store.commit(UPDATE_EVENT_RESOURCES, this.editResources);
-            /// tricky to get the response field where status == active status
             this.$store.dispatch(EDIT_EVENT_RESOURCES).then((data) =>{
-                // TODO:// refresh or reload state
             });
 
         },
@@ -259,8 +261,10 @@ export default {
     watch: {
         editing(val){
             if(val){
-                this._beforeEditingCache = this.editResources = this.eventResources;
-                this._beforeEditPerStatusCache = this.editStatusResource = this.activeStatusResources;
+                this.editResources = this._beforeEditingCache = _.clone(this.displayResource);
+                this.editStatusResource = this._beforeEditPerStatusCache = _.clone(this.displayStatusResources);
+            }else{
+                this.save();
             }
 
             if(this.reviewFields){
@@ -285,29 +289,24 @@ export default {
             'eventResources',
             'eventStatus'
         ]),
+        displayResource(){
+            if(!this.eventResources) return this.defaultResources;
+            return _.clone(this.eventResources);
+        },
+        displayStatusResources(){
+            if(!this.eventResources) return this.defaultStatusResource;
 
-        activeStatusResources(){
-            if(!this.eventResources) return null;
             var result = this.eventResources.perStatus.filter(item =>{
                 return item.status == this.eventStatus;
             });
             this.activeStatusIndex = this.eventResources.perStatus.indexOf(result[0]);
             return result[0];
         },
-        displayStatusResources(){
-            if(!_.isEmpty(this.activeStatusResources)){
-                return this.activeStatusResources;
-            }else{
-                return null;
-            }
-        },
         allowEdit(){
-            if(this.displayStatusResource){
-                if(!_.isEmpty(this.displayStatusResources)){
-                    return displayStatusResources.status == activeStatusResources.status;
-                }else{
-                    return (this.eventStatus != 'monitoring') && (this.eventStatus !='complete');
-                }
+            if(!_.isEqual(this.displayStatusResources, this.defaultStatusResource)){
+                return this.displayStatusResources.status == this.eventStatus;
+            }else{
+                return (this.eventStatus != 'monitoring') && (this.eventStatus !='complete');
             }
             return this.eventStatus != 'monitoring';
         }

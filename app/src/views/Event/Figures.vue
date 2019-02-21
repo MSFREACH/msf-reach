@@ -13,7 +13,7 @@
             <div v-if="eventFigures">
                 <v-layout class="actions" v-if="allowEdit">
                     <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
-                    <span class="cancel" v-if="editing" @click="editing = false"><v-icon>close</v-icon></span>
+                    <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
                 </v-layout>
                 <v-layout row wrap v-if="editing" dark>
                     <label>KEY FIGURES</label>
@@ -197,13 +197,13 @@ export default {
         save(){
             this.$store.commit(UPDATE_EVENT_FIGURES, this.editFigures);
             this.$store.dispatch(EDIT_EVENT_FIGURES).then((data) => {
-                console.log('data ------ ')
             })
             this.editFigures = this._beforeEditingCache = _.clone(this.defaultFigures);
         },
         cancelEdit(){
             this.displayFigures = _.clone(this._beforeEditItemCache);
             this.editFigures = this._beforeEditingCache = _.clone(this.defaultFigures);
+            this.editing = false;
         }
     },
     watch: {
@@ -255,9 +255,11 @@ export default {
             }
         },
         totalBeneficiaries(){
-            return _.sumBy(this.displayKeyFigures.figures, 'value'); /// TODO: parseInt first on the values; 
+            if(!this.displayKeyFigures) return;
+            return _.sumBy(this.displayKeyFigures.figures, 'value'); /// TODO: parseInt first on the values;
         },
         totalServices(){
+            if(!this.displayKeyFigures) return;
             return this.displayKeyFigures.figures.length;
         }
 

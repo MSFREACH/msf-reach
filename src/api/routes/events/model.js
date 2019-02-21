@@ -191,7 +191,6 @@ export default (config, db, logger) => ({
 
         // Setup values
         let values = [ body.figures, id];
-        console.log(' ---- modeljs. -------- ', body.figures, id);
         // Execute
         logger.debug(query, values);
         db.oneOrNone(query, values).timeout(config.PGTIMEOUT)
@@ -204,7 +203,7 @@ export default (config, db, logger) => ({
         // Setup query
         let query = `UPDATE ${config.TABLE_EVENTS}
             SET updated_at = now(),
-            resources = resources || $1
+            resources =  $1::jsonb
             WHERE id = $2
             RETURNING resources, updated_at, status`;
 

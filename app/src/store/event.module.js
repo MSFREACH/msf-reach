@@ -74,8 +74,6 @@ const actions = {
                 figures: state.keyFigures
             };
         }
-
-        debugger;
         var payload = {
             figures: state.event.figures
         };
@@ -238,10 +236,6 @@ const getters ={
                 location : payload.msf_response_location, // check if object keys are copied
                 operational_center : payload.operational_center,
                 type_of_programmes : programmes,
-                supply_chain: {
-                    type: null,
-                    description: ''
-                },
                 sharepoint_link: ''
             }];
         }else{
@@ -324,51 +318,7 @@ const getters ={
         }
     },
     eventResources(state){
-        if(!state.event.resources && state.event.metadata){
-            var payload = state.event.metadata;
-            var nationalites = [];
-            if(payload.msf_resource_visa_requirement){
-                nationalites = payload.msf_resource_visa_requirement.nationality.map(item => {
-                    if(item.is_required){
-                        return item.name;
-                    }
-                });
-            }
-
-            var donors = [];
-            if(payload.msf_resource_institutional_donors){
-                donors = payload.msf_resource_institutional_donors.map(item =>{
-                    return item.from_who +': '+ item.amount;
-                });
-            }
-            var totalBudget = _.sumBy(payload.msf_resource_budget, function(budgetItem){
-                return budgetItem.amount;
-            });
-
-            var currentStatusStat = {
-                status: payload.event_status,
-                staff: {
-                    listFileUrl : payload.msf_resource_staff_list,
-                    expatriateCount: payload.msf_resource_staff_expatriate,
-                    nationalStaffCount: payload.msf_resource_staff_national
-                },
-                budget : {
-                    total: totalBudget,
-                    currency: null
-                }
-            };
-            return {
-                perStatus: [currentStatusStat],
-                institutional_donors : donors,
-                visa_requirement : nationalites, //TODO: check obj deep mapped
-                vaccination_requirement: {
-                    required: [],
-                    recommended: []
-                }
-            };
-        }else{
-            return state.event.resources;
-        }
+        return state.event.resources;
     },
     oldEventReflection(state){
         var payload = state.event.metadata;

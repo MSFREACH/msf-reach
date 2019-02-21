@@ -308,16 +308,20 @@ export default ({ config, db, logger }) => {
             body: Joi.object().keys({
                 resources: Joi.object().keys({
                     perStatus: Joi.array().items(Joi.object().keys({
-                        status: Joi.string().valid(config.API_EVENT_STATUS_TYPES).required(),
+                        status: Joi.string().valid(config.API_EVENT_STATUSES).required(),
                         staff: Joi.object(),
-                        budget: Joi.object()
+                        budget: Joi.object(),
+                        supply_chain: Joi.object()
                     })),
-                    institutional_donors: Joi.object(),
+                    institutional_donors: Joi.array().items(Joi.object().keys({
+                        from_who: Joi.string().allow(null),
+                        amount: Joi.string().allow(null)
+                    })),
                     visa_requirement: Joi.array().items(Joi.string()),
                     vaccination_requirement: Joi.object().keys({
                         required: Joi.array().items(Joi.string()).allow(null),
                         recommended: Joi.array().items(Joi.string()).allow(null)
-                    }),
+                    })
                 })
             })
         }),

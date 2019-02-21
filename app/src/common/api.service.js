@@ -99,7 +99,9 @@ export const EventsService = {
 
         return ApiService.updateSection(`events/${slug}/figures`, params);
     },
-    updateResources (slug, params) {
+    updateResources(slug, params) {
+        console.log(' ---updateResources - ', params);
+
         return ApiService.updateSection(`events/${slug}/resources`, params);
     },
     archive(slug, params) {
