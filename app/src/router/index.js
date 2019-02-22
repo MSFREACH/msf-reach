@@ -7,19 +7,7 @@ export default new Router({
     // mode: 'history', // Required for Adal library
     routes: [{
         path: '/',
-        component: () => import('@/views/Landing'),
-        children: [
-            {
-                path: '',
-                name: 'landing',
-                component: () => import('@/views/LandingEvents')
-            },
-            {
-                path: 'my-events',
-                name: 'landing-my-events',
-                component: () => import('@/views/LandingMyEvents')
-            }
-        ]
+        redirect:'/events'
     },{
         name: 'cognito-login',
         path: '/cognito-login',

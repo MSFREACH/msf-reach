@@ -314,6 +314,7 @@ export default {
         .map-annotation,
         .full-text-fields{
             margin-top: 48px;
+            width: calc(100% - 21px); 
         }
     }
 </style>
