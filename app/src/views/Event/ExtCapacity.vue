@@ -18,7 +18,8 @@
                         <v-flex xs6>
                           <v-select :items="allCapacityTypes" v-model="newItem.type" label="Capacity"></v-select>
                         </v-flex>
-                        <v-flex xs6>
+                        <v-flex xs6 style="display: inline-block;">
+                            <label> Arrival date </label>
                             <v-menu ref="createDateSelected" :close-on-content-click="false" v-model="createDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
                                 <v-text-field slot="activator" v-model="newItem.arrival_date" persistent-hint type="date"></v-text-field>
                                 <v-date-picker v-model="newItem.arrival_date" no-title @input="createDateSelected = false"></v-date-picker>
@@ -26,7 +27,7 @@
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>Deployment</label>
-                            <v-textarea class="editTextArea" solo label="description" value="" auto-grow background-color="white" color="secondary" v-model="newItem.deployment"></v-textarea>
+                            <v-textarea flat class="editTextArea" label="description" value="" auto-grow v-model="newItem.deployment"></v-textarea>
                         </v-flex>
                       </v-layout>
                     </v-container>
@@ -44,16 +45,16 @@
                     <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
                 </div>
                 <div class="primary-text">External capacity Analysis</div>
-                <v-data-table :headers="headers" :items="displayCapacities" :class="editing ? 'edit-wrapper':''" item-key="arrivalDate" :search="search" hide-actions>
+                <v-data-table class="extCapacitiesTable" :headers="headers" :items="displayCapacities" :class="editing ? 'edit-wrapper':''" item-key="arrivalDate" :search="search" hide-actions>
                     <template slot="items" slot-scope="props">
                         <v-hover>
                             <tr :key="props.index" class="editableRow"
                                 v-show="editMode.offset != props.index"
                                 slot-scope="{ hover }">
-                                <td><span v-if="!props.item.name"> -- </span> {{ props.item.name }}</td>
+                                <td width="25%"><span v-if="!props.item.name"> -- </span> {{ props.item.name }}</td>
                                 <td><span v-if="!props.item.type"> -- </span>{{ props.item.type }}</td>
                                 <td><span v-if="!props.item.arrival_date"> -- </span>{{ props.item.arrival_date }}</td>
-                                <td><span v-if="!props.item.deployment"> -- </span>{{ props.item.deployment}}</td>
+                                <td width="40%"><span v-if="!props.item.deployment"> -- </span>{{ props.item.deployment}}</td>
                                 <td>
                                     <span class="justify-center layout px-0" v-if="editing" :class="hover ? 'showCrud' : 'hide'">
                                         <a @click="edit(props.item, props.index)"> edit </a>
@@ -64,8 +65,8 @@
                         </v-hover>
                         <tr :key="props.index" class="editableRow"
                             v-show="editMode.offset == props.index">
-                            <td><v-text-field v-model="editedItem.name" label="name"></v-text-field></td>
-                            <td><v-select :items="allCapacityTypes" v-model="editedItem.type" label="Capacity"></v-select></td>
+                            <td><v-text-field v-model="editedItem.name"></v-text-field></td>
+                            <td><v-select :items="allCapacityTypes" v-model="editedItem.type"></v-select></td>
                             <td>
                                 <v-menu ref="editDateSelected" :close-on-content-click="false" v-model="editDateSelected" lazy transition="scale-transition" offset-y full-width width="290px">
                                     <v-text-field slot="activator" v-model="editedItem.arrival_date" persistent-hint type="date"></v-text-field>
@@ -134,7 +135,7 @@ export default {
     watch: {
         editing(val){
             if(val){
-                this._beforeEditingCache = Object.assign({}, this.displayCapacities);
+                this._beforeEditingCache = _.clone(this.displayCapacities);
             }else if(!val && (this.editMode.offset != -1)){
                 confirm('Are you sure you want to continue and discard the changes?') && this.clearEdit();
             }else{
@@ -159,7 +160,7 @@ export default {
 
         add(type){
             this.$store.commit(ADD_EVENT_EXT_CAPACITY, this.newItem);
-            this.newItem = Object.assign({}, this.defaultItem);
+            this.newItem = _.clone(this.defaultItem);
             this.dialog = false;
             this.updateCapacity();
         },
@@ -168,7 +169,7 @@ export default {
             this.editMode.offset = index;
         },
         cancelEdit(){
-            Object.assign(this.eventMetadata, this._beforeEditingCache);
+            this.displayCapacities = _.clone(this._beforeEditingCache);
             this.editing = false;
             this._beforeEditingCache = null;
         },
@@ -210,5 +211,10 @@ export default {
     @import '@/assets/css/edit.scss';
     tr.editableRow:hover{
         background: rgba(255, 255, 255, .25) !important;
+    }
+    .extCapacitiesTable{
+        table.v-table tbody td{
+            padding: 12px;
+        }
     }
 </style>
