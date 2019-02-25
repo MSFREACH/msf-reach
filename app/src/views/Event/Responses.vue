@@ -307,14 +307,4 @@ export default {
 <style lang="scss">
     @import '@/assets/css/display.scss';
     @import '@/assets/css/edit.scss';
-    .responseContainer{
-        .statusTabWrapper{
-            position: absolute;
-        }
-        .map-annotation,
-        .full-text-fields{
-            margin-top: 48px;
-            width: calc(100% - 21px); 
-        }
-    }
 </style>

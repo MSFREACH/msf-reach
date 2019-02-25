@@ -175,6 +175,7 @@ ul{
     background: $bg-light;
     box-shadow: 1px 5px 10px $text-light-grey;
     padding: 21px;
+    width: calc(100% - 21px); 
 }
 .split-text-fields{
     // max-height: calc(100vh - 200px);
@@ -321,8 +322,10 @@ tr.v-datatable__expand-row .v-card.expanded-field{
 
 .statusToggle{
     .statusTabWrapper{
+        margin: 20px 20px 0;
         position: absolute;
     }
+    .map-annotation,
     .full-text-fields{
         margin-top: 48px;
     }
@@ -332,9 +335,6 @@ tr.v-datatable__expand-row .v-card.expanded-field{
     width: 5px;
 }
 
-.statusTabWrapper{
-    margin: 20px 20px 0;
-}
 
 .monitoringTab{
     background: $ev-status-monitoring;

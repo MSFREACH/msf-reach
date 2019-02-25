@@ -149,7 +149,7 @@ import marked from 'marked';
 import { EVENT_NOTIFICATION_CATEGORIES, EVENT_NOTIFICATION_HEADERS } from '@/common/common';
 import { FETCH_EVENT_NOTIFICATIONS, CREATE_EVENT_NOTIFICATION, EDIT_EVENT_NOTIFICATION, DELETE_EVENT_NOTIFICATION, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL } from '@/store/actions.type';
 import { DEFAULT_EVENT_NOTIFICATION_FIELDS } from '@/common/form-fields';
-import { REQUEST_STATUSES } from '@/common/network-handler';
+import { REQUEST_NOTIFICATION_STATUSES } from '@/common/network-handler';
 // import MarkDownExplain from '@/views/util/MarkdownExplain.vue'
 import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 import { UPDATE_EVENTNOTIFICATIONS_SIGNEDURLS } from '@/store/mutations.type';
@@ -178,7 +178,7 @@ export default {
             sampleFiles:[
                 'https://cdn.vuetifyjs.com/images/cards/halcyon.png'
             ],
-            request: REQUEST_STATUSES,
+            request: REQUEST_NOTIFICATION_STATUSES,
             previewFileUrls: [],
             signedFileUrls: [],
             files: [],

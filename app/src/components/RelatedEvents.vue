@@ -27,7 +27,7 @@
                         </div>
                         <div class="one-half">
                             <label>Type</label>
-                            {{item.metadata.type}} {{item.metadata.sub_type}}
+                            {{item.metadata.types}} {{item.metadata.sub_type}}
                         </div>
                         <div class="one-half">
                             <label>UPDATED</label>

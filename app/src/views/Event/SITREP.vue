@@ -68,10 +68,10 @@
                     </v-flex>
                     <v-divider></v-divider>
                     <v-flex xs10>
-                        <v-card v-for="(item, index) in item.signedFiles" :key="index" class="file-attachment" @click="previewDialog = true">
-                            <img v-if="item.contentType.indexOf('image') != -1" :src="item.url" width="100%" height="100%">
-                            <object v-else :data="item.url" :type="item.contentType" width="100%" height="100%">
-                                <embed :src="item.url" width="100%" height="100%"></embed>
+                        <v-card v-for="(file, index) in item.signedFiles" :key="index" class="file-attachment" @click="previewDialog = true">
+                            <img v-if="file.contentType.indexOf('image') != -1" :src="file.url" width="100%" height="100%">
+                            <object v-else :data="file.url" :type="file.contentType" width="100%" height="100%">
+                                <embed :src="file.url" width="100%" height="100%"></embed>
                             </object>
                         </v-card>
                     </v-flex>
@@ -112,7 +112,7 @@ import marked from 'marked';
 import { FETCH_SITREPS, CREATE_SITREP, EDIT_SITREP, DELETE_SITREP, FETCH_UPLOAD_URL, PUT_SIGNED_REQUEST, FETCH_DOWNLOAD_URL } from '@/store/actions.type';
 import { UPDATE_SITREP_SIGNEDURLS } from '@/store/mutations.type';
 import { DEFAULT_SITREP_FIELDS } from '@/common/form-fields';
-import { REQUEST_STATUSES } from '@/common/network-handler';
+import { REQUEST_SITREP_STATUSES } from '@/common/network-handler';
 import MarkdownPanel from '@/views/util/MarkdownPanel.vue'
 
 export default {
@@ -131,7 +131,7 @@ export default {
             date1: new Date().toISOString().substr(0, 10),
             arrayEvents: null,
             search: '',
-            request: REQUEST_STATUSES
+            request: REQUEST_SITREP_STATUSES
         };
     },
     components: {
@@ -292,14 +292,13 @@ export default {
             'currentUser',
             'currentEventId',
             'sitreps',
-            'isLoadingSitreps',
             'fetchSitrepError'
         ]),
         formTitle () {
             return this.editIndex == -1 ? 'Create new' : 'Edit SITREP';
         },
         displaySITREPs(){
-            return _.map(this.sitreps, _.clone);
+            return this.sitreps;
         }
     }
 };
