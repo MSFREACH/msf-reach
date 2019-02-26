@@ -24,7 +24,8 @@
                       <v-container grid-list-md class="create-wrapper">
 
                           <div class="one-half">
-                              <v-text-field label="Event Name" v-model="metadata.name" required></v-text-field>
+                              <label>Event name </label>
+                              <v-text-field  v-model="metadata.name" required></v-text-field>
                           </div>
                           <div class="quarter-width">
                               <label>REACH Operator</label>
@@ -111,9 +112,8 @@
                               </div>
                               <div class="one-third">
                                   <label> Mission Contact Person </label>
-
-                                  <v-text-field label="Name" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.name" ></v-text-field>
-                                  <v-text-field label="Position" v-if="metadata.incharge_contact" v-model="metadata.incharge_contact.local.position" ></v-text-field>
+                                  <v-text-field label="Name" v-model="metadata.incharge_name" ></v-text-field>
+                                  <v-text-field label="Position" v-model="metadata.incharge_position" ></v-text-field>
                               </div>
                           </div>
                           <hr class="row-divider"/>
@@ -289,7 +289,7 @@ export default {
         },
         submitType(){
             var tmp = this.newType;
-            // if(!this.metadata.types) this.metadata.types = []; 
+            // if(!this.metadata.types) this.metadata.types = [];
             if(this.subTypeSelect){
                 tmp.subtype == 'other' ? this.metadata.types.push(tmp.specify) : this.metadata.types.push(tmp.subtype);
             }else if(tmp.type == 'other'){

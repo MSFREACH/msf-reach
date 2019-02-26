@@ -3,7 +3,8 @@
         <v-flex xs8>
             <div :class="editing ? 'edit-wrapper full-text-fields':'full-text-fields'">
                 <div class="actions">
-                    <v-switch :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
+                    <v-switch v-if="allowEdit" :label="editing ? `save` : `edit`" v-model="editing"></v-switch>
+                    <v-btn v-else color="warningRed" flat small round outline>reactivate</v-btn>
                     <span class="cancel" v-if="editing" @click="cancelEdit()"><v-icon>close</v-icon></span>
                 </div>
                  <v-layout row wrap v-if="!editing">
@@ -15,35 +16,38 @@
 
                         <div class="quarter-width">
                             <label>Operator</label>
-                            --
+                            <span v-if="eventMetadata.incharge_contact"> {{eventMetadata.incharge_contact.operator.name}} </span>
                         </div>
                     </div>
                     <div class="quarter-width">
                       <label>Type(s)</label>
-                      <div v-for="type in eventTypes">{{ type | capitalize | noUnderscore }}</div>
+                      <div v-for="type in eventTypes" class="secondary-text">{{ type | capitalize | noUnderscore }}</div>
                       <!-- TODO: add pairing icon + clickable taglink -->
                     </div>
                     <div class="quarter-width">
                       <label>Status</label>
-                      <span :class="eventMetadata.event_status.toLowerCase() + ' event-status'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
+                      <span :class="eventMetadata.event_status.toLowerCase() + ' event-status secondary-text'"> {{eventMetadata.event_status || 'monitoring'}}  </span>
                     </div>
                     <div class="one-half">
                         <label>Areas</label>
-                        <v-flex v-if="eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" :key="index">
-                            <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
-                            <span v-else>{{area.country}}</span>
-                            <div class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
-                                <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
-                                <span class="notes"><br/> {{ eventMetadata.severity_measures[index].description }} </span>
-                            </div>
-                        </v-flex>
+                        <div v-if="eventMetadata.areas">
+                            <v-layout row wrap v-for="(area, index) in eventMetadata.areas" :key="index">
+                                <v-flex xs12>
+                                    <span v-if="area.region" class="secondary-text"> {{area.region}}, {{area.country_code}} </span>
+                                    <span v-else class="secondary-text">{{area.country}}</span>
+                                    <span v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]" :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity sub-tag'">{{allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
+                                </v-flex>
+                                <div class="notes specified-text" v-if="eventMetadata.severity_measures[index] && eventMetadata.severity_measures[index].description"> {{ eventMetadata.severity_measures[index].description }} </div>
+                            </v-layout>
+                        </div>
+                        <v-flex v-else> {{eventMetadata.country}} </v-flex>
+
                         <div v-if="!eventMetadata.severity_measures" class="sub-tag">
                             <span v-if="eventMetadata.severity_scale" :class="allSeverity[eventMetadata.severity_scale-1].text +'Severity'">{{allSeverity[eventMetadata.severity_scale-1].text}} severity</span>
                             <span class="notes"><br/> {{ eventMetadata.severity }} </span>
                         </div>
                     </div>
                     <hr class="row-divider"/>
-                    <!-- Temporal row -->
 
                     <div class="one-third">
                         <label>OPEN DATE</label>
@@ -56,8 +60,8 @@
                     </div>
                     <div class="one-third">
                         <label>Mission Contact Person</label>
-                        <div v-if="eventMetadata.incharge_name"> {{ eventMetadata.incharge_name+', '+eventMetadata.incharge_position }} </div>
-                        <div v-else> -- </div>
+                        <div>{{eventMetadata.incharge_name}}</div>
+                        <div class="sub-category-text">{{eventMetadata.incharge_position}}</div>
                     </div>
 
                     <hr class="row-divider"/>
@@ -81,7 +85,7 @@
 
                         <div class="quarter-width">
                             <label>REACH Operator</label>
-                            {{ eventProperties.operator }}
+                            <span>{{eventMetadata.incharge_operator}}</span>
                         </div>
                     </div>
 
@@ -131,10 +135,14 @@
                         <label> Area(s) </label>
                         <div v-if="inEditArea">
                             <v-text-field v-if="inEditArea.address" v-model="inEditArea.address" disabled></v-text-field>
-                            <vue-google-autocomplete  v-else ref="address" id="areaMap" types="" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
-                            <label>Severity </label>
-                            <v-slider v-model="inEditArea.severity.scale" :tick-labels="severityLabels" :min="1" :max="3" step="1" ticks="always" tick-size="1" ></v-slider>
-                            <v-textarea solo label="analysis" class="inverse" v-model="inEditArea.severity.description"></v-textarea>
+                            <vue-google-autocomplete v-else ref="address" id="areaMap" types="" classname="form-control" placeholder="Please type your address" v-on:placechanged="getAddressData"></vue-google-autocomplete>
+                            <div v-if="inEditArea.severity">
+                                <v-flex class="slider-wrapper">
+                                    <v-slider class="severity-slider" v-model="inEditArea.severity.scale" :min="1" :max="3" step="1" tick-size="1" ></v-slider>
+                                    <span :class="severityLabels[inEditArea.severity.scale -1]+'Severity severity-labels'"> {{severityLabels[inEditArea.severity.scale -1]}} severity</span>
+                                </v-flex>
+                                <v-text-field solo placeholder="severity analysis" class="inverse" v-model="inEditArea.severity.description"></v-text-field>
+                            </div>
                             <span class="row-actions">
                                 <a @click="submitArea()">confirm</a>
                                 <a @click="clearArea()">cancel</a>
@@ -142,8 +150,8 @@
                         </div>
                         <div v-else-if="!inEditArea && eventMetadata.areas" v-for="(area, index) in eventMetadata.areas" class="tags" v-model="eventMetadata.areas" @mouseover="editable.areaIndex = index" @mouseleave="editable.areaIndex = null">
                             <span v-if="area.region"> {{area.region}}, {{area.country_code}} </span>
-                            <span v-else> {{area.country}} </span>
-
+                            <span v-else-if="area.country"> {{area.country}} </span>
+                            <span v-else>{{eventMetadata.country}}</span>
                             <span class="severity-wrapper">
                                 <span class="sub-tag" v-if="eventMetadata.severity_measures && eventMetadata.severity_measures[index]">
                                     <span :class="allSeverity[eventMetadata.severity_measures[index].scale-1].text + 'Severity'">{{ allSeverity[eventMetadata.severity_measures[index].scale-1].text}} severity</span>
@@ -196,22 +204,35 @@
                     <v-layout row wrap>
                         <v-flex xs6 style="display: inline-block;">
                         <label> Description </label>
-                            <v-textarea solo auto-grow id="eventDescription" v-model="eventMetadata.description" placeholder="Event description"> </v-textarea>
+                            <v-textarea solo auto-grow id="eventDescription" v-model="eventMetadata.description" placeholder="Event description">
+                            </v-textarea>
+                            <v-btn color="white lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
                         </v-flex>
                         <v-flex xs6 style="display: inline-block;">
                             <label>PREVIEW</label>
                             <div class="markdown-fields" v-html="mdRender(eventMetadata.description)"></div>
                         </v-flex>
                     </v-layout>
-                    <v-btn class='mb-2' color="grey lighten" small flat @click="showMarkdown = !showMarkdown"><v-icon>short_text</v-icon> markdown syntax guide</v-btn>
                     <hr class="row-divider"/>
                     <v-text-field clearable prepend-icon="link" label="SharePoint Link" v-model="eventMetadata.sharepoint_link" round ></v-text-field>
                 </v-layout>
             </div>
         </v-flex>
         <v-flex xs4>
-            <div class="map-annotation">
-                <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="mapAddress"></map-annotation>
+            <v-flex xs12 :class="editing ? 'editable-map map-annotation' : 'map-annotation'" @click="openMap">
+                <v-layout row justify-center>
+                  <v-dialog v-model="mapDialog" max-width="880px">
+                    <v-card>
+                        <map-input ref="eventMapEntry" :coordinates="eventCoordinates"></map-input>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" flat @click.native="saveArea()">Save Area</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-layout>
+                <map-annotation mapId="generalAnnotation" :coordinates="eventCoordinates" :address="mapAddress"></map-annotation>
+            </v-flex>
             </div>
         </v-flex>
     </v-layout>
@@ -221,6 +242,7 @@
 import { mapGetters } from 'vuex';
 import { DATETIME_DISPLAY_FORMAT, EVENT_TYPES, DEFAULT_EVENT_TYPE, DISEASE_OUTBREAK_TYPES, NATURAL_DISASTER_TYPES, DEFAULT_EVENT_AREA, EVENT_STATUSES, SEVERITY, SEVERITY_LABELS } from '@/common/common';
 import MapAnnotation from '@/views/Map/MapAnnotation.vue';
+import MapInput from '@/views/Map/MapInput.vue';
 import marked from 'marked';
 import VueGoogleAutocomplete from 'vue-google-autocomplete';
 import SharepointLink from '@/views/util/Sharepoint.vue';
@@ -237,6 +259,7 @@ export default {
     data(){
         return {
             editing: false,
+            mapDialog: false,
             showMarkdown: false,
             allSeverity: SEVERITY,
             allEventTypes: EVENT_TYPES,
@@ -277,7 +300,7 @@ export default {
     },
     components:{
         //TODO: MAP goes here
-        MapAnnotation, VueGoogleAutocomplete, SharepointLink, MarkdownPanel
+        MapAnnotation, VueGoogleAutocomplete, SharepointLink, MarkdownPanel, MapInput
     },
     computed: {
         ...mapGetters([
@@ -305,9 +328,11 @@ export default {
             if(areas && areas.length > 0) {
                 return areas[0];
             }else{
-                return this.eventMetadata.country; 
+                return {country: this.eventMetadata.country};
             }
-
+        },
+        allowEdit(){
+            return this.eventMetadata.event_status != 'complete';
         }
     },
 
@@ -319,6 +344,9 @@ export default {
         }
     },
     methods: {
+        openMap(){
+            if(this.editing) this.mapDialog = true;
+        },
         mdRender(value){
             if(value) return marked(value);
         },
@@ -352,7 +380,7 @@ export default {
             this.lintDateTime();
 
             this.eventMetadata.types = _.compact(this.eventMetadata.types);
-            this.eventMetadata.incharge_contact.operator.name = this.currentUser.username;
+            this.eventMetadata.incharge_operator = this.currentUser.username;
             this.inProgress = true;
             var payload = {
                 type: this.eventMetadata.types.join(','),
@@ -372,6 +400,11 @@ export default {
                         params: { slug: eventID}
                     });
                 });
+        },
+        saveArea(){
+            console.log("saveArea ------ ", this.response.area);
+
+
         },
         addType(){
             this.newType = this.defaultType;
@@ -440,6 +473,11 @@ export default {
                 this.save();
             }
         },
+        '$route' (to, from){
+            if(from.params.slug != to.params.slug){
+                if(this.editing) this.editing = false;
+            }
+        },
         eventMetadata(newVal){
             if(!newVal.areas){
                 var mockArea = {country: newVal.metadata.country, region: ''};
@@ -479,4 +517,33 @@ export default {
         width: 80%;
         display: inline-block;
     }
+    .severity-slider{
+        width: 50%;
+        .v-slider__thumb-container{
+            left: 0;
+        }
+        .v-slider__ticks:first-of-type{
+            color: $low-severity;
+        }
+
+        .v-slider__ticks:nth-of-type(2){
+            color: $medium-severity;
+        }
+
+        .v-slider__ticks:nth-of-type(3){
+            color: $high-severity;
+        }
+
+
+    }
+    .slider-wrapper{
+        align-items: baseline;
+        .severity-labels{
+            white-space: pre;
+        }
+    }
+    #eventAreas{
+        padding-right: 0;
+    }
+
 </style>

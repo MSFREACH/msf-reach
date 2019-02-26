@@ -32,6 +32,7 @@ ul{
     }
 }
 
+.callToActionRed, 
 .offsetTime{
     color: $warning-red;
 }
@@ -175,7 +176,7 @@ ul{
     background: $bg-light;
     box-shadow: 1px 5px 10px $text-light-grey;
     padding: 21px;
-    width: calc(100% - 21px); 
+    width: calc(100% - 21px);
 }
 .split-text-fields{
     // max-height: calc(100vh - 200px);

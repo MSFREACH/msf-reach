@@ -87,6 +87,18 @@ export const DEFAULT_EVENT_AREA = {
         description: null
     }
 };
+
+export const DEFAULT_EVENT_CONTACT = {
+    local: {
+        name: null,
+        position: null
+    },
+    operator: {
+        name: null,
+        position: null
+    }
+};
+
 export const EVENT_NOTIFICATION_CATEGORIES = [
     {text: 'ACCESS', value: 'ACCESS' },
     {text: 'NEEDS', value: 'NEEDS' },

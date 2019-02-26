@@ -48,7 +48,8 @@ Vue.use(Vuetify, {
         editing: '#0374C7',
         // success: '#4CAF50',
         btnGray: '#707070',
-        warning: '#EE0000'
+        warning: '#EE0000',
+        warningRed: '#F38181'
     }
 });
 
