@@ -319,7 +319,7 @@ export default {
                         id: layerId,
                         type: "symbol",
                         source: "reach-events",
-                        minzoom: 10,
+                        minzoom: 9,
                         layout: {
                             "icon-image": iconImage,
                             "icon-allow-overlap": true

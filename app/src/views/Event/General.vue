@@ -211,7 +211,7 @@
         </v-flex>
         <v-flex xs4>
             <div class="map-annotation">
-                <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="eventMetadata.areas[0]"></map-annotation>
+                <map-annotation  mapId="generalAnnotation" :coordinates="eventCoordinates" :address="mapAddress"></map-annotation>
             </div>
         </v-flex>
     </v-layout>
@@ -299,6 +299,15 @@ export default {
             var mm = m.format();
             var testString = mm.substring(19, 22);
             return testString;
+        },
+        mapAddress(){
+            var areas = this.eventMetadata.areas;
+            if(areas && areas.length > 0) {
+                return areas[0];
+            }else{
+                return this.eventMetadata.country; 
+            }
+
         }
     },
 

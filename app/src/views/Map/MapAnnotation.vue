@@ -179,11 +179,16 @@ export default {
         },
         getBoundaries(){
             // TODO: double check for street address entries
-            if(this.address.region){
-                var query = `${this.address.region} ${this.address.country}`
+            if(typeof this.address == 'string'){
+                var query = this.address;
             }else{
-                var query = this.address.country;
+                if(this.address.region){
+                    var query = `${this.address.region} ${this.address.country}`
+                }else{
+                    var query = this.address.country;
+                }
             }
+
             this.$store.dispatch(FETCH_GEOJSON_POLYGON, query);
         },
         addResponseAreasLayer(){
