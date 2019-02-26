@@ -55,7 +55,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'geojsonPolygon',
+            'eventBoundary',
             'responsesGeoJson',
             'relatedEventsGeoJson'
         ])
@@ -76,13 +76,13 @@ export default {
         coordinates(newVal){
             if(newVal) map.jumpTo({center: newVal});
         },
-        geojsonPolygon(newVal){
+        eventBoundary(newVal){
             if(newVal) this.addBoundaryLayer();
         },
         '$route' (to, from){
             var oldLayer = this.mapId + from.params.slug;
             if(from.params.slug != to.params.slug){
-                map.removeLayer(oldLayer);
+                if(map.getLayer(oldLayer)) map.removeLayer(oldLayer);
             }
         },
         responsesGeoJson(newVal){
@@ -147,27 +147,34 @@ export default {
                     'fill-color': 'transparent',
                     'fill-opacity': 1
                 }
-
             }else{
                 var fillStyle = {
                     'fill-color': '#0374c7',
                     'fill-opacity': 0.35
                 }
             }
+            var tmpLayerId = this.mapId + this.$route.params.slug;
+            var sourceId = 'event-boundary-' + this.$route.params.slug;
 
-            map.addLayer({
-                'id':this.mapId + this.$route.params.slug,
-                'type': 'fill',
-                'source': {
+            if(!map.getSource(sourceId)){
+                map.addSource(sourceId, {
                     'type': 'geojson',
                     'data': {
                         'type': 'Feature',
-                        'geometry': this.geojsonPolygon.geojson
+                        'geometry': this.eventBoundary.geojson
                     }
-                },
-                'layout': {},
-                'paint': fillStyle
-            })
+                });
+            }
+            if(!map.getLayer(tmpLayerId)){
+                map.addLayer({
+                    'id': tmpLayerId,
+                    'type': 'fill',
+                    'source': sourceId,
+                    'layout': {},
+                    'paint': fillStyle
+                })
+            }
+
         },
         getBoundaries(){
             // TODO: double check for street address entries

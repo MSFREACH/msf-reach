@@ -57,7 +57,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'geojsonPolygon',
+            'eventBoundary',
             'reverseGeojson',
             'eventCoordinates'
         ])
@@ -84,7 +84,7 @@ export default {
                 }
             }
         },
-        geojsonPolygon(newVal){
+        eventBoundary(newVal){
             if(newVal) this.addBoundaryLayer();
         },
         reverseGeojson(newVal){
@@ -156,7 +156,7 @@ export default {
                     'type': 'geojson',
                     'data': {
                         'type': 'Feature',
-                        'geometry': this.geojsonPolygon.geojson
+                        'geometry': this.eventBoundary.geojson
                     }
                 },
                 'layout': {},

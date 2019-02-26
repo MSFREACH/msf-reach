@@ -251,7 +251,7 @@ export default {
             }
         },
         responses(val){
-            if(val) this.selectedResponseId = this.responses[0].id;
+            if(val && val.length > 0) this.selectedResponseId = this.responses[0].id;
         }
     },
     computed: {

@@ -22,7 +22,7 @@ const getters = {
     requestData(state){
         return state.requestData;
     },
-    geojsonPolygon(state){
+    eventBoundary(state){
         return state.geoPolygon;
     },
     reverseGeojson(state){
