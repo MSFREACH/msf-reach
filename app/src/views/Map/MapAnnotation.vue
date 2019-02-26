@@ -19,6 +19,7 @@ import { MAPBOX_STYLES } from '@/common/map-fields';
 import { FETCH_GEOJSON_POLYGON } from '@/store/actions.type';
 import { getFeatures, getFeaturesFromArcs } from '@/lib/geojson-util';
 import { EVENT_STATUSES } from '@/common/common';
+import moment from 'moment';
 
 var map;
 export default {
@@ -278,11 +279,11 @@ export default {
                      }
                  }
 
-                 var evLastUpdate = e.features[0].properties.updated_at
+                 var evLastUpdate = moment(e.features[0].properties.updated_at).fromNow();
 
                  var contentStr = `<a href="#/events/${e.features[0].properties.id}">
-                     <div class="primary-text">${evName}</div>
-                     <div class="secondary-text">${evStatus} - \n ${evPlace} </div>
+                     <div class="secondary-text">${evName}</div>
+                     <div class="specified-text">${evStatus} - \n ${evPlace} </div>
                      <label>${evLastUpdate} </label>
                      </a>
                  `;
@@ -312,22 +313,6 @@ export default {
 </script>
 
 <style lang='scss'>
-    #newEventEntry,
-    #generalAnnotation,
-    #responsesAnnotation,
-    #relatedEventsAnnotation{
-        display: block;
-        width: 100%;
-        height: 500px; // **height require by leaflet
-    }
-    #relatedEventsAnnotation{
-        height: 70vh;
-    }
-    .anchor-nav{
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        z-index: 30 !important;
-    }
+@import '@/assets/css/map.scss';
 
 </style>

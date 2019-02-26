@@ -1,0 +1,67 @@
+
+#map{
+    display: block;
+    width: 100%;
+    height: calc(100vh - 64px); // **height require by leaflet
+}
+
+#newEventEntry,
+#generalAnnotation,
+#responsesAnnotation,
+#relatedEventsAnnotation{
+    display: block;
+    width: 100%;
+    height: 500px; // **height require by leaflet
+}
+#relatedEventsAnnotation{
+    height: 70vh;
+}
+
+
+.anchor-nav{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 30 !important;
+}
+
+.menu-icon{
+    height: 30px;
+}
+.mode-docker{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 30px;
+}
+#filterMenu{
+    top: 90px;
+    z-index: 8;
+    min-width: 40px;
+    padding: 0;
+}
+#filterBar{
+    height: inherit !important;
+    top: 140px;
+    margin: 6px 8px;
+    padding: 12px;
+    background: #EEEEEE;
+    border-radius: 5px;
+    // .v-list__group__items--no-action .v-list__tile {
+    //     padding-left: 36px;
+    // }
+}
+.mapboxgl-popup-content{
+    padding: 20px;
+    padding-right: 30px;
+    background: rgba(255,255,255, .79);
+}
+.mapboxgl-popup-tip{
+    display: none;
+}
+.mapboxgl-popup-close-button{
+    font-weight: bold;
+    color: grey;
+    padding: 12px 10px;
+    font-size: 24px;
+}
